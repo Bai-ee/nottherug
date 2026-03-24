@@ -39,7 +39,7 @@
    RESET & BASE
    ============================================= */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   font-family: var(--font-body);
   background: var(--cream);
@@ -385,6 +385,7 @@ footer {
   min-height: 100vh;
   display: grid; grid-template-columns: 1fr 1fr;
   padding-top: var(--nav-h);
+  overflow: hidden;
 }
 .hero-content {
   display: flex; flex-direction: column; justify-content: center;
@@ -501,7 +502,7 @@ footer {
   background: var(--warm-white);
   border-top: 1px solid var(--light-gray);
   border-bottom: 1px solid var(--light-gray);
-  padding: 20px 0; overflow: hidden;
+  padding: 20px 0; overflow: hidden; width: 100%;
 }
 .proof-track {
   display: flex; gap: 48px; align-items: center;
@@ -1020,8 +1021,8 @@ footer {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
   .hero { grid-template-columns: 1fr; min-height: auto; }
-  .hero-visual { height: 280px; }
-  .hero-content { padding: 48px 20px; max-width: 100%; margin: 0; }
+  .hero-visual { height: 280px; width: 100%; }
+  .hero-content { padding: 48px 20px; max-width: 100%; width: 100%; margin: 0; }
   .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps { grid-template-columns: 1fr; }
   .cta-band { flex-direction: column; padding: 40px 28px; }
   .cta-band h2 { max-width: 100%; }
