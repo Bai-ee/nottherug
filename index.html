@@ -481,6 +481,16 @@ footer {
   padding: 8px 16px; border-radius: 20px;
   border: 1px solid rgba(255,255,255,0.2);
 }
+.page-hero-label {
+  position: absolute; bottom: 24px; left: 24px;
+  color: white; font-size: 13px; font-weight: 500;
+  background: rgba(0,0,0,0.3); backdrop-filter: blur(8px);
+  padding: 8px 16px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  transition: background 0.2s;
+}
+.page-hero-label:hover { background: rgba(0,0,0,0.5); }
 .hero-img-dog {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   opacity: 0.2;
@@ -623,6 +633,7 @@ footer {
   background: var(--charcoal); color: white;
   padding: calc(var(--nav-h) + 64px) 0 80px;
   text-align: center;
+  position: relative;
 }
 .page-hero h1 { color: white; margin-bottom: 20px; }
 .page-hero p { color: rgba(255,255,255,0.65); font-size: 18px; max-width: 540px; margin: 0 auto; }
@@ -907,6 +918,7 @@ footer {
   background: var(--sage-dark);
   padding: calc(var(--nav-h) + 56px) 0 72px;
   color: white; text-align: center;
+  position: relative;
 }
 .book-hero h1 { color: white; }
 .book-hero p { color: rgba(255,255,255,0.7); font-size: 18px; margin-top: 16px; }
@@ -1276,7 +1288,8 @@ body::after {
     </div>
     <div class="hero-visual" id="hero-visual-video-shell">
       <video id="hero-bg-video" autoplay muted loop playsinline preload="auto">
-        <source src="logos/Not_The_Rug_2023_clipped.mp4" type="video/mp4">
+        <source src="logos/Not_The_Rug_2023_clipped_web.webm" type="video/webm">
+        <source src="logos/Not_The_Rug_2023_clipped_web.mp4" type="video/mp4">
       </video>
       <div class="hero-img-overlay"></div>
       <div class="hero-img-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park, Williamsburg</div>
@@ -1555,12 +1568,13 @@ body::after {
      PAGE: SERVICES
      ============================================================ -->
 <div id="page-services" class="page">
-  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00001.png') center/cover no-repeat;">
+  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00001.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">Services & Rates</div>
       <h1>Transparent pricing,<br>no surprises</h1>
       <p>Every service includes a free consultation, GPS tracking, and post-walk photo updates.</p>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-services"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Biscuit · @biscuit_bklyn</a>
   </div>
 
   <!-- Services grid -->
@@ -1624,7 +1638,7 @@ body::after {
   </section>
 
   <!-- Monthly packages -->
-  <section class="section bg-texture" style="background-color: var(--cream);">
+  <section class="section bg-texture" style="background-color: var(--cream); padding-top: 0;">
     <div class="container">
       <div class="package-banner">
         <div>
@@ -1660,7 +1674,7 @@ body::after {
   </section>
 
   <!-- What's always included -->
-  <section class="section">
+  <section class="section" style="padding-top: 0;">
     <div class="container">
       <div style="text-align:center; margin-bottom:48px">
         <div class="label">Always Included</div>
@@ -1691,18 +1705,172 @@ body::after {
     </div>
   </section>
 
+  <section class="section" style="padding-top: 0;" id="services-signup-section">
+    <div class="container">
+      <div class="booking-form-wrap">
+        <div class="booking-form">
+          <div class="booking-form-tabs">
+            <div class="booking-tab active" onclick="switchBookTab(this, 'svc-tab-meetgreet')">Free Meet & Greet</div>
+            <div class="booking-tab" onclick="switchBookTab(this, 'svc-tab-service')">Book a Service</div>
+            <div class="booking-tab" onclick="switchBookTab(this, 'svc-tab-contact')">Ask a Question</div>
+          </div>
+          <div class="booking-form-body">
+            <!-- Meet & Greet Tab -->
+            <div id="svc-tab-meetgreet">
+              <h3 style="font-family:var(--font-display); margin-bottom:6px">Let's meet your dog</h3>
+              <p style="color:var(--mid-gray); font-size:14px; margin-bottom:28px">Fill this out and we'll reach out within 2 hours on weekdays to schedule your free visit.</p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Your Name</label>
+                  <input type="text" class="form-control" placeholder="First & last name">
+                </div>
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input type="tel" class="form-control" placeholder="(347) 000-0000">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input type="email" class="form-control" placeholder="you@email.com">
+                </div>
+                <div class="form-group">
+                  <label>Neighborhood</label>
+                  <select class="form-control form-select">
+                    <option>Williamsburg</option>
+                    <option>Greenpoint</option>
+                    <option>Bushwick</option>
+                    <option>Bed-Stuy</option>
+                    <option>Park Slope</option>
+                    <option>East Williamsburg</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Dog's Name</label>
+                  <input type="text" class="form-control" placeholder="What's their name?">
+                </div>
+                <div class="form-group">
+                  <label>Breed & Age</label>
+                  <input type="text" class="form-control" placeholder="e.g. Golden, 3 years">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:20px">
+                <label>Service Interested In</label>
+                <select class="form-control form-select">
+                  <option>Daily Group Walks</option>
+                  <option>Walk + Training Sessions</option>
+                  <option>Puppy Visits</option>
+                  <option>Senior Dog Care</option>
+                  <option>Boarding / Sitting</option>
+                  <option>Not sure yet</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:24px">
+                <label>Anything we should know?</label>
+                <textarea class="form-control" rows="3" placeholder="Quirks, anxieties, medication needs, building access info — anything helpful"></textarea>
+              </div>
+              <button class="btn btn-primary" style="width:100%; justify-content:center; padding:16px" onclick="alert('✅ Form submitted! In a live site, this connects to Time To Pet or your CRM.')">Request My Free Meet & Greet</button>
+              <p class="form-note">We respond within 2 hours Mon–Fri · No spam, ever · Your info stays private</p>
+            </div>
+
+            <!-- Service Booking Tab -->
+            <div id="svc-tab-service" style="display:none">
+              <h3 style="font-family:var(--font-display); margin-bottom:6px">Book a service</h3>
+              <p style="color:var(--mid-gray); font-size:14px; margin-bottom:28px">Existing clients can book below. New clients — please start with a Meet & Greet.</p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Service Type</label>
+                  <select class="form-control form-select">
+                    <option>Group Walk ($33/walk)</option>
+                    <option>Solo Walk + Training ($60)</option>
+                    <option>Puppy Visit ($35)</option>
+                    <option>Senior Visit ($25)</option>
+                    <option>Boarding ($100/night)</option>
+                    <option>Cat Visit ($30)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Preferred Date</label>
+                  <input type="date" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Preferred Time</label>
+                  <select class="form-control form-select">
+                    <option>Morning (8–10 AM)</option>
+                    <option>Late Morning (10 AM–12 PM)</option>
+                    <option>Midday (12–2 PM)</option>
+                    <option>Afternoon (2–5 PM)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Number of Dogs</label>
+                  <select class="form-control form-select">
+                    <option>1 dog</option>
+                    <option>2 dogs (same household)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:24px">
+                <label>Your Email</label>
+                <input type="email" class="form-control" placeholder="For confirmation">
+              </div>
+              <button class="btn btn-primary" style="width:100%; justify-content:center; padding:16px" onclick="alert('✅ In a live site, this connects to Time To Pet booking system.')">Request Booking</button>
+            </div>
+
+            <!-- Ask a Question Tab -->
+            <div id="svc-tab-contact" style="display:none">
+              <h3 style="font-family:var(--font-display); margin-bottom:6px">Get in touch</h3>
+              <p style="color:var(--mid-gray); font-size:14px; margin-bottom:28px">Have a specific situation or question? Send us a message and we'll reply personally.</p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Your Name</label>
+                  <input type="text" class="form-control" placeholder="Name">
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" class="form-control" placeholder="Email">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:20px">
+                <label>Subject</label>
+                <select class="form-control form-select">
+                  <option>General inquiry</option>
+                  <option>Pricing question</option>
+                  <option>My dog has special needs</option>
+                  <option>Coverage area question</option>
+                  <option>Team / employment</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:24px">
+                <label>Message</label>
+                <textarea class="form-control" rows="4" placeholder="Tell us what's on your mind..."></textarea>
+              </div>
+              <button class="btn btn-primary" style="width:100%; justify-content:center; padding:16px" onclick="alert('✅ Message sent!')">Send Message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </div><!-- /page-services -->
 
 <!-- ============================================================
      PAGE: HOW IT WORKS
      ============================================================ -->
 <div id="page-how-it-works" class="page">
-  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00002.png') center/cover no-repeat;">
+  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00002.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">The Process</div>
       <h1>How it works</h1>
       <p>From first contact to daily walks — here's exactly what to expect when you join Not The Rug.</p>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-howitworks"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Mochi · @mochi_wlmsbg</a>
   </div>
 
   <section class="section">
@@ -1814,12 +1982,13 @@ body::after {
      PAGE: ABOUT
      ============================================================ -->
 <div id="page-about" class="page">
-  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00003.png') center/cover no-repeat;">
+  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00003.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">Our Story</div>
       <h1>15 years of walks,<br>one neighborhood</h1>
       <p>Not The Rug was born in Williamsburg and has never left. Here's why that matters.</p>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-about"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Scout · @scout_bklyn</a>
   </div>
 
   <!-- Origin story -->
@@ -2017,12 +2186,13 @@ body::after {
      PAGE: SAFETY & TRUST
      ============================================================ -->
 <div id="page-safety" class="page">
-  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00004.png') center/cover no-repeat;">
+  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00004.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">Safety & Trust</div>
       <h1>Why trust matters<br>more than price</h1>
       <p>Every trust and safety standard we hold ourselves to — and why we hold it.</p>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-safety"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Waffles · @waffles_nyc</a>
   </div>
 
   <section class="section">
@@ -2142,12 +2312,13 @@ body::after {
      PAGE: NEIGHBORHOODS
      ============================================================ -->
 <div id="page-neighborhoods" class="page">
-  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00005.png') center/cover no-repeat;">
+  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00005.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">Service Areas</div>
       <h1>Brooklyn is our<br>backyard</h1>
       <p>We serve six neighborhoods and know every park, shortcut, and puddle to avoid. Select your area below.</p>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-neighborhoods"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Pepper · @pepper_bklyn</a>
   </div>
 
   <section class="section">
@@ -2196,7 +2367,7 @@ body::after {
      PAGE: REVIEWS
      ============================================================ -->
 <div id="page-reviews" class="page">
-  <div class="page-hero bg-charcoal" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00006.png') center/cover no-repeat;">
+  <div class="page-hero bg-charcoal" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00006.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">Client Reviews</div>
       <h1 style="color:white">What Brooklyn<br>dog owners say</h1>
@@ -2219,6 +2390,7 @@ body::after {
         </div>
       </div>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-reviews"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Beans · @beans_wlmsbg</a>
   </div>
 
   <section class="section">
@@ -2285,12 +2457,13 @@ body::after {
      PAGE: BOOK
      ============================================================ -->
 <div id="page-book" class="page">
-  <div class="book-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00007.png') center/cover no-repeat;">
+  <div class="book-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00007.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">Get Started</div>
       <h1>Book your free<br>Meet & Greet</h1>
       <p>No commitment, no charge. We come to you, meet your dog, and answer every question.</p>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-book"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Noodle · @noodle_bklyn</a>
   </div>
 
   <section class="section">
@@ -2499,12 +2672,13 @@ body::after {
      PAGE: CONTACT
      ============================================================ -->
 <div id="page-contact" class="page">
-  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/Screenshot 2026-03-23 at 8.41.59 AM.png') center/cover no-repeat;">
+  <div class="page-hero" style="background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/Screenshot 2026-03-23 at 8.41.59 AM.png') center 20%/cover no-repeat;">
     <div class="container">
       <div class="label" style="color:var(--sage-light)">Get In Touch</div>
       <h1>We're real people<br>with a real number</h1>
       <p>No chatbots, no ticket queues. Text us, call us, or fill out the form.</p>
     </div>
+    <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" class="page-hero-label" id="page-hero-label-contact"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Archie · @archie_bklyn</a>
   </div>
 
   <section class="section">
@@ -3033,11 +3207,11 @@ function toggleMobileMenu() {
 
 // ---- BOOKING TABS ----
 function switchBookTab(el, tabId) {
-  document.querySelectorAll('.booking-tab').forEach(t => t.classList.remove('active'));
+  const form = el.closest('.booking-form');
+  form.querySelectorAll('.booking-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  ['tab-meetgreet','tab-service','tab-contact'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = id === tabId ? 'block' : 'none';
+  form.querySelectorAll('.booking-form-body > [id]').forEach(pane => {
+    pane.style.display = pane.id === tabId ? 'block' : 'none';
   });
 }
 
