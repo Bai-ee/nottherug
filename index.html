@@ -47,6 +47,7 @@ body {
   line-height: 1.6;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 img { display: block; width: 100%; height: 100%; object-fit: cover; }
 a { text-decoration: none; color: inherit; }
@@ -1020,9 +1021,11 @@ footer {
   .container { padding: 0 20px; }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
+  h1 { font-size: clamp(30px, 8vw, 44px); }
   .hero { grid-template-columns: 1fr; min-height: auto; }
   .hero-visual { height: 280px; width: 100%; }
   .hero-content { padding: 48px 20px; max-width: 100%; width: 100%; margin: 0; }
+  .hero-p { max-width: 100%; font-size: 16px; }
   .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps { grid-template-columns: 1fr; }
   .cta-band { flex-direction: column; padding: 40px 28px; }
   .cta-band h2 { max-width: 100%; }
@@ -1183,12 +1186,14 @@ body::after {
     line-height: 1.1;
   }
   .hero-stats {
-    gap: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
     padding: 20px 16px;
     margin-top: 28px;
   }
   .hero-stat-divider {
-    margin: 0 12px;
+    display: none;
   }
   .hero-stat-num {
     font-size: 26px;
@@ -2887,13 +2892,18 @@ function splitIntoWords(el) {
     } else if (node.nodeName === 'BR') {
       el.appendChild(document.createElement('br'));
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-      const wrap = document.createElement('span');
-      wrap.className = 'word-wrap';
-      const inner = document.createElement('span');
-      inner.className = 'word-inner';
-      inner.appendChild(node.cloneNode(true));
-      wrap.appendChild(inner);
-      el.appendChild(wrap);
+      node.textContent.split(/(\s+)/).forEach(word => {
+        if (!word.trim()) { el.appendChild(document.createTextNode(word)); return; }
+        const wrap = document.createElement('span');
+        wrap.className = 'word-wrap';
+        const inner = document.createElement('span');
+        inner.className = 'word-inner';
+        const clone = node.cloneNode(false);
+        clone.textContent = word;
+        inner.appendChild(clone);
+        wrap.appendChild(inner);
+        el.appendChild(wrap);
+      });
     }
   });
   return el.querySelectorAll('.word-inner');
