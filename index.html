@@ -384,14 +384,15 @@ footer {
 /* Hero */
 .hero {
   min-height: 100vh;
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto;
   padding-top: var(--nav-h);
   overflow: hidden;
 }
 .hero-content {
   display: flex; flex-direction: column; justify-content: center;
-  padding: 80px 64px 80px 32px;
+  padding: 80px 64px 48px 32px;
   max-width: 660px; margin-left: auto;
+  grid-column: 1; grid-row: 1;
 }
 .hero-eyebrow {
   display: flex; align-items: center; gap: 10px;
@@ -421,10 +422,12 @@ footer {
 .hero-stats {
   position: relative;
   display: flex; align-items: center; gap: 0;
-  margin-top: 40px;
   padding: 32px 28px;
   background: var(--cream);
   border-radius: var(--radius);
+  grid-column: 1; grid-row: 2;
+  max-width: 660px; margin-left: auto; width: 100%;
+  align-self: start;
 }
 .hero-stats::before {
   display: none;
@@ -461,6 +464,7 @@ footer {
 
 .hero-visual {
   position: relative; overflow: hidden;
+  grid-column: 2; grid-row: 1 / span 2;
 }
 #hero-bg-video {
   position: absolute; inset: 0;
@@ -1022,9 +1026,10 @@ footer {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
   h1 { font-size: clamp(30px, 8vw, 44px); }
-  .hero { grid-template-columns: 1fr; min-height: auto; }
-  .hero-visual { height: 280px; width: 100%; }
-  .hero-content { padding: 48px 20px; max-width: 100%; width: 100%; margin: 0; }
+  .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; min-height: auto; }
+  .hero-visual { grid-column: 1; grid-row: 1; height: 320px; width: 100%; }
+  .hero-stats { grid-column: 1; grid-row: 2; max-width: 100%; margin: 0; border-radius: 0; width: 100%; align-self: auto; }
+  .hero-content { grid-column: 1; grid-row: 3; padding: 48px 20px; max-width: 100%; width: 100%; margin: 0; }
   .hero-p { max-width: 100%; font-size: 16px; }
   .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps { grid-template-columns: 1fr; }
   .cta-band { flex-direction: column; padding: 40px 28px; }
@@ -1190,7 +1195,7 @@ body::after {
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     padding: 20px 16px;
-    margin-top: 28px;
+    margin-top: 0;
   }
   .hero-stat-divider {
     display: none;
@@ -1262,36 +1267,6 @@ body::after {
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-content">
-
-      <h1 class="hero-h1">Your dog deserves<br><em>someone they know.</em></h1>
-      <p class="hero-p">Not The Rug is Williamsburg's original neighborhood dog walking service. No apps, no strangers, no shortcuts — just consistent, caring walks from a team your dog loves.</p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" onclick="showPage('book')">Book a Free Meet &amp; Greet</button>
-        <button class="btn btn-ghost" onclick="showPage('services')">View Services</button>
-      </div>
-      <div class="hero-stats" id="hero-stats-strip">
-        <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
-          <div class="hero-stat-num">5★</div>
-          <div class="hero-stat-label">Yelp<br>rating</div>
-        </a>
-        <div class="hero-stat-divider" aria-hidden="true"></div>
-        <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-          <div class="hero-stat-num">5★</div>
-          <div class="hero-stat-label">Google rating</div>
-        </a>
-        <div class="hero-stat-divider" aria-hidden="true"></div>
-        <a class="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-          <div class="hero-stat-num">79</div>
-          <div class="hero-stat-label">Verified reviews</div>
-        </a>
-        <div class="hero-stat-divider" aria-hidden="true"></div>
-        <div class="hero-stat-item">
-          <div class="hero-stat-num">15+</div>
-          <div class="hero-stat-label">Years in Williamsburg</div>
-        </div>
-      </div>
-    </div>
     <div class="hero-visual" id="hero-visual-video-shell">
       <video id="hero-bg-video" autoplay muted loop playsinline preload="auto">
         <source src="logos/Not_The_Rug_2023_clipped_web.webm" type="video/webm">
@@ -1300,29 +1275,36 @@ body::after {
       <div class="hero-img-overlay"></div>
       <div class="hero-img-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park, Williamsburg</div>
     </div>
-  </section>
-
-  <!-- Scrolling social proof -->
-  <div class="social-proof-strip">
-    <div class="proof-track" id="proof-track">
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Luis's professionalism puts even the most nervous pet parent at ease"</span><span class="proof-author">— Jessica Y., Williamsburg</span></div>
-      <div class="proof-sep"></div>
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Seriously — hire Not The Rug. They won't disappoint."</span><span class="proof-author">— Jayne A., Williamsburg</span></div>
-      <div class="proof-sep"></div>
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Trust Luis to take care of your dog as if it was his own"</span><span class="proof-author">— Kassie T., Williamsburg</span></div>
-      <div class="proof-sep"></div>
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Daily updates, cute photos, and my dog LOVES her walker"</span><span class="proof-author">— Hayley M., Williamsburg</span></div>
-      <div class="proof-sep"></div>
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Luis's professionalism puts even the most nervous pet parent at ease"</span><span class="proof-author">— Jessica Y., Williamsburg</span></div>
-      <div class="proof-sep"></div>
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Seriously — hire Not The Rug. They won't disappoint."</span><span class="proof-author">— Jayne A., Williamsburg</span></div>
-      <div class="proof-sep"></div>
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Trust Luis to take care of your dog as if it was his own"</span><span class="proof-author">— Kassie T., Williamsburg</span></div>
-      <div class="proof-sep"></div>
-      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Daily updates, cute photos, and my dog LOVES her walker"</span><span class="proof-author">— Hayley M., Williamsburg</span></div>
-      <div class="proof-sep"></div>
+    <div class="hero-stats" id="hero-stats-strip">
+      <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
+        <div class="hero-stat-num">5★</div>
+        <div class="hero-stat-label">Yelp<br>rating</div>
+      </a>
+      <div class="hero-stat-divider" aria-hidden="true"></div>
+      <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+        <div class="hero-stat-num">5★</div>
+        <div class="hero-stat-label">Google rating</div>
+      </a>
+      <div class="hero-stat-divider" aria-hidden="true"></div>
+      <a class="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+        <div class="hero-stat-num">79</div>
+        <div class="hero-stat-label">Verified reviews</div>
+      </a>
+      <div class="hero-stat-divider" aria-hidden="true"></div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-num">15+</div>
+        <div class="hero-stat-label">Years in Williamsburg</div>
+      </div>
     </div>
-  </div>
+    <div class="hero-content">
+      <h1 class="hero-h1">Your dog deserves<br><em>someone they know.</em></h1>
+      <p class="hero-p">Not The Rug is Williamsburg's original neighborhood dog walking service. No apps, no strangers, no shortcuts — just consistent, caring walks from a team your dog loves.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="showPage('book')">Book a Free Meet &amp; Greet</button>
+        <button class="btn btn-ghost" onclick="showPage('services')">View Services</button>
+      </div>
+    </div>
+  </section>
 
   <!-- Trust bar -->
   <div class="trust-bar">
@@ -1351,6 +1333,28 @@ body::after {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Max 3 Dogs Per Walk
       </div>
+    </div>
+  </div>
+
+  <!-- Scrolling social proof -->
+  <div class="social-proof-strip">
+    <div class="proof-track" id="proof-track">
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Luis's professionalism puts even the most nervous pet parent at ease"</span><span class="proof-author">— Jessica Y., Williamsburg</span></div>
+      <div class="proof-sep"></div>
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Seriously — hire Not The Rug. They won't disappoint."</span><span class="proof-author">— Jayne A., Williamsburg</span></div>
+      <div class="proof-sep"></div>
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Trust Luis to take care of your dog as if it was his own"</span><span class="proof-author">— Kassie T., Williamsburg</span></div>
+      <div class="proof-sep"></div>
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Daily updates, cute photos, and my dog LOVES her walker"</span><span class="proof-author">— Hayley M., Williamsburg</span></div>
+      <div class="proof-sep"></div>
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Luis's professionalism puts even the most nervous pet parent at ease"</span><span class="proof-author">— Jessica Y., Williamsburg</span></div>
+      <div class="proof-sep"></div>
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Seriously — hire Not The Rug. They won't disappoint."</span><span class="proof-author">— Jayne A., Williamsburg</span></div>
+      <div class="proof-sep"></div>
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Trust Luis to take care of your dog as if it was his own"</span><span class="proof-author">— Kassie T., Williamsburg</span></div>
+      <div class="proof-sep"></div>
+      <div class="proof-item"><div class="stars">★★★★★</div><span class="proof-quote">"Daily updates, cute photos, and my dog LOVES her walker"</span><span class="proof-author">— Hayley M., Williamsburg</span></div>
+      <div class="proof-sep"></div>
     </div>
   </div>
 
@@ -2932,12 +2936,12 @@ function initHeroEntrance() {
 
   const tl = gsap.timeline({ delay: 0.12, defaults: { ease: 'power4.out' } });
   tl
-    .to('.hero-eyebrow', { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out' })
-    .to(words,          { y: '0%', duration: 0.88, stagger: 0.065 }, '-=0.3')
-    .to('.hero-visual', { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease: 'power4.inOut' }, 0.18)
+    .to('.hero-visual', { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease: 'power4.inOut' }, 0)
+    .to('.hero-stats',  { autoAlpha: 1, y: 0, duration: 0.7 }, '-=0.45')
+    .to('.hero-eyebrow', { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out' }, '-=0.4')
+    .to(words,          { y: '0%', duration: 0.88, stagger: 0.065 }, '-=0.35')
     .to('.hero-p',      { autoAlpha: 1, y: 0, duration: 0.7 }, '-=0.65')
-    .to('.hero-actions',{ autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.5')
-    .to('.hero-stats',  { autoAlpha: 1, y: 0, duration: 0.7 }, '-=0.45');
+    .to('.hero-actions',{ autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.5');
 }
 
 // ---- HERO PARALLAX ----
