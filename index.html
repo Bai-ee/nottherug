@@ -384,13 +384,13 @@ footer {
 /* Hero */
 .hero {
   min-height: 100vh;
-  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto;
+  display: grid; grid-template-columns: 1fr 1fr;
   padding-top: var(--nav-h);
   overflow: hidden;
 }
 .hero-content {
   display: flex; flex-direction: column; justify-content: center;
-  padding: 80px 64px 48px 32px;
+  padding: 80px 64px 80px 32px;
   max-width: 660px; margin-left: auto;
   grid-column: 1; grid-row: 1;
 }
@@ -421,13 +421,11 @@ footer {
 
 .hero-stats {
   position: relative;
-  display: flex; align-items: center; gap: 0;
+  display: flex; align-items: flex-start; gap: 0;
   padding: 32px 28px;
   background: var(--cream);
   border-radius: var(--radius);
-  grid-column: 1; grid-row: 2;
-  max-width: 660px; margin-left: auto; width: 100%;
-  align-self: start;
+  margin-top: 40px;
 }
 .hero-stats::before {
   display: none;
@@ -464,7 +462,7 @@ footer {
 
 .hero-visual {
   position: relative; overflow: hidden;
-  grid-column: 2; grid-row: 1 / span 2;
+  grid-column: 2; grid-row: 1;
 }
 #hero-bg-video {
   position: absolute; inset: 0;
@@ -1026,10 +1024,9 @@ footer {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
   h1 { font-size: clamp(30px, 8vw, 44px); }
-  .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; min-height: auto; }
+  .hero { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: auto; }
   .hero-visual { grid-column: 1; grid-row: 1; height: 320px; width: 100%; }
-  .hero-stats { grid-column: 1; grid-row: 2; max-width: 100%; margin: 0; border-radius: 0; width: 100%; align-self: auto; }
-  .hero-content { grid-column: 1; grid-row: 3; padding: 48px 20px; max-width: 100%; width: 100%; margin: 0; }
+  .hero-content { grid-column: 1; grid-row: 2; padding: 0 20px 48px; max-width: 100%; width: 100%; margin: 0; }
   .hero-p { max-width: 100%; font-size: 16px; }
   .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps { grid-template-columns: 1fr; }
   .cta-band { flex-direction: column; padding: 40px 28px; }
@@ -1191,11 +1188,14 @@ body::after {
     line-height: 1.1;
   }
   .hero-stats {
+    order: -1;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    padding: 20px 16px;
+    padding: 24px 20px;
     margin-top: 0;
+    border-radius: 0;
+    width: 100%;
   }
   .hero-stat-divider {
     display: none;
@@ -1275,33 +1275,33 @@ body::after {
       <div class="hero-img-overlay"></div>
       <div class="hero-img-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park, Williamsburg</div>
     </div>
-    <div class="hero-stats" id="hero-stats-strip">
-      <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
-        <div class="hero-stat-num">5★</div>
-        <div class="hero-stat-label">Yelp<br>rating</div>
-      </a>
-      <div class="hero-stat-divider" aria-hidden="true"></div>
-      <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-        <div class="hero-stat-num">5★</div>
-        <div class="hero-stat-label">Google rating</div>
-      </a>
-      <div class="hero-stat-divider" aria-hidden="true"></div>
-      <a class="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-        <div class="hero-stat-num">79</div>
-        <div class="hero-stat-label">Verified reviews</div>
-      </a>
-      <div class="hero-stat-divider" aria-hidden="true"></div>
-      <div class="hero-stat-item">
-        <div class="hero-stat-num">15+</div>
-        <div class="hero-stat-label">Years in Williamsburg</div>
-      </div>
-    </div>
     <div class="hero-content">
       <h1 class="hero-h1">Your dog deserves<br><em>someone they know.</em></h1>
       <p class="hero-p">Not The Rug is Williamsburg's original neighborhood dog walking service. No apps, no strangers, no shortcuts — just consistent, caring walks from a team your dog loves.</p>
       <div class="hero-actions">
         <button class="btn btn-primary" onclick="showPage('book')">Book a Free Meet &amp; Greet</button>
         <button class="btn btn-ghost" onclick="showPage('services')">View Services</button>
+      </div>
+      <div class="hero-stats" id="hero-stats-strip">
+        <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
+          <div class="hero-stat-num">5★</div>
+          <div class="hero-stat-label">Yelp<br>rating</div>
+        </a>
+        <div class="hero-stat-divider" aria-hidden="true"></div>
+        <a class="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+          <div class="hero-stat-num">5★</div>
+          <div class="hero-stat-label">Google<br>rating</div>
+        </a>
+        <div class="hero-stat-divider" aria-hidden="true"></div>
+        <a class="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+          <div class="hero-stat-num">79</div>
+          <div class="hero-stat-label">Verified<br>reviews</div>
+        </a>
+        <div class="hero-stat-divider" aria-hidden="true"></div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">15+</div>
+          <div class="hero-stat-label">Years in<br>Williamsburg</div>
+        </div>
       </div>
     </div>
   </section>
@@ -2973,31 +2973,21 @@ function initStatCounters() {
 
   statsAnimated = false; // reset on page nav back to home
 
-  // Stagger reveal stat items + dividers
-  const statItems = document.querySelectorAll('.hero-stat-item, .hero-stat-divider');
-  gsap.set(statItems, { autoAlpha: 0, y: 16 });
-
   ScrollTrigger.create({
     trigger: '.hero-stats',
-    start: 'top 82%',
+    start: 'top 90%',
     once: true,
     onEnter: () => {
       if (statsAnimated) return;
       statsAnimated = true;
 
-      // Stagger items in
-      gsap.to(statItems, {
-        autoAlpha: 1, y: 0, duration: 0.6,
-        ease: 'power3.out', stagger: 0.07
-      });
-
-      // Count up numbers
+      // Count up numbers (delay aligns with hero entrance stats reveal)
       statEls.forEach((el, i) => {
         const obj = { val: 0 };
         gsap.to(obj, {
           val: statTargets[i],
           duration: 1.9,
-          delay: i * 0.07,
+          delay: 0.6 + i * 0.07,
           ease: 'power2.out',
           onUpdate() { el.textContent = Math.round(obj.val) + statSuffixes[i]; }
         });
@@ -3060,8 +3050,6 @@ function initSectionReveals(pageEl) {
       once: true
     });
   }
-
-  ScrollTrigger.refresh();
 }
 
 // ---- PAGE TRANSITION ----
@@ -3101,7 +3089,8 @@ function showPage(pageId) {
       initStatCounters();
       setTimeout(() => initSectionReveals(target), 420);
     } else {
-      setTimeout(() => initSectionReveals(target), 200);
+      initSectionReveals(target);
+      setTimeout(() => ScrollTrigger.refresh(), 420);
     }
   }
 
