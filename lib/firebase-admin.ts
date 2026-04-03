@@ -10,8 +10,8 @@ function parsePrivateKey(raw: string): string {
 function initAdmin(): App {
   if (getApps().length > 0) return getApps()[0]!;
 
-  const projectId   = process.env.FIREBASE_ADMIN_PROJECT_ID!;
-  const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL!;
+  const projectId   = (process.env.FIREBASE_ADMIN_PROJECT_ID ?? '').trim();
+  const clientEmail = (process.env.FIREBASE_ADMIN_CLIENT_EMAIL ?? '').trim();
   const privateKey  = parsePrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY ?? '');
 
   return initializeApp({
