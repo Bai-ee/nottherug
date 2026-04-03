@@ -1,11 +1,7 @@
 import { NextRequest } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebase-admin';
+import { adminAuth } from '@/lib/firebase-admin';
+import { fsGetDoc } from '@/lib/server/firestoreRest';
 
-/**
- * Extracts the Bearer token from the request, verifies it with Firebase Auth,
- * then checks the admins/{email} Firestore whitelist.
- * Returns the admin email on success; throws on failure.
- */
 export async function verifyAdmin(req: NextRequest): Promise<string> {
   const authHeader = req.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) {
@@ -20,7 +16,7 @@ export async function verifyAdmin(req: NextRequest): Promise<string> {
     throw new Error('Unauthorized: token has no email claim');
   }
 
-  const adminDoc = await adminDb.doc(`admins/${email}`).get();
+  const adminDoc = await fsGetDoc(`admins/${email}`);
   if (!adminDoc.exists) {
     throw new Error('Forbidden: not on admin whitelist');
   }

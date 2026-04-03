@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
-import { adminDb } from '@/lib/firebase-admin';
+import { fsDeleteDoc } from '@/lib/server/firestoreRest';
 import { storageDelete } from '@/lib/server/firebaseStorage';
 import { COLLECTIONS } from '@/lib/photos/types';
 
@@ -42,7 +42,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     console.error('Storage delete error:', err);
   }
 
-  await adminDb.collection(collection).doc(id).delete();
+  await fsDeleteDoc(`${collection}/${id}`);
 
   return NextResponse.json({ ok: true });
 }

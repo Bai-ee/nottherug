@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
-import { adminDb } from '@/lib/firebase-admin';
+import { fsSetDoc } from '@/lib/server/firestoreRest';
 import { storageDownload, storageUpload } from '@/lib/server/firebaseStorage';
 import { STORAGE_PATHS, COLLECTIONS } from '@/lib/photos/types';
 import type { PhotoRender } from '@/lib/photos/types';
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   };
 
   try {
-    await adminDb.collection(COLLECTIONS.photoRenders).doc(id).set(record);
+    await fsSetDoc(`${COLLECTIONS.photoRenders}/${id}`, record as unknown as Record<string, unknown>);
   } catch (err) {
     console.error('Firestore render record write failed:', err);
     return NextResponse.json({ error: 'Metadata write failed' }, { status: 500 });
