@@ -15,13 +15,17 @@ export default function AdminLoginPage() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user && user.email) {
-        const ref = doc(db, 'admins', user.email);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          router.push('/admin/dashboard');
-          return;
+      try {
+        if (user && user.email) {
+          const ref = doc(db, 'admins', user.email);
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            router.push('/admin/dashboard');
+            return;
+          }
         }
+      } catch (err) {
+        console.error('[admin] Firestore check failed:', err);
       }
       setChecking(false);
     });

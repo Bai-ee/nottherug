@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTR Color Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Outfit', sans-serif; background: #EEF4DB; color: #1F2318; padding: 48px 32px; }
+  h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+  p  { color: #5C6455; margin-bottom: 48px; font-size: 15px; }
+  .group { margin-bottom: 48px; }
+  .group-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #5C6455; margin-bottom: 16px; }
+  .swatches { display: flex; gap: 16px; flex-wrap: wrap; }
+  .swatch { border-radius: 12px; overflow: hidden; width: 160px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .swatch-color { height: 80px; }
+  .swatch-info { background: white; padding: 12px 14px; }
+  .swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .swatch-hex  { font-size: 12px; color: #5C6455; font-family: monospace; }
+  .swatch-var  { font-size: 11px; color: #9aab8c; font-family: monospace; margin-top: 2px; }
+</style>
+</head>
+<body>
+<h1>Not The Rug — Color Reference</h1>
+<p>All colors as they appear. Copy the CSS variable or hex value directly.</p>
+
+<div class="group">
+  <div class="group-title">Core / Neutral</div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#EEF4DB;"></div><div class="swatch-info"><div class="swatch-name">Cream</div><div class="swatch-hex">#EEF4DB</div><div class="swatch-var">--cream</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F5F9EE;"></div><div class="swatch-info"><div class="swatch-name">Warm White</div><div class="swatch-hex">#F5F9EE</div><div class="swatch-var">--warm-white</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1F2318;"></div><div class="swatch-info"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#1F2318</div><div class="swatch-var">--charcoal</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#5C6455;"></div><div class="swatch-info"><div class="swatch-name">Mid Gray</div><div class="swatch-hex">#5C6455</div><div class="swatch-var">--mid-gray</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#D5E0BE;"></div><div class="swatch-info"><div class="swatch-name">Light Gray</div><div class="swatch-hex">#D5E0BE</div><div class="swatch-var">--light-gray</div></div></div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Sage (Primary Brand)</div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#B4C89E;"></div><div class="swatch-info"><div class="swatch-name">Sage Light</div><div class="swatch-hex">#B4C89E</div><div class="swatch-var">--sage-light</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#7A9068;"></div><div class="swatch-info"><div class="swatch-name">Sage</div><div class="swatch-hex">#7A9068</div><div class="swatch-var">--sage</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#4E5A42;"></div><div class="swatch-info"><div class="swatch-name">Sage Dark</div><div class="swatch-hex">#4E5A42</div><div class="swatch-var">--sage-dark</div></div></div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Terracotta (Warm Accent)</div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#E8A896;"></div><div class="swatch-info"><div class="swatch-name">Terracotta Light</div><div class="swatch-hex">#E8A896</div><div class="swatch-var">--terracotta-light</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C4674B;"></div><div class="swatch-info"><div class="swatch-name">Terracotta</div><div class="swatch-hex">#C4674B</div><div class="swatch-var">--terracotta</div></div></div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Gold (Premium / Stars)</div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#E8D4A8;"></div><div class="swatch-info"><div class="swatch-name">Gold Light</div><div class="swatch-hex">#E8D4A8</div><div class="swatch-var">--gold-light</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C9A96E;"></div><div class="swatch-info"><div class="swatch-name">Gold</div><div class="swatch-hex">#C9A96E</div><div class="swatch-var">--gold</div></div></div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Image Placeholder Gradients</div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background: linear-gradient(135deg, #C8D8C4 0%, #9DB89A 100%);"></div><div class="swatch-info"><div class="swatch-name">Sage Green</div><div class="swatch-hex">.img-ph-1</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background: linear-gradient(135deg, #DFD4C4 0%, #C4A888 100%);"></div><div class="swatch-info"><div class="swatch-name">Warm Tan</div><div class="swatch-hex">.img-ph-2</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background: linear-gradient(135deg, #D4C8D8 0%, #A88EC4 50%, #9DB89A 100%);"></div><div class="swatch-info"><div class="swatch-name">Lavender-Sage</div><div class="swatch-hex">.img-ph-3</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background: linear-gradient(135deg, #D8C8C4 0%, #B89090 100%);"></div><div class="swatch-info"><div class="swatch-name">Terra Blush</div><div class="swatch-hex">.img-ph-4</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background: linear-gradient(135deg, #C4D4D8 0%, #88A8C4 100%);"></div><div class="swatch-info"><div class="swatch-name">Sky Slate</div><div class="swatch-hex">.img-ph-5</div></div></div>
+  </div>
+</div>
+
+</body>
+</html>

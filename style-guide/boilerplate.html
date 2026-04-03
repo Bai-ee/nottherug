@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTR Companion Page</title>
+
+<!-- NTR Font Stack -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+<style>
+/* =============================================
+   NTR DESIGN TOKENS
+   ============================================= */
+:root {
+  --cream:             #EEF4DB;
+  --warm-white:        #F5F9EE;
+  --charcoal:          #1F2318;
+  --mid-gray:          #5C6455;
+  --light-gray:        #D5E0BE;
+  --sage:              #7A9068;
+  --sage-light:        #B4C89E;
+  --sage-dark:         #4E5A42;
+  --terracotta:        #C4674B;
+  --terracotta-light:  #E8A896;
+  --gold:              #C9A96E;
+  --gold-light:        #E8D4A8;
+
+  --font-display: 'Fraunces', 'DM Serif Display', serif;
+  --font-body:    'Outfit', sans-serif;
+  --font-italic:  'Fraunces', serif;
+
+  --nav-h:        72px;
+  --max-w:        1240px;
+  --section-pad:  96px;
+  --radius:       12px;
+  --radius-lg:    24px;
+}
+
+/* =============================================
+   RESET
+   ============================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--charcoal);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* =============================================
+   LAYOUT
+   ============================================= */
+.container  { max-width: var(--max-w); margin: 0 auto; padding: 0 32px; }
+.section    { padding: var(--section-pad) 0; }
+.section-sm { padding: 56px 0; }
+.pt-nav     { padding-top: calc(var(--nav-h) + 24px); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+/* =============================================
+   TYPOGRAPHY
+   ============================================= */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; }
+h1 { font-family: 'Playfair Display', serif; font-size: clamp(44px, 5.5vw, 76px); font-weight: 700; }
+h2 { font-size: clamp(32px, 3.5vw, 52px); }
+h3 { font-size: clamp(22px, 2vw, 30px); }
+
+.label {
+  display: inline-block;
+  font-family: var(--font-italic);
+  font-size: 15px; font-weight: 300; font-style: italic;
+  color: var(--mid-gray);
+  margin-bottom: 12px;
+}
+.label-dark { color: var(--gold-light); }
+
+.text-sage  { color: var(--sage-dark); }
+.text-terra { color: var(--terracotta); }
+.text-gold  { color: var(--gold); }
+.text-mid   { color: var(--mid-gray); }
+
+/* =============================================
+   DIVIDER
+   ============================================= */
+.divider        { width: 32px; height: 1px; background: var(--light-gray); margin: 20px 0; }
+.divider-center { margin: 24px auto; }
+hr { border: none; border-top: 1px solid var(--light-gray); margin: 0; }
+
+/* =============================================
+   BUTTONS
+   ============================================= */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 24px; border-radius: 6px;
+  font-size: 15px; font-weight: 600;
+  transition: all .2s; cursor: pointer;
+  font-family: var(--font-body);
+}
+.btn-primary             { background: var(--sage-dark); color: white; }
+.btn-primary:hover       { background: var(--charcoal); transform: translateY(-1px); }
+.btn-outline             { border: 2px solid var(--charcoal); color: var(--charcoal); background: transparent; }
+.btn-outline:hover       { background: var(--charcoal); color: white; }
+.btn-outline-white       { border: 2px solid rgba(255,255,255,0.6); color: white; }
+.btn-outline-white:hover { background: white; color: var(--charcoal); }
+.btn-ghost               { color: var(--charcoal); padding: 14px 0; }
+.btn-ghost:hover         { color: var(--sage-dark); }
+.btn-ghost::after        { content: ' →'; }
+.btn-sm                  { padding: 10px 20px; font-size: 13px; }
+
+/* =============================================
+   CARDS
+   ============================================= */
+.card         { background: var(--warm-white); border: 1px solid rgba(0,0,0,0.07); border-radius: var(--radius-lg); overflow: hidden; }
+.card-pad     { padding: 32px; }
+.card-hover   { transition: all .25s; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: 0 4px 14px rgba(0,0,0,0.05); }
+
+/* =============================================
+   BADGES / STARS
+   ============================================= */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 4px;
+  font-size: 12px; font-weight: 500;
+  border: 1px solid rgba(0,0,0,0.1);
+  color: var(--mid-gray);
+}
+.stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+
+/* =============================================
+   SECTION BACKGROUNDS
+   ============================================= */
+.bg-charcoal { background: var(--charcoal); color: white; }
+.bg-sage     { background: var(--sage-dark); color: white; }
+.bg-cream    { background: var(--cream); }
+.bg-warm     { background: var(--warm-white); }
+.bg-light    { background: var(--light-gray); }
+
+.bg-texture {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.02'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* =============================================
+   IMAGE PLACEHOLDERS
+   ============================================= */
+.img-placeholder { background: var(--light-gray); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.img-ph-1 { background: linear-gradient(135deg, #C8D8C4 0%, #9DB89A 100%); }
+.img-ph-2 { background: linear-gradient(135deg, #DFD4C4 0%, #C4A888 100%); }
+.img-ph-3 { background: linear-gradient(135deg, #D4C8D8 0%, #A88EC4 50%, #9DB89A 100%); }
+.img-ph-4 { background: linear-gradient(135deg, #D8C8C4 0%, #B89090 100%); }
+.img-ph-5 { background: linear-gradient(135deg, #C4D4D8 0%, #88A8C4 100%); }
+
+/* =============================================
+   NAVIGATION
+   ============================================= */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-h);
+  background: rgba(78, 90, 66, 0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center;
+}
+.nav-inner {
+  max-width: var(--max-w); width: 100%; margin: 0 auto; padding: 0 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo img { height: auto; width: 128px; display: block; }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-links a {
+  padding: 7px 12px; border-radius: 4px;
+  font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.7); transition: all .2s;
+}
+.nav-links a:hover { color: white; background: rgba(255,255,255,0.1); }
+.nav-cta {
+  background: white !important; color: var(--sage-dark) !important;
+  padding: 9px 18px !important; border-radius: 6px !important; font-weight: 600 !important;
+}
+.nav-cta:hover { background: var(--cream) !important; transform: translateY(-1px); }
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer {
+  background: var(--charcoal); color: white;
+  padding: 72px 0 40px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; padding-bottom: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.footer-logo-text { font-family: var(--font-display); font-size: 24px; margin-bottom: 16px; }
+.footer-tagline { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 280px; margin-bottom: 24px; }
+.footer-social { display: flex; gap: 12px; }
+.social-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.social-btn:hover { background: rgba(255,255,255,0.1); }
+.footer-col h4 { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); margin-bottom: 18px; }
+.footer-col li { margin-bottom: 10px; }
+.footer-col li a { font-size: 14px; color: rgba(255,255,255,0.65); transition: color .2s; }
+.footer-col li a:hover { color: white; }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 32px; }
+.footer-copy { font-size: 13px; color: rgba(255,255,255,0.35); }
+
+/* =============================================
+   TRUST BAR
+   ============================================= */
+.trust-bar { background: var(--charcoal); color: white; padding: 14px 0; }
+.trust-bar-inner { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; opacity: .85; }
+
+/* =============================================
+   ANIMATION
+   ============================================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn .4s ease; }
+
+/* =============================================
+   RESPONSIVE — MOBILE BREAKPOINT (≤768px)
+   ============================================= */
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  .section { padding: 64px 0; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">
+      <!-- Use ntr_offwhite_horiz.png on dark nav -->
+      <img src="../logos/ntr_offwhite_horiz.png" alt="Not The Rug" id="nav-logo-img">
+    </a>
+    <div class="nav-links">
+      <a href="#">Services</a>
+      <a href="#">About</a>
+      <a href="#">Neighborhoods</a>
+      <a href="#" class="nav-cta">Book a Walk</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO EXAMPLE (split 50/50) -->
+<section class="hero pt-nav" style="min-height:100vh; display:grid; grid-template-columns:1fr 1fr; overflow:hidden;">
+  <div class="hero-content" style="display:flex; flex-direction:column; justify-content:center; padding:80px 64px 80px 32px; max-width:660px; margin-left:auto;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:28px;">
+      <div style="width:6px; height:6px; border-radius:50%; background:var(--sage);"></div>
+      <span style="font-family:var(--font-italic); font-style:italic; font-size:13px; color:var(--mid-gray);">Brooklyn, NY · Est. 2018</span>
+    </div>
+    <h1 style="margin-bottom:24px;">Your dog deserves <em style="font-style:italic; font-family:var(--font-italic); color:var(--sage-dark);">better walks</em></h1>
+    <p style="font-size:18px; color:var(--mid-gray); line-height:1.7; margin-bottom:40px; max-width:480px;">Trusted, insured Brooklyn dog walkers. GPS tracking, real-time updates, and dogs who come home happy.</p>
+    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+      <a href="#" class="btn btn-primary">Book a Walk</a>
+      <a href="#" class="btn btn-ghost">Meet our walkers</a>
+    </div>
+  </div>
+  <div style="background: linear-gradient(160deg, #B4C89E 0%, #7A9068 40%, #4E5A42 100%); position:relative; overflow:hidden;">
+    <!-- Replace src with actual video or image -->
+    <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 60%, rgba(28,28,26,0.3) 100%);"></div>
+  </div>
+</section>
+
+<!-- TRUST BAR EXAMPLE -->
+<div class="trust-bar">
+  <div class="container trust-bar-inner">
+    <div class="trust-item">⭐ 5.0 · 200+ reviews</div>
+    <div class="trust-item">📍 Park Slope · Carroll Gardens · Cobble Hill</div>
+    <div class="trust-item">🔒 Insured &amp; bonded</div>
+    <div class="trust-item">📱 Real-time GPS updates</div>
+  </div>
+</div>
+
+<!-- SECTION EXAMPLE -->
+<section class="section bg-warm">
+  <div class="container">
+    <div style="text-align:center; max-width:640px; margin:0 auto 64px;">
+      <span class="label">Why Not The Rug</span>
+      <h2>Dog walking done <em style="font-style:italic; color:var(--sage-dark);">right</em></h2>
+      <div class="divider divider-center"></div>
+      <p class="text-mid" style="font-size:17px; line-height:1.7;">Small groups, consistent walkers, and handlers who actually know your dog.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card card-hover">
+        <div class="card-pad">
+          <div class="img-placeholder img-ph-1" style="height:200px; border-radius:12px; margin-bottom:20px;"></div>
+          <h3 style="margin-bottom:10px;">Small Group Walks</h3>
+          <p class="text-mid" style="font-size:15px; line-height:1.6;">Max 4 dogs per walk. Your dog gets real attention, not a pack shuffle.</p>
+        </div>
+      </div>
+      <div class="card card-hover">
+        <div class="card-pad">
+          <div class="img-placeholder img-ph-2" style="height:200px; border-radius:12px; margin-bottom:20px;"></div>
+          <h3 style="margin-bottom:10px;">GPS Tracked</h3>
+          <p class="text-mid" style="font-size:15px; line-height:1.6;">Follow every walk live. Report card with photos after every outing.</p>
+        </div>
+      </div>
+      <div class="card card-hover">
+        <div class="card-pad">
+          <div class="img-placeholder img-ph-3" style="height:200px; border-radius:12px; margin-bottom:20px;"></div>
+          <h3 style="margin-bottom:10px;">Consistent Handlers</h3>
+          <p class="text-mid" style="font-size:15px; line-height:1.6;">Same walker, same route. Dogs thrive on routine.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK SECTION EXAMPLE -->
+<section class="section bg-sage">
+  <div class="container" style="text-align:center;">
+    <span class="label label-dark">Ready to start?</span>
+    <h2 style="margin-bottom:20px; color:white;">Brooklyn's most trusted dog walkers</h2>
+    <div class="divider divider-center" style="background:rgba(255,255,255,0.2);"></div>
+    <p style="color:rgba(255,255,255,0.7); font-size:17px; max-width:480px; margin:0 auto 40px; line-height:1.7;">Spots fill fast. Book your free meet-and-greet today.</p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <a href="#" class="btn" style="background:white; color:var(--sage-dark); font-weight:600;">Book a Walk</a>
+      <a href="#" class="btn btn-outline-white">Learn more</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER EXAMPLE -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-text">Not The Rug</div>
+        <p class="footer-tagline">Brooklyn's trusted small-group dog walking service. Real walkers, real care.</p>
+        <div class="footer-social">
+          <button class="social-btn" aria-label="Instagram">IG</button>
+          <button class="social-btn" aria-label="Facebook">FB</button>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Dog Walking</a></li>
+          <li><a href="#">Drop-In Visits</a></li>
+          <li><a href="#">Puppy Care</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Our Walkers</a></li>
+          <li><a href="#">Reviews</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Neighborhoods</h4>
+        <ul>
+          <li><a href="#">Park Slope</a></li>
+          <li><a href="#">Carroll Gardens</a></li>
+          <li><a href="#">Cobble Hill</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Not The Rug. All rights reserved.</span>
+      <span class="footer-copy">Privacy · Terms</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
