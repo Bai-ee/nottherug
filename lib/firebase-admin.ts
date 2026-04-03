@@ -38,4 +38,5 @@ export const adminDb = new Firestore({
     client_email: process.env.FIREBASE_ADMIN_CLIENT_EMAIL!,
     private_key:  parsePrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY ?? ''),
   },
+  preferRest: true,
 });
