@@ -21,7 +21,7 @@
     "uuid": "^13.0.0"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.28",
