@@ -5,7 +5,9 @@ function initAdmin(): admin.app.App {
 
   const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY
+    ?.replace(/^"|"$/g, '')   // strip surrounding quotes if pasted with them
+    ?.replace(/\\n/g, '\n');  // convert literal \n to real newlines
   const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
 
   if (projectId && clientEmail && privateKey) {
