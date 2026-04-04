@@ -5,3 +5,5 @@ node_modules/
 .env*.local
 *.mp4
 *.webm
+# Keep only the short web-optimised clip
+!public/logos/Not_The_Rug_2023_clipped_web.mp4
