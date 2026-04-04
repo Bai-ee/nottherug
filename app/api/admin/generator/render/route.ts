@@ -12,6 +12,7 @@ import {
   CANVAS_PRESETS,
   GENERATOR_STORAGE_PATHS,
   GENERATOR_COLLECTIONS,
+  LOGO_ASSETS,
   placementToPixels,
   clampPlacement,
   type GeneratorRenderRequest,
@@ -65,7 +66,10 @@ function normalizeLogoName(value: string): string {
   return basename(value).replace(/\.[^.]+$/, '').toLowerCase();
 }
 
-async function loadGeneratorLogo(logoAsset: LogoAssetKey): Promise<{ buffer: Buffer; source: string }> {
+async function loadGeneratorLogoFromOrigin(
+  logoAsset: LogoAssetKey,
+  origin: string | null,
+): Promise<{ buffer: Buffer; source: string }> {
   const wanted = normalizeLogoName(logoAsset);
 
   try {
@@ -77,6 +81,21 @@ async function loadGeneratorLogo(logoAsset: LogoAssetKey): Promise<{ buffer: Buf
     }
   } catch {
     // Storage lookup is best-effort; fall back to the local bundled asset below.
+  }
+
+  if (origin) {
+    try {
+      const publicUrl = new URL(LOGO_ASSETS[logoAsset].previewSrc, origin).toString();
+      const res = await fetch(publicUrl, { cache: 'no-store' });
+      if (res.ok) {
+        return {
+          buffer: Buffer.from(await res.arrayBuffer()),
+          source: publicUrl,
+        };
+      }
+    } catch {
+      // Public asset fetch is also best-effort.
+    }
   }
 
   const localPaths: Record<LogoAssetKey, string> = {
@@ -165,10 +184,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   // 7. Load the logo from Firebase Storage first so production does not depend on
-  //    local filesystem tracing. Fall back to the isolated local PNG for dev.
+  //    local filesystem tracing. Fall back to the public asset URL and finally
+  //    the isolated local PNG for local/dev.
   let logoFileBuffer: Buffer;
   try {
-    const resolved = await loadGeneratorLogo(logoAsset);
+    const resolved = await loadGeneratorLogoFromOrigin(logoAsset, req.nextUrl.origin);
     logoFileBuffer = resolved.buffer;
   } catch {
     return NextResponse.json({ error: `Logo asset not found: ${logoAsset}` }, { status: 500 });
