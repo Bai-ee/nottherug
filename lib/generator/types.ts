@@ -42,7 +42,7 @@ export type LogoAssetKey = 'notRugGreen' | 'notRugYellow';
 export interface LogoAssetConfig {
   key: LogoAssetKey;
   label: string;
-  /** Path relative to the repo's /public directory — used by server-side sharp. */
+  /** Path relative to repo root — used by server-side sharp. Points to app-assets/generator-logos/. */
   publicPath: string;
   /** URL path served by Next.js static file serving — used by preview <img>. */
   previewSrc: string;
@@ -52,13 +52,13 @@ export const LOGO_ASSETS: Record<LogoAssetKey, LogoAssetConfig> = {
   notRugGreen: {
     key: 'notRugGreen',
     label: 'NTR Green',
-    publicPath: 'public/logos/notRugGreen.png',
+    publicPath: 'app-assets/generator-logos/notRugGreen.png',
     previewSrc: '/logos/notRugGreen.png',
   },
   notRugYellow: {
     key: 'notRugYellow',
     label: 'NTR Yellow',
-    publicPath: 'public/logos/notRugYellow.png',
+    publicPath: 'app-assets/generator-logos/notRugYellow.png',
     previewSrc: '/logos/notRugYellow.png',
   },
 } as const;

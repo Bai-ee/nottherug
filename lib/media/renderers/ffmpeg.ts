@@ -1,4 +1,6 @@
-// @ts-nocheck — ffmpeg-static and fluent-ffmpeg are not installed in production
+/* eslint-disable */
+// @ts-nocheck
+// ffmpeg-static and fluent-ffmpeg are not installed in production — dev only
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegStatic from 'ffmpeg-static';
 import { promises as fs } from 'fs';

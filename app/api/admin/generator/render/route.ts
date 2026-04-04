@@ -133,11 +133,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Canvas fit failed' }, { status: 500 });
   }
 
-  // 7. Load and circularize the logo from the local filesystem
-  //    Static map avoids dynamic path.join(process.cwd(), var) NFT tracing warnings.
+  // 7. Load and circularize the logo from the local filesystem.
+  //    Isolated folder contains ONLY these two PNGs — no large video neighbors —
+  //    so Next.js file tracing includes ~950 KB instead of ~230 MB from public/logos/.
   const LOGO_PATHS: Record<LogoAssetKey, string> = {
-    notRugGreen:  join(/*turbopackIgnore: true*/ process.cwd(), 'public/logos/notRugGreen.png'),
-    notRugYellow: join(/*turbopackIgnore: true*/ process.cwd(), 'public/logos/notRugYellow.png'),
+    notRugGreen:  join(/*turbopackIgnore: true*/ process.cwd(), 'app-assets/generator-logos/notRugGreen.png'),
+    notRugYellow: join(/*turbopackIgnore: true*/ process.cwd(), 'app-assets/generator-logos/notRugYellow.png'),
   };
   const logoFilePath = LOGO_PATHS[logoAsset];
 
