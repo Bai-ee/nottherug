@@ -50,10 +50,21 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const ext = contentType.split('/')[1]?.replace('jpeg', 'jpg') ?? 'jpg';
   const originalName = (file as File).name ?? `upload.${ext}`;
   const storagePath = `${STORAGE_PATHS.originals}/${id}.${ext}`;
+  const thumbPath   = `${STORAGE_PATHS.thumbnails}/${id}.jpg`;
 
   let downloadURL: string;
+  let thumbnailURL: string | undefined;
   try {
-    downloadURL = await storageUpload(storagePath, buffer, contentType);
+    [downloadURL, thumbnailURL] = await Promise.all([
+      storageUpload(storagePath, buffer, contentType),
+      sharp(buffer)
+        .rotate()
+        .resize({ width: 300, withoutEnlargement: true })
+        .jpeg({ quality: 70 })
+        .toBuffer()
+        .then((thumb) => storageUpload(thumbPath, thumb, 'image/jpeg'))
+        .catch(() => undefined),
+    ]);
   } catch (err) {
     console.error('Storage upload failed:', err);
     return NextResponse.json({ error: 'Storage upload failed' }, { status: 500 });
@@ -63,6 +74,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     id,
     storagePath,
     downloadURL,
+    ...(thumbnailURL ? { thumbnailURL } : {}),
     fileName: originalName,
     contentType,
     width,

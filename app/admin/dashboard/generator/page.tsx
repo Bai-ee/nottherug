@@ -613,34 +613,119 @@ html, body { background: #0C0F09; overflow: hidden; }
   overflow: hidden;
   cursor: pointer;
   transition: border-color 150ms;
+  position: relative;
 }
 .ed-upload-item:hover { border-color: var(--bd2); }
 .ed-upload-item-selected { border-color: var(--t3) !important; }
 .ed-upload-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
-.ed-upload-item-meta { padding: 6px 8px; display: flex; align-items: center; gap: 4px; }
-.ed-upload-item-name {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--t2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  min-width: 0;
-}
 .ed-upload-item-del {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--t0);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 1px 3px;
-  flex-shrink: 0;
-  transition: color 150ms;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 18, 12, 0.75);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: var(--t2);
+  font-size: 10px;
   line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: background 150ms, color 150ms;
 }
-.ed-upload-item-del:hover { color: #C4674B; }
+.ed-upload-item-del:hover { background: #C4674B; color: #fff; border-color: transparent; }
+
+/* ── LOAD MORE ───────────────────────────────────────────────────────────────── */
+.ed-load-more {
+  width: 100%;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--t1);
+  background: var(--s2);
+  border: 1px solid var(--bd1);
+  border-radius: 5px;
+  padding: 7px 0;
+  cursor: pointer;
+  transition: color 150ms;
+}
+.ed-load-more:hover { color: var(--t4); }
+
+/* ── CONFIRM MODAL ───────────────────────────────────────────────────────────── */
+.ed-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 13, 8, 0.7);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.ed-confirm-modal {
+  background: var(--s1);
+  border: 1px solid var(--bd1);
+  border-radius: 10px;
+  padding: 24px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ed-confirm-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t4);
+}
+.ed-confirm-body {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--t1);
+  line-height: 1.5;
+  word-break: break-all;
+}
+.ed-confirm-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.ed-confirm-cancel {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--t1);
+  background: var(--s2);
+  border: 1px solid var(--bd1);
+  border-radius: 5px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 150ms;
+}
+.ed-confirm-cancel:hover { color: var(--t4); }
+.ed-confirm-delete {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #C4674B;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 150ms;
+}
+.ed-confirm-delete:hover { background: #a8503a; }
 
 /* ── EXPORT OVERLAY ─────────────────────────────────────────────────────────── */
 .ed-export {
@@ -688,8 +773,29 @@ html, body { background: #0C0F09; overflow: hidden; }
   justify-content: center;
   padding: 20px;
   background: var(--bg);
+  position: relative;
 }
 .ed-export-preview img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.ed-export-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 18, 12, 0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  color: var(--t2);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: background 150ms, color 150ms;
+}
+.ed-export-close:hover { background: rgba(15, 18, 12, 0.92); color: var(--t4); }
 .ed-export-panel {
   padding: 16px;
   border-top: 1px solid var(--bd0);
@@ -805,6 +911,8 @@ export default function AdminGeneratorPage() {
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
   const [uploadsLoaded,    setUploadsLoaded]    = useState(false);
   const [randomSource,     setRandomSource]     = useState<PhotoUpload | null>(null);
+  const [pendingDelete,    setPendingDelete]    = useState<{ id: string; storagePath: string; fileName: string } | null>(null);
+  const [visibleCount,     setVisibleCount]     = useState(20);
 
   // Canvas
   const [preset, setPreset] = useState<CanvasPresetKey>(DEFAULT_CANVAS_PRESET);
@@ -1391,25 +1499,38 @@ export default function AdminGeneratorPage() {
             {uploadPhase === 'error'   && <div className="ed-upload-err" id="admin-gen-upload-err">Error: {uploadMsg}</div>}
 
             {uploads.length > 0 && (
-              <div className="ed-uploads-grid" id="admin-gen-uploads-grid">
-                {uploads.map((u) => (
-                  <div
-                    key={u.id}
-                    className={`ed-upload-item${selectedUploadId === u.id ? ' ed-upload-item-selected' : ''}`}
-                    onClick={() => { setSourceMode('selected'); setSelectedUploadId(u.id); }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={u.downloadURL} alt={u.fileName} />
-                    <div className="ed-upload-item-meta">
-                      <span className="ed-upload-item-name">{u.fileName}</span>
+              <>
+                <div className="ed-uploads-grid" id="admin-gen-uploads-grid">
+                  {uploads.slice(0, visibleCount).map((u) => (
+                    <div
+                      key={u.id}
+                      className={`ed-upload-item${selectedUploadId === u.id ? ' ed-upload-item-selected' : ''}`}
+                      onClick={() => { setSourceMode('selected'); setSelectedUploadId(u.id); }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={u.thumbnailURL ?? u.downloadURL}
+                        alt={u.fileName}
+                        loading="lazy"
+                        decoding="async"
+                      />
                       <button
                         className="ed-upload-item-del"
-                        onClick={(e) => { e.stopPropagation(); deleteUpload(u.id, u.storagePath); }}
+                        onClick={(e) => { e.stopPropagation(); setPendingDelete({ id: u.id, storagePath: u.storagePath, fileName: u.fileName }); }}
                       >✕</button>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+                {visibleCount < uploads.length && (
+                  <button
+                    className="ed-load-more"
+                    id="admin-gen-load-more"
+                    onClick={() => setVisibleCount((n) => n + 20)}
+                  >
+                    Load more ({uploads.length - visibleCount} remaining)
+                  </button>
+                )}
+              </>
             )}
           </div>
 
@@ -1426,6 +1547,7 @@ export default function AdminGeneratorPage() {
             <div className="ed-export-preview">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={latestRender.renderDownloadURL} alt="Generated output" />
+              <button className="ed-export-close" id="admin-gen-export-close" onClick={() => setShowExport(false)}>✕</button>
             </div>
 
             <div className="ed-export-panel">
@@ -1457,6 +1579,23 @@ export default function AdminGeneratorPage() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* ── CONFIRM DELETE MODAL ──────────────────────────────────────────── */}
+        {pendingDelete && (
+          <div className="ed-confirm-backdrop" id="admin-gen-confirm-backdrop" onClick={() => setPendingDelete(null)}>
+            <div className="ed-confirm-modal" id="admin-gen-confirm-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="ed-confirm-title">Delete photo?</div>
+              <div className="ed-confirm-body">{pendingDelete.fileName}</div>
+              <div className="ed-confirm-actions">
+                <button className="ed-confirm-cancel" onClick={() => setPendingDelete(null)}>Cancel</button>
+                <button
+                  className="ed-confirm-delete"
+                  onClick={() => { deleteUpload(pendingDelete.id, pendingDelete.storagePath); setPendingDelete(null); }}
+                >Delete</button>
+              </div>
             </div>
           </div>
         )}

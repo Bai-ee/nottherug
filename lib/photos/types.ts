@@ -4,9 +4,10 @@ import type { LogoPlacement } from '@/lib/media/types';
 // ─── Storage paths ────────────────────────────────────────────────────────────
 
 export const STORAGE_PATHS = {
-  originals: 'photos/originals',
-  rendered: 'photos/rendered',
-  logos: 'photos/logos',
+  originals:  'photos/originals',
+  thumbnails: 'photos/thumbnails',
+  rendered:   'photos/rendered',
+  logos:      'photos/logos',
 } as const;
 
 // ─── Firestore collections ────────────────────────────────────────────────────
@@ -24,6 +25,7 @@ export interface PhotoUpload {
   id: string;
   storagePath: string;      // e.g. photos/originals/abc123.jpg
   downloadURL: string;
+  thumbnailURL?: string;    // ~300px wide JPEG for grid display
   fileName: string;
   contentType: string;
   width: number;
