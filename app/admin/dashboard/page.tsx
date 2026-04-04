@@ -330,6 +330,7 @@ export default function AdminDashboardPage() {
         <nav className="da-nav" id="admin-section-nav">
           <a className="da-nav-link da-nav-link-active" href="/admin/dashboard">Overview</a>
           <a className="da-nav-link" href="/admin/dashboard/photos">Photos</a>
+          <a className="da-nav-link" href="/admin/dashboard/generator">Generator</a>
         </nav>
 
         {/* HEADER — identity left, quality score right */}

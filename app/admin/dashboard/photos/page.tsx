@@ -373,6 +373,7 @@ export default function AdminPhotosPage() {
         <nav className="ph-nav" id="admin-photos-nav">
           <a className="ph-nav-link" href="/admin/dashboard">Overview</a>
           <a className="ph-nav-link ph-nav-link-active" href="/admin/dashboard/photos">Photos</a>
+          <a className="ph-nav-link" href="/admin/dashboard/generator">Generator</a>
         </nav>
 
         {/* PAGE */}
