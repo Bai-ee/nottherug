@@ -149,16 +149,16 @@ const css = `
   .da-top { position: sticky; top: 0; z-index: 20; height: 48px; background: #1F2318; border-bottom: 1px solid #2E3828; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }
   .da-top-l { display: flex; align-items: center; gap: 14px; }
   .da-brand { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4E5A42; }
-  .da-vsep  { width: 1px; height: 14px; background: #2E3828; }
-  .da-brief-id { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 400; color: #EEF4DB; }
+  .da-vsep  { width: 1px; height: 12px; background: #2E3828; }
+  .da-brief-id { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 400; color: #EEF4DB; }
   .da-top-r { display: flex; align-items: center; gap: 20px; }
-  .da-topdate { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4E5A42; }
-  .da-topemail { font-family: 'Space Mono', monospace; font-size: 11px; color: #4E5A42; }
-  .da-signout { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #C4674B; background: none; border: none; cursor: pointer; padding: 0; transition: color 150ms; }
-  .da-signout:hover { color: #EEF4DB; }
+  .da-topdate { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4E5A42; display: none; }
+  .da-topemail { font-family: 'Space Mono', monospace; font-size: 11px; color: #4E5A42; display: none; }
+  .da-signout { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: #4E5A42; background: none; border: none; cursor: pointer; padding: 0; transition: color 150ms; }
+  .da-signout:hover { color: #B4C89E; }
 
   /* ── NAV ── */
-  .da-nav { display: flex; align-items: center; border-bottom: 1px solid #2E3828; background: #1A1E14; padding: 0 32px; }
+  .da-nav { position: static; display: flex; align-items: center; border-bottom: 1px solid #2E3828; background: #1A1E14; padding: 0 32px; }
   .da-nav-link { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #4E5A42; padding: 12px 16px; border-bottom: 2px solid transparent; text-decoration: none; transition: color 150ms; display: block; }
   .da-nav-link:hover { color: #B4C89E; }
   .da-nav-link-active { color: #EEF4DB; border-bottom-color: #B4C89E; }
@@ -258,12 +258,18 @@ const css = `
   .da-src-url:hover { color: #EEF4DB; }
 
   @media (max-width: 768px) {
+    .da-top { padding: 0 16px; }
+    .da-nav { padding: 0 16px; }
     .da-header { grid-template-columns: 1fr; }
     .da-stats { grid-template-columns: repeat(2, 1fr); }
     .da-grid2 { grid-template-columns: 1fr; }
     .da-cards { grid-template-columns: 1fr; }
     .da-quality-section { grid-template-columns: 1fr; }
     .da-page { padding: 0 16px 60px; }
+  }
+  @media (min-width: 769px) {
+    .da-topdate { display: block; }
+    .da-topemail { display: block; }
   }
 `;
 

@@ -23,15 +23,15 @@ const css = `
   .ph-top { position: sticky; top: 0; z-index: 20; height: 48px; background: #1F2318; border-bottom: 1px solid #2E3828; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }
   .ph-top-l { display: flex; align-items: center; gap: 14px; }
   .ph-brand { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4E5A42; }
-  .ph-vsep  { width: 1px; height: 14px; background: #2E3828; }
-  .ph-top-title { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 400; color: #EEF4DB; }
+  .ph-vsep  { width: 1px; height: 12px; background: #2E3828; }
+  .ph-top-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 400; color: #EEF4DB; }
   .ph-top-r { display: flex; align-items: center; gap: 20px; }
   .ph-topemail { font-family: 'Space Mono', monospace; font-size: 11px; color: #4E5A42; }
-  .ph-signout { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #C4674B; background: none; border: none; cursor: pointer; padding: 0; transition: color 150ms; }
-  .ph-signout:hover { color: #EEF4DB; }
+  .ph-signout { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: #4E5A42; background: none; border: none; cursor: pointer; padding: 0; transition: color 150ms; }
+  .ph-signout:hover { color: #B4C89E; }
 
   /* ── NAV ── */
-  .ph-nav { display: flex; align-items: center; border-bottom: 1px solid #2E3828; background: #1A1E14; padding: 0 32px; }
+  .ph-nav { position: static; display: flex; align-items: center; border-bottom: 1px solid #2E3828; background: #1A1E14; padding: 0 32px; }
   .ph-nav-link { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #4E5A42; padding: 12px 16px; border-bottom: 2px solid transparent; text-decoration: none; transition: color 150ms; display: block; }
   .ph-nav-link:hover { color: #B4C89E; }
   .ph-nav-link-active { color: #EEF4DB; border-bottom-color: #B4C89E; }
@@ -119,6 +119,7 @@ const css = `
     .ph-gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .ph-controls-grid { grid-template-columns: repeat(2, 1fr); }
     .ph-top { padding: 0 16px; }
+    .ph-topemail { display: none; }
     .ph-nav { padding: 0 16px; }
   }
 `;

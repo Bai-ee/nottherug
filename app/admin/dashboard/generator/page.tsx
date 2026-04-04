@@ -111,6 +111,7 @@ html, body { background: #0C0F09; overflow: hidden; }
 
 /* ── NAV BAR ─────────────────────────────────────────────────────────────────── */
 .ed-nav {
+  position: static;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -149,11 +150,13 @@ html, body { background: #0C0F09; overflow: hidden; }
 .ed-canvas-zone {
   flex-shrink: 0;
   width: 100%;
+  height: 260px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
   background: var(--bg);
+  overflow: hidden;
 }
 .ed-canvas-frame {
   position: relative;
@@ -491,8 +494,9 @@ html, body { background: #0C0F09; overflow: hidden; }
   border-top: 1px solid var(--bd0);
   background: var(--s0);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
   position: sticky;
   bottom: 0;
   z-index: 10;
@@ -521,34 +525,23 @@ html, body { background: #0C0F09; overflow: hidden; }
 .ed-upload-section {
   flex-shrink: 0;
   padding: 24px 16px 32px;
-  border-top: 2px solid var(--bd0);
-}
-.ed-upload-section-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-.ed-upload-section-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--t1);
+  border-top: 1px solid var(--bd0);
 }
 .ed-upload-cta {
+  width: 100%;
+  max-width: 400px;
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--bg);
   background: var(--t2);
   border: none;
   border-radius: 999px;
-  padding: 8px 18px;
+  padding: 12px 20px;
   cursor: pointer;
   transition: background 150ms;
-  min-height: 34px;
+  min-height: 44px;
 }
 .ed-upload-cta:hover { background: var(--t3); }
 .ed-upload-cta:disabled { background: var(--bd1); color: var(--t0); cursor: default; }
@@ -763,10 +756,11 @@ html, body { background: #0C0F09; overflow: hidden; }
 
 /* ── DESKTOP ────────────────────────────────────────────────────────────────── */
 @media (min-width: 768px) {
+  .ed-top { padding: 0 32px; }
   .ed-email { display: block; }
   .ed-nav { padding: 0 32px; }
 
-  .ed-canvas-zone { padding: 24px; }
+  .ed-canvas-zone { height: 320px; padding: 24px; }
 
   /* preset strip slightly taller */
   .ed-preset-strip { padding: 12px 20px; }
@@ -826,7 +820,7 @@ export default function AdminGeneratorPage() {
   const [rendererPref, setRendererPref] = useState<RendererPref>('sharp');
 
   // Canvas display sizing
-  const [canvasSize, setCanvasSize] = useState({ w: 280, h: 350 });
+  const [canvasSize, setCanvasSize] = useState({ w: 0, h: 0 });
 
   // Output
   const [genPhase,   setGenPhase]   = useState<GenPhase>('idle');
@@ -923,23 +917,31 @@ export default function AdminGeneratorPage() {
     if (!zone) return;
 
     const compute = () => {
-      const isDesktop = window.innerWidth >= 768;
-      const pad = isDesktop ? 48 : 32;
       const zoneW = zone.clientWidth;
       if (zoneW <= 0) return;
+      // Use fixed zone heights matching the CSS constants — avoids relying on
+      // clientHeight which may be 0 if the injected <style> hasn't been parsed yet.
+      const zoneH = window.innerWidth >= 768 ? 320 : 260;
+      const pad = 32; // 16px each side
+      const availW = zoneW - pad;
+      const availH = zoneH - pad;
       const ar = currentPreset.width / currentPreset.height;
-      // On desktop cap width so canvas doesn't span the full wide viewport
-      const maxW = isDesktop ? Math.min(zoneW - pad, 460) : zoneW - pad;
-      const w = Math.max(80, maxW);
-      const h = Math.round(w / ar);
-      setCanvasSize({ w: Math.round(w), h });
+      let w: number, h: number;
+      if (ar > availW / availH) {
+        w = availW;
+        h = Math.round(w / ar);
+      } else {
+        h = availH;
+        w = Math.round(h * ar);
+      }
+      setCanvasSize({ w: Math.max(80, w), h: Math.max(80, h) });
     };
 
     compute();
     const ro = new ResizeObserver(compute);
     ro.observe(zone);
     return () => ro.disconnect();
-  }, [currentPreset.width, currentPreset.height]);
+  }, [currentPreset.width, currentPreset.height, authChecked]);
 
   // ── Handlers ─────────────────────────────────────────────────────────────────
 
@@ -1213,9 +1215,50 @@ export default function AdminGeneratorPage() {
           <div className="ed-controls-panel" id="admin-gen-controls-panel">
             <div className="ed-controls-grid" id="admin-gen-controls-grid">
 
+              {/* Logo section */}
+              <div className="ed-section" id="admin-gen-section-logo">
+
+                <div className="ed-size-row" id="admin-gen-size-row">
+                  <span className="ed-size-lbl">Size</span>
+                  <input
+                    id="admin-gen-size-slider"
+                    type="range"
+                    min={5} max={60} step={1}
+                    value={Math.round(placement.diameterRatio * 100)}
+                    className="ed-size-range"
+                    onChange={(e) =>
+                      setPlacement((prev) =>
+                        clampPlacement({ ...prev, diameterRatio: Number(e.target.value) / 100 }),
+                      )
+                    }
+                  />
+                  <span className="ed-size-val">{Math.round(placement.diameterRatio * 100)}%</span>
+                  <button className="ed-reset-btn" onClick={() => setPlacement(DEFAULT_LOGO_PLACEMENT)}>Reset</button>
+                </div>
+
+                <div className="ed-logo-swatches" id="admin-gen-logo-swatches">
+                  {LOGO_ASSET_ORDER.map((key) => {
+                    const l = LOGO_ASSETS[key];
+                    return (
+                      <div
+                        key={key}
+                        className={`ed-logo-swatch${logoAsset === key ? ' ed-logo-swatch-active' : ''}`}
+                        onClick={() => setLogoAsset(key)}
+                      >
+                        <div className="ed-logo-ring">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={l.previewSrc} alt={l.label} />
+                        </div>
+                        <div className="ed-logo-name">{l.label}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+
               {/* Source section */}
               <div className="ed-section" id="admin-gen-section-source">
-                <div className="ed-section-header">Source Image</div>
 
                 <div className="ed-seg" id="admin-gen-source-seg">
                   {(['random', 'selected'] as SourceMode[]).map((m) => (
@@ -1271,49 +1314,6 @@ export default function AdminGeneratorPage() {
                 )}
               </div>
 
-              {/* Logo section */}
-              <div className="ed-section" id="admin-gen-section-logo">
-                <div className="ed-section-header">Logo</div>
-
-                <div className="ed-logo-swatches" id="admin-gen-logo-swatches">
-                  {LOGO_ASSET_ORDER.map((key) => {
-                    const l = LOGO_ASSETS[key];
-                    return (
-                      <div
-                        key={key}
-                        className={`ed-logo-swatch${logoAsset === key ? ' ed-logo-swatch-active' : ''}`}
-                        onClick={() => setLogoAsset(key)}
-                      >
-                        <div className="ed-logo-ring">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={l.previewSrc} alt={l.label} />
-                        </div>
-                        <div className="ed-logo-name">{l.label}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="ed-size-row" id="admin-gen-size-row">
-                  <span className="ed-size-lbl">Size</span>
-                  <input
-                    id="admin-gen-size-slider"
-                    type="range"
-                    min={5} max={60} step={1}
-                    value={Math.round(placement.diameterRatio * 100)}
-                    className="ed-size-range"
-                    onChange={(e) =>
-                      setPlacement((prev) =>
-                        clampPlacement({ ...prev, diameterRatio: Number(e.target.value) / 100 }),
-                      )
-                    }
-                  />
-                  <span className="ed-size-val">{Math.round(placement.diameterRatio * 100)}%</span>
-                  <button className="ed-reset-btn" onClick={() => setPlacement(DEFAULT_LOGO_PLACEMENT)}>Reset</button>
-                </div>
-
-                <div className="ed-placement-hint">Tap canvas to place · Drag to move</div>
-              </div>
 
             </div>
 
@@ -1336,7 +1336,7 @@ export default function AdminGeneratorPage() {
             </div>
           </div>
 
-          {/* ── GENERATE BAR ───────────────────────────────────────────────── */}
+          {/* ── GENERATE + UPLOAD BAR ──────────────────────────────────────── */}
           <div className="ed-gen-bar" id="admin-gen-bar">
             <button
               className="ed-gen-btn"
@@ -1345,22 +1345,18 @@ export default function AdminGeneratorPage() {
             >
               {isGenerating ? 'Generating…' : 'Generate'}
             </button>
+            <button
+              id="admin-gen-upload-cta"
+              className="ed-upload-cta"
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {isUploading ? 'Uploading…' : 'Upload Photo'}
+            </button>
           </div>
 
           {/* ── UPLOAD SECTION ─────────────────────────────────────────────── */}
           <div className="ed-upload-section" id="admin-gen-upload-section">
-            <div className="ed-upload-section-head">
-              <span className="ed-upload-section-label">Upload</span>
-              <button
-                id="admin-gen-upload-cta"
-                className="ed-upload-cta"
-                disabled={isUploading}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {isUploading ? 'Uploading…' : '+ Upload Photo'}
-              </button>
-            </div>
-
             <div
               id="admin-gen-upload-zone"
               className={`ed-upload-zone${dragOver ? ' ed-upload-zone-drag' : ''}`}
