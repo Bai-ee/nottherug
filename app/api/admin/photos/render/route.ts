@@ -54,7 +54,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Could not load logo from Storage' }, { status: 404 });
   }
 
-  const rendererInstance = createRenderer(renderer === 'ffmpeg' ? 'ffmpeg' : 'sharp');
+  const rendererInstance = await createRenderer(renderer === 'ffmpeg' ? 'ffmpeg' : 'sharp');
   let renderOutput: Awaited<ReturnType<typeof rendererInstance.render>>;
 
   try {
