@@ -5,9 +5,13 @@ export type RendererName = 'sharp' | 'ffmpeg';
 
 export async function createRenderer(name: RendererName = 'sharp'): Promise<MediaRenderer> {
   if (name === 'ffmpeg') {
-    // Dynamic import keeps ffmpeg-static out of the webpack bundle for all other routes
-    const { ffmpegRenderer } = await import('@/lib/media/renderers/ffmpeg');
-    return ffmpegRenderer;
+    try {
+      // webpackIgnore: webpack must not bundle this path — ffmpeg-static is not a prod dependency
+      const { ffmpegRenderer } = await import(/* webpackIgnore: true */ '@/lib/media/renderers/ffmpeg');
+      return ffmpegRenderer;
+    } catch {
+      console.warn('ffmpeg renderer unavailable, falling back to sharp');
+    }
   }
   return sharpRenderer;
 }

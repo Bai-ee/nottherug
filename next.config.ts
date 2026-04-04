@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['sharp', 'ffmpeg-static', 'fluent-ffmpeg', 'firebase-admin'],
+  serverExternalPackages: ['sharp', 'firebase-admin'],
 };
 
 export default nextConfig;
