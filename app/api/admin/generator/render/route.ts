@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { basename, join } from 'path';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
 import { fsGetDoc, fsSetDoc, fsQueryCollection } from '@/lib/server/firestoreRest';
-import { storageDownload, storageUpload } from '@/lib/server/firebaseStorage';
-import { COLLECTIONS } from '@/lib/photos/types';
+import { storageDownload, storageList, storageUpload } from '@/lib/server/firebaseStorage';
+import { COLLECTIONS, STORAGE_PATHS } from '@/lib/photos/types';
 import type { PhotoUpload } from '@/lib/photos/types';
 import {
   CANVAS_PRESETS,
@@ -61,6 +61,33 @@ async function makeCircularLogo(logoBuffer: Buffer, size: number): Promise<Buffe
     .toBuffer();
 }
 
+function normalizeLogoName(value: string): string {
+  return basename(value).replace(/\.[^.]+$/, '').toLowerCase();
+}
+
+async function loadGeneratorLogo(logoAsset: LogoAssetKey): Promise<{ buffer: Buffer; source: string }> {
+  const wanted = normalizeLogoName(logoAsset);
+
+  try {
+    const storageLogos = await storageList(`${STORAGE_PATHS.logos}/`);
+    const match = storageLogos.find((file) => normalizeLogoName(file.name) === wanted);
+    if (match) {
+      const buffer = await storageDownload(match.storagePath);
+      return { buffer, source: match.storagePath };
+    }
+  } catch {
+    // Storage lookup is best-effort; fall back to the local bundled asset below.
+  }
+
+  const localPaths: Record<LogoAssetKey, string> = {
+    notRugGreen: join(/*turbopackIgnore: true*/ process.cwd(), 'app-assets/generator-logos/notRugGreen.png'),
+    notRugYellow: join(/*turbopackIgnore: true*/ process.cwd(), 'app-assets/generator-logos/notRugYellow.png'),
+  };
+  const logoFilePath = localPaths[logoAsset];
+  const buffer = readFileSync(logoFilePath);
+  return { buffer, source: logoFilePath };
+}
+
 // ─── Route handler ────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -109,13 +136,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sourceUpload = (docResult.data as any) as PhotoUpload;
+  if (!sourceUpload.storagePath) {
+    return NextResponse.json({ error: 'Source photo is missing its storage path' }, { status: 404 });
+  }
 
   // 5. Download source image buffer
   let sourceBuffer: Buffer;
   try {
     sourceBuffer = await storageDownload(sourceUpload.storagePath);
-  } catch {
-    return NextResponse.json({ error: 'Could not load source image from Storage' }, { status: 500 });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Could not load source image from Storage';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 
   // 6. Fit source into canvas using cover (aligned with CSS preview)
@@ -133,18 +164,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Canvas fit failed' }, { status: 500 });
   }
 
-  // 7. Load and circularize the logo from the local filesystem.
-  //    Isolated folder contains ONLY these two PNGs — no large video neighbors —
-  //    so Next.js file tracing includes ~950 KB instead of ~230 MB from public/logos/.
-  const LOGO_PATHS: Record<LogoAssetKey, string> = {
-    notRugGreen:  join(/*turbopackIgnore: true*/ process.cwd(), 'app-assets/generator-logos/notRugGreen.png'),
-    notRugYellow: join(/*turbopackIgnore: true*/ process.cwd(), 'app-assets/generator-logos/notRugYellow.png'),
-  };
-  const logoFilePath = LOGO_PATHS[logoAsset];
-
+  // 7. Load the logo from Firebase Storage first so production does not depend on
+  //    local filesystem tracing. Fall back to the isolated local PNG for dev.
   let logoFileBuffer: Buffer;
   try {
-    logoFileBuffer = readFileSync(logoFilePath);
+    const resolved = await loadGeneratorLogo(logoAsset);
+    logoFileBuffer = resolved.buffer;
   } catch {
     return NextResponse.json({ error: `Logo asset not found: ${logoAsset}` }, { status: 500 });
   }
