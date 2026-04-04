@@ -401,8 +401,8 @@ export default function AdminPhotosPage() {
               onDrop={onDrop}
             >
               <div className="ph-upload-zone-icon">[↑]</div>
-              <div className="ph-upload-zone-label">Tap to select or drag an image</div>
-              <div className="ph-upload-zone-hint">JPEG · PNG · HEIC · phone camera supported</div>
+              <div className="ph-upload-zone-label">Tap to choose from camera roll or drag an image</div>
+              <div className="ph-upload-zone-hint">JPEG · PNG · HEIC · camera library supported</div>
               <button
                 className="ph-btn"
                 disabled={isUploading}
@@ -426,7 +426,6 @@ export default function AdminPhotosPage() {
               className="ph-upload-input"
               type="file"
               accept="image/*"
-              capture="environment"
               onChange={onFileChange}
             />
 

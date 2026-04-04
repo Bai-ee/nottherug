@@ -934,6 +934,8 @@ export default function AdminGeneratorPage() {
   const [genPhase,   setGenPhase]   = useState<GenPhase>('idle');
   const [renders,    setRenders]    = useState<GeneratorRender[]>([]);
   const [showExport, setShowExport] = useState(false);
+  const [activeRender, setActiveRender] = useState<GeneratorRender | null>(null);
+  const [genError, setGenError] = useState('');
 
   // Upload
   const [uploadPhase,    setUploadPhase]    = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
@@ -981,6 +983,7 @@ export default function AdminGeneratorPage() {
   };
 
   const latestRender = renders[0] ?? null;
+  const displayRender = activeRender ?? latestRender;
 
   // ── Auth + data load ──────────────────────────────────────────────────────────
 
@@ -1173,11 +1176,18 @@ export default function AdminGeneratorPage() {
       shuffleRandom(); return;
     }
 
+    setShowExport(true);
+    setActiveRender(null);
+    setGenError('');
     setGenPhase('generating');
 
     let token: string;
     try { token = await getIdToken(user, true); }
-    catch { setGenPhase('error'); return; }
+    catch {
+      setGenPhase('error');
+      setGenError('Could not verify your admin session.');
+      return;
+    }
 
     let res: Response;
     try {
@@ -1193,17 +1203,23 @@ export default function AdminGeneratorPage() {
           renderer: rendererPref,
         }),
       });
-    } catch { setGenPhase('error'); return; }
+    } catch {
+      setGenPhase('error');
+      setGenError('Network error while generating the image.');
+      return;
+    }
 
     if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
       setGenPhase('error');
+      setGenError(body.error ?? `Generation failed (${res.status})`);
       return;
     }
 
     const body = await res.json();
-    setRenders((prev) => [body.render, ...prev]);
+    setActiveRender(body.render);
+    setRenders((prev) => [body.render, ...prev.filter((render) => render.id !== body.render.id)]);
     setGenPhase('success');
-    setShowExport(true);
   }
 
   // ── Share handler ─────────────────────────────────────────────────────────────
@@ -1217,7 +1233,16 @@ export default function AdminGeneratorPage() {
       } else {
         await navigator.share({ title: 'Not The Rug', url: r.renderDownloadURL });
       }
-    } catch { /* user cancelled */ }
+    } catch {
+      const link = document.createElement('a');
+      link.href = r.renderDownloadURL;
+      link.download = `ntr-${r.id}.jpg`;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
   }
 
   // ── Loading ───────────────────────────────────────────────────────────────────
@@ -1474,8 +1499,8 @@ export default function AdminGeneratorPage() {
               onDrop={onDrop}
             >
               <div className="ed-upload-zone-icon">[↑]</div>
-              <div className="ed-upload-zone-label">Tap to select or drag an image</div>
-              <div className="ed-upload-zone-hint">JPEG · PNG · HEIC</div>
+              <div className="ed-upload-zone-label">Tap to choose from camera roll or drag an image</div>
+              <div className="ed-upload-zone-hint">JPEG · PNG · HEIC · camera library supported</div>
               {isUploading && (
                 <div style={{ width: '100%', maxWidth: 280 }}>
                   <div className="ed-upload-prog-shell">
@@ -1491,7 +1516,6 @@ export default function AdminGeneratorPage() {
               className="ed-upload-input"
               type="file"
               accept="image/*"
-              capture="environment"
               onChange={onFileChange}
             />
 
@@ -1537,49 +1561,94 @@ export default function AdminGeneratorPage() {
         </div>
 
         {/* ── EXPORT OVERLAY ─────────────────────────────────────────────────── */}
-        {showExport && latestRender && (
+        {showExport && (
           <div className="ed-export" id="admin-gen-export-overlay">
             <div className="ed-export-bar">
-              <span className="ed-export-title">Export</span>
+              <span className="ed-export-title">
+                {genPhase === 'generating' ? 'Generating' : genPhase === 'error' ? 'Generation Issue' : 'Export'}
+              </span>
               <button className="ed-export-back" onClick={() => setShowExport(false)}>← Back</button>
             </div>
 
             <div className="ed-export-preview">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={latestRender.renderDownloadURL} alt="Generated output" />
+              {genPhase === 'generating' && (
+                <div className="ed-canvas-placeholder">
+                  <div className="ed-canvas-ph-text">[generating image]</div>
+                </div>
+              )}
+              {genPhase === 'error' && (
+                <div className="ed-canvas-placeholder" style={{ padding: 24 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                    <div className="ed-canvas-ph-text">[generation failed]</div>
+                    <div
+                      style={{
+                        fontFamily: 'var(--mono)',
+                        fontSize: 10,
+                        letterSpacing: '0.04em',
+                        color: 'var(--t1)',
+                        textTransform: 'uppercase',
+                        textAlign: 'center',
+                        lineHeight: 1.5,
+                        maxWidth: 260,
+                      }}
+                    >
+                      {genError || 'The image did not finish generating.'}
+                    </div>
+                    <button className="ed-export-share" onClick={() => setShowExport(false)}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
+              {genPhase !== 'generating' && genPhase !== 'error' && displayRender && (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={displayRender.renderDownloadURL} alt="Generated output" />
+                </>
+              )}
               <button className="ed-export-close" id="admin-gen-export-close" onClick={() => setShowExport(false)}>✕</button>
             </div>
 
-            <div className="ed-export-panel">
-              <div className="ed-export-btns">
-                <a
-                  className="ed-export-dl"
-                  href={latestRender.renderDownloadURL}
-                  download={`ntr-${latestRender.id}.jpg`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Download
-                </a>
-                {typeof navigator !== 'undefined' && !!navigator.share && (
-                  <button className="ed-export-share" onClick={() => handleShare(latestRender)}>
-                    Share
-                  </button>
+            {displayRender && genPhase !== 'error' && (
+              <div className="ed-export-panel">
+                <div className="ed-export-btns">
+                  <a
+                    className="ed-export-dl"
+                    href={displayRender.renderDownloadURL}
+                    download={`ntr-${displayRender.id}.jpg`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Download
+                  </a>
+                  {typeof navigator !== 'undefined' && !!navigator.share && (
+                    <button className="ed-export-share" onClick={() => handleShare(displayRender)}>
+                      Share
+                    </button>
+                  )}
+                </div>
+                <div className="ed-export-hint">Download or Share to save to Photos</div>
+
+                {renders.length > 1 && (
+                  <div className="ed-history-strip" id="admin-gen-history-strip">
+                    {renders
+                      .filter((r) => r.id !== displayRender.id)
+                      .slice(0, 7)
+                      .map((r) => (
+                        <div
+                          key={r.id}
+                          className="ed-history-thumb"
+                          title={r.id}
+                          onClick={() => setActiveRender(r)}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={r.renderDownloadURL} alt="" />
+                        </div>
+                      ))}
+                  </div>
                 )}
               </div>
-              <div className="ed-export-hint">Download or Share to save to Photos</div>
-
-              {renders.length > 1 && (
-                <div className="ed-history-strip" id="admin-gen-history-strip">
-                  {renders.slice(1, 8).map((r) => (
-                    <div key={r.id} className="ed-history-thumb" title={r.id}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={r.renderDownloadURL} alt="" />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            )}
           </div>
         )}
 
