@@ -39,6 +39,33 @@ const nextConfig: NextConfig = {
     '/admin/not-the-rug/history/[id]/html':     SHARED_TRACE_EXCLUDES,
     '/api/cron/not-the-rug-brief':              SHARED_TRACE_EXCLUDES,
   },
+
+  outputFileTracingIncludes: {
+    '/admin/not-the-rug/run-brief': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+    ],
+    '/admin/not-the-rug/latest-brief': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+    ],
+    '/admin/not-the-rug/latest-brief/html': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+    ],
+    '/admin/not-the-rug/history': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+    ],
+    '/admin/not-the-rug/history/[id]/html': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+    ],
+    '/api/cron/not-the-rug-brief': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+    ],
+  },
 };
 
 export default nextConfig;

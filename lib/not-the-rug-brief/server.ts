@@ -3,10 +3,13 @@ import 'server-only';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
+import Anthropic from '@anthropic-ai/sdk';
 import { fsGetDoc, fsQueryCollection, fsSetDoc } from '@/lib/server/firestoreRest';
 import { renderGeneratorImage, summarizeGeneratorRender, type GeneratorImageSummary } from '@/lib/generator/server';
 import { type BriefRunCost, type StageCost, assembleRunCost } from '@/lib/not-the-rug-brief/costs';
 import { storageDownload, storageUpload } from '@/lib/server/firebaseStorage';
+
+void Anthropic;
 
 const DEFAULT_BRIEF_DATA_DIR = process.env.NOT_THE_RUG_BRIEF_DATA_DIR?.trim()
   ? path.resolve(process.env.NOT_THE_RUG_BRIEF_DATA_DIR)
