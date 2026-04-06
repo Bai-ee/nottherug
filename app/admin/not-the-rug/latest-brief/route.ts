@@ -14,6 +14,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const latest = await getLatestNotTheRugBrief();
-  return NextResponse.json(latest);
+  try {
+    const latest = await getLatestNotTheRugBrief();
+    return NextResponse.json(latest);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Latest brief load failed' },
+      { status: 500 },
+    );
+  }
 }

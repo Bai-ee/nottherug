@@ -16,7 +16,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Unauthorized cron request' }, { status: 401 });
   }
 
-  const result = await runNotTheRugBrief({ fresh: false });
-  const status = result.status === 'success' ? 200 : 500;
-  return NextResponse.json(result, { status });
+  try {
+    const result = await runNotTheRugBrief({ fresh: false });
+    const status = result.status === 'success' ? 200 : 500;
+    return NextResponse.json(result, { status });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Scheduled brief run failed' },
+      { status: 500 },
+    );
+  }
 }

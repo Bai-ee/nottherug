@@ -6,6 +6,15 @@ import { createRequire } from 'module';
 import { fsGetDoc, fsQueryCollection, fsSetDoc } from '@/lib/server/firestoreRest';
 import { renderGeneratorImage, summarizeGeneratorRender, type GeneratorImageSummary } from '@/lib/generator/server';
 import { type BriefRunCost, type StageCost, assembleRunCost } from '@/lib/not-the-rug-brief/costs';
+import { storageDownload, storageUpload } from '@/lib/server/firebaseStorage';
+
+const DEFAULT_BRIEF_DATA_DIR = process.env.NOT_THE_RUG_BRIEF_DATA_DIR?.trim()
+  ? path.resolve(process.env.NOT_THE_RUG_BRIEF_DATA_DIR)
+  : process.env.VERCEL
+    ? path.join('/tmp', 'not-the-rug-brief')
+    : path.join(process.cwd(), 'data', 'not-the-rug-brief');
+
+process.env.NOT_THE_RUG_BRIEF_DATA_DIR = DEFAULT_BRIEF_DATA_DIR;
 
 const requireFromRoot = createRequire(path.join(process.cwd(), 'package.json'));
 
@@ -31,6 +40,8 @@ export interface BriefArtifacts {
   latestContentJsonPath: string;
   latestMarkdownPath: string;
   latestHtmlPath: string;
+  latestHtmlStoragePath?: string;
+  latestHtmlDownloadURL?: string;
 }
 
 export interface GuardianFlags {
@@ -209,6 +220,10 @@ export interface RunNotTheRugBriefResult {
   reportPaths?: {
     markdownPath?: string;
     htmlPath?: string;
+    htmlStoragePath?: string;
+    htmlDownloadURL?: string;
+    latestHtmlStoragePath?: string;
+    latestHtmlDownloadURL?: string;
   } | null;
   artifacts: BriefArtifacts;
   summary: NotTheRugBriefSummary;
@@ -245,17 +260,43 @@ export interface NotTheRugBriefRunRecord {
   reportPaths?: {
     markdownPath?: string;
     htmlPath?: string;
+    htmlStoragePath?: string;
+    htmlDownloadURL?: string;
+    latestHtmlStoragePath?: string;
+    latestHtmlDownloadURL?: string;
   } | null;
   generatedImage: GeneratorImageSummary | null;
   runCost: BriefRunCost | null;
 }
 
-export const NOT_THE_RUG_BRIEF_DATA_DIR = process.env.NOT_THE_RUG_BRIEF_DATA_DIR
-  ? path.resolve(process.env.NOT_THE_RUG_BRIEF_DATA_DIR)
-  : path.join(process.cwd(), 'data', 'not-the-rug-brief');
+interface PersistedLatestBriefRecord {
+  updatedAt: string;
+  latestBrief: BriefPayload | null;
+  latestContent: ContentPayload | null;
+  artifacts: BriefArtifacts;
+  summary: NotTheRugBriefSummary;
+  generatedImage: GeneratorImageSummary | null;
+  reportPaths?: {
+    markdownPath?: string;
+    htmlPath?: string;
+    htmlStoragePath?: string;
+    htmlDownloadURL?: string;
+    latestHtmlStoragePath?: string;
+    latestHtmlDownloadURL?: string;
+  } | null;
+  runCost: BriefRunCost | null;
+}
+
+export const NOT_THE_RUG_BRIEF_DATA_DIR = DEFAULT_BRIEF_DATA_DIR;
 
 export const NOT_THE_RUG_BRIEF_COLLECTIONS = {
   runs: 'notTheRugBriefRuns',
+  state: 'notTheRugBriefState',
+} as const;
+
+const NOT_THE_RUG_BRIEF_STORAGE_PATHS = {
+  latestHtml: 'briefs/not-the-rug/latest/latest-brief.html',
+  archiveDir: 'briefs/not-the-rug/archive',
 } as const;
 
 const BLOCKED_PRIORITY_ACTION = 'Draft and schedule a National Pet Day Instagram post this weekend that leads with a named walker moment or client testimonial to activate NTR\'s trust positioning before competitors flood the hashtag.';
@@ -445,6 +486,13 @@ function buildDatedReportFilename(prefix: string, date: Date, extension: string)
   return `${prefix}-${mon}-${dd}-${yyyy}-${hours}:${mins}${ampm}.${extension}`;
 }
 
+function buildStorageArchivePath(reportPath: string | undefined | null, timestamp: string | null | undefined): string {
+  const fileName = reportPath
+    ? path.basename(reportPath)
+    : buildDatedReportFilename('NotTheRug', timestamp ? new Date(timestamp) : new Date(), 'html');
+  return `${NOT_THE_RUG_BRIEF_STORAGE_PATHS.archiveDir}/${fileName}`;
+}
+
 function summarizeBrief(
   latestBrief: BriefPayload | null,
   latestContent: ContentPayload | null,
@@ -522,7 +570,73 @@ function summarizeBrief(
   };
 }
 
+async function uploadHostedHtmlArtifacts(
+  result: Pick<RunNotTheRugBriefResult, 'artifacts' | 'reportPaths' | 'latestBrief' | 'latestContent'>,
+): Promise<{
+  artifacts: BriefArtifacts;
+  reportPaths: NonNullable<RunNotTheRugBriefResult['reportPaths']>;
+} | null> {
+  const localHtmlPath = result.reportPaths?.htmlPath ?? result.artifacts.latestHtmlPath;
+  const html = await readOptionalText(localHtmlPath);
+  if (!html) return null;
+
+  const htmlBuffer = Buffer.from(html, 'utf8');
+  const archiveStoragePath = buildStorageArchivePath(
+    result.reportPaths?.htmlPath,
+    result.latestContent?.timestamp ?? result.latestBrief?.timestamp ?? new Date().toISOString(),
+  );
+
+  const [archiveDownloadURL, latestDownloadURL] = await Promise.all([
+    storageUpload(archiveStoragePath, htmlBuffer, 'text/html; charset=utf-8'),
+    storageUpload(NOT_THE_RUG_BRIEF_STORAGE_PATHS.latestHtml, htmlBuffer, 'text/html; charset=utf-8'),
+  ]);
+
+  return {
+    artifacts: {
+      ...result.artifacts,
+      latestHtmlStoragePath: NOT_THE_RUG_BRIEF_STORAGE_PATHS.latestHtml,
+      latestHtmlDownloadURL: latestDownloadURL,
+    },
+    reportPaths: {
+      ...(result.reportPaths ?? {}),
+      htmlStoragePath: archiveStoragePath,
+      htmlDownloadURL: archiveDownloadURL,
+      latestHtmlStoragePath: NOT_THE_RUG_BRIEF_STORAGE_PATHS.latestHtml,
+      latestHtmlDownloadURL: latestDownloadURL,
+    },
+  };
+}
+
+async function persistLatestBriefState(record: PersistedLatestBriefRecord): Promise<void> {
+  await fsSetDoc(`${NOT_THE_RUG_BRIEF_COLLECTIONS.state}/latest`, record as unknown as Record<string, unknown>);
+}
+
+async function getPersistedLatestBriefState(): Promise<PersistedLatestBriefRecord | null> {
+  const doc = await fsGetDoc(`${NOT_THE_RUG_BRIEF_COLLECTIONS.state}/latest`);
+  if (!doc.exists || !doc.data) return null;
+  return doc.data as unknown as PersistedLatestBriefRecord;
+}
+
+function hydrateLatestBriefFromRecord(record: PersistedLatestBriefRecord): LatestNotTheRugBrief {
+  const latestBrief = sanitizeLatestBrief(record.latestBrief ?? null);
+  const latestContent = sanitizeLatestContent(record.latestContent ?? null);
+  const artifacts = { ...buildArtifactPaths(), ...(record.artifacts ?? {}) };
+
+  return {
+    latestBrief,
+    latestContent,
+    artifacts,
+    summary: record.summary ?? summarizeBrief(latestBrief, latestContent),
+    generatedImage: record.generatedImage ?? null,
+  };
+}
+
 export async function getLatestNotTheRugBrief(): Promise<LatestNotTheRugBrief> {
+  const persisted = await getPersistedLatestBriefState().catch(() => null);
+  if (persisted) {
+    return hydrateLatestBriefFromRecord(persisted);
+  }
+
   const bundleData = (await getBriefBundle().getLatestNotTheRugArtifacts()) as {
     latestBrief?: BriefPayload | null;
     latestContent?: ContentPayload | null;
@@ -575,6 +689,37 @@ export async function runNotTheRugBrief(options: { fresh?: boolean } = {}): Prom
     }
   }
 
+  let sanitizedLatestBrief = await applySupplementalSignalFallbacks(
+    sanitizeLatestBrief(result.latestBrief ?? null),
+  );
+  let sanitizedLatestContent = sanitizeLatestContent(result.latestContent ?? null);
+  let artifacts: BriefArtifacts = { ...buildArtifactPaths(), ...(result.artifacts ?? {}) };
+  let reportPaths: NonNullable<RunNotTheRugBriefResult['reportPaths']> = { ...(result.reportPaths ?? {}) };
+
+  if (result.status === 'success') {
+    const hostedArtifacts = await uploadHostedHtmlArtifacts({
+      artifacts,
+      reportPaths,
+      latestBrief: sanitizedLatestBrief,
+      latestContent: sanitizedLatestContent,
+    }).catch(() => null);
+
+    if (hostedArtifacts) {
+      artifacts = hostedArtifacts.artifacts;
+      reportPaths = hostedArtifacts.reportPaths;
+    }
+  } else {
+    const latestPersisted = await getPersistedLatestBriefState().catch(() => null);
+    if (latestPersisted) {
+      sanitizedLatestBrief = sanitizeLatestBrief(latestPersisted.latestBrief ?? null);
+      sanitizedLatestContent = sanitizeLatestContent(latestPersisted.latestContent ?? null);
+      artifacts = { ...artifacts, ...(latestPersisted.artifacts ?? {}) };
+      reportPaths = { ...(latestPersisted.reportPaths ?? {}), ...reportPaths };
+    }
+  }
+
+  const summary = summarizeBrief(sanitizedLatestBrief, sanitizedLatestContent);
+
   // Assemble run cost from stage costs returned by the bundle
   let runCost: BriefRunCost | null = null;
   if (result.status === 'success' && result.runCostData?.stageCosts?.length) {
@@ -595,16 +740,31 @@ export async function runNotTheRugBrief(options: { fresh?: boolean } = {}): Prom
     stage: result.stage,
     error: result.error,
     pipelineStartedAt: result.pipelineStartedAt,
-    latestBrief: result.latestBrief ?? latest.latestBrief,
-    latestContent: result.latestContent ?? latest.latestContent,
-    guardianFlags: result.guardianFlags ?? latest.latestContent?.guardianFlags ?? null,
-    scoutPriorityAction: result.scoutPriorityAction ?? latest.latestContent?.scoutPriorityAction ?? null,
-    reportPaths: result.reportPaths ?? null,
-    artifacts: { ...latest.artifacts, ...(result.artifacts ?? {}) },
-    summary: latest.summary,
+    latestBrief: sanitizedLatestBrief,
+    latestContent: sanitizedLatestContent,
+    guardianFlags: result.guardianFlags ?? sanitizedLatestContent?.guardianFlags ?? null,
+    scoutPriorityAction: result.scoutPriorityAction ?? sanitizedLatestContent?.scoutPriorityAction ?? null,
+    reportPaths,
+    artifacts,
+    summary,
     generatedImage,
     runCost,
   };
+
+  if (result.status === 'success') {
+    await persistLatestBriefState({
+      updatedAt: new Date().toISOString(),
+      latestBrief: payload.latestBrief ?? null,
+      latestContent: payload.latestContent ?? null,
+      artifacts: payload.artifacts,
+      summary: payload.summary,
+      generatedImage: payload.generatedImage,
+      reportPaths: payload.reportPaths ?? null,
+      runCost: payload.runCost ?? null,
+    }).catch(() => {
+      // Keep the pipeline usable even if latest-state persistence fails.
+    });
+  }
 
   await persistBriefRun(payload).catch(() => {
     // Keep the generation result usable even if Firestore history persistence fails.
@@ -614,6 +774,13 @@ export async function runNotTheRugBrief(options: { fresh?: boolean } = {}): Prom
 }
 
 export async function getLatestNotTheRugBriefHtml(): Promise<{ html: string; path: string }> {
+  const persisted = await getPersistedLatestBriefState().catch(() => null);
+  const latestStoragePath = persisted?.reportPaths?.latestHtmlStoragePath ?? persisted?.artifacts?.latestHtmlStoragePath;
+  if (latestStoragePath) {
+    const buffer = await storageDownload(latestStoragePath);
+    return { html: buffer.toString('utf8'), path: latestStoragePath };
+  }
+
   const latest = await getLatestNotTheRugBrief();
   const html = await readOptionalText(latest.artifacts.latestHtmlPath);
 
@@ -650,6 +817,11 @@ export async function getNotTheRugBriefRunHtml(runId: string): Promise<{ html: s
   }
 
   const record = doc.data as unknown as NotTheRugBriefRunRecord;
+  if (record.reportPaths?.htmlStoragePath) {
+    const buffer = await storageDownload(record.reportPaths.htmlStoragePath);
+    return { html: buffer.toString('utf8'), path: record.reportPaths.htmlStoragePath, record };
+  }
+
   const htmlPath = getRunHtmlPath(record);
   if (!htmlPath) {
     throw new Error('HTML brief path not found for this run');
