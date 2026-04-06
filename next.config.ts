@@ -18,6 +18,9 @@ const TRACE_EXCLUDES = [
 ];
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   serverExternalPackages: ['sharp', 'firebase-admin'],
 
   outputFileTracingExcludes: {

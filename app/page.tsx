@@ -398,14 +398,15 @@ export default function Home() {
 
       {/* Mobile Menu */}
       <div className="mobile-menu" id="mobile-menu">
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('services'); (window as any).toggleMobileMenu(); }}>Services &amp; Rates</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('how-it-works'); (window as any).toggleMobileMenu(); }}>How It Works</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('about'); (window as any).toggleMobileMenu(); }}>About Us</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('safety'); (window as any).toggleMobileMenu(); }}>Safety &amp; Trust</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('neighborhoods'); (window as any).toggleMobileMenu(); }}>Neighborhoods</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('reviews'); (window as any).toggleMobileMenu(); }}>Reviews</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('contact'); (window as any).toggleMobileMenu(); }}>Contact</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('book'); (window as any).toggleMobileMenu(); }} className="mobile-cta">Book a Walk</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('services'); }}>Services &amp; Rates</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('how-it-works'); }}>How It Works</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('about'); }}>About Us</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('safety'); }}>Safety &amp; Trust</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('neighborhoods'); }}>Neighborhoods</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('reviews'); }}>Reviews</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('contact'); }}>Contact</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('book'); }} className="mobile-cta">Book a Walk</a>
+        <a href="/admin" id="mobile-menu-login-link">Login</a>
       </div>
 
       {/* PAGE: HOME */}
