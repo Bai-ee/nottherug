@@ -9,23 +9,22 @@ import { type BriefRunCost, type StageCost, assembleRunCost } from '@/lib/not-th
 
 const requireFromRoot = createRequire(path.join(process.cwd(), 'package.json'));
 
-const briefBundle = requireFromRoot('./not-the-rug-brief/index.js') as {
-  runNotTheRugBrief: (options?: { fresh?: boolean }) => Promise<unknown>;
-  getLatestNotTheRugArtifacts: () => Promise<unknown>;
-};
+// Lazy loaders — brief pipeline scripts are not bundled into Vercel functions.
+// They are only available when running locally (dev server / local Node process).
+type BriefBundle = { runNotTheRugBrief: (options?: { fresh?: boolean }) => Promise<unknown>; getLatestNotTheRugArtifacts: () => Promise<unknown>; };
+type ClientsModule = { requireClientConfig: (clientId: string) => Record<string, unknown>; };
+type StoreModule = { getLatestWeather: (clientId: string) => Promise<Record<string, unknown> | null>; getLatestReddit: (clientId: string) => Promise<Record<string, unknown> | null>; };
+type IntelligenceModule = { normalizeIntelligence: (agentData?: Record<string, unknown>, config?: Record<string, unknown>) => NormalizedBriefIntel; };
 
-const clientsModule = requireFromRoot('./not-the-rug-brief/clients.js') as {
-  requireClientConfig: (clientId: string) => Record<string, unknown>;
-};
+let _briefBundle: BriefBundle | null = null;
+let _clientsModule: ClientsModule | null = null;
+let _storeModule: StoreModule | null = null;
+let _intelligenceModule: IntelligenceModule | null = null;
 
-const storeModule = requireFromRoot('./not-the-rug-brief/store.js') as {
-  getLatestWeather: (clientId: string) => Promise<Record<string, unknown> | null>;
-  getLatestReddit: (clientId: string) => Promise<Record<string, unknown> | null>;
-};
-
-const intelligenceModule = requireFromRoot('./not-the-rug-brief/intelligence.js') as {
-  normalizeIntelligence: (agentData?: Record<string, unknown>, config?: Record<string, unknown>) => NormalizedBriefIntel;
-};
+function getBriefBundle(): BriefBundle { return _briefBundle ??= requireFromRoot('./not-the-rug-brief/index.js') as BriefBundle; }
+function getClientsModule(): ClientsModule { return _clientsModule ??= requireFromRoot('./not-the-rug-brief/clients.js') as ClientsModule; }
+function getStoreModule(): StoreModule { return _storeModule ??= requireFromRoot('./not-the-rug-brief/store.js') as StoreModule; }
+function getIntelligenceModule(): IntelligenceModule { return _intelligenceModule ??= requireFromRoot('./not-the-rug-brief/intelligence.js') as IntelligenceModule; }
 
 export interface BriefArtifacts {
   latestBriefJsonPath: string;
@@ -386,8 +385,8 @@ async function applySupplementalSignalFallbacks(latestBrief: BriefPayload | null
   if (!needsWeather && !needsReddit) return latestBrief;
 
   const [weatherReport, redditReport] = await Promise.all([
-    needsWeather ? storeModule.getLatestWeather('not-the-rug') : Promise.resolve(null),
-    needsReddit ? storeModule.getLatestReddit('not-the-rug') : Promise.resolve(null),
+    needsWeather ? getStoreModule().getLatestWeather('not-the-rug') : Promise.resolve(null),
+    needsReddit ? getStoreModule().getLatestReddit('not-the-rug') : Promise.resolve(null),
   ]);
 
   if (needsWeather) {
@@ -450,8 +449,8 @@ function summarizeBrief(
   latestBrief: BriefPayload | null,
   latestContent: ContentPayload | null,
 ): NotTheRugBriefSummary {
-  const clientConfig = clientsModule.requireClientConfig('not-the-rug');
-  const normalized = intelligenceModule.normalizeIntelligence(
+  const clientConfig = getClientsModule().requireClientConfig('not-the-rug');
+  const normalized = getIntelligenceModule().normalizeIntelligence(
     (latestBrief?.agentData as Record<string, unknown> | undefined) ?? {},
     clientConfig,
   );
@@ -524,7 +523,7 @@ function summarizeBrief(
 }
 
 export async function getLatestNotTheRugBrief(): Promise<LatestNotTheRugBrief> {
-  const bundleData = (await briefBundle.getLatestNotTheRugArtifacts()) as {
+  const bundleData = (await getBriefBundle().getLatestNotTheRugArtifacts()) as {
     latestBrief?: BriefPayload | null;
     latestContent?: ContentPayload | null;
     artifacts?: Partial<BriefArtifacts>;
@@ -546,7 +545,7 @@ export async function getLatestNotTheRugBrief(): Promise<LatestNotTheRugBrief> {
 }
 
 export async function runNotTheRugBrief(options: { fresh?: boolean } = {}): Promise<RunNotTheRugBriefResult> {
-  const result = (await briefBundle.runNotTheRugBrief(options)) as {
+  const result = (await getBriefBundle().runNotTheRugBrief(options)) as {
     status: 'success' | 'error';
     stage?: string;
     error?: string;

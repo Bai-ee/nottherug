@@ -9,6 +9,8 @@ const TRACE_EXCLUDES = [
   './docs/**/*',
   './style-guide/**/*',
   './misc/**/*',
+  './not-the-rug-brief/**/*',
+  './data/**/*',
   './README.md',
   './index.html',
   './optimize_video.py',
@@ -24,8 +26,14 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['sharp', 'firebase-admin'],
 
   outputFileTracingExcludes: {
-    '/api/admin/generator/render': TRACE_EXCLUDES,
-    '/api/admin/photos/render':    TRACE_EXCLUDES,
+    '/api/admin/generator/render':              TRACE_EXCLUDES,
+    '/api/admin/photos/render':                 TRACE_EXCLUDES,
+    '/admin/not-the-rug/run-brief':             TRACE_EXCLUDES,
+    '/admin/not-the-rug/latest-brief':          TRACE_EXCLUDES,
+    '/admin/not-the-rug/latest-brief/html':     TRACE_EXCLUDES,
+    '/admin/not-the-rug/history':               TRACE_EXCLUDES,
+    '/admin/not-the-rug/history/[id]/html':     TRACE_EXCLUDES,
+    '/api/cron/not-the-rug-brief':              TRACE_EXCLUDES,
   },
 };
 
