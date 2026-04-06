@@ -5,7 +5,7 @@
 
 require('./load-env');
 const { createAnthropicClient } = require('./anthropic-client');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 const { getLatestBrief, saveLatestContent, logError } = require('./store');
 const { MODELS, logCostEstimate, computeStageCost } = require('./optimizer');
 const { runGuardian } = require('./guardian');
@@ -352,7 +352,7 @@ function parseScribeOutput(text, config = getDefaultClientConfig()) {
  * parses the four content pieces, and saves everything.
  */
 async function runScribe(clientId = DEFAULT_CONFIG.clientId, config = null) {
-  const runId = uuidv4();
+  const runId = randomUUID();
   const startTime = new Date();
   console.log(`[${startTime.toISOString()}] SCRIBE: starting run ${runId} for ${clientId}`);
 

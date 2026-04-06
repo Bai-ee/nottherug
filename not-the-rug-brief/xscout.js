@@ -12,7 +12,7 @@
 
 require('./load-env');
 const { createAnthropicClient } = require('./anthropic-client');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 const { saveLatestBrief, saveLatestWeather, saveLatestReviews, saveLatestInstagram, saveLatestReddit, getLatestBrief, getLatestWeather, getLatestReviews, getLatestInstagram, getLatestReddit, logError } = require('./store');
 const { MODELS, trimAllSearchResults, buildCompactContext, logCostEstimate, computeStageCost } = require('./optimizer');
 const { getDefaultClientConfig, requireClientConfig } = require('./clients');
@@ -493,7 +493,7 @@ function extractSearchResults(responseContent) {
 // ─── Core execution ──────────────────────────────────────────────────────────
 
 async function runXScout(config = DEFAULT_CONFIG) {
-  const runId = uuidv4();
+  const runId = randomUUID();
   const startTime = new Date();
   console.log(`[${startTime.toISOString()}] XSCOUT: starting run ${runId} for ${config.clientId}`);
 
