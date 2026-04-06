@@ -228,9 +228,9 @@ body { font-family: 'Outfit', sans-serif; }
 .db-link { color: #B4C89E; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .db-link:hover { color: #EEF4DB; }
 .db-post-package { display: grid; gap: 14px; }
-.db-post-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(112px, 132px); gap: clamp(10px, 1.5vw, 16px); align-items: start; }
+.db-post-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; }
 .db-post-copy-card { min-width: 0; max-width: 760px; }
-.db-post-image-col { width: 100%; max-width: 132px; display: grid; gap: 10px; align-content: start; justify-self: end; }
+.db-post-image-col { width: min(100%, 156px); max-width: 156px; display: grid; gap: 10px; align-content: start; justify-self: center; }
 .db-post-image-wrap { border-radius: 18px; overflow: hidden; border: 1px solid #2E3828; background: #1A1E14; }
 .db-post-image { width: 100%; height: auto; display: block; }
 .db-post-placeholder { width: 100%; aspect-ratio: 4 / 5; display: grid; place-items: center; padding: 18px; background:
@@ -285,7 +285,7 @@ body { font-family: 'Outfit', sans-serif; }
   .db-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .db-intel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .db-post-main { grid-template-columns: minmax(0, 1fr) minmax(156px, 196px); gap: clamp(12px, 1.8vw, 24px); align-items: start; }
-  .db-post-image-col { max-width: 196px; }
+  .db-post-image-col { width: 100%; max-width: 196px; justify-self: end; }
 }
 `;
 
