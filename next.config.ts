@@ -44,26 +44,32 @@ const nextConfig: NextConfig = {
     '/admin/not-the-rug/run-brief': [
       './not-the-rug-brief/**/*',
       './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/latest-brief': [
       './not-the-rug-brief/**/*',
       './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/latest-brief/html': [
       './not-the-rug-brief/**/*',
       './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/history': [
       './not-the-rug-brief/**/*',
       './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/history/[id]/html': [
       './not-the-rug-brief/**/*',
       './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
     ],
     '/api/cron/not-the-rug-brief': [
       './not-the-rug-brief/**/*',
       './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
     ],
   },
 };
