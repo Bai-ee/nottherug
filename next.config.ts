@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
-  serverExternalPackages: ['sharp', 'firebase-admin'],
+  serverExternalPackages: ['sharp', 'firebase-admin', '@anthropic-ai/sdk'],
 
   outputFileTracingExcludes: {
     '/api/admin/generator/render':              GENERATOR_TRACE_EXCLUDES,
