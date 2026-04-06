@@ -4,7 +4,11 @@ require('../load-env');
 const { createAnthropicClient } = require('../anthropic-client');
 const { MODELS } = require('../optimizer');
 
-const anthropic = createAnthropicClient();
+let _anthropic = null;
+function getAnthropicClient() {
+  if (!_anthropic) _anthropic = createAnthropicClient();
+  return _anthropic;
+}
 
 function getReviewConfig(config = {}) {
   return config.reviews || null;
@@ -153,7 +157,7 @@ async function fetchReviewStatusViaWebSearch(config = {}, previousReport = null)
   if (!reviewConfig || reviewConfig.provider !== 'web-search') return null;
 
   const sources = reviewConfig.sources || [];
-  const response = await anthropic.messages.create({
+  const response = await getAnthropicClient().messages.create({
     model: MODELS.briefWrite,
     max_tokens: 1200,
     messages: [{
