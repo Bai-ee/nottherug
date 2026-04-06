@@ -18,7 +18,11 @@ const { MODELS, logCostEstimate } = require('./optimizer');
 const { getDefaultClientConfig, requireClientConfig } = require('./clients');
 const { getContentSchema } = require('./content-schema');
 
-const anthropic = createAnthropicClient();
+let _anthropic = null;
+function getAnthropicClient() {
+  if (!_anthropic) _anthropic = createAnthropicClient();
+  return _anthropic;
+}
 const DEFAULT_CONFIG = getDefaultClientConfig();
 
 // Fields that contain publishable content — scanned for restricted terms
@@ -241,7 +245,7 @@ Severity guide:
 
 If no flags for a category, return empty array. Score 90+ if clean.`;
 
-  const response = await anthropic.messages.create({
+  const response = await getAnthropicClient().messages.create({
     model: MODELS.guardianCheck,
     max_tokens: 1000,
     messages: [{ role: 'user', content: prompt }],

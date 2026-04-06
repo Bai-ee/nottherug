@@ -15,7 +15,11 @@ const { loadBrandVoice, loadGameKnowledge } = require('./knowledge');
 const { getContentSchema } = require('./content-schema');
 
 const DEFAULT_CONFIG = getDefaultClientConfig();
-const anthropic = createAnthropicClient();
+let _anthropic = null;
+function getAnthropicClient() {
+  if (!_anthropic) _anthropic = createAnthropicClient();
+  return _anthropic;
+}
 function buildVoiceBlock(voice, config) {
   if (!voice) {
     return config.scribe?.fallbackTone
@@ -368,7 +372,7 @@ async function runScribe(clientId = DEFAULT_CONFIG.clientId, config = null) {
     const briefData = extractBriefData(brief, resolvedConfig);
     const prompt = buildScribePrompt(briefData, resolvedConfig);
 
-    const response = await anthropic.messages.create({
+    const response = await getAnthropicClient().messages.create({
       model: MODELS.briefWrite, // claude-sonnet-4-6 — quality matters for content
       max_tokens: 2000,
       messages: [

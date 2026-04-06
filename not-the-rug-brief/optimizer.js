@@ -13,7 +13,11 @@
 require('./load-env');
 const { createAnthropicClient } = require('./anthropic-client');
 
-const anthropic = createAnthropicClient();
+let _anthropic = null;
+function getAnthropicClient() {
+  if (!_anthropic) _anthropic = createAnthropicClient();
+  return _anthropic;
+}
 
 // Model routing — use the cheapest model that can do the job
 const MODELS = {
@@ -45,7 +49,7 @@ async function trimSearchResults(searchQuery, rawResults, clientName) {
     return { trimmedText: rawResults, usage: { input_tokens: 0, output_tokens: 0 } };
   }
 
-  const response = await anthropic.messages.create({
+  const response = await getAnthropicClient().messages.create({
     model: MODELS.searchTrim,
     max_tokens: MAX_TOKENS_PER_SEARCH,
     messages: [{

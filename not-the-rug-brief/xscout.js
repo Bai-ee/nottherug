@@ -22,7 +22,11 @@ const { fetchReviewStatusViaWebSearch, buildReviewContextBlock } = require('./se
 const { fetchInstagramInsights, buildInstagramContextBlock } = require('./services/instagram');
 const { fetchRedditSignals, buildRedditContextBlock } = require('./services/reddit');
 
-const anthropic = createAnthropicClient();
+let _anthropic = null;
+function getAnthropicClient() {
+  if (!_anthropic) _anthropic = createAnthropicClient();
+  return _anthropic;
+}
 
 const DEFAULT_CONFIG = getDefaultClientConfig();
 
@@ -580,7 +584,7 @@ async function runXScout(config = DEFAULT_CONFIG) {
     // ── STAGE 1: Run 5 searches (Sonnet + web_search) ──────────────────────
     console.log(`[${new Date().toISOString()}] XSCOUT: stage 1 — executing searches...`);
 
-    const stage1Response = await anthropic.messages.create({
+    const stage1Response = await getAnthropicClient().messages.create({
       model: MODELS.briefWrite, // Sonnet needed for web_search tool access
       max_tokens: 4000,          // Low cap — we only need raw results, not analysis
       messages: [{
@@ -611,7 +615,7 @@ async function runXScout(config = DEFAULT_CONFIG) {
     // ── STAGE 3: Write brief (Sonnet, compact context) ─────────────────────
     console.log(`[${new Date().toISOString()}] XSCOUT: stage 3 — synthesizing brief...`);
 
-    const stage3Response = await anthropic.messages.create({
+    const stage3Response = await getAnthropicClient().messages.create({
       model: MODELS.briefWrite,
       max_tokens: 8000,
       messages: [{
@@ -732,7 +736,7 @@ ${buildBriefPrompt(config, compactContext, previousBrief, weatherReport, reviewR
 
 CRITICAL: Return ONLY the JSON object. Nothing before {. Nothing after }.`;
 
-  const response = await anthropic.messages.create({
+  const response = await getAnthropicClient().messages.create({
     model: MODELS.briefWrite,
     max_tokens: 2000,
     messages: [{ role: 'user', content: retryPrompt }],

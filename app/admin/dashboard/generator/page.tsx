@@ -1274,9 +1274,9 @@ export default function AdminGeneratorPage() {
         {/* ── NAV BAR ────────────────────────────────────────────────────────── */}
         <nav className="ed-nav" id="admin-gen-nav">
           <a className="ed-nav-link" href="/admin/dashboard">Overview</a>
-          <a className="ed-nav-link" href="/admin/dashboard/photos">Photos</a>
+          {/* <a className="ed-nav-link" href="/admin/dashboard/photos">Photos</a> */}
           <a className="ed-nav-link ed-nav-active" href="/admin/dashboard/generator">Generator</a>
-          <a className="ed-nav-link" href="/admin/dashboard/brief">Brief</a>
+          {/* <a className="ed-nav-link" href="/admin/dashboard/brief">Brief</a> */}
         </nav>
 
         {/* ── BODY ───────────────────────────────────────────────────────────── */}
