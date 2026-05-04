@@ -89,32 +89,84 @@ export default function FounderBriefPreviewPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#55624C', color: '#EDF3DB', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: '1px solid rgba(237,243,219,0.12)', background: 'rgba(50,60,38,0.96)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: '1px solid rgba(237,243,219,0.12)', background: 'rgba(50,60,38,0.96)', flexWrap: 'wrap', gap: 12 }}>
         <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           NTR Admin · Founder Brief Preview
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, opacity: 0.6 }}>{user?.email}</span>
-          <button
-            onClick={() => send({ runFirst: false })}
-            disabled={sending}
-            style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, padding: '8px 14px', borderRadius: 6, border: '1px solid rgba(237,243,219,0.25)', background: 'transparent', color: '#EDF3DB', cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.5 : 1 }}
-          >
-            Send current
-          </button>
-          <button
-            onClick={() => send({ runFirst: true })}
-            disabled={sending}
-            style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, padding: '8px 14px', borderRadius: 6, border: '1px solid #EDF3DB', background: '#EDF3DB', color: '#1c1c1a', cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.5 : 1, fontWeight: 600 }}
-          >
-            Run brief + send
-          </button>
           <a
             href="/admin/dashboard"
             style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, padding: '8px 14px', borderRadius: 6, border: '1px solid rgba(237,243,219,0.25)', color: '#EDF3DB', textDecoration: 'none' }}
           >
             Back
           </a>
+        </div>
+      </div>
+
+      {/* Prominent send-action row */}
+      <div
+        id="founder-brief-actions"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 12,
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '18px 24px',
+          background: '#1c1c1a',
+          borderBottom: '1px solid rgba(237,243,219,0.12)',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(237,243,219,0.55)' }}>
+            Send brief email
+          </div>
+          <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#EDF3DB', letterSpacing: '-0.005em' }}>
+            Trigger the founder brief now
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => send({ runFirst: false })}
+            disabled={sending}
+            style={{
+              fontFamily: 'Space Mono, monospace',
+              fontSize: 13,
+              padding: '12px 22px',
+              borderRadius: 6,
+              border: '1px solid #EDF3DB',
+              background: '#EDF3DB',
+              color: '#1c1c1a',
+              cursor: sending ? 'wait' : 'pointer',
+              opacity: sending ? 0.5 : 1,
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {sending ? 'Sending…' : 'Send current →'}
+          </button>
+          <button
+            onClick={() => send({ runFirst: true })}
+            disabled={sending}
+            style={{
+              fontFamily: 'Space Mono, monospace',
+              fontSize: 13,
+              padding: '12px 22px',
+              borderRadius: 6,
+              border: '1px solid rgba(237,243,219,0.45)',
+              background: 'transparent',
+              color: '#EDF3DB',
+              cursor: sending ? 'wait' : 'pointer',
+              opacity: sending ? 0.5 : 1,
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Run brief + send
+          </button>
         </div>
       </div>
 
