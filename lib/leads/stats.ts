@@ -11,6 +11,12 @@ export type LeadDoc = {
   dogName: string;
   breedAge: string;
   serviceInterest: string;
+  spayNeuter: string;
+  vaccinations: string;
+  dogSocial: string;
+  strangerSocial: string;
+  walkFrequency: string;
+  notes: string;
   source: string;
   [key: string]: unknown;
 };
