@@ -38,6 +38,12 @@ const nextConfig: NextConfig = {
     '/admin/not-the-rug/history':               SHARED_TRACE_EXCLUDES,
     '/admin/not-the-rug/history/[id]/html':     SHARED_TRACE_EXCLUDES,
     '/api/cron/not-the-rug-brief':              SHARED_TRACE_EXCLUDES,
+    '/api/cron/founder-brief':                  SHARED_TRACE_EXCLUDES,
+    '/api/cron/leads-digest':                   SHARED_TRACE_EXCLUDES,
+    '/api/leads/meetgreet':                     SHARED_TRACE_EXCLUDES,
+    '/admin/preview/founder-brief':             SHARED_TRACE_EXCLUDES,
+    '/admin/founder-brief/run-and-send':        SHARED_TRACE_EXCLUDES,
+    '/admin/leads':                             SHARED_TRACE_EXCLUDES,
   },
 
   outputFileTracingIncludes: {
@@ -67,6 +73,24 @@ const nextConfig: NextConfig = {
       './node_modules/uuid/**/*',
     ],
     '/api/cron/not-the-rug-brief': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
+    ],
+    // New routes that import lib/not-the-rug-brief/server.ts also need the
+    // brief sources + Anthropic SDK traced in even though we excluded the
+    // shared heavy dirs above.
+    '/api/cron/founder-brief': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
+    ],
+    '/admin/preview/founder-brief': [
+      './not-the-rug-brief/**/*',
+      './node_modules/@anthropic-ai/sdk/**/*',
+      './node_modules/uuid/**/*',
+    ],
+    '/admin/founder-brief/run-and-send': [
       './not-the-rug-brief/**/*',
       './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
