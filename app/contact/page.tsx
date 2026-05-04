@@ -2,10 +2,43 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import MeetGreetForm from '@/components/MeetGreetForm';
 
+const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
+const PAGE_PATH = '/contact';
+const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
+const OG_IMAGE = `${SITE_URL}/img/og_meta_img_contact.png`;
+
+const PAGE_TITLE = 'Book your free Meet & Greet — Not The Rug';
+const PAGE_DESCRIPTION = 'No commitment, no charge. We come to you, meet your dog, and answer every question.';
+
 export const metadata: Metadata = {
-  title: 'Book your free Meet & Greet — Not The Rug',
-  description: 'No commitment, no charge. We come to you, meet your dog, and answer every question.',
+  metadataBase: new URL(SITE_URL),
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  alternates: {
+    canonical: PAGE_PATH,
+  },
   robots: { index: false, follow: false },
+  openGraph: {
+    type: 'website',
+    siteName: 'Not The Rug',
+    url: PAGE_URL,
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: PAGE_DESCRIPTION,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    images: [OG_IMAGE],
+  },
 };
 
 export default function ContactPage() {
