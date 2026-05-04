@@ -232,41 +232,69 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(28,28,26,0.78)',
+            background: 'rgba(28,28,26,0.82)',
             zIndex: 9999,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px',
+            padding: 'clamp(8px, 2vw, 24px)',
           }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowCalendly(false); }}
         >
           <div
             id="calendly-modal-shell"
             style={{
-              background: '#fff',
-              borderRadius: '10px',
-              maxWidth: '900px',
-              width: '100%',
-              height: 'min(90vh, 760px)',
+              background: '#f7f5f1',
+              borderRadius: '4px',
+              border: '1px solid #1c1c1a',
+              width: '96vw',
+              height: '95vh',
+              maxWidth: '1400px',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+              boxShadow: '0 30px 80px rgba(0,0,0,0.45)',
             }}
           >
             <div
               id="calendly-modal-header"
               style={{
-                padding: '14px 20px',
-                borderBottom: '1px solid #ece8df',
+                padding: '18px 26px',
+                borderBottom: '1px solid #1c1c1a',
+                background: '#1c1c1a',
+                color: '#EDF3DB',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                gap: '16px',
+                flexShrink: 0,
               }}
             >
-              <div id="calendly-modal-title" style={{ fontFamily: 'var(--font-display)', fontSize: '16px', color: '#1c1c1a' }}>
-                Schedule your Meet &amp; Greet
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono, "Space Mono", "Courier New", monospace)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                    color: 'rgba(237,243,219,0.6)',
+                  }}
+                >
+                  Step 2 of 2
+                </div>
+                <div
+                  id="calendly-modal-title"
+                  style={{
+                    fontFamily: 'var(--font-display, Georgia, serif)',
+                    fontSize: 'clamp(16px, 2.4vw, 22px)',
+                    color: '#EDF3DB',
+                    letterSpacing: '-0.005em',
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Schedule your Meet &amp; Greet
+                </div>
               </div>
               <button
                 type="button"
@@ -274,22 +302,27 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
                 onClick={() => setShowCalendly(false)}
                 style={{
                   background: 'transparent',
-                  border: 'none',
-                  fontSize: '22px',
-                  lineHeight: 1,
+                  border: '1px solid rgba(237,243,219,0.35)',
+                  borderRadius: '4px',
+                  fontFamily: 'var(--font-mono, "Space Mono", "Courier New", monospace)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
                   cursor: 'pointer',
-                  color: '#1c1c1a',
-                  padding: '4px 8px',
+                  color: '#EDF3DB',
+                  padding: '8px 14px',
+                  flexShrink: 0,
                 }}
               >
-                ×
+                Close ×
               </button>
             </div>
             <iframe
               id="calendly-modal-iframe"
               title="Calendly scheduling"
               src={calendlyUrl}
-              style={{ flex: 1, width: '100%', border: 'none' }}
+              style={{ flex: 1, width: '100%', border: 'none', background: '#f7f5f1' }}
             />
           </div>
         </div>
