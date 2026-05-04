@@ -66,6 +66,7 @@ interface BriefSummary {
     summary: string;
     priority: string;
     format: string;
+    source: string;
     url: string;
   }>;
   contentAngle: string | null;
@@ -263,7 +264,13 @@ body { font-family: 'Outfit', sans-serif; }
 .db-intel-list { display: grid; gap: 10px; }
 .db-intel-item { border-top: 1px solid rgba(85,98,76,0.15); padding-top: 10px; display: grid; gap: 5px; }
 .db-intel-item:first-child { border-top: none; padding-top: 0; }
-.db-intel-name { font-size: 13px; font-weight: 500; color: #55624C; }
+.db-intel-name { font-size: 13px; font-weight: 500; color: #55624C; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.db-platform-badge { font-size: 9px; font-family: 'Space Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 5px; border-radius: 3px; background: rgba(85,98,76,0.12); color: rgba(85,98,76,0.75); flex-shrink: 0; align-self: center; }
+.db-platform-badge[data-platform="tiktok"] { background: rgba(0,0,0,0.07); color: #1a1a1a; }
+.db-platform-badge[data-platform="instagram"] { background: rgba(131,58,180,0.1); color: #833ab4; }
+.db-platform-badge[data-platform="youtube"] { background: rgba(255,0,0,0.08); color: #cc0000; }
+.db-platform-badge[data-platform="x"] { background: rgba(0,0,0,0.07); color: #555; }
+.db-platform-badge[data-platform="reddit"] { background: rgba(255,69,0,0.1); color: #c44200; }
 .db-intel-body { font-size: 13px; line-height: 1.55; color: #7A9068; }
 .db-intel-takeaway { font-size: 12px; line-height: 1.55; color: rgba(85,98,76,0.7); border-left: 2px solid rgba(85,98,76,0.3); padding-left: 8px; }
 .db-empty { font-size: 13px; color: rgba(85,98,76,0.5); font-style: italic; }
@@ -1534,6 +1541,7 @@ export default function AdminDashboardPage() {
                       {active.contentOpportunities.map((item, index) => (
                         <div key={`${item.title}-${index}`} className="db-intel-item">
                           <div className="db-intel-name">
+                            {item.source ? <span className="db-platform-badge" data-platform={item.source}>{item.source}</span> : null}
                             {item.url ? <a className="db-link" href={item.url} target="_blank" rel="noreferrer">{item.title}</a> : item.title}
                           </div>
                           <div className="db-intel-body">{item.summary}</div>

@@ -134,6 +134,7 @@ interface NormalizedBriefIntel {
     summary?: string;
     priority?: string;
     format?: string;
+    source?: string;
     url?: string;
   }>;
 }
@@ -195,6 +196,7 @@ export interface NotTheRugBriefSummary {
     summary: string;
     priority: string;
     format: string;
+    source: string;
     url: string;
   }>;
   contentAngle: string | null;
@@ -561,11 +563,12 @@ function summarizeBrief(
       content: item.content ?? item.finding ?? '',
       url: item.url ?? '',
     })),
-    contentOpportunities: normalized.contentOpportunities.slice(0, 4).map((item) => ({
+    contentOpportunities: normalized.contentOpportunities.slice(0, 6).map((item) => ({
       title: item.title ?? 'Opportunity',
       summary: item.summary ?? '',
       priority: item.priority ?? '',
       format: item.format ?? '',
+      source: item.source ?? '',
       url: item.url ?? '',
     })),
     contentAngle: latestContent?.content?.content_angle ?? null,
