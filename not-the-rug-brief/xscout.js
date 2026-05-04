@@ -13,7 +13,7 @@
 require('./load-env');
 const { createAnthropicClient } = require('./anthropic-client');
 const { randomUUID } = require('crypto');
-const { saveLatestBrief, saveLatestWeather, saveLatestReviews, saveLatestInstagram, saveLatestReddit, getLatestBrief, getLatestWeather, getLatestReviews, getLatestInstagram, getLatestReddit, logError } = require('./store');
+const { saveLatestBrief, saveLatestWeather, saveLatestReviews, saveLatestInstagram, saveLatestReddit, getLatestBrief, getLatestWeather, getLatestReviews, getLatestInstagram, getLatestReddit, saveLatestLast30Days, getLatestLast30Days, logError } = require('./store');
 const { MODELS, trimAllSearchResults, buildCompactContext, logCostEstimate, computeStageCost } = require('./optimizer');
 const { getDefaultClientConfig, requireClientConfig } = require('./clients');
 const { loadBrandVoice, loadBriefContext } = require('./knowledge');
@@ -21,6 +21,8 @@ const { fetchOperationalWeather, buildWeatherContextBlock } = require('./service
 const { fetchReviewStatusViaWebSearch, buildReviewContextBlock } = require('./services/reviews');
 const { fetchInstagramInsights, buildInstagramContextBlock } = require('./services/instagram');
 const { fetchRedditSignals, buildRedditContextBlock } = require('./services/reddit');
+const { fetchLast30Days } = require('./services/last30days');
+const { normalizeSignals, mapToScoutFields, buildLast30DaysContextBlock, summarizeLast30DaysResult } = require('./normalize-last30days');
 
 let _anthropic = null;
 function getAnthropicClient() {
@@ -170,7 +172,7 @@ function collectRedditSignalsFromSearchResults(searchResults = [], compactContex
   return uniqueSignals;
 }
 
-function hydrateAgentData(agentData = {}, weatherReport = null, redditReport = null, searchResults = [], compactContext = '') {
+function hydrateAgentData(agentData = {}, weatherReport = null, redditReport = null, searchResults = [], compactContext = '', last30daysMapped = null) {
   const next = agentData && typeof agentData === 'object' ? { ...agentData } : {};
 
   if (weatherReport?.overall) {
@@ -212,6 +214,48 @@ function hydrateAgentData(agentData = {}, weatherReport = null, redditReport = n
 
       const searchFallback = collectRedditSignalsFromSearchResults(searchResults, compactContext);
       next.redditSignals = searchFallback.length > 0 ? searchFallback : brandMentionFallback;
+    }
+  }
+
+  if (last30daysMapped) {
+    // Merge last30days signals into agentData non-destructively.
+    // Items are deduplicated by URL so Scout's own synthesis is never displaced.
+    // Novel items (not already present by URL) are appended up to per-field caps.
+
+    if (Array.isArray(last30daysMapped.redditSignals) && last30daysMapped.redditSignals.length > 0) {
+      const existing = Array.isArray(next.redditSignals) ? next.redditSignals : [];
+      const existingUrls = new Set(existing.map((s) => s.url).filter(Boolean));
+      const novel = last30daysMapped.redditSignals.filter((s) => !existingUrls.has(s.url));
+      if (existing.length === 0) next.redditSignals = novel.slice(0, 5);
+      else next.redditSignals = [...existing, ...novel].slice(0, 8);
+    }
+
+    if (Array.isArray(last30daysMapped.brandMentions) && last30daysMapped.brandMentions.length > 0) {
+      const existing = Array.isArray(next.brandMentions) ? next.brandMentions : [];
+      const existingUrls = new Set(existing.map((s) => s.url).filter(Boolean));
+      const novel = last30daysMapped.brandMentions.filter((s) => !existingUrls.has(s.url));
+      if (novel.length > 0) next.brandMentions = [...existing, ...novel].slice(0, 10);
+    }
+
+    if (Array.isArray(last30daysMapped.competitorIntel) && last30daysMapped.competitorIntel.length > 0) {
+      const existing = Array.isArray(next.competitorIntel) ? next.competitorIntel : [];
+      const existingUrls = new Set(existing.map((s) => s.url).filter(Boolean));
+      const novel = last30daysMapped.competitorIntel.filter((s) => !existingUrls.has(s.url));
+      if (novel.length > 0) next.competitorIntel = [...existing, ...novel].slice(0, 8);
+    }
+
+    if (Array.isArray(last30daysMapped.contentOpportunities) && last30daysMapped.contentOpportunities.length > 0) {
+      const existing = Array.isArray(next.contentOpportunities) ? next.contentOpportunities : [];
+      const existingUrls = new Set(existing.map((s) => s.url).filter(Boolean));
+      const novel = last30daysMapped.contentOpportunities.filter((s) => !existingUrls.has(s.url));
+      if (novel.length > 0) next.contentOpportunities = [...existing, ...novel].slice(0, 6);
+    }
+
+    if (Array.isArray(last30daysMapped.localDemandSignals) && last30daysMapped.localDemandSignals.length > 0) {
+      const existing = Array.isArray(next.localDemandSignals) ? next.localDemandSignals : [];
+      const existingUrls = new Set(existing.map((s) => s.url).filter(Boolean));
+      const novel = last30daysMapped.localDemandSignals.filter((s) => !existingUrls.has(s.url));
+      if (novel.length > 0) next.localDemandSignals = [...existing, ...novel].slice(0, 6);
     }
   }
 
@@ -297,7 +341,7 @@ Benchmarks (reference only, not current unless re-sourced):
 // and return structured raw results. No analysis, no brief writing.
 // This keeps Stage 1 output tokens low.
 
-function buildSearchPrompt(config, weatherReport = null, reviewReport = null, instagramReport = null, redditReport = null) {
+function buildSearchPrompt(config, weatherReport = null, reviewReport = null, instagramReport = null, redditReport = null, last30daysContextBlock = '') {
   const freshnessDays = config.scout?.freshnessDays || 1;
   const searchPlan = getResolvedSearchPlan(config);
   const eventsContext = (config.upcomingEvents || [])
@@ -333,6 +377,7 @@ ${weatherContextBlock ? `${weatherContextBlock}\nUse this live NWS data as the c
 ${reviewContextBlock ? `${reviewContextBlock}\nUse this as the canonical source for Not The Rug's Google Business Profile review changes. Do not spend search effort rediscovering owned Google reviews.\n` : ''}
 ${instagramContextBlock ? `${instagramContextBlock}\nUse this as the canonical source for current Instagram follower and engagement changes. Do not spend search effort rediscovering owned Instagram metrics.\n` : ''}
 ${redditContextBlock ? `${redditContextBlock}\nUse this as the canonical Reddit source for brand mentions and participation opportunities. Do not spend search effort rediscovering the same Reddit threads unless you need corroboration.\n` : ''}
+${last30daysContextBlock ? `${last30daysContextBlock}\nUse this as a supplemental social intelligence source. Let it inform search priorities and surface gaps the standard searches might miss.\n` : ''}
 If Reddit is one of the preferred sources, prioritize recent subreddit recommendation threads, complaint threads, and direct brand mentions that reveal actual buyer language or participation windows. Ignore stale or low-signal Reddit threads.
 Search goals:
 ${goalLines}
@@ -346,7 +391,7 @@ Upcoming events for context: ${eventsContext || 'none'}`;
 // Sonnet sees ONLY the trimmed context (~5K tokens) + previous brief summary.
 // This is where all the quality reasoning happens.
 
-function buildBriefPrompt(config, compactContext, previousBrief, weatherReport = null, reviewReport = null, instagramReport = null, redditReport = null) {
+function buildBriefPrompt(config, compactContext, previousBrief, weatherReport = null, reviewReport = null, instagramReport = null, redditReport = null, last30daysContextBlock = '') {
   const brandVoice = loadBrandVoice(config.clientId);
   const dailyBriefVoice = brandVoice?.daily_brief_voice || null;
   const structuredContextBlock = buildStructuredContextBlock(config);
@@ -403,6 +448,7 @@ ${weatherContextBlock ? `\n${weatherContextBlock}` : ''}
 ${reviewContextBlock ? `\n${reviewContextBlock}` : ''}
 ${instagramContextBlock ? `\n${instagramContextBlock}` : ''}
 ${redditContextBlock ? `\n${redditContextBlock}` : ''}
+${last30daysContextBlock ? `\n${last30daysContextBlock}` : ''}
 ${structuredContextBlock ? `\n${structuredContextBlock}` : ''}
 
 EXCLUSIONS — never surface content about: ${(config.viralTargets?.exclusions || []).join(', ')}
@@ -421,6 +467,11 @@ Before writing output, think through:
 - If LIVE INSTAGRAM INSIGHTS is provided, use it as the primary source for follower-count changes and recent like/comment activity. If there is nothing notable, do not force an Instagram note.
 - If LIVE REDDIT SIGNALS is provided, use it as the primary source for Reddit brand mentions, recommendation threads, and participation opportunities, and populate redditSignals from it when any such signal exists.
 - If Reddit only appears through web search, still treat recent Reddit recommendation threads and brand mentions as valid signal. Populate redditSignals with up to 3 concrete Reddit items when search results clearly surface them.
+- If LAST 30 DAYS SOCIAL INTELLIGENCE is provided, treat it as a verified supplemental source. Use signals from it to enrich contentOpportunities, localDemandSignals, competitorIntel, or redditSignals when the agentData fields would otherwise be thin.
+
+URL REQUIREMENTS (mandatory):
+- Every redditSignals item MUST include a non-empty "url" pointing to the actual Reddit thread (e.g. https://www.reddit.com/r/<subreddit>/comments/...). Use the exact source URL from the search intel — do not invent, summarize, or guess. If you cannot find a real URL for an item, OMIT that item rather than emitting it with an empty url.
+- Same rule for brandMentions, competitorIntel, localEvents, reviewInsights, partnershipOpportunities, and contentOpportunities — every item with a "url" field requires a real, verifiable URL or it must be dropped.
 
 VISIBILITY GAP RULE:
 If brandMentions is empty AND upcoming event within 30 days → escalate to IMPORTANT.
@@ -499,31 +550,55 @@ async function runXScout(config = DEFAULT_CONFIG) {
 
   try {
     const previousBrief = await getLatestBrief(config.clientId);
-    const previousWeatherReport = await getLatestWeather(config.clientId);
-    const previousRedditReport = await getLatestReddit(config.clientId);
-    let weatherReport = null;
-    let reviewReport = null;
-    let instagramReport = null;
-    let redditReport = null;
     if (previousBrief) {
       console.log(`[${startTime.toISOString()}] XSCOUT: loaded previous brief from ${previousBrief.timestamp}`);
     } else {
       console.log(`[${startTime.toISOString()}] XSCOUT: no previous brief — first run`);
     }
 
+    // ── STAGE 0: Supplemental fetches (parallel) ──────────────────────────────
+    // Load all cached artifacts first (cheap local reads), then fire all live
+    // fetches simultaneously. Each source has its own fallback: live failure →
+    // cached artifact → skip gracefully. No source failure can block Stage 1.
+
+    const [
+      previousWeatherReport,
+      previousReviewReport,
+      previousInstagramReport,
+      previousRedditReport,
+      previousLast30Days,
+    ] = await Promise.all([
+      config.weather?.provider   ? getLatestWeather(config.clientId)    : Promise.resolve(null),
+      config.reviews?.provider   ? getLatestReviews(config.clientId)    : Promise.resolve(null),
+      config.instagram?.provider ? getLatestInstagram(config.clientId)  : Promise.resolve(null),
+      config.reddit?.provider    ? getLatestReddit(config.clientId)     : Promise.resolve(null),
+      config.last30days?.enabled ? getLatestLast30Days(config.clientId) : Promise.resolve(null),
+    ]);
+
+    console.log(`[${new Date().toISOString()}] XSCOUT: stage 0 — fetching supplemental data in parallel...`);
+
+    const [weatherOutcome, reviewOutcome, instagramOutcome, redditOutcome, last30Outcome] = await Promise.allSettled([
+      config.weather?.provider   ? fetchOperationalWeather(config)                              : Promise.resolve(null),
+      config.reviews?.provider   ? fetchReviewStatusViaWebSearch(config, previousReviewReport)  : Promise.resolve(null),
+      config.instagram?.provider ? fetchInstagramInsights(config, previousInstagramReport)      : Promise.resolve(null),
+      config.reddit?.provider    ? fetchRedditSignals(config, previousRedditReport)             : Promise.resolve(null),
+      config.last30days?.enabled ? fetchLast30Days(config)                                      : Promise.resolve(null),
+    ]);
+
+    // ── stage 0a: weather ─────────────────────────────────────────────────────
+    let weatherReport = null;
     if (config.weather?.provider) {
-      console.log(`[${new Date().toISOString()}] XSCOUT: stage 0 — fetching live weather...`);
-      try {
-        weatherReport = await fetchOperationalWeather(config);
+      if (weatherOutcome.status === 'fulfilled') {
+        weatherReport = weatherOutcome.value;
         if (weatherReport) {
           await saveLatestWeather(config.clientId, weatherReport);
-          console.log(`[${new Date().toISOString()}] XSCOUT: stage 0 complete — ${weatherReport.neighborhoods.length} neighborhood forecast(s) captured`);
+          console.log(`[${new Date().toISOString()}] XSCOUT: stage 0a complete — ${weatherReport.neighborhoods.length} neighborhood forecast(s) captured`);
         } else if (previousWeatherReport) {
           weatherReport = previousWeatherReport;
-          console.warn(`[${new Date().toISOString()}] XSCOUT: weather fetch returned no report — using cached weather from ${previousWeatherReport.fetchedAt || 'unknown time'}`);
+          console.warn(`[${new Date().toISOString()}] XSCOUT: weather fetch returned nothing — using cached from ${previousWeatherReport.fetchedAt || 'unknown time'}`);
         }
-      } catch (weatherErr) {
-        console.warn(`[${new Date().toISOString()}] XSCOUT: weather fetch failed — ${weatherErr.message}`);
+      } else {
+        console.warn(`[${new Date().toISOString()}] XSCOUT: weather fetch failed — ${weatherOutcome.reason?.message}`);
         if (previousWeatherReport) {
           weatherReport = previousWeatherReport;
           console.warn(`[${new Date().toISOString()}] XSCOUT: using cached weather from ${previousWeatherReport.fetchedAt || 'unknown time'}`);
@@ -531,53 +606,92 @@ async function runXScout(config = DEFAULT_CONFIG) {
       }
     }
 
+    // ── stage 0b: reviews ─────────────────────────────────────────────────────
+    let reviewReport = null;
     if (config.reviews?.provider) {
-      console.log(`[${new Date().toISOString()}] XSCOUT: stage 0b — fetching live reviews...`);
-      try {
-        const previousReviewReport = await getLatestReviews(config.clientId);
-        reviewReport = await fetchReviewStatusViaWebSearch(config, previousReviewReport);
+      if (reviewOutcome.status === 'fulfilled') {
+        reviewReport = reviewOutcome.value;
         if (reviewReport) {
           await saveLatestReviews(config.clientId, reviewReport);
           console.log(`[${new Date().toISOString()}] XSCOUT: stage 0b complete — review status ${reviewReport.overallStatus}`);
         }
-      } catch (reviewErr) {
-        console.warn(`[${new Date().toISOString()}] XSCOUT: review fetch failed — ${reviewErr.message}`);
+      } else {
+        console.warn(`[${new Date().toISOString()}] XSCOUT: review fetch failed — ${reviewOutcome.reason?.message}`);
       }
     }
 
+    // ── stage 0c: instagram ───────────────────────────────────────────────────
+    let instagramReport = null;
     if (config.instagram?.provider) {
-      console.log(`[${new Date().toISOString()}] XSCOUT: stage 0c — fetching instagram insights...`);
-      try {
-        const previousInstagramReport = await getLatestInstagram(config.clientId);
-        instagramReport = await fetchInstagramInsights(config, previousInstagramReport);
+      if (instagramOutcome.status === 'fulfilled') {
+        instagramReport = instagramOutcome.value;
         if (instagramReport) {
           await saveLatestInstagram(config.clientId, instagramReport);
           console.log(`[${new Date().toISOString()}] XSCOUT: stage 0c complete — instagram insights captured`);
         }
-      } catch (instagramErr) {
-        console.warn(`[${new Date().toISOString()}] XSCOUT: instagram fetch failed — ${instagramErr.message}`);
+      } else {
+        console.warn(`[${new Date().toISOString()}] XSCOUT: instagram fetch failed — ${instagramOutcome.reason?.message}`);
       }
     }
 
+    // ── stage 0d: reddit ──────────────────────────────────────────────────────
+    let redditReport = null;
     if (config.reddit?.provider) {
-      console.log(`[${new Date().toISOString()}] XSCOUT: stage 0d — fetching reddit signals...`);
-      try {
-        redditReport = await fetchRedditSignals(config, previousRedditReport);
+      if (redditOutcome.status === 'fulfilled') {
+        redditReport = redditOutcome.value;
         if (redditReport) {
           await saveLatestReddit(config.clientId, redditReport);
           console.log(`[${new Date().toISOString()}] XSCOUT: stage 0d complete — reddit mentions=${redditReport.mentionCount}, opportunities=${redditReport.participationOpportunityCount}`);
         } else if (previousRedditReport) {
           redditReport = previousRedditReport;
-          console.warn(`[${new Date().toISOString()}] XSCOUT: reddit fetch returned no report — using cached reddit data from ${previousRedditReport.fetchedAt || 'unknown time'}`);
+          console.warn(`[${new Date().toISOString()}] XSCOUT: reddit fetch returned nothing — using cached from ${previousRedditReport.fetchedAt || 'unknown time'}`);
         } else {
-          console.warn(`[${new Date().toISOString()}] XSCOUT: reddit fetch returned no report and no cached reddit data is available`);
+          console.warn(`[${new Date().toISOString()}] XSCOUT: reddit fetch returned nothing and no cached data available`);
         }
-      } catch (redditErr) {
-        console.warn(`[${new Date().toISOString()}] XSCOUT: reddit fetch failed — ${redditErr.message}`);
+      } else {
+        console.warn(`[${new Date().toISOString()}] XSCOUT: reddit fetch failed — ${redditOutcome.reason?.message}`);
         if (previousRedditReport) {
           redditReport = previousRedditReport;
           console.warn(`[${new Date().toISOString()}] XSCOUT: using cached reddit data from ${previousRedditReport.fetchedAt || 'unknown time'}`);
         }
+      }
+    }
+
+    // ── stage 0e: last30days ──────────────────────────────────────────────────
+    // Applies the same fallback pattern for both returned errors and thrown errors:
+    // if a valid cached artifact exists, use its mapped signals rather than
+    // dropping the layer entirely.
+    let last30daysMapped = null;
+    let last30daysContextBlock = '';
+    if (config.last30days?.enabled) {
+      const applyLast30DaysCache = () => {
+        if (previousLast30Days?.status === 'success' && previousLast30Days.mapped) {
+          last30daysMapped = previousLast30Days.mapped;
+          last30daysContextBlock = buildLast30DaysContextBlock(previousLast30Days, previousLast30Days.mapped);
+          console.warn(`[${new Date().toISOString()}] XSCOUT: using cached last30days data from ${previousLast30Days.fetchedAt || 'unknown time'}`);
+        } else {
+          console.warn(`[${new Date().toISOString()}] XSCOUT: no cached last30days data available — continuing without`);
+        }
+      };
+
+      if (last30Outcome.status === 'fulfilled') {
+        const serviceResult = last30Outcome.value;
+        if (serviceResult?.status === 'success') {
+          const normalizedSignals = normalizeSignals(serviceResult, config);
+          last30daysMapped = mapToScoutFields(normalizedSignals, config);
+          last30daysContextBlock = buildLast30DaysContextBlock(serviceResult, last30daysMapped);
+          const artifact = { ...serviceResult, normalized: normalizedSignals, mapped: last30daysMapped };
+          await saveLatestLast30Days(config.clientId, artifact);
+          console.log(`[${new Date().toISOString()}] XSCOUT: stage 0e complete — ${normalizedSignals.length} signals. ${summarizeLast30DaysResult(serviceResult, normalizedSignals)}`);
+        } else if (serviceResult === null) {
+          // fetchLast30Days returns null when config.last30days.enabled is false — no-op
+        } else {
+          console.warn(`[${new Date().toISOString()}] XSCOUT: last30days returned status=${serviceResult?.status} — ${serviceResult?.error || 'no data'}`);
+          applyLast30DaysCache();
+        }
+      } else {
+        console.warn(`[${new Date().toISOString()}] XSCOUT: last30days fetch threw — ${last30Outcome.reason?.message}`);
+        applyLast30DaysCache();
       }
     }
 
@@ -589,7 +703,7 @@ async function runXScout(config = DEFAULT_CONFIG) {
       max_tokens: 4000,          // Low cap — we only need raw results, not analysis
       messages: [{
         role: 'user',
-        content: buildSearchPrompt(config, weatherReport, reviewReport, instagramReport, redditReport),
+        content: buildSearchPrompt(config, weatherReport, reviewReport, instagramReport, redditReport, last30daysContextBlock),
       }],
       tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: getResolvedSearchPlan(config).length }],
     });
@@ -620,7 +734,7 @@ async function runXScout(config = DEFAULT_CONFIG) {
       max_tokens: 8000,
       messages: [{
         role: 'user',
-        content: buildBriefPrompt(config, compactContext, previousBrief, weatherReport, reviewReport, instagramReport, redditReport),
+        content: buildBriefPrompt(config, compactContext, previousBrief, weatherReport, reviewReport, instagramReport, redditReport, last30daysContextBlock),
       }],
     });
 
@@ -643,7 +757,7 @@ async function runXScout(config = DEFAULT_CONFIG) {
 
     // Layer 2: targeted retry if bracket repair also failed
     if (brief.needsRetry) {
-      const { agentData: retried, retryCost } = await retryAgentData(compactContext, config, previousBrief, weatherReport, reviewReport, instagramReport, redditReport);
+      const { agentData: retried, retryCost } = await retryAgentData(compactContext, config, previousBrief, weatherReport, reviewReport, instagramReport, redditReport, last30daysContextBlock);
       brief.agentData = retried;
       if (retried) {
         console.log(`[${new Date().toISOString()}] XSCOUT: AGENT DATA recovered via retry`);
@@ -654,7 +768,7 @@ async function runXScout(config = DEFAULT_CONFIG) {
     // Remove internal flag before saving
     delete brief.needsRetry;
 
-    brief.agentData = hydrateAgentData(brief.agentData, weatherReport, redditReport, searchResults, compactContext);
+    brief.agentData = hydrateAgentData(brief.agentData, weatherReport, redditReport, searchResults, compactContext, last30daysMapped);
 
     brief.stageCosts = scoutStageCosts;
 
@@ -725,14 +839,14 @@ function repairJson(rawStr) {
  * Called only when repairJson() fails to recover a parseable object.
  * Uses the same compact context Stage 3 had — no new searches needed.
  */
-async function retryAgentData(compactContext, config, previousBrief, weatherReport = null, reviewReport = null, instagramReport = null, redditReport = null) {
+async function retryAgentData(compactContext, config, previousBrief, weatherReport = null, reviewReport = null, instagramReport = null, redditReport = null, last30daysContextBlock = '') {
   console.log(`[${new Date().toISOString()}] XSCOUT: retrying AGENT DATA extraction...`);
 
   const retryPrompt = `You are a data extraction agent. Based on the search intelligence below,
 return ONLY a valid JSON object for the AGENT DATA section. No other text. No section headers.
 No markdown fences. Valid JSON only, starting with { and ending with }.
 
-${buildBriefPrompt(config, compactContext, previousBrief, weatherReport, reviewReport, instagramReport, redditReport)}
+${buildBriefPrompt(config, compactContext, previousBrief, weatherReport, reviewReport, instagramReport, redditReport, last30daysContextBlock)}
 
 CRITICAL: Return ONLY the JSON object. Nothing before {. Nothing after }.`;
 

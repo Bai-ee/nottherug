@@ -317,6 +317,39 @@ const notTheRug = withComputedEvents({
     competitorNames: ['Rover', 'Wag', 'Swifto', 'POOCHi', 'Happy Pants NYC', 'Spot Dog Walkers', 'Windy City Paws', 'BringFido', 'PetSmart'],
     restrictedPatterns: ['insured and bonded', 'veterinarian approved'],
   },
+  // ─── last30days integration ─────────────────────────────────────────────
+  // Controls what the last30days service fetches and how signals are classified.
+  // This config shape is intentionally portable — other clients can copy and
+  // adapt it without changing any logic in the service or normalization layer.
+  last30days: {
+    enabled: true,
+
+    // Topic passed to the last30days CLI — keyword-heavy, covers brand + category
+    primaryTopic: 'Brooklyn NYC dog walking pet care Williamsburg',
+
+    // Sources to search (comma-separated last30days source IDs)
+    // Omit 'x' here if X auth is not configured — the CLI handles it gracefully
+    sources: 'reddit,x,youtube,tiktok,instagram,hackernews',
+
+    // How many days back to look — matches scout.freshnessDays
+    lookbackDays: 7,
+
+    // Targeted Reddit communities (no r/ prefix)
+    subreddits: 'williamsburg,Brooklyn,AskNYC,nyc,dogs,puppy101',
+
+    // TikTok hashtags to search (no # prefix)
+    tiktokHashtags: 'dogwalking,brooklyndogs,nycpets,petcare,dogwalker',
+
+    // Primary X/Twitter handle for the brand (null = no targeted handle search)
+    xHandle: null,
+
+    // Terms used to classify a signal as a brand_mention
+    brandTerms: ['not the rug', 'nottherug', 'nottherug.com'],
+
+    // Competitor names used to classify a signal as a competitor_mention
+    // Must match strings that appear naturally in social content
+    competitorNames: ['Rover', 'Wag', 'Swifto', 'POOCHi', 'Happy Pants', 'Spot Dog Walkers'],
+  },
 });
 
 const CLIENTS = {

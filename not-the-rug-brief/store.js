@@ -218,6 +218,37 @@ async function getLatestReddit(clientId) {
   return readJSON(path.join(redditDir(clientId), 'latest-reddit.json'));
 }
 
+// --- last30days-specific helpers ---
+//
+// Stores the full three-layer artifact: raw + normalized + mapped.
+// Keeping all layers in one file makes it easy to debug, remap, and compare
+// across runs without needing to correlate separate files.
+//
+// Schema of the stored artifact:
+// {
+//   status, fetchedAt, clientId, topic, sources, lookbackDays,
+//   rawOutput,        // the raw last30days JSON report (schema.Report)
+//   normalized: [],   // normalized signal objects with provenance
+//   mapped: {}        // Scout-compatible agentData buckets
+// }
+
+function last30daysDir(clientId) {
+  return path.join(DATA_DIR, 'last30days', clientId);
+}
+
+async function saveLatestLast30Days(clientId, artifact) {
+  const dir = last30daysDir(clientId);
+  const archiveFile = path.join(dir, generateFilename('last30days'));
+  const latestFile = path.join(dir, 'latest-last30days.json');
+
+  await writeJSON(archiveFile, artifact);
+  await writeJSON(latestFile, artifact);
+}
+
+async function getLatestLast30Days(clientId) {
+  return readJSON(path.join(last30daysDir(clientId), 'latest-last30days.json'));
+}
+
 // --- Error log helper ---
 
 async function logError(error, context = {}) {
@@ -260,5 +291,8 @@ module.exports = {
   redditDir,
   saveLatestReddit,
   getLatestReddit,
+  last30daysDir,
+  saveLatestLast30Days,
+  getLatestLast30Days,
   logError,
 };

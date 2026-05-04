@@ -30,21 +30,21 @@ const css = `
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: #0C0F09; overflow: hidden; }
+html, body { background: #55624C; overflow: hidden; }
 
 :root {
-  --bg:   #0C0F09;
-  --s0:   #111510;
-  --s1:   #161B11;
-  --s2:   #1A1F14;
-  --bd0:  #1C2118;
-  --bd1:  #252D1E;
-  --bd2:  #333D2A;
-  --t0:   #3A4532;
-  --t1:   #4E5A42;
-  --t2:   #7A9068;
-  --t3:   #B4C89E;
-  --t4:   #EEF4DB;
+  --bg:   #55624C;
+  --s0:   #4A5640;
+  --s1:   #4E5A42;
+  --s2:   #3D4934;
+  --bd0:  rgba(237,243,219,0.12);
+  --bd1:  rgba(237,243,219,0.2);
+  --bd2:  rgba(237,243,219,0.32);
+  --t0:   rgba(237,243,219,0.3);
+  --t1:   rgba(237,243,219,0.5);
+  --t2:   rgba(237,243,219,0.7);
+  --t3:   rgba(237,243,219,0.88);
+  --t4:   #EDF3DB;
   --mono: 'Space Mono', monospace;
   --sans: 'Space Grotesk', sans-serif;
   --ease: cubic-bezier(0.25,0.1,0.25,1);
@@ -661,19 +661,20 @@ html, body { background: #0C0F09; overflow: hidden; }
 .ed-confirm-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(10, 13, 8, 0.7);
+  background: rgba(10, 13, 8, 0.72);
   z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
 }
 .ed-confirm-modal {
-  background: var(--s1);
-  border: 1px solid var(--bd1);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 61;
+  background: #111611;
+  border: 1px solid rgba(237,243,219,0.18);
   border-radius: 10px;
   padding: 24px;
-  width: 100%;
+  width: calc(100% - 48px);
   max-width: 320px;
   display: flex;
   flex-direction: column;

@@ -206,6 +206,7 @@ export interface LatestNotTheRugBrief {
   artifacts: BriefArtifacts;
   summary: NotTheRugBriefSummary;
   generatedImage: GeneratorImageSummary | null;
+  leadStats: import('@/lib/leads/stats').LeadStats | null;
 }
 
 export interface RunNotTheRugBriefResult {
@@ -229,6 +230,7 @@ export interface RunNotTheRugBriefResult {
   summary: NotTheRugBriefSummary;
   generatedImage: GeneratorImageSummary | null;
   runCost: BriefRunCost | null;
+  leadStats: import('@/lib/leads/stats').LeadStats | null;
 }
 
 export interface NotTheRugBriefRunRecord {
@@ -628,13 +630,25 @@ function hydrateLatestBriefFromRecord(record: PersistedLatestBriefRecord): Lates
     artifacts,
     summary: record.summary ?? summarizeBrief(latestBrief, latestContent),
     generatedImage: record.generatedImage ?? null,
+    leadStats: null,
   };
+}
+
+async function loadLeadStatsSafe(): Promise<import('@/lib/leads/stats').LeadStats | null> {
+  try {
+    const { getLeadStats } = await import('@/lib/leads/stats');
+    return await getLeadStats(30);
+  } catch (err) {
+    console.error('[brief] leadStats load failed', err);
+    return null;
+  }
 }
 
 export async function getLatestNotTheRugBrief(): Promise<LatestNotTheRugBrief> {
   const persisted = await getPersistedLatestBriefState().catch(() => null);
   if (persisted) {
-    return hydrateLatestBriefFromRecord(persisted);
+    const hydrated = hydrateLatestBriefFromRecord(persisted);
+    return { ...hydrated, leadStats: await loadLeadStatsSafe() };
   }
 
   const bundleData = (await getBriefBundle().getLatestNotTheRugArtifacts()) as {
@@ -655,6 +669,7 @@ export async function getLatestNotTheRugBrief(): Promise<LatestNotTheRugBrief> {
     artifacts,
     summary: summarizeBrief(latestBrief, latestContent),
     generatedImage: (await getNotTheRugBriefHistory(1))[0]?.generatedImage ?? null,
+    leadStats: await loadLeadStatsSafe(),
   };
 }
 
@@ -749,6 +764,7 @@ export async function runNotTheRugBrief(options: { fresh?: boolean } = {}): Prom
     summary,
     generatedImage,
     runCost,
+    leadStats: await loadLeadStatsSafe(),
   };
 
   if (result.status === 'success') {

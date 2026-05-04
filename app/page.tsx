@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import MeetGreetForm from '../components/MeetGreetForm';
 
 export default function Home() {
   useEffect(() => {
@@ -871,65 +872,7 @@ export default function Home() {
                 </div>
                 <div className="booking-form-body">
                   {/* Meet & Greet Tab */}
-                  <div id="svc-tab-meetgreet">
-                    <h3 style={{fontFamily:'var(--font-display)', marginBottom:'6px'}}>Let&apos;s meet your dog</h3>
-                    <p style={{color:'var(--mid-gray)', fontSize:'14px', marginBottom:'28px'}}>Fill this out and we&apos;ll reach out within 2 hours on weekdays to schedule your free visit.</p>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Your Name</label>
-                        <input type="text" className="form-control" placeholder="First & last name" />
-                      </div>
-                      <div className="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" className="form-control" placeholder="(347) 000-0000" />
-                      </div>
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Email Address</label>
-                        <input type="email" className="form-control" placeholder="you@email.com" />
-                      </div>
-                      <div className="form-group">
-                        <label>Neighborhood</label>
-                        <select className="form-control form-select">
-                          <option>Williamsburg</option>
-                          <option>Greenpoint</option>
-                          <option>Bushwick</option>
-                          <option>Bed-Stuy</option>
-                          <option>Park Slope</option>
-                          <option>East Williamsburg</option>
-                          <option>Other</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Dog&apos;s Name</label>
-                        <input type="text" className="form-control" placeholder="What's their name?" />
-                      </div>
-                      <div className="form-group">
-                        <label>Breed &amp; Age</label>
-                        <input type="text" className="form-control" placeholder="e.g. Golden, 3 years" />
-                      </div>
-                    </div>
-                    <div className="form-group" style={{marginBottom:'20px'}}>
-                      <label>Service Interested In</label>
-                      <select className="form-control form-select">
-                        <option>Daily Group Walks</option>
-                        <option>Walk + Training Sessions</option>
-                        <option>Puppy Visits</option>
-                        <option>Senior Dog Care</option>
-                        <option>Boarding / Sitting</option>
-                        <option>Not sure yet</option>
-                      </select>
-                    </div>
-                    <div className="form-group" style={{marginBottom:'24px'}}>
-                      <label>Anything we should know?</label>
-                      <textarea className="form-control" rows={3} placeholder="Quirks, anxieties, medication needs, building access info — anything helpful"></textarea>
-                    </div>
-                    <button className="btn btn-primary" style={{width:'100%', justifyContent:'center', padding:'16px'}} onClick={() => alert('✅ Form submitted! In a live site, this connects to Time To Pet or your CRM.')}>Request My Free Meet &amp; Greet</button>
-                    <p className="form-note">We respond within 2 hours Mon–Fri · No spam, ever · Your info stays private</p>
-                  </div>
+                  <MeetGreetForm paneId="svc-tab-meetgreet" source="services" />
 
                   {/* Service Booking Tab */}
                   <div id="svc-tab-service" style={{display:'none'}}>
@@ -1615,65 +1558,7 @@ export default function Home() {
                 </div>
                 <div className="booking-form-body">
                   {/* Meet & Greet Tab */}
-                  <div id="tab-meetgreet">
-                    <h3 style={{fontFamily:'var(--font-display)', marginBottom:'6px'}}>Let&apos;s meet your dog</h3>
-                    <p style={{color:'var(--mid-gray)', fontSize:'14px', marginBottom:'28px'}}>Fill this out and we&apos;ll reach out within 2 hours on weekdays to schedule your free visit.</p>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Your Name</label>
-                        <input type="text" className="form-control" placeholder="First & last name" />
-                      </div>
-                      <div className="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" className="form-control" placeholder="(347) 000-0000" />
-                      </div>
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Email Address</label>
-                        <input type="email" className="form-control" placeholder="you@email.com" />
-                      </div>
-                      <div className="form-group">
-                        <label>Neighborhood</label>
-                        <select className="form-control form-select">
-                          <option>Williamsburg</option>
-                          <option>Greenpoint</option>
-                          <option>Bushwick</option>
-                          <option>Bed-Stuy</option>
-                          <option>Park Slope</option>
-                          <option>East Williamsburg</option>
-                          <option>Other</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Dog&apos;s Name</label>
-                        <input type="text" className="form-control" placeholder="What's their name?" />
-                      </div>
-                      <div className="form-group">
-                        <label>Breed &amp; Age</label>
-                        <input type="text" className="form-control" placeholder="e.g. Golden, 3 years" />
-                      </div>
-                    </div>
-                    <div className="form-group" style={{marginBottom:'20px'}}>
-                      <label>Service Interested In</label>
-                      <select className="form-control form-select">
-                        <option>Daily Group Walks</option>
-                        <option>Walk + Training Sessions</option>
-                        <option>Puppy Visits</option>
-                        <option>Senior Dog Care</option>
-                        <option>Boarding / Sitting</option>
-                        <option>Not sure yet</option>
-                      </select>
-                    </div>
-                    <div className="form-group" style={{marginBottom:'24px'}}>
-                      <label>Anything we should know?</label>
-                      <textarea className="form-control" rows={3} placeholder="Quirks, anxieties, medication needs, building access info — anything helpful"></textarea>
-                    </div>
-                    <button className="btn btn-primary" style={{width:'100%', justifyContent:'center', padding:'16px'}} onClick={() => alert('✅ Form submitted! In a live site, this connects to Time To Pet or your CRM.')}>Request My Free Meet &amp; Greet</button>
-                    <p className="form-note">We respond within 2 hours Mon–Fri · No spam, ever · Your info stays private</p>
-                  </div>
+                  <MeetGreetForm paneId="tab-meetgreet" source="book" />
 
                   {/* Service Booking Tab */}
                   <div id="tab-service" style={{display:'none'}}>

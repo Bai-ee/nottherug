@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, signOut, User, getIdToken } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 
 interface BriefSummary {
   latestRunAt: string | null;
@@ -94,6 +95,17 @@ interface LatestBriefResponse {
       overallScore?: number | null;
     } | null;
   } | null;
+  leadStats?: LeadStatsSummary | null;
+}
+
+interface LeadStatsSummary {
+  rangeDays: number;
+  timezone: string;
+  today: { dateLabel: string; count: number };
+  yesterday: { dateLabel: string; count: number };
+  totals: { allTime: number; last7Days: number; last30Days: number };
+  byDay?: Array<{ date: string; count: number }>;
+  bySource?: Record<string, number>;
 }
 
 interface StageCost {
@@ -165,117 +177,196 @@ const css = `
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: #1F2318; }
+html, body { background: #55624C; }
 body { font-family: 'Outfit', sans-serif; }
 
-.db { --db-top-h: 48px; --db-nav-h: 51px; min-height: 100vh; background: #1F2318; color: #B4C89E; }
-.db-top { position: sticky; top: 0; z-index: 30; height: var(--db-top-h); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #2E3828; background: rgba(26,30,20,0.94); backdrop-filter: blur(12px); }
+.db { --db-top-h: 48px; --db-nav-h: 51px; min-height: 100vh; background: #55624C; color: #EDF3DB; }
+.db-top { position: sticky; top: 0; z-index: 30; height: var(--db-top-h); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid rgba(237,243,219,0.12); background: rgba(50,60,38,0.96); backdrop-filter: blur(12px); }
 .db-top-l, .db-top-r { display: flex; align-items: center; gap: 14px; }
 .db-brand, .db-nav-link, .db-email, .db-signout, .db-chip, .db-kicker, .db-note, .db-rail-date, .db-hero-meta, .db-meta { font-family: 'Space Mono', monospace; }
-.db-brand { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4E5A42; }
-.db-vsep { width: 1px; height: 12px; background: #2E3828; }
-.db-title { font-size: 14px; color: #EEF4DB; }
-.db-email { display: none; font-size: 11px; color: #4E5A42; }
-.db-signout { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #4E5A42; border: none; background: none; cursor: pointer; }
-.db-nav { position: sticky; top: var(--db-top-h); z-index: 29; display: flex; gap: 0; overflow-x: auto; min-height: var(--db-nav-h); padding: 0 20px; border-bottom: 1px solid #2E3828; background: rgba(26,30,20,0.96); backdrop-filter: blur(12px); }
-.db-nav-link { display: block; padding: 12px 16px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: #4E5A42; border-bottom: 2px solid transparent; white-space: nowrap; }
-.db-nav-link-active { color: #EEF4DB; border-bottom-color: #B4C89E; }
+.db-brand { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(237,243,219,0.4); }
+.db-vsep { width: 1px; height: 12px; background: rgba(237,243,219,0.15); }
+.db-title { font-size: 14px; color: #EDF3DB; }
+.db-email { display: none; font-size: 11px; color: rgba(237,243,219,0.4); }
+.db-signout { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(237,243,219,0.4); border: none; background: none; cursor: pointer; }
+.db-nav { position: sticky; top: var(--db-top-h); z-index: 29; display: flex; gap: 0; overflow-x: auto; min-height: var(--db-nav-h); padding: 0 20px; border-bottom: 1px solid rgba(237,243,219,0.12); background: rgba(50,60,38,0.96); backdrop-filter: blur(12px); }
+.db-nav-link { display: block; padding: 12px 16px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: rgba(237,243,219,0.5); border-bottom: 2px solid transparent; white-space: nowrap; }
+.db-nav-link-active { color: #EDF3DB; border-bottom-color: rgba(237,243,219,0.7); }
 .db-page { max-width: 1280px; margin: 0 auto; padding: 20px 16px 72px; display: grid; gap: 18px; }
 
-.db-hero { position: relative; overflow: hidden; border: 1px solid #2E3828; border-radius: 24px; background: #20261B; min-height: 280px; }
+.db-hero { position: relative; overflow: hidden; border: 1px solid rgba(237,243,219,0.12); border-radius: 24px; background: #4A5640; min-height: 280px; }
 .db-hero-bg, .db-hero-canvas, .db-hero-overlay { position: absolute; inset: 0; }
 .db-hero-canvas { width: 100%; height: 100%; display: block; }
 .db-hero-overlay { background:
-  linear-gradient(180deg, rgba(10,14,12,0.12) 0%, rgba(10,14,12,0.34) 48%, rgba(15,20,15,0.88) 100%),
-  linear-gradient(90deg, rgba(18,22,17,0.76) 0%, rgba(18,22,17,0.3) 46%, rgba(18,22,17,0.16) 100%);
+  linear-gradient(180deg, rgba(50,62,38,0.12) 0%, rgba(50,62,38,0.34) 48%, rgba(50,62,38,0.88) 100%),
+  linear-gradient(90deg, rgba(50,62,38,0.76) 0%, rgba(50,62,38,0.3) 46%, rgba(50,62,38,0.16) 100%);
 }
 .db-hero-inner { position: relative; z-index: 1; min-height: 280px; display: grid; grid-template-columns: 1fr; padding: 22px; gap: 18px; }
 .db-hero-copy { display: grid; align-content: center; gap: 14px; }
-.db-kicker { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(180,200,158,0.82); }
-.db-heading { font-family: 'Fraunces', serif; font-size: clamp(36px, 7vw, 72px); line-height: 0.95; color: #EEF4DB; max-width: 9ch; }
-.db-subhead { font-size: 15px; line-height: 1.7; color: rgba(238,244,219,0.82); max-width: 640px; }
-.db-hero-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(238,244,219,0.5); }
+.db-kicker { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(237,243,219,0.7); }
+.db-heading { font-family: 'Fraunces', serif; font-size: clamp(36px, 7vw, 72px); line-height: 0.95; color: #EDF3DB; max-width: 9ch; }
+.db-subhead { font-size: 15px; line-height: 1.7; color: rgba(237,243,219,0.82); max-width: 640px; }
+.db-hero-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(237,243,219,0.5); }
 .db-chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
-.db-chip { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 11px; border-radius: 999px; border: 1px solid #3A4532; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #EEF4DB; background: rgba(27,34,27,0.44); }
-.db-chip-ready { border-color: rgba(180,200,158,0.44); color: #D7E6C4; }
+.db-chip { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 11px; border-radius: 999px; border: 1px solid rgba(237,243,219,0.2); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #EDF3DB; background: rgba(50,62,38,0.5); }
+.db-chip-ready { border-color: rgba(237,243,219,0.35); color: #EDF3DB; }
 .db-chip-review { border-color: rgba(232,212,168,0.34); color: #E8D4A8; }
 .db-chip-error { border-color: rgba(196,103,75,0.32); color: #E9B5A6; }
 .db-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.db-btn { min-height: 44px; padding: 11px 18px; border-radius: 999px; border: 1px solid #3A4532; background: rgba(37,46,31,0.88); color: #EEF4DB; cursor: pointer; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
-.db-btn-primary { background: #B4C89E; border-color: transparent; color: #182014; }
+.db-btn { min-height: 44px; padding: 11px 18px; border-radius: 999px; border: 1px solid rgba(237,243,219,0.2); background: rgba(50,62,38,0.9); color: #EDF3DB; cursor: pointer; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.db-btn-primary { background: #EDF3DB; border-color: transparent; color: #55624C; }
 .db-btn:disabled { opacity: 0.6; cursor: default; }
 .db-error { padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(196,103,75,0.25); background: rgba(196,103,75,0.08); color: #E8D4A8; font-size: 13px; line-height: 1.55; }
 
 .db-hero-aside { display: grid; gap: 12px; align-content: center; }
 .db-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.db-stat-card { padding: 16px; border-radius: 18px; border: 1px solid rgba(46,56,40,0.9); background: rgba(31,35,24,0.62); backdrop-filter: blur(10px); display: grid; gap: 6px; }
-.db-stat-value { font-family: 'Fraunces', serif; font-size: 34px; line-height: 1; color: #EEF4DB; }
+.db-stat-card { padding: 16px; border-radius: 18px; border: 1px solid rgba(85,98,76,0.25); background: rgba(237,243,219,0.9); backdrop-filter: blur(10px); display: grid; gap: 6px; }
+.db-stat-value { font-family: 'Fraunces', serif; font-size: 34px; line-height: 1; color: #55624C; }
 .db-stat-copy { font-size: 13px; line-height: 1.55; color: #7A9068; }
 .db-stat-copy span { display: block; }
-.db-stat-copy strong { color: #D8E5C4; font-weight: 500; }
+.db-stat-copy strong { color: #3A4532; font-weight: 500; }
 
 .db-band { display: grid; grid-template-columns: 1fr; gap: 18px; }
-.db-panel { border: 1px solid #2E3828; border-radius: 20px; background: #252E1F; overflow: hidden; }
-.db-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid #2E3828; }
-.db-panel-title { font-family: 'Fraunces', serif; font-size: 21px; color: #EEF4DB; }
+.db-panel { border: 1px solid rgba(85,98,76,0.2); border-radius: 20px; background: #EDF3DB; overflow: hidden; }
+.db-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid rgba(85,98,76,0.15); }
+.db-panel-title { font-family: 'Fraunces', serif; font-size: 21px; color: #55624C; }
 .db-panel-body { padding: 18px; display: grid; gap: 14px; }
-.db-note { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #4E5A42; }
+.db-note { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(85,98,76,0.6); }
 .db-copy { font-size: 14px; line-height: 1.7; color: #7A9068; white-space: pre-line; }
 .db-card-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-.db-info-card { border: 1px solid #2E3828; border-radius: 16px; background: #1F2318; padding: 15px; display: grid; gap: 8px; }
-.db-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #4E5A42; }
-.db-value { font-size: 14px; line-height: 1.65; color: #B4C89E; }
-.db-link { color: #B4C89E; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.db-link:hover { color: #EEF4DB; }
+.db-info-card { border: 1px solid rgba(85,98,76,0.18); border-radius: 16px; background: rgba(255,255,255,0.6); padding: 15px; display: grid; gap: 8px; }
+.db-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(85,98,76,0.6); }
+.db-value { font-size: 14px; line-height: 1.65; color: #55624C; }
+.db-link { color: #55624C; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.db-link:hover { color: #3A4532; }
 .db-post-package { display: grid; gap: 14px; }
 .db-post-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; }
 .db-post-copy-card { min-width: 0; max-width: 760px; }
 .db-post-image-col { width: min(100%, 156px); max-width: 156px; display: grid; gap: 10px; align-content: start; justify-self: center; }
-.db-post-image-wrap { border-radius: 18px; overflow: hidden; border: 1px solid #2E3828; background: #1A1E14; }
+.db-post-image-wrap { border-radius: 18px; overflow: hidden; border: 1px solid rgba(85,98,76,0.18); background: rgba(85,98,76,0.06); }
 .db-post-image { width: 100%; height: auto; display: block; }
 .db-post-placeholder { width: 100%; aspect-ratio: 4 / 5; display: grid; place-items: center; padding: 18px; background:
-  radial-gradient(circle at 30% 20%, rgba(180,200,158,0.12), transparent 34%),
-  linear-gradient(180deg, #232B1E 0%, #171C14 100%);
-  color: #7A9068; text-align: center; }
-.db-post-placeholder-frame { width: min(82%, 260px); aspect-ratio: 4 / 5; border-radius: 16px; border: 1px dashed #3A4532; display: grid; place-items: center; padding: 16px; }
+  radial-gradient(circle at 30% 20%, rgba(85,98,76,0.12), transparent 34%),
+  linear-gradient(180deg, #EDF3DB 0%, #D8E8C0 100%);
+  color: #55624C; text-align: center; }
+.db-post-placeholder-frame { width: min(82%, 260px); aspect-ratio: 4 / 5; border-radius: 16px; border: 1px dashed rgba(85,98,76,0.3); display: grid; place-items: center; padding: 16px; }
 .db-post-placeholder-copy { display: grid; gap: 8px; }
-.db-post-placeholder-title { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #A5BA90; }
+.db-post-placeholder-title { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #55624C; }
 .db-post-placeholder-note { font-size: 13px; line-height: 1.5; color: #6E8160; }
-.db-post-placeholder-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 8px 12px; border-radius: 999px; border: 1px solid #3A4532; background: rgba(31,35,24,0.78); color: #EEF4DB; text-decoration: none; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
-.db-post-placeholder-cta:hover { background: #252E1F; color: #EEF4DB; }
+.db-post-placeholder-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(85,98,76,0.3); background: rgba(85,98,76,0.9); color: #EDF3DB; text-decoration: none; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.db-post-placeholder-cta:hover { background: #55624C; color: #EDF3DB; }
 .db-post-actions { display: grid; gap: 8px; }
 .db-post-actions .db-btn { width: 100%; justify-content: center; display: inline-flex; align-items: center; }
 
 .db-intel-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-.db-intel-grid .db-label { font-family: 'Fraunces', serif; font-size: 17px; letter-spacing: 0.01em; text-transform: none; color: #EEF4DB; line-height: 1.2; }
+.db-intel-grid .db-label { font-family: 'Fraunces', serif; font-size: 17px; letter-spacing: 0.01em; text-transform: none; color: #55624C; line-height: 1.2; }
 .db-intel-list { display: grid; gap: 10px; }
-.db-intel-item { border-top: 1px solid #2E3828; padding-top: 10px; display: grid; gap: 5px; }
+.db-intel-item { border-top: 1px solid rgba(85,98,76,0.15); padding-top: 10px; display: grid; gap: 5px; }
 .db-intel-item:first-child { border-top: none; padding-top: 0; }
-.db-intel-name { font-size: 13px; font-weight: 500; color: #EEF4DB; }
+.db-intel-name { font-size: 13px; font-weight: 500; color: #55624C; }
 .db-intel-body { font-size: 13px; line-height: 1.55; color: #7A9068; }
-.db-intel-takeaway { font-size: 12px; line-height: 1.55; color: #A5BA90; border-left: 2px solid #3A4532; padding-left: 8px; }
-.db-empty { font-size: 13px; color: #4E5A42; font-style: italic; }
+.db-intel-takeaway { font-size: 12px; line-height: 1.55; color: rgba(85,98,76,0.7); border-left: 2px solid rgba(85,98,76,0.3); padding-left: 8px; }
+.db-empty { font-size: 13px; color: rgba(85,98,76,0.5); font-style: italic; }
 
-.db-rail { border: 1px solid #2E3828; border-radius: 18px; background: #1A1E14; padding: 16px; display: grid; gap: 12px; }
+.db-rail { border: 1px solid rgba(85,98,76,0.2); border-radius: 18px; background: #EDF3DB; padding: 16px; display: grid; gap: 12px; }
 .db-rail-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
-.db-rail-card { flex: 0 0 auto; width: 172px; border-radius: 14px; border: 1px solid #2E3828; background: transparent; overflow: hidden; }
+.db-rail-card { flex: 0 0 auto; width: 172px; border-radius: 14px; border: 1px solid rgba(85,98,76,0.18); background: transparent; overflow: hidden; }
 .db-rail-item { width: 100%; padding: 12px 14px; border: none; background: transparent; text-align: left; cursor: pointer; display: grid; gap: 8px; }
-.db-rail-item-active { background: #252E1F; }
-.db-rail-score { font-family: 'Fraunces', serif; font-size: 30px; line-height: 1; color: #EEF4DB; }
+.db-rail-item-active { background: rgba(85,98,76,0.12); }
+.db-rail-score { font-family: 'Fraunces', serif; font-size: 30px; line-height: 1; color: #55624C; }
 .db-rail-date { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #7A9068; }
 .db-rail-copy { font-size: 12px; line-height: 1.45; color: #7A9068; }
-.db-rail-thumb { width: 100%; aspect-ratio: 4 / 5; border-radius: 10px; overflow: hidden; border: 1px solid #2E3828; background: #1A1E14; }
+.db-rail-thumb { width: 100%; aspect-ratio: 4 / 5; border-radius: 10px; overflow: hidden; border: 1px solid rgba(85,98,76,0.18); background: rgba(85,98,76,0.08); }
 .db-rail-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.db-rail-thumb-empty { width: 100%; aspect-ratio: 4 / 5; border-radius: 10px; border: 1px dashed #2E3828; display: grid; place-items: center; padding: 10px; text-align: center; background:
-  radial-gradient(circle at 30% 20%, rgba(180,200,158,0.08), transparent 36%),
-  linear-gradient(180deg, #20261B 0%, #161A13 100%); color: #4E5A42; }
+.db-rail-thumb-empty { width: 100%; aspect-ratio: 4 / 5; border-radius: 10px; border: 1px dashed rgba(85,98,76,0.2); display: grid; place-items: center; padding: 10px; text-align: center; background:
+  radial-gradient(circle at 30% 20%, rgba(85,98,76,0.1), transparent 36%),
+  linear-gradient(180deg, #EDF3DB 0%, #D8E8C0 100%); color: rgba(85,98,76,0.5); }
 .db-rail-thumb-empty span { display: grid; gap: 6px; }
-.db-rail-thumb-empty strong { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #7A9068; font-weight: 400; }
-.db-rail-thumb-empty em { font-size: 11px; line-height: 1.4; color: #5C6455; font-style: normal; }
-.db-rail-actions { display: flex; gap: 0; border-top: 1px solid #2E3828; }
-.db-rail-action { flex: 1; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #B4C89E; text-decoration: none; background: #1A1E14; border: 0; cursor: pointer; }
-.db-rail-action + .db-rail-action { border-left: 1px solid #2E3828; }
-.db-rail-action:hover { color: #EEF4DB; background: #252E1F; }
+.db-rail-thumb-empty strong { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(85,98,76,0.6); font-weight: 400; }
+.db-rail-thumb-empty em { font-size: 11px; line-height: 1.4; color: rgba(85,98,76,0.5); font-style: normal; }
+.db-rail-actions { display: flex; gap: 0; border-top: 1px solid rgba(85,98,76,0.18); }
+.db-rail-action { flex: 1; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #55624C; text-decoration: none; background: transparent; border: 0; cursor: pointer; }
+.db-rail-action + .db-rail-action { border-left: 1px solid rgba(85,98,76,0.18); }
+.db-rail-action:hover { color: #3A4532; background: rgba(85,98,76,0.08); }
+
+/* ── INSTAGRAM POST CARD ─────────────────────────────────────────────────── */
+.ig-card { background: #fff; border: 1px solid rgba(85,98,76,0.15); border-radius: 12px; overflow: hidden; width: 100%; }
+.ig-header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+.ig-avatar { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, #55624C 0%, #7A9068 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #7A9068; }
+.ig-avatar-initials { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 700; color: #EDF3DB; letter-spacing: 0.02em; }
+.ig-header-info { flex: 1; min-width: 0; }
+.ig-username { font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; color: #0a0a0a; line-height: 1.2; }
+.ig-location { font-family: 'Outfit', sans-serif; font-size: 11px; color: rgba(0,0,0,0.4); line-height: 1.2; }
+.ig-more { font-size: 18px; color: rgba(0,0,0,0.45); background: none; border: none; cursor: default; padding: 0 2px; line-height: 1; letter-spacing: 1px; }
+.ig-image { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: #f3f3f3; }
+.ig-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ig-image-ph { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: linear-gradient(180deg, #EDF3DB 0%, #D8E8C0 100%); }
+.ig-image-ph-icon { opacity: 0.25; }
+.ig-image-ph-text { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(85,98,76,0.7); text-align: center; line-height: 1.6; }
+.ig-image-ph-cta { display: inline-flex; align-items: center; justify-content: center; padding: 7px 14px; border-radius: 6px; background: #55624C; color: #EDF3DB; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
+.ig-actions { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 4px; }
+.ig-act-left { display: flex; align-items: center; gap: 14px; }
+.ig-icon-btn { display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: default; padding: 0; color: #0a0a0a; }
+.ig-icon-btn svg { width: 22px; height: 22px; }
+.ig-caption { padding: 2px 12px 6px; font-family: 'Outfit', sans-serif; font-size: 13px; line-height: 1.6; color: #262626; overflow-wrap: break-word; word-break: break-word; }
+.ig-caption-user { font-weight: 700; color: #0a0a0a; margin-right: 5px; }
+.ig-timestamp { padding: 2px 12px 12px; font-family: 'Outfit', sans-serif; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(0,0,0,0.3); }
+.ig-post-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+/* ── PLATFORM CAROUSEL (Embla) ───────────────────────────────────────────── */
+.carousel-shell { display: flex; flex-direction: column; gap: 10px; overflow: hidden; min-width: 0; }
+/* Track: explicit width=100% so slide width % resolves correctly */
+.platform-track { width: 100%; }
+/* Mobile: each slide = full track width */
+.platform-slot { flex: none; width: 100%; min-width: 0; overflow: hidden; display: flex; flex-direction: column; gap: 6px; }
+/* 640px+: 45% slides with gap → centered card shows ~22% peek on each side */
+@media (min-width: 640px) {
+  .platform-track { gap: 20px; }
+  .platform-slot { width: 45%; }
+}
+.platform-label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(85,98,76,0.6); padding: 0 2px; }
+/* Footer: prev arrow · dots · next arrow — sits below the track */
+.carousel-footer { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.carousel-arrow { width: 32px; height: 32px; border-radius: 50%; background: #55624C; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #EDF3DB; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: opacity 0.15s, background 0.15s; flex-shrink: 0; }
+.carousel-arrow:hover { background: #3A4532; }
+.carousel-arrow:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+.carousel-dots { display: flex; justify-content: center; align-items: center; gap: 7px; }
+.carousel-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(85,98,76,0.22); border: none; cursor: pointer; padding: 0; transition: background 0.2s, transform 0.2s; }
+.carousel-dot.active { background: #55624C; transform: scale(1.35); cursor: default; }
+
+/* ── TWITTER/X POST CARD ─────────────────────────────────────────────────── */
+.tw-card { background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 12px; overflow: hidden; width: 100%; }
+.tw-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 6px; }
+.tw-avatar-wrap { display: flex; align-items: center; gap: 10px; }
+.tw-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #55624C 0%, #7A9068 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tw-avatar-initials { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; color: #EDF3DB; }
+.tw-name { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; color: #0f1419; line-height: 1.2; }
+.tw-handle { font-family: 'Outfit', sans-serif; font-size: 13px; color: rgba(0,0,0,0.45); line-height: 1.2; }
+.tw-x-logo { color: #0f1419; flex-shrink: 0; }
+.tw-body { padding: 4px 14px 10px; font-family: 'Outfit', sans-serif; font-size: 14px; line-height: 1.55; color: #0f1419; overflow-wrap: break-word; word-break: break-word; }
+.tw-image { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: #f7f9fa; border-top: 1px solid rgba(0,0,0,0.06); border-bottom: 1px solid rgba(0,0,0,0.06); }
+.tw-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tw-image-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.tw-actions { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px 12px; }
+.tw-act-btn { display: flex; align-items: center; gap: 5px; background: none; border: none; cursor: default; color: rgba(0,0,0,0.4); font-family: 'Outfit', sans-serif; font-size: 12px; padding: 0; }
+.tw-act-btn svg { width: 18px; height: 18px; }
+
+/* ── FACEBOOK POST CARD ──────────────────────────────────────────────────── */
+.fb-card { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; width: 100%; }
+.fb-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px 8px; }
+.fb-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #55624C 0%, #7A9068 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fb-avatar-initials { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; color: #EDF3DB; }
+.fb-name { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; color: #050505; line-height: 1.2; }
+.fb-meta { font-family: 'Outfit', sans-serif; font-size: 11px; color: rgba(0,0,0,0.4); }
+.fb-body { padding: 0 14px 10px; font-family: 'Outfit', sans-serif; font-size: 14px; line-height: 1.55; color: #050505; overflow-wrap: break-word; word-break: break-word; }
+.fb-image { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: #f0f2f5; }
+.fb-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fb-image-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.fb-reactions { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px 4px; font-family: 'Outfit', sans-serif; font-size: 12px; color: rgba(0,0,0,0.45); }
+.fb-btn-row { display: flex; border-top: 1px solid rgba(0,0,0,0.1); }
+.fb-btn { flex: 1; min-height: 36px; display: flex; align-items: center; justify-content: center; gap: 5px; background: none; border: none; cursor: default; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; color: rgba(0,0,0,0.5); padding: 0; }
+.fb-btn + .fb-btn { border-left: 1px solid rgba(0,0,0,0.1); }
+.fb-btn svg { width: 18px; height: 18px; }
 
 @media (min-width: 900px) {
   .db-email { display: block; }
@@ -284,8 +375,13 @@ body { font-family: 'Outfit', sans-serif; }
   .db-band { grid-template-columns: minmax(0, 1.15fr) minmax(340px, 420px); align-items: start; }
   .db-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .db-intel-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .db-post-main { grid-template-columns: minmax(0, 1fr) minmax(156px, 196px); gap: clamp(12px, 1.8vw, 24px); align-items: start; }
-  .db-post-image-col { width: 100%; max-width: 196px; justify-self: end; }
+}
+
+@media (min-width: 1280px) {
+  /* Embla deactivated — all 3 cards sit side-by-side with gap */
+  .carousel-footer { display: none; }
+  .platform-track { gap: 24px; }
+  .platform-slot { width: calc(33.333% - 16px); }
 }
 `;
 
@@ -755,6 +851,16 @@ export default function AdminDashboardPage() {
   const [latest, setLatest] = useState<LatestBriefResponse | null>(null);
   const [history, setHistory] = useState<BriefHistoryItem[]>([]);
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => setCarouselIndex(carouselApi.selectedScrollSnap());
+    carouselApi.on('select', onSelect);
+    carouselApi.on('reInit', onSelect);
+    return () => { carouselApi.off('select', onSelect); carouselApi.off('reInit', onSelect); };
+  }, [carouselApi]);
 
   const fetchOverview = useCallback(async (firebaseUser: User) => {
     setLoading(true);
@@ -940,6 +1046,8 @@ export default function AdminDashboardPage() {
           {/* <a className="db-nav-link" href="/admin/dashboard/brief">Brief</a> */}
           {/* <a className="db-nav-link" href="/admin/dashboard/photos">Photos</a> */}
           <a className="db-nav-link" href="/admin/dashboard/generator">Generator</a>
+          <a className="db-nav-link" href="/admin/dashboard/leads">Leads</a>
+          <a className="db-nav-link" href="/admin/dashboard/preview/founder-brief">Founder Brief</a>
         </nav>
 
         <div className="db-page">
@@ -984,6 +1092,14 @@ export default function AdminDashboardPage() {
                       <span>Storage {formatUsd(active?.runCost?.firebaseEstimatedUsd)}</span>
                     </div>
                   </div>
+                  <div id="db-leads-captured-card" className="db-stat-card">
+                    <div className="db-label">Leads Captured</div>
+                    <div className="db-stat-value">{latest?.leadStats?.today?.count ?? 0}</div>
+                    <div className="db-stat-copy">
+                      <span>Today ({latest?.leadStats?.today?.dateLabel ?? '—'}) · Yesterday <strong>{latest?.leadStats?.yesterday?.count ?? 0}</strong></span>
+                      <span>7d <strong>{latest?.leadStats?.totals?.last7Days ?? 0}</strong> · 30d <strong>{latest?.leadStats?.totals?.last30Days ?? 0}</strong> · All <strong>{latest?.leadStats?.totals?.allTime ?? 0}</strong></span>
+                    </div>
+                  </div>
                 </div>
               </aside>
             </div>
@@ -1002,57 +1118,216 @@ export default function AdminDashboardPage() {
             </div>
           </section>
 
-          <section className="db-band">
-            <div className="db-panel">
+          <section className="db-panel">
               <div className="db-panel-head">
                 <h2 className="db-panel-title">Post of the Day</h2>
                 <span className="db-note">{selectedHistory ? 'Historical package' : 'Latest package'}</span>
               </div>
               <div className="db-panel-body">
-                <div className="db-post-package">
-                  <div className="db-post-main">
-                    <div className="db-info-card db-post-copy-card">
-                      <div className="db-label">Instagram Copy</div>
-                      <div className="db-copy">{instagramCopy ?? 'No Instagram copy saved for this run.'}</div>
-                    </div>
 
-                    <div className="db-post-image-col">
-                      {/* <div className="db-label">Generated Image</div> */}
-                      <div className="db-post-image-wrap">
+                {/* ── Platform post carousel (Embla) ── */}
+                <Carousel
+                  id="platform-post-carousel-shell"
+                  className="carousel-shell"
+                  opts={{ align: 'center', containScroll: false, breakpoints: { '(min-width: 1280px)': { active: false } } }}
+                  setApi={setCarouselApi}
+                >
+                  <CarouselContent className="platform-track">
+
+                  {/* Slot 1 — Instagram */}
+                  <CarouselItem className="platform-slot">
+                    <div className="platform-label">Instagram</div>
+                    <div id="ig-post-card" className="ig-card">
+
+                      <div className="ig-header">
+                        <div className="ig-avatar">
+                          <span className="ig-avatar-initials">NTR</span>
+                        </div>
+                        <div className="ig-header-info">
+                          <div className="ig-username">not_the_rug</div>
+                          <div className="ig-location">Brooklyn, NY</div>
+                        </div>
+                        <span className="ig-more">···</span>
+                      </div>
+
+                      <div className="ig-image">
                         {active?.generatedImage?.renderDownloadURL ? (
-                          <img
-                            className="db-post-image"
-                            src={active.generatedImage.renderDownloadURL}
-                            alt="Generated Not The Rug social post"
-                          />
+                          <img src={active.generatedImage.renderDownloadURL} alt="Not The Rug social post" />
                         ) : (
-                          <div className="db-post-placeholder">
-                            <div className="db-post-placeholder-frame">
-                              <div className="db-post-placeholder-copy">
-                                <div className="db-post-placeholder-title">Image Slot</div>
-                                <div className="db-post-placeholder-note">Generated post image appears here.</div>
-                                <a className="db-post-placeholder-cta" href="/admin/dashboard/photos">Open Photos</a>
-                              </div>
-                            </div>
+                          <div className="ig-image-ph">
+                            <svg className="ig-image-ph-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#55624C" strokeWidth="1.4">
+                              <rect x="3" y="3" width="18" height="18" rx="3"/>
+                              <circle cx="8.5" cy="8.5" r="1.5"/>
+                              <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                            <div className="ig-image-ph-text">Generated post image<br/>appears here</div>
+                            <a className="ig-image-ph-cta" href="/admin/dashboard/photos">Open Photos →</a>
                           </div>
                         )}
                       </div>
-                      {active?.generatedImage?.renderDownloadURL ? (
-                        <div className="db-post-actions">
-                          <a className="db-btn db-btn-primary" href={active.generatedImage.renderDownloadURL} target="_blank" rel="noreferrer">Generator</a>
-                          <a className="db-btn" href={active.generatedImage.renderDownloadURL} download>Download</a>
+
+                      <div className="ig-actions">
+                        <div className="ig-act-left">
+                          <button className="ig-icon-btn" aria-label="Like">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                          </button>
+                          <button className="ig-icon-btn" aria-label="Comment">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                          </button>
+                          <button className="ig-icon-btn" aria-label="Share">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                          </button>
                         </div>
-                      ) : (
-                        <div className="db-empty"></div>
-                      )}
+                        <button className="ig-icon-btn" aria-label="Save">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div className="ig-caption">
+                        <strong className="ig-caption-user">not_the_rug</strong>
+                        {instagramCopy ?? 'No caption saved for this run.'}
+                      </div>
+
+                      <div className="ig-timestamp">
+                        {active?.createdAt ? formatCompactDate(active.createdAt) : 'Just now'}
+                      </div>
                     </div>
+                  </CarouselItem>
+
+                  {/* Slot 2 — X / Twitter */}
+                  <CarouselItem className="platform-slot">
+                    <div className="platform-label">X / Twitter</div>
+                    <div id="tw-post-card" className="tw-card">
+                      <div className="tw-header">
+                        <div className="tw-avatar-wrap">
+                          <div className="tw-avatar"><span className="tw-avatar-initials">NTR</span></div>
+                          <div>
+                            <div className="tw-name">Not The Rug</div>
+                            <div className="tw-handle">@not_the_rug</div>
+                          </div>
+                        </div>
+                        <svg className="tw-x-logo" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.902-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                      </div>
+                      <div className="tw-body">{instagramCopy ?? 'No post copy for this run.'}</div>
+                      <div className="tw-image">
+                        {active?.generatedImage?.renderDownloadURL ? (
+                          <img src={active.generatedImage.renderDownloadURL} alt="Not The Rug social post" />
+                        ) : (
+                          <div className="tw-image-ph">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#c0c5cc" strokeWidth="1.4">
+                              <rect x="3" y="3" width="18" height="18" rx="3"/>
+                              <circle cx="8.5" cy="8.5" r="1.5"/>
+                              <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <div className="tw-actions">
+                        <button className="tw-act-btn" aria-label="Reply">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button className="tw-act-btn" aria-label="Repost">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                        </button>
+                        <button className="tw-act-btn" aria-label="Like">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        </button>
+                        <button className="tw-act-btn" aria-label="Views">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                        <button className="tw-act-btn" aria-label="Bookmark">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </CarouselItem>
+
+                  {/* Slot 3 — Facebook */}
+                  <CarouselItem className="platform-slot">
+                    <div className="platform-label">Facebook</div>
+                    <div id="fb-post-card" className="fb-card">
+                      <div className="fb-header">
+                        <div className="fb-avatar"><span className="fb-avatar-initials">NTR</span></div>
+                        <div>
+                          <div className="fb-name">Not The Rug</div>
+                          <div className="fb-meta">Just now · 🌐</div>
+                        </div>
+                      </div>
+                      <div className="fb-body">{instagramCopy ?? 'No post copy for this run.'}</div>
+                      <div className="fb-image">
+                        {active?.generatedImage?.renderDownloadURL ? (
+                          <img src={active.generatedImage.renderDownloadURL} alt="Not The Rug social post" />
+                        ) : (
+                          <div className="fb-image-ph">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#c0c5cc" strokeWidth="1.4">
+                              <rect x="3" y="3" width="18" height="18" rx="3"/>
+                              <circle cx="8.5" cy="8.5" r="1.5"/>
+                              <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <div className="fb-reactions">
+                        <div>👍 ❤️ 😮</div>
+                        <div>4 comments</div>
+                      </div>
+                      <div className="fb-btn-row">
+                        <button className="fb-btn">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                          Like
+                        </button>
+                        <button className="fb-btn">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                          Comment
+                        </button>
+                        <button className="fb-btn">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                          Share
+                        </button>
+                      </div>
+                    </div>
+                  </CarouselItem>
+
+                  </CarouselContent>
+
+                  <div className="carousel-footer">
+                    <CarouselPrevious className="carousel-arrow" />
+                    <div className="carousel-dots">
+                      {['Instagram', 'X / Twitter', 'Facebook'].map((label, i) => (
+                        <button
+                          key={label}
+                          className={`carousel-dot${carouselIndex === i ? ' active' : ''}`}
+                          aria-label={`Go to ${label}`}
+                          onClick={() => carouselApi?.scrollTo(i)}
+                        />
+                      ))}
+                    </div>
+                    <CarouselNext className="carousel-arrow" />
                   </div>
+                </Carousel>
 
-                </div>
+                {/* Download actions */}
+                {active?.generatedImage?.renderDownloadURL && (
+                  <div className="ig-post-btns">
+                    <a className="db-btn db-btn-primary" href={active.generatedImage.renderDownloadURL} target="_blank" rel="noreferrer">Open Generator</a>
+                    <a className="db-btn" href={active.generatedImage.renderDownloadURL} download>Download</a>
+                  </div>
+                )}
+
               </div>
-            </div>
+          </section>
 
-            <div className="db-panel">
+          <section className="db-panel">
               <div className="db-panel-head">
                 <h2 className="db-panel-title">Content Angle</h2>
                 <span className="db-note">Strategic framing</span>
@@ -1062,13 +1337,7 @@ export default function AdminDashboardPage() {
                   <div className="db-label">Content Angle</div>
                   <div className="db-value">{contentAngle ?? 'No content angle captured for this run.'}</div>
                 </div>
-{/* 
-                <div className="db-info-card">
-                  <div className="db-label">Weather Read</div>
-                  <div className="db-value">{active?.weatherImpact ?? 'Weather impact unavailable for this run.'}</div>
-                </div> */}
               </div>
-            </div>
           </section>
 
           <section className="db-panel">
