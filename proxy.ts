@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const ALLOWED_PREFIXES = ['/contact', '/admin', '/api', '/_next', '/favicon', '/dogs', '/logos', '/photos', '/media', '/fonts', '/images', '/img'];
+const ALLOWED_PREFIXES = ['/contact', '/book', '/admin', '/api', '/_next', '/favicon', '/dogs', '/logos', '/photos', '/media', '/fonts', '/images', '/img'];
 const ALLOWED_FILES = new Set(['/robots.txt', '/sitemap.xml', '/manifest.json']);
 
 export function proxy(req: NextRequest) {

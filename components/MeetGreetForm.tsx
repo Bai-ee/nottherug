@@ -28,6 +28,9 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
   const [form, setForm] = useState(initial);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [showCalendly, setShowCalendly] = useState(false);
+
+  const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
 
   const update = <K extends keyof typeof initial>(key: K, value: string) =>
     setForm(prev => ({ ...prev, [key]: value }));
@@ -49,6 +52,7 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
       }
       setStatus('success');
       setForm(initial);
+      if (calendlyUrl) setShowCalendly(true);
     } catch {
       setStatus('error');
       setErrorMsg('Network error. Please try again.');
@@ -206,6 +210,89 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
       )}
       {status !== 'success' && status !== 'error' && (
         <p className="form-note">We respond within 2 hours Mon–Fri · No spam, ever · Your info stays private</p>
+      )}
+
+      {status === 'success' && calendlyUrl && !showCalendly && (
+        <button
+          type="button"
+          className="btn btn-primary"
+          style={{ width: '100%', justifyContent: 'center', padding: '14px', marginTop: '12px' }}
+          onClick={() => setShowCalendly(true)}
+        >
+          Schedule your Meet &amp; Greet →
+        </button>
+      )}
+
+      {showCalendly && (
+        <div
+          id="calendly-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="calendly-modal-title"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(28,28,26,0.78)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowCalendly(false); }}
+        >
+          <div
+            id="calendly-modal-shell"
+            style={{
+              background: '#fff',
+              borderRadius: '10px',
+              maxWidth: '900px',
+              width: '100%',
+              height: 'min(90vh, 760px)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+            }}
+          >
+            <div
+              id="calendly-modal-header"
+              style={{
+                padding: '14px 20px',
+                borderBottom: '1px solid #ece8df',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div id="calendly-modal-title" style={{ fontFamily: 'var(--font-display)', fontSize: '16px', color: '#1c1c1a' }}>
+                Schedule your Meet &amp; Greet
+              </div>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setShowCalendly(false)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  fontSize: '22px',
+                  lineHeight: 1,
+                  cursor: 'pointer',
+                  color: '#1c1c1a',
+                  padding: '4px 8px',
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <iframe
+              id="calendly-modal-iframe"
+              title="Calendly scheduling"
+              src={calendlyUrl}
+              style={{ flex: 1, width: '100%', border: 'none' }}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

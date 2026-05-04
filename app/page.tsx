@@ -303,7 +303,7 @@ export default function Home() {
               </div>
             </div>
             <div style="margin-top:32px; display:flex; gap:14px; flex-wrap:wrap;">
-              <button class="btn btn-primary" onclick="showPage('book')">Book a Walk in ${data.name}</button>
+              <a href="/book" class="btn btn-primary">Book a Walk in ${data.name}</a>
               <button class="btn btn-outline" onclick="showPage('contact')">Ask About ${data.name} Coverage</button>
             </div>
           </div>
@@ -388,7 +388,7 @@ export default function Home() {
               </div>
             </div>
             <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('reviews'); }} data-page="reviews">Reviews</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('book'); }} className="nav-cta" data-page="book">Book a Walk</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); window.location.href='/book'; }} className="nav-cta" data-page="book">Book a Walk</a>
             <a href="/admin" id="nav-admin-login-link" style={{fontSize:'13px', opacity:0.5}}>Login</a>
           </div>
           <div className="nav-hamburger" onClick={() => (window as any).toggleMobileMenu()}>
@@ -406,7 +406,7 @@ export default function Home() {
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('neighborhoods'); }}>Neighborhoods</a>
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('reviews'); }}>Reviews</a>
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('contact'); }}>Contact</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('book'); }} className="mobile-cta">Book a Walk</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); window.location.href='/book'; }} className="mobile-cta">Book a Walk</a>
         <a href="/admin" id="mobile-menu-login-link">Login</a>
       </div>
 
@@ -427,7 +427,7 @@ export default function Home() {
             <h1 className="hero-h1">Your dog deserves<br /><em>someone they know.</em></h1>
             <p className="hero-p">Not The Rug is Williamsburg&apos;s original neighborhood dog walking service. No apps, no strangers, no shortcuts — just consistent, caring walks from a team your dog loves.</p>
             <div className="hero-actions">
-              <button className="btn btn-primary" onClick={() => (window as any).showPage('book')}>Book a Free Meet &amp; Greet</button>
+              <button className="btn btn-primary" onClick={() => window.location.href='/book'}>Book a Free Meet &amp; Greet</button>
               <button className="btn btn-ghost" onClick={() => (window as any).showPage('services')}>View Services</button>
             </div>
             <div className="hero-stats" id="hero-stats-strip">
@@ -713,7 +713,7 @@ export default function Home() {
                 <p>Book a free meet &amp; greet — no commitment required. We&apos;ll come to you.</p>
               </div>
               <div className="cta-band-actions">
-                <button className="btn btn-outline-white" onClick={() => (window as any).showPage('book')}>Book Meet &amp; Greet</button>
+                <button className="btn btn-outline-white" onClick={() => window.location.href='/book'}>Book Meet &amp; Greet</button>
                 <button className="btn" style={{color:'rgba(255,255,255,0.7)', padding:'14px 0'}} onClick={() => (window as any).showPage('contact')}>Contact Us →</button>
               </div>
             </div>
@@ -808,14 +808,14 @@ export default function Home() {
                   <div className="package-tier-price">~$140/mo</div>
                   <div className="package-tier-desc">4 walks/month — occasional care when you need it</div>
                   <div className="package-tier-save">Standard rate</div>
-                  <button className="btn btn-outline-white btn-sm" style={{width:'100%', justifyContent:'center'}} onClick={() => (window as any).showPage('book')}>Get Started</button>
+                  <button className="btn btn-outline-white btn-sm" style={{width:'100%', justifyContent:'center'}} onClick={() => window.location.href='/book'}>Get Started</button>
                 </div>
                 <div className="package-tier" style={{borderColor:'rgba(201,169,110,0.5)', background:'rgba(201,169,110,0.1)'}}>
                   <div className="package-tier-name">The Regular</div>
                   <div className="package-tier-price">~$660/mo</div>
                   <div className="package-tier-desc">5 walks/week — daily structure your dog thrives on</div>
                   <div className="package-tier-save">Save 6% vs. single rate</div>
-                  <button className="btn btn-outline-white btn-sm" style={{width:'100%', justifyContent:'center'}} onClick={() => (window as any).showPage('book')}>Get Started</button>
+                  <button className="btn btn-outline-white btn-sm" style={{width:'100%', justifyContent:'center'}} onClick={() => window.location.href='/book'}>Get Started</button>
                 </div>
                 <div className="package-tier">
                   <div className="package-tier-name">The Committed</div>
@@ -1841,7 +1841,7 @@ export default function Home() {
                 <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('safety'); }}>Safety &amp; Trust</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('reviews'); }}>Reviews</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('contact'); }}>Contact</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('book'); }}>Book a Walk</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); window.location.href='/book'; }}>Book a Walk</a></li>
               </ul>
             </div>
           </div>
