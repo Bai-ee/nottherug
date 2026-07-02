@@ -2,7 +2,7 @@
    DESIGN TOKENS
    ============================================= */
 :root {
-  --cream: #EEF4DB;
+  --cream: #F1F3E3;
   --warm-white: #F5F9EE;
   --charcoal: #1F2318;
   --mid-gray: #5C6455;
@@ -72,7 +72,7 @@ nav {
   cursor: pointer;
 }
 #nav-logo-img {
-  height: auto; width: 128px; display: block;
+  height: auto; width: 148px; display: block;
 }
 .nav-logo-main {
   font-family: var(--font-display);
@@ -91,6 +91,7 @@ nav {
 .nav-links a {
   padding: 7px 12px; border-radius: 4px;
   font-size: 14px; font-weight: 500;
+  white-space: nowrap;
   color: rgba(255,255,255,0.7);
   transition: all .2s;
 }
@@ -460,6 +461,10 @@ footer {
 .hero-visual {
   position: relative; overflow: hidden;
   grid-column: 2; grid-row: 1;
+  display: flex; flex-direction: column;
+}
+.hero-video-frame {
+  position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden;
 }
 #hero-bg-video {
   position: absolute; inset: 0;
@@ -1015,14 +1020,18 @@ footer {
   .reviews-masonry { columns: 2; }
 }
 
+/* Nav collapses to hamburger before links wrap to two lines (~990px single-line need) */
+@media (max-width: 1100px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+}
+
 @media (max-width: 768px) {
   :root { --section-pad: 64px; }
   .container { padding: 0 20px; }
-  .nav-links { display: none; }
-  .nav-hamburger { display: flex; }
   h1 { font-size: clamp(30px, 8vw, 44px); }
   .hero { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: auto; }
-  .hero-visual { grid-column: 1; grid-row: 1; height: 320px; width: 100%; }
+  .hero-visual { grid-column: 1; grid-row: 1; height: 260px; width: 100%; }
   .hero-content { grid-column: 1; grid-row: 2; padding: 0 20px 48px; max-width: 100%; width: 100%; margin: 0; }
   .hero-p { max-width: 100%; font-size: 16px; }
   .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps { grid-template-columns: 1fr; }
@@ -1036,6 +1045,13 @@ footer {
   .values-grid { grid-template-columns: 1fr; }
   .phase-callout { flex-direction: column; padding: 28px; }
   .trust-bar-inner { gap: 20px; }
+  /* Neighborhood cards — clamp text so it can't overflow narrow cards */
+  .hood-card-overlay { padding: 16px; }
+  .hood-card-name { font-size: clamp(15px, 4.3vw, 22px); overflow-wrap: break-word; }
+  .hood-card-desc { font-size: 12px; }
+  /* Center card content (mobile only) — Standard of Care + home services preview */
+  #standard-of-care-grid > div { text-align: center; }
+  .services-grid .service-card { align-items: center; text-align: center; }
 }
 
 /* ============================================================
@@ -1099,7 +1115,7 @@ body::after {
 /* ============================================================
    PROOF STRIP — fade edges
    ============================================================ */
-.social-proof-strip { position: relative; }
+.social-proof-strip { position: relative; z-index: 3; flex: 0 0 auto; }
 .social-proof-strip::before,
 .social-proof-strip::after {
   content: '';
@@ -1180,25 +1196,63 @@ body::after {
    MOBILE KINETIC
    ============================================================ */
 @media (max-width: 768px) {
+  /* Hide the location pill on mobile */
+  .hero-img-label { display: none; }
+
+  /* Centered single-column hero; CTA-first ordering above the fold */
+  #hero-content-shell {
+    align-items: center;
+    text-align: center;
+    padding: 24px 20px 48px;
+  }
+  /* Promote the two CTAs to flex children so the paragraph can sit between them */
+  #hero-actions-row { display: contents; }
+
   .hero-h1 {
     letter-spacing: -0.025em;
     line-height: 1.1;
+    text-align: center;
+    order: 2;
+    margin-bottom: 20px;
   }
+  #hero-cta-primary {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .hero-p {
+    text-align: center;
+    order: 5;
+    margin-bottom: 24px;
+  }
+  #hero-cta-secondary {
+    order: 6;
+    align-self: center;
+  }
+
+  /* Ratings: sit directly under the Book CTA (order 3) */
   .hero-stats {
-    order: -1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    padding: 24px 20px;
-    margin-top: 0;
-    border-radius: 0;
+    order: 4;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 16px 10px;
+    margin: 0 0 28px;
+    border-radius: var(--radius);
     width: 100%;
   }
+  .hero-stat-item { flex: 1; min-width: 0; }
   .hero-stat-divider {
     display: none;
   }
   .hero-stat-num {
-    font-size: 26px;
+    font-size: 22px;
+  }
+  .hero-stat-label {
+    font-size: 9px;
+    letter-spacing: 0.04em;
   }
   .social-proof-strip::before,
   .social-proof-strip::after {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 type Props = {
   paneId: string;
@@ -8,31 +9,42 @@ type Props = {
   hidden?: boolean;
 };
 
+const REACTIVITY_OPTIONS = [
+  'Other dogs',
+  'People / strangers',
+  'Scooters',
+  'Motorcycles',
+  'Strollers',
+  'All of the above',
+];
+
+const ALLERGY_OPTIONS = ['Chicken', 'Grain', 'Other'];
+
 const initial = {
   ownerName: '',
   phone: '',
   email: '',
-  neighborhood: 'Williamsburg',
+  neighborhood: 'North Williamsburg',
   dogName: '',
   breedAge: '',
   serviceInterest: 'Daily Group Walks',
-  spayNeuter: 'Yes',
   vaccinations: 'Yes — fully vaccinated',
-  dogSocial: 'Very social — loves other dogs',
-  strangerSocial: 'Loves new people',
   walkFrequency: 'Daily (Mon–Fri)',
   notes: '',
 };
 
 export default function MeetGreetForm({ paneId, source, hidden = false }: Props) {
   const [form, setForm] = useState(initial);
+  const [reactivity, setReactivity] = useState<string[]>([]);
+  const [allergies, setAllergies] = useState<string[]>([]);
+  const [allergyOther, setAllergyOther] = useState('');
+  const [phoneConsult, setPhoneConsult] = useState(false);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [showCalendly, setShowCalendly] = useState(false);
 
   const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
 
-  // Lock background scroll + scroll page to top when the Calendly modal opens.
   useEffect(() => {
     if (!showCalendly) return;
     const scrollY = window.scrollY;
@@ -59,14 +71,36 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
   const update = <K extends keyof typeof initial>(key: K, value: string) =>
     setForm(prev => ({ ...prev, [key]: value }));
 
+  function toggleReactivity(option: string) {
+    setReactivity(prev =>
+      prev.includes(option) ? prev.filter(o => o !== option) : [...prev, option]
+    );
+  }
+
+  function toggleAllergy(option: string) {
+    setAllergies(prev =>
+      prev.includes(option) ? prev.filter(o => o !== option) : [...prev, option]
+    );
+  }
+
   async function handleSubmit() {
     setStatus('submitting');
     setErrorMsg('');
     try {
+      const allergyList = allergies.includes('Other') && allergyOther
+        ? [...allergies.filter(a => a !== 'Other'), `Other: ${allergyOther}`]
+        : allergies;
+
       const res = await fetch('/api/leads/meetgreet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, source }),
+        body: JSON.stringify({
+          ...form,
+          source,
+          reactivity: reactivity.join(', ') || 'None noted',
+          allergies: allergyList.join(', ') || 'None',
+          phoneConsult,
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -76,7 +110,11 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
       }
       setStatus('success');
       setForm(initial);
-      if (calendlyUrl) setShowCalendly(true);
+      setReactivity([]);
+      setAllergies([]);
+      setAllergyOther('');
+      setPhoneConsult(false);
+      if (calendlyUrl && !phoneConsult) setShowCalendly(true);
     } catch {
       setStatus('error');
       setErrorMsg('Network error. Please try again.');
@@ -90,6 +128,7 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         Fill this out and we&apos;ll reach out within 2 hours on weekdays to schedule your free visit.
       </p>
 
+      {/* Owner info */}
       <div className="form-row">
         <div className="form-group">
           <label>Your Name</label>
@@ -113,7 +152,9 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
           <label>Neighborhood</label>
           <select className="form-control form-select"
             value={form.neighborhood} onChange={e => update('neighborhood', e.target.value)}>
-            <option>Williamsburg</option>
+            <option>North Williamsburg</option>
+            <option>South Williamsburg</option>
+            <option>West Williamsburg</option>
             <option>Greenpoint</option>
             <option>Bushwick</option>
             <option>Bed-Stuy</option>
@@ -124,6 +165,7 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         </div>
       </div>
 
+      {/* Dog info */}
       <div className="form-row">
         <div className="form-group">
           <label>Dog&apos;s Name</label>
@@ -142,21 +184,12 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         <select className="form-control form-select"
           value={form.serviceInterest} onChange={e => update('serviceInterest', e.target.value)}>
           <option>Daily Group Walks</option>
-          <option>Walk + Training Sessions</option>
           <option>Puppy Visits</option>
           <option>Senior Dog Care</option>
+          <option>Solo Visits</option>
           <option>Boarding / Sitting</option>
           <option>Not sure yet</option>
-        </select>
-      </div>
-
-      <div data-survey="spay-neuter" className="form-group" style={{ marginBottom: '20px' }}>
-        <label>Is your dog spayed or neutered?</label>
-        <select className="form-control form-select"
-          value={form.spayNeuter} onChange={e => update('spayNeuter', e.target.value)}>
-          <option>Yes</option>
-          <option>No</option>
-          <option>Not yet — scheduled</option>
+          <option>Walk &amp; Talk Sessions</option>
         </select>
       </div>
 
@@ -171,28 +204,56 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         </select>
       </div>
 
-      <div data-survey="dog-social" className="form-group" style={{ marginBottom: '20px' }}>
-        <label>How does your dog do around other dogs?</label>
-        <select className="form-control form-select"
-          value={form.dogSocial} onChange={e => update('dogSocial', e.target.value)}>
-          <option>Very social — loves other dogs</option>
-          <option>Friendly with most</option>
-          <option>Selective / depends on the dog</option>
-          <option>Reactive or nervous</option>
-          <option>Prefers to be solo</option>
-        </select>
+      {/* Reactivity / socialization checkboxes */}
+      <div data-survey="reactivity" className="form-group" style={{ marginBottom: '20px' }}>
+        <label>Is your dog fearful or reactive around any of the following?</label>
+        <p style={{ fontSize: '12px', color: 'var(--mid-gray)', marginBottom: '10px', marginTop: '2px' }}>
+          Select all that apply
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '8px' }}>
+          {REACTIVITY_OPTIONS.map(option => (
+            <label key={option} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--charcoal)', fontWeight: 400, padding: '8px 12px', border: `1px solid ${reactivity.includes(option) ? 'var(--sage-dark)' : 'var(--light-gray)'}`, borderRadius: 'var(--radius)', background: reactivity.includes(option) ? 'var(--sage-light, #edf3db)' : 'white', transition: 'all 0.15s' }}>
+              <input
+                type="checkbox"
+                checked={reactivity.includes(option)}
+                onChange={() => toggleReactivity(option)}
+                style={{ accentColor: 'var(--sage-dark)', width: '15px', height: '15px', flexShrink: 0 }}
+              />
+              {option}
+            </label>
+          ))}
+        </div>
       </div>
 
-      <div data-survey="stranger-social" className="form-group" style={{ marginBottom: '20px' }}>
-        <label>How does your dog do around strangers?</label>
-        <select className="form-control form-select"
-          value={form.strangerSocial} onChange={e => update('strangerSocial', e.target.value)}>
-          <option>Loves new people</option>
-          <option>Warms up quickly</option>
-          <option>Shy at first</option>
-          <option>Anxious or fearful</option>
-          <option>Protective / reactive</option>
-        </select>
+      {/* Allergies */}
+      <div data-survey="allergies" className="form-group" style={{ marginBottom: '20px' }}>
+        <label>Is your dog allergic to anything?</label>
+        <p style={{ fontSize: '12px', color: 'var(--mid-gray)', marginBottom: '10px', marginTop: '2px' }}>
+          Select all that apply
+        </p>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {ALLERGY_OPTIONS.map(option => (
+            <label key={option} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--charcoal)', fontWeight: 400, padding: '8px 14px', border: `1px solid ${allergies.includes(option) ? 'var(--sage-dark)' : 'var(--light-gray)'}`, borderRadius: 'var(--radius)', background: allergies.includes(option) ? 'var(--sage-light, #edf3db)' : 'white', transition: 'all 0.15s' }}>
+              <input
+                type="checkbox"
+                checked={allergies.includes(option)}
+                onChange={() => toggleAllergy(option)}
+                style={{ accentColor: 'var(--sage-dark)', width: '15px', height: '15px', flexShrink: 0 }}
+              />
+              {option}
+            </label>
+          ))}
+        </div>
+        {allergies.includes('Other') && (
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Please specify"
+            value={allergyOther}
+            onChange={e => setAllergyOther(e.target.value)}
+            style={{ marginTop: '10px' }}
+          />
+        )}
       </div>
 
       <div data-survey="walk-frequency" className="form-group" style={{ marginBottom: '20px' }}>
@@ -207,12 +268,33 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         </select>
       </div>
 
-      <div className="form-group" style={{ marginBottom: '24px' }}>
+      <div className="form-group" style={{ marginBottom: '20px' }}>
         <label>Anything we should know?</label>
         <textarea className="form-control" rows={3}
           placeholder="Quirks, anxieties, medication needs, building access info — anything helpful"
           value={form.notes} onChange={e => update('notes', e.target.value)} />
       </div>
+
+      {/* Phone consultation toggle */}
+      <label
+        data-survey="phone-consult"
+        style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', padding: '16px', border: `1px solid ${phoneConsult ? 'var(--sage-dark)' : 'var(--light-gray)'}`, borderRadius: 'var(--radius)', background: phoneConsult ? 'var(--sage-light, #edf3db)' : 'white', marginBottom: '24px', transition: 'all 0.15s' }}
+      >
+        <input
+          type="checkbox"
+          checked={phoneConsult}
+          onChange={e => setPhoneConsult(e.target.checked)}
+          style={{ accentColor: 'var(--sage-dark)', width: '16px', height: '16px', flexShrink: 0, marginTop: '2px' }}
+        />
+        <div>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '3px' }}>
+            Request a phone consultation instead
+          </div>
+          <div style={{ fontSize: '13px', color: 'var(--mid-gray)' }}>
+            Prefer to talk first? We&apos;ll call you to answer questions before scheduling.
+          </div>
+        </div>
+      </label>
 
       <button
         type="button"
@@ -221,12 +303,14 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         disabled={status === 'submitting'}
         onClick={handleSubmit}
       >
-        {status === 'submitting' ? 'Sending…' : 'Request My Free Meet & Greet'}
+        {status === 'submitting' ? 'Sending…' : phoneConsult ? 'Request Phone Consultation' : 'Request My Free Meet & Greet'}
       </button>
 
       {status === 'success' && (
         <p className="form-note" style={{ color: 'var(--sage-light, #6b8e6b)' }}>
-          ✅ Thanks! We&apos;ll be in touch within 2 hours on weekdays.
+          ✅ {phoneConsult
+            ? "Thanks! We'll give you a call within 2 hours on weekdays."
+            : "Thanks! We'll be in touch within 2 hours on weekdays."}
         </p>
       )}
       {status === 'error' && (
@@ -236,7 +320,7 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         <p className="form-note">We respond within 2 hours Mon–Fri · No spam, ever · Your info stays private</p>
       )}
 
-      {status === 'success' && calendlyUrl && !showCalendly && (
+      {status === 'success' && calendlyUrl && !showCalendly && !phoneConsult && (
         <button
           type="button"
           className="btn btn-primary"
@@ -247,7 +331,7 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         </button>
       )}
 
-      {showCalendly && (
+      {showCalendly && typeof document !== 'undefined' && createPortal(
         <div
           id="calendly-modal"
           role="dialog"
@@ -262,9 +346,30 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
             alignItems: 'center',
             justifyContent: 'center',
             padding: 'clamp(8px, 2vw, 24px)',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
           }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowCalendly(false); }}
         >
+          <style>{`
+            #calendly-modal-shell { max-height: 95vh; }
+            @media (max-width: 767px) {
+              #calendly-modal {
+                align-items: flex-start !important;
+                padding: 0 !important;
+              }
+              #calendly-modal-shell {
+                width: 100vw !important;
+                max-width: none !important;
+                height: auto !important;
+                max-height: none !important;
+                min-height: 100dvh;
+                border-radius: 0 !important;
+                border: none !important;
+              }
+              #calendly-modal-iframe { min-height: 75vh; }
+            }
+          `}</style>
           <div
             id="calendly-modal-shell"
             style={{
@@ -349,7 +454,8 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
               style={{ flex: 1, width: '100%', border: 'none', background: '#f7f5f1' }}
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

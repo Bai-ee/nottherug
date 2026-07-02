@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import MeetGreetForm from '@/components/MeetGreetForm';
+import SiteNav from '@/components/SiteNav';
 
 const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
 const PAGE_PATH = '/contact';
@@ -44,33 +44,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div id="contact-page" className="page" style={{ display: 'block' }}>
-      <nav id="main-nav">
-        <div className="nav-inner">
-          <Link href="/contact" className="nav-logo">
-            <img id="nav-logo-img" src="/logos/ntr_offwhite_horiz.png" alt="Not The Rug" />
-          </Link>
-          <div className="nav-links">
-            <Link
-              href="/admin"
-              id="nav-admin-login-link"
-              style={{
-                background: '#fff',
-                color: '#1c1c1a',
-                padding: '9px 22px',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: 600,
-                letterSpacing: '0.02em',
-                textTransform: 'uppercase',
-                opacity: 1,
-                boxShadow: '0 2px 10px rgba(0,0,0,0.18)',
-              }}
-            >
-              Login
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       <div
         id="contact-hero"
