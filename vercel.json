@@ -4,10 +4,6 @@
     {
       "path": "/api/cron/not-the-rug-brief",
       "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron/founder-brief",
-      "schedule": "0 13 * * *"
     }
   ]
 }
