@@ -21,17 +21,7 @@ export default function SiteNav() {
             <Link href="/?page=how-it-works" data-page="how-it-works">How It Works</Link>
             <Link href="/?page=about" data-page="about">About Us</Link>
             <Link href="/?page=safety" data-page="safety">Safety &amp; Trust</Link>
-            <div className="nav-dropdown">
-              <a href="#" onClick={(e) => e.preventDefault()} data-page="neighborhoods">Neighborhoods ▾</a>
-              <div className="dropdown-menu">
-                <Link href="/?hood=williamsburg">Williamsburg</Link>
-                <Link href="/?hood=greenpoint">Greenpoint</Link>
-                <Link href="/?hood=bushwick">Bushwick</Link>
-                <Link href="/?hood=bedstuy">Bed-Stuy</Link>
-                <Link href="/?hood=park-slope">Park Slope</Link>
-                <Link href="/?page=neighborhoods">All Neighborhoods →</Link>
-              </div>
-            </div>
+            <Link href="/?hood=williamsburg" data-page="neighborhoods">Williamsburg</Link>
             <Link href="/?page=reviews" data-page="reviews">Reviews</Link>
             <Link href="/admin" id="nav-admin-login-link">Login</Link>
             <Link href="/book" className="nav-cta" data-page="book">Book a Walk</Link>
@@ -47,7 +37,7 @@ export default function SiteNav() {
         <Link href="/?page=how-it-works">How It Works</Link>
         <Link href="/?page=about">About Us</Link>
         <Link href="/?page=safety">Safety &amp; Trust</Link>
-        <Link href="/?page=neighborhoods">Neighborhoods</Link>
+        <Link href="/?hood=williamsburg">Williamsburg</Link>
         <Link href="/?page=reviews">Reviews</Link>
         <Link href="/contact">Contact</Link>
         <Link href="/book" className="mobile-cta">Book a Walk</Link>

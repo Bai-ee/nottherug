@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not The Rug — Daily Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <style>
+    /* === NTR DESIGN TOKENS === */
+    :root {
+      --cream:            #EEF4DB;
+      --warm-white:       #F5F9EE;
+      --charcoal:         #1F2318;
+      --mid-gray:         #5C6455;
+      --light-gray:       #D5E0BE;
+      --sage:             #7A9068;
+      --sage-light:       #B4C89E;
+      --sage-dark:        #4E5A42;
+      --terracotta:       #C4674B;
+      --gold-light:       #E8D4A8;
+      --font-display:     'Fraunces', 'DM Serif Display', serif;
+      --font-body:        'Outfit', sans-serif;
+      --font-italic:      'Fraunces', serif;
+      --radius:           12px;
+      --radius-lg:        24px;
+    }
+
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--charcoal);
+      line-height: 1.65;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    ul { list-style: none; }
+    a {
+      color: var(--sage-dark);
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 3px;
+    }
+    a:hover { color: var(--charcoal); }
+
+    /* === LAYOUT === */
+    .brief-wrap { max-width: 680px; margin: 0 auto; }
+
+    /* === HERO === */
+    .brief-hero {
+      background: var(--sage-dark);
+      padding: 52px 28px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .brief-hero::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle at top right, rgba(180,200,158,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 22px;
+    }
+    .hero-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--sage-light); flex-shrink: 0;
+    }
+    .hero-eyebrow-text {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: 13px; font-weight: 300;
+      color: var(--gold-light); letter-spacing: 0.02em;
+    }
+    .brief-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 9vw, 56px); font-weight: 700;
+      color: white; line-height: 1.05; margin-bottom: 4px;
+    }
+    .brief-subtitle {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: clamp(16px, 4vw, 20px); font-weight: 300;
+      color: var(--sage-light); margin-bottom: 28px;
+    }
+    .brief-greeting {
+      font-size: 16px; font-weight: 500;
+      color: rgba(255,255,255,0.88); margin-bottom: 6px;
+    }
+    .brief-date {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: 14px; font-weight: 300;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* === SECTIONS === */
+    .brief-section { padding: 44px 28px; }
+    .bg-warm  { background: var(--warm-white); }
+    .bg-cream { background: var(--cream); }
+    .sep { height: 1px; background: var(--light-gray); }
+
+    /* === SECTION HEADER === */
+    .section-eyebrow {
+      font-family: var(--font-italic);
+      font-size: 13px; font-weight: 300; font-style: italic;
+      color: var(--mid-gray); margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400; font-size: clamp(26px, 6vw, 38px);
+      color: var(--charcoal); line-height: 1.1;
+    }
+    .section-rule {
+      width: 32px; height: 2px;
+      background: var(--sage); border-radius: 1px;
+      margin: 16px 0 28px;
+    }
+
+    /* === SUB-HEADING === */
+    .sub-head {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 400;
+      color: var(--charcoal); margin-bottom: 12px;
+    }
+    .sub-head::before {
+      content: ''; display: inline-block;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--sage); flex-shrink: 0;
+    }
+
+    /* === ITEM LIST === */
+    .item-list { display: grid; gap: 10px; margin-bottom: 28px; }
+    .item-list:last-child { margin-bottom: 0; }
+    .item-row {
+      padding: 14px 16px;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: var(--radius);
+    }
+    .bg-warm .item-row { background: var(--cream); }
+    .item-title {
+      font-size: 15px; font-weight: 600; color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .item-title a { font-weight: 600; }
+    .item-body { font-size: 14px; color: var(--mid-gray); line-height: 1.55; }
+    .item-meta { font-size: 13px; color: var(--mid-gray); font-style: italic; margin-top: 4px; }
+    .item-takeaway { font-size: 13px; color: var(--charcoal); font-weight: 500; margin-top: 6px; }
+
+    /* === WEATHER CALLOUT === */
+    .weather-box {
+      background: var(--light-gray);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      font-size: 16px; color: var(--charcoal);
+      line-height: 1.65; margin-bottom: 28px;
+    }
+
+    /* === CONTENT PIECE === */
+    .content-piece { margin-bottom: 28px; }
+    .content-piece:last-child { margin-bottom: 0; }
+    .content-piece-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px;
+      margin-bottom: 10px;
+    }
+    .piece-label {
+      font-family: var(--font-display);
+      font-size: 19px; font-weight: 400; color: var(--charcoal);
+    }
+    .piece-note {
+      flex-shrink: 0; align-self: center;
+      font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--mid-gray);
+      background: var(--light-gray);
+      padding: 5px 10px; border-radius: 4px;
+      white-space: nowrap;
+    }
+    .content-body {
+      font-size: 16px; color: var(--charcoal); line-height: 1.7;
+      background: var(--warm-white);
+      border-left: 3px solid var(--light-gray);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .content-body p { margin: 0 0 10px; }
+    .content-body p:last-child { margin-bottom: 0; }
+    .piece-flags { margin-top: 12px; display: grid; gap: 8px; }
+    .piece-flag {
+      font-size: 14px; font-weight: 500; color: var(--terracotta);
+      background: rgba(196,103,75,0.08);
+      border: 1px solid rgba(196,103,75,0.2);
+      border-radius: var(--radius); padding: 10px 14px;
+    }
+
+    /* === QUALITY === */
+    .quality-banner {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 10px 16px; border-radius: 6px; margin-bottom: 16px;
+    }
+    .quality-ready   { background: rgba(78,90,66,0.12); color: var(--sage-dark); }
+    .quality-review  { background: rgba(196,103,75,0.12); color: var(--terracotta); }
+    .quality-blocked { background: rgba(196,103,75,0.18); color: var(--terracotta); border: 1px solid rgba(196,103,75,0.3); }
+    .quality-neutral { background: rgba(92,100,85,0.10); color: var(--mid-gray); }
+    .flag-list { display: grid; gap: 8px; }
+    .flag-item {
+      font-size: 14px; color: var(--terracotta);
+      background: rgba(196,103,75,0.07);
+      border: 1px solid rgba(196,103,75,0.18);
+      border-radius: var(--radius); padding: 11px 14px; line-height: 1.5;
+    }
+
+    /* === MISC === */
+    .fallback { font-size: 15px; color: var(--mid-gray); font-style: italic; margin-bottom: 28px; }
+
+    /* === MOBILE === */
+    @media (max-width: 480px) {
+      .brief-hero { padding: 40px 20px 36px; }
+      .brief-section { padding: 36px 20px; }
+      .content-piece-header { flex-direction: column; }
+      .piece-note { align-self: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="brief-hero" id="brief-hero-header">
+  <div class="brief-wrap">
+    <div class="hero-eyebrow">
+      <div class="hero-dot"></div>
+      <span class="hero-eyebrow-text">Founder Intelligence · Brooklyn Dog Walking</span>
+    </div>
+    <div class="brief-title">Not The Rug</div>
+    <div class="brief-subtitle">Daily Brief</div>
+    <div class="brief-greeting">Hello Team</div>
+    <div class="brief-date">It’s Sunday, May 3 2026 — 11:44am</div>
+  </div>
+</header>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-our-world">
+  <div class="brief-wrap">
+    <h2 class="section-title">Our World</h2>
+    <div class="section-rule"></div>
+
+    <div class="sub-head">Weather Impact</div>
+    <div class="weather-box">
+      Brooklyn · 7:00 AM–7:00 PM · Mostly Cloudy, Partly Sunny · 2026-05-03T07:00 to 2026-05-03T19:00 America/New_York | max temp 59F | max precip 0% | max wind 20 mph Waterfront routes (East River State Park, Bushwick Inlet Park, Domino Park) will amplify wind exposure — expect a feels-like temp meaningfully below 59°F on the water. Inland routes (McCarren Park, Bedford Ave corridors) are preferable for small breeds and short-coat dogs. Afternoon window (post-noon) offers best conditions as cloud cover breaks. Alert status unknown until manually checked — do not finalize waterfront routes without confirming NWS alert details first. <a href="https://api.weather.gov/gridpoints/OKX/35,42/forecast/hourly" target="_blank" rel="noreferrer">Source →</a>
+    </div>
+
+    <div class="sub-head">Review Insights</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.yelp.com" target="_blank" rel="noreferrer">Yelp</a></div>
+              <div class="item-body">Review count increased from benchmark of 34 to 37 — 3 new reviews detected. Review content not available in this brief.</div>
+              <div class="item-takeaway">Takeaway: Log in to Yelp today and respond to all 3 new reviews. Timely, personal responses signal active ownership and improve Yelp ranking. Flag any negative sentiment for immediate handling.</div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-cream" id="section-todays-content">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">content ready to post</div>
+    <h2 class="section-title">Today’s Content</h2>
+    <div class="section-rule"></div>
+    
+        <div class="content-piece">
+          <div class="content-piece-header">
+            <span class="piece-label">Instagram Post Copy</span>
+            <span class="piece-note">ready to post</span>
+          </div>
+          <div class="content-body"><p>It&#39;s Be Kind to Animals Week, and we&#39;re spending it the way we spend every week — walking dogs through Williamsburg and making sure they get home happy.</p>
+<p>Today&#39;s walks are on the cloudier, windier side, so we&#39;re keeping to inland routes — McCarren, Bedford corridors — better for shorter coats and smaller dogs than the waterfront gusts right now.</p>
+<p>If you adopted your dog from a Brooklyn rescue, we&#39;d love to hear about it. This week we&#39;re thinking about the shelters and organizations doing the quiet, unglamorous work of getting dogs into good homes. Shoutout to @badassbrooklynanimalsrescue — if you&#39;re looking to adopt or support, they&#39;re worth knowing.</p>
+<p>Since 2011, same neighborhood, same commitment. DM us if you&#39;re looking for a walker who actually knows your block.</p>
+<p>#WilliamsburgDogs #BeKindToAnimalsWeek #BrooklynDogs</p></div>
+          <div class="piece-flags"><div class="piece-flag">&#9888; Be Kind to Animals Week dates not verified in current data. The post assumes it starts today but no source confirms the current date or when BKAW falls in 2024/2025.</div></div>
+        </div>
+
+        <div class="content-piece">
+          <div class="content-piece-header">
+            <span class="piece-label">Content Angle</span>
+            <span class="piece-note">strategy recap</span>
+          </div>
+          <div class="content-body"><p>Be Kind to Animals Week starts today, which makes it the right moment to anchor a visibility-building Reel around a real Williamsburg walk while tagging a credible Brooklyn rescue organization. The post does two things simultaneously: it signals that Not The Rug is actively operating in the neighborhood today and establishes a warm, values-adjacent connection to rescue culture without overclaiming. The rescue tag opens a low-friction referral door — a genuine shoutout to Badass Brooklyn Animal Rescue (or whichever shelter the founder has an actual affinity for) gives that org a reason to engage or reshare, which creates the brand&#39;s first organic discovery surface this cycle. The weather routing detail is specific and immediately useful, reinforcing neighborhood authority and walker judgment without any manufactured drama. Future posts this week can escalate: walker-with-rescue-dog video content, a rescue dog client spotlight, and a National Dog Mom Day close on May 9 that caps the week with community warmth. The Reel itself should open on a walker and dog turning off a Williamsburg block in the first 3 seconds — no title card, no intro, just movement and neighborhood.</p></div>
+          <div class="piece-flags"><div class="piece-flag">&#9888; Mentions &#39;National Dog Mom Day close on May 9&#39; but does not source whether May 9 is confirmed as National Dog Mom Day in the current year or whether that holiday is recognized by Not The Rug&#39;s audience.</div></div>
+        </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-operational-context">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">context</div>
+    <h2 class="section-title">Operational Context</h2>
+    <div class="section-rule"></div>
+
+    <div class="sub-head">Competitors</div>
+    <ul class="item-list">
+          
+              <li class="item-row">
+                <div class="item-title">Rover / Wag (platform)</div>
+                <div class="item-body">No new promotions or service expansions detected this cycle due to search tool limits. Industry data confirms platform competitors rely on volume and price; local independents win on trust, proximity, and consistency — Not The Rug&#39;s natural lane.</div>
+              </li>
+              <li class="item-row">
+                <div class="item-title">Regional field (Swifto, POOCHi, Happy Pants NYC, Strutting Mutts, Williamsburg Dog Walking, Dogger NYC, Brooklyn Bark)</div>
+                <div class="item-body">No direct competitor review or Instagram data returned this cycle — search tool hit limit before competitor queries executed. Full competitive picture unavailable. Re-run recommended next cycle.</div>
+              </li>
+        </ul>
+
+    <div class="sub-head">Partnership / Referral Opportunities</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Brooklyn animal rescues / shelters</div>
+              <div class="item-body">Be Kind to Animals Week and Puppy Mill Action Week create a natural reason to tag and engage local rescue organizations this week. No relationship required to start — a tag and a genuine story post is sufficient to open the door.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Williamsburg community event organizers (picnic/outdoor series)</div>
+              <div class="item-body">Weekly community events happening in the neighborhood represent a low-cost physical presence opportunity with the exact demographic that hires local dog walkers.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Neighborhood vets, groomers, pet stores, trainers</div>
+              <div class="item-body">Referral ecosystem identified as primary local SEO and trust signal for small pet businesses. No active partnerships confirmed or denied in current data — worth auditing which local businesses currently refer to Not The Rug.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Local Events</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Be Kind to Animals Week® (American Humane)</div>
+              <div class="item-meta">2026-05-03 to 2026-05-09</div>
+              <div class="item-body">High organic content relevance — aligns with Not The Rug&#39;s care-forward brand positioning</div>
+              <div class="item-takeaway">Opportunity: Daily content opportunity through May 9. Frame walker expertise and dog care philosophy through the lens of kindness. Tag local Brooklyn rescues or shelters for cross-amplification. Ends on National Dog Mom Day — natural campaign close.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Puppy Mill Action Week</div>
+              <div class="item-meta">2026-05-03 to 2026-05-09</div>
+              <div class="item-body">Medium — relevant to rescue-dog-owning clientele; resonates in Williamsburg demographic</div>
+              <div class="item-takeaway">Opportunity: Light-touch mention supporting adoption and rescue. Do not over-index — support the cause without making it the brand&#39;s primary message. Works best as a secondary tag or story mention.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">National Dog Mom Day</div>
+              <div class="item-meta">2026-05-09</div>
+              <div class="item-body">High — strong engagement day for dog-owner content, especially IG and TikTok</div>
+              <div class="item-takeaway">Opportunity: Client appreciation post featuring real dogs on walks. Reach out to a few clients for photo permission in advance. Pairs naturally with end-of-Be-Kind-to-Animals-Week messaging.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">National Rescue Dog Day</div>
+              <div class="item-meta">2026-05-20</div>
+              <div class="item-body">Medium</div>
+              <div class="item-takeaway">Opportunity: Feature a rescue dog from the current client roster (with owner permission). Strong trust-builder and community signal for Williamsburg audience.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">National Take Your Dog to Work Day</div>
+              <div class="item-meta">2026-06-26</div>
+              <div class="item-body">Medium — content angle for remote/hybrid workers in the neighborhood</div>
+              <div class="item-takeaway">Opportunity: Position Not The Rug midday walks as the alternative for dog parents who can&#39;t bring their dog to the office. Practical service pitch wrapped in holiday framing.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Reddit Signals</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Participation opportunity — Latino picnic community events in Williamsburg</div>
+              <div class="item-meta">williamsburg</div>
+              <div class="item-body">Weekly community picnic events organized in Williamsburg. Dog-friendly outdoor gatherings are a natural overlap audience for Not The Rug.</div>
+              <div class="item-takeaway">Takeaway: Monitor whether these events are dog-friendly. If so, attend once with a walker or sponsor water bowls — low-cost neighborhood presence with a hyper-local audience.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Participation opportunity — old dogs / end-of-life support thread</div>
+              <div class="item-meta">olddogs</div>
+              <div class="item-body">Emotional community thread about a dog crossing the rainbow bridge. High engagement, empathetic tone.</div>
+              <div class="item-takeaway">Takeaway: Do not brand-insert into grief threads. File as a reminder that senior dog owners are a real and underserved segment — consider whether Not The Rug wants to build any senior dog care messaging.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Participation opportunity — puppy naming regret thread</div>
+              <div class="item-meta">puppy101</div>
+              <div class="item-body">Light, relatable thread about a puppy owner regretting their dog&#39;s name. High engagement format, casual tone.</div>
+              <div class="item-takeaway">Takeaway: Low-lift Instagram or TikTok content angle: &#39;Names we&#39;ve heard on our Williamsburg walks this week.&#39; Humanizes the team and invites follower participation without requiring a hard sell.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/" target="_blank" rel="noreferrer">Latino picnic in Williamsburg</a></div>
+              <div class="item-meta">williamsburg</div>
+              <div class="item-body">Hey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we&#39;re wondering if there&#39;s enough interest to host one in Williamsburg? (for the WBurg &amp; Brooklyn people)
+
+Just looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and</div>
+              <div class="item-takeaway">Takeaway: Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/" target="_blank" rel="noreferrer">My girl is crossing the rainbow bridge tomorrow</a></div>
+              <div class="item-meta">olddogs</div>
+              <div class="item-body">You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&amp;format=pjpg&amp;auto=webp&amp;s=09654dda2accd29e5fe206c94ee7008e2547f90f
+
+George went over the rainbow bridge on January 16th, at age 17, so he’ll meet La</div>
+              <div class="item-takeaway">Takeaway: Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Local Demand Signals</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Flea and tick season content actively circulating on TikTok</div>
+              <div class="item-body">Pet care accounts posting flea/tick season content now. Walkers are the first line of awareness — Not The Rug has a credible, service-adjacent reason to post on this topic. Format: quick &#39;what we check on every walk&#39; video. Builds trust without selling anything.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Memorial Day travel demand approaching</div>
+              <div class="item-body">Memorial Day long weekend (May 23–26) is within 30 days. Williamsburg dog owners who travel will need boarding, sitting, or extended walking coverage. Begin surfacing availability messaging in the next 7–10 days.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Proximity and reviews drive local pet care decisions</div>
+              <div class="item-body">Industry data confirms pet owners search hyperlocally and weight reviews heavily. Not The Rug&#39;s Yelp growth (34→37) is positive momentum. Google review strategy should run in parallel — quantity, recency, and diversity all matter for ranking.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Content Opportunities</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.tiktok.com/@petmarketnyc/video/7633485762666712350" target="_blank" rel="noreferrer">It’s flea and tick season—or as your pet calls it, &quot;The Great Itch-pocalypse.&quot; 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie</a></div>
+              
+              <div class="item-body">It’s flea and tick season—or as your pet calls it, &quot;The Great Itch-pocalypse.&quot; 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a &quot;No Vacancy&quot; sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea &amp; Tick Spray: For those who like a little &quot;spritz and go&quot; action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online 🚀 Speedy Service: We deliver faster than</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://x.com/BKBPReynoso/status/2050958073766846591" target="_blank" rel="noreferrer">ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.</a></div>
+              
+              <div class="item-body">ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. To our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://x.com/BlondiePredicts/status/2050963225970086383" target="_blank" rel="noreferrer">I’ll start:
+
+Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i</a></div>
+              
+              <div class="item-body">I’ll start: Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request? Same day. NYC high is just insane</div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-quality-score">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">guardian review</div>
+    <h2 class="section-title">Quality Score</h2>
+    <div class="section-rule"></div>
+    <div class="quality-banner quality-ready">Ready to publish — 93/100</div>
+    <p class="fallback">No surfaced issues.</p>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-cream" id="section-sources">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">references</div>
+    <h2 class="section-title">Sources</h2>
+    <div class="section-rule"></div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Our World: Weather Impact</div>
+              <div class="item-body"><a href="https://api.weather.gov/gridpoints/OKX/35,42/forecast/hourly" target="_blank" rel="noreferrer">https://api.weather.gov/gridpoints/OKX/35,42/forecast/hourly</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Review Insights: Yelp</div>
+              <div class="item-body"><a href="https://www.yelp.com" target="_blank" rel="noreferrer">https://www.yelp.com</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Reddit Signals: Latino picnic in Williamsburg</div>
+              <div class="item-body"><a href="https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/" target="_blank" rel="noreferrer">https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Reddit Signals: My girl is crossing the rainbow bridge tomorrow</div>
+              <div class="item-body"><a href="https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/" target="_blank" rel="noreferrer">https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: It’s flea and tick season—or as your pet calls it, &quot;The Great Itch-pocalypse.&quot; 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie</div>
+              <div class="item-body"><a href="https://www.tiktok.com/@petmarketnyc/video/7633485762666712350" target="_blank" rel="noreferrer">https://www.tiktok.com/@petmarketnyc/video/7633485762666712350</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.</div>
+              <div class="item-body"><a href="https://x.com/BKBPReynoso/status/2050958073766846591" target="_blank" rel="noreferrer">https://x.com/BKBPReynoso/status/2050958073766846591</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: I’ll start:
+
+Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i</div>
+              <div class="item-body"><a href="https://x.com/BlondiePredicts/status/2050963225970086383" target="_blank" rel="noreferrer">https://x.com/BlondiePredicts/status/2050963225970086383</a></div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+</body>
+</html>

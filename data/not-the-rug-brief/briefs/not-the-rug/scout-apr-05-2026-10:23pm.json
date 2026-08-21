@@ -1,0 +1,304 @@
+{
+  "runId": "58846c1f-ce21-4b59-a2df-c13091508ff4",
+  "timestamp": "2026-04-06T03:20:16.224Z",
+  "clientId": "not-the-rug",
+  "clientName": "Not The Rug",
+  "status": "success",
+  "delta": "[IMPORTANT] [ESCALATED] — National Hug Your Dog Day (April 10) and National Pet Day (April 11) are now 4–5 days out. No content drafted or flagged in previous brief. Window closes fast — draft today.\n\n[IMPORTANT] [ESCALATED] — Dog Bite Prevention Week (April 12–18) was flagged last brief as \"this week.\" It now starts in 6 days. Content needs to be ready to post by Saturday. If not drafted, the window closes.\n\n[IMPORTANT] [NEW] — National Pet ID Week (April 17–23) surfaces for the first time this cycle. Direct tie-in to Not The Rug's GPS tracking differentiator. Strong content bridge from Dog Bite Prevention Week into the following week.\n\n[QUIET] [NEW] — Senior dog care is a recurring buyer trigger across multiple Yelp competitor snippets. Not The Rug has direct testimonial evidence of surgical rehab support. Underutilized in public-facing content.\n\n[QUIET] [NEW] — Competitor onboarding friction (\"long forms,\" \"wait lists\") continues to surface in buyer language. Not The Rug's accessibility is a counter-positioning opportunity not yet explicitly claimed.\n\n[QUIET] [BACKGROUND] — $15/walk competitor present in Williamsburg North Side. Price-anchoring risk is low given Not The Rug's 5-star positioning, but worth monitoring if volume increases.\n\n[QUIET] [RESOLVED] — No new Yelp reviews this cycle. Review count stable at 34.\n\n[QUIET] [BACKGROUND] — Reddit signal gap continues. No threads surfaced. Monitor r/williamsburg and r/AskNYC directly.\n\n---",
+  "humanBrief": "**Tuesday, April 7, 2026 | Williamsburg**\n\n56°F, sunny, light wind. Same as yesterday — no route or timing changes. East River corridor walks may feel slightly cooler; nothing that changes operations.\n\nNo new Yelp reviews. Count holds at 34.\n\n**This week is your content runway.** Three hooks in five days:\n- **April 10** — National Hug Your Dog Day (client photo moment)\n- **April 11** — National Pet Day (brand story post)\n- **April 12** — Dog Bite Prevention Week opens (your safety model, stated plainly)\n\nDog Bite Prevention content was flagged yesterday — it needs to be drafted and scheduled today. Don't let the window slip.\n\nAlso new: **National Pet ID Week starts April 17.** Your GPS tracking is a direct, specific tie-in. Bridge from safety week into ID week with one additional post.\n\nCompetitor pattern worth noting: buyers in your market repeatedly cite onboarding friction and senior dog care as pain points. You have testimonials covering both. Use them.\n\n**PRIORITY ACTION:** Draft and schedule three posts today — Hug Your Dog Day (April 10), National Pet Day (April 11), and the Dog Bite Prevention Week safety post (April 12) — pulling directly from existing client testimonials on personalized care and rehab support.\n\n---",
+  "agentData": {
+    "brandMentions": [
+      {
+        "source": "nottherug.com",
+        "author": "Client (anonymous)",
+        "content": "From their normal walk, we get text updates and pics everyday. He's even helped us with the rehab of one of our dogs recovering from surgery.",
+        "sentiment": "positive",
+        "reach": "medium",
+        "url": "https://nottherug.com"
+      },
+      {
+        "source": "nottherug.com",
+        "author": "Client (anonymous)",
+        "content": "Our two dogs adore him and Reana, our primary walker. You can trust Luis to take care of your dog as if it was his own. He is also flexible and accommodating with schedule changes.",
+        "sentiment": "positive",
+        "reach": "medium",
+        "url": "https://nottherug.com"
+      },
+      {
+        "source": "GetRecommended.com",
+        "author": "Client (anonymous)",
+        "content": "Not the Rug is the 2nd dog walking service we have used in Williamsburg and is heads above our last and the competitors. I can't imagine having such a happy dog without Not the Rug.",
+        "sentiment": "positive",
+        "reach": "medium",
+        "url": "https://getrecommended.com"
+      },
+      {
+        "source": "Yelp (Williamsburg South Side)",
+        "author": "Client (anonymous)",
+        "content": "The best dog walker and pet sitter in the 5 Boroughs. Honest and reliable. Your dog is in good hands with Not The Rug.",
+        "sentiment": "positive",
+        "reach": "medium",
+        "url": "https://yelp.com"
+      }
+    ],
+    "competitorIntel": [
+      {
+        "competitor": "Unnamed Williamsburg North Side walker",
+        "finding": "$15/walk price point surfaced in Yelp results — significantly below market average. Individual operator likely, not a scaled service.",
+        "impact": "low",
+        "url": "https://yelp.com"
+      },
+      {
+        "competitor": "Happy Pants NYC",
+        "finding": "Active content marketing (blog post May 2025). Homepage meta still placeholder as of April 2024 — SEO posture is weak despite content effort.",
+        "impact": "low",
+        "url": "https://happypantsnyc.com"
+      },
+      {
+        "competitor": "McCarren Bark",
+        "finding": "Positive Yelp reviews mentioning named walker Vanessa. Personalized walker identity is a shared differentiator — worth watching if they scale messaging.",
+        "impact": "medium",
+        "url": "https://yelp.com"
+      },
+      {
+        "competitor": "Unnamed South Side competitor (Paul and team)",
+        "finding": "Strong local reputation claim on Yelp. No detail on model or pricing. Monitor for service expansion signals.",
+        "impact": "medium",
+        "url": "https://yelp.com"
+      },
+      {
+        "competitor": "Greenpoint-area competitor (unnamed)",
+        "finding": "Senior dog care highlighted positively in reviews — a buyer segment being served by at least one competitor in adjacent zip code.",
+        "impact": "medium",
+        "url": "https://yelp.com"
+      }
+    ],
+    "weatherImpact": {
+      "summary": "56°F, sunny, partly cloudy through the operating window. Wind up to 15mph — East River corridor walks (Domino Park, Bushwick Inlet, East River State Park) will feel cooler than inland routes. Precipitation near zero (4%). No route changes, gear adjustments, or timing shifts required.",
+      "operationalTakeaway": "Standard operations. If running waterfront routes, expect wind chill — not a safety issue but worth noting for client communication on outdoor time.",
+      "severity": "none"
+    },
+    "localEvents": [
+      {
+        "event": "National Hug Your Dog Day",
+        "date": "2026-04-10",
+        "impact": "Client engagement moment — photo opportunity with owners or walkers and dogs.",
+        "opportunity": "Post a client dog photo with a warm, low-stakes caption. Tag the neighborhood. Easy reach driver.",
+        "url": "https://www.daysoftheyear.com/days/hug-your-dog-day/"
+      },
+      {
+        "event": "National Pet Day",
+        "date": "2026-04-11",
+        "impact": "High-volume hashtag day nationally. Broad reach potential for a single strong brand story post.",
+        "opportunity": "Use a client testimonial or Luis's own words about why he started Not The Rug. Brand origin content performs well on Pet Day.",
+        "url": "https://www.nationalpetday.com"
+      },
+      {
+        "event": "Dog Therapy Appreciation Day",
+        "date": "2026-04-11",
+        "impact": "Niche but relevant — connects to emotional support and wellbeing framing.",
+        "opportunity": "Pair with Pet Day post or use as a caption layer — 'every walk is a little therapy' angle.",
+        "url": "https://www.daysoftheyear.com"
+      },
+      {
+        "event": "National Dog Bite Prevention Week",
+        "date": "2026-04-12 to 2026-04-18",
+        "impact": "High. Direct alignment with Not The Rug's no-pack, double-leash, individual-walk model.",
+        "opportunity": "State the safety case plainly: no pack walks = lower incident risk. GPS tracking = accountability. Double leash = control. One strong carousel or caption. Lead with a stat or question to drive saves.",
+        "url": "https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention"
+      },
+      {
+        "event": "National Pet ID Week",
+        "date": "2026-04-17 to 2026-04-23",
+        "impact": "Medium. GPS tracking is a direct, specific tie-in — differentiates from walkers with no tech layer.",
+        "opportunity": "Follow Dog Bite Prevention Week with a GPS tracking post. 'Every walk is tracked. Every route logged. You always know where your dog is.' Short caption, map screenshot or phone visual.",
+        "url": "https://www.daysoftheyear.com"
+      },
+      {
+        "event": "World Veterinary Day",
+        "date": "2026-04-25",
+        "impact": "Low-medium. Partnership and referral ecosystem activation opportunity.",
+        "opportunity": "Tag or thank a local Williamsburg vet. Referral relationship reinforcement in public.",
+        "url": "https://www.worldveterinaryday.org"
+      },
+      {
+        "event": "Adopt a Shelter Pet Day",
+        "date": "2026-04-30",
+        "impact": "Medium. New adopters are a primary acquisition target — they need walkers immediately.",
+        "opportunity": "Post targeting new dog owners: 'Just adopted? Here's what the first week of walks looks like with Not The Rug.' Clear CTA to inquire.",
+        "url": "https://www.daysoftheyear.com"
+      }
+    ],
+    "redditSignals": [
+      {
+        "title": "Reddit signal gap — search timed out",
+        "subreddit": "r/williamsburg, r/Brooklyn, r/AskNYC, r/nyc",
+        "signalType": "participation_opportunity",
+        "summary": "No Reddit threads surfaced this cycle. Recommendation threads and complaint threads in these subreddits are a known unclaimed channel for Not The Rug.",
+        "actionableTakeaway": "Monitor r/williamsburg and r/AskNYC directly for 'dog walker' recommendation threads. When a thread appears, a helpful, specific response from Luis as a local operator is the correct move — not a promotional post.",
+        "url": "https://reddit.com/r/williamsburg"
+      }
+    ],
+    "localDemandSignals": [
+      {
+        "signal": "Onboarding friction is a recurring buyer pain point in Williamsburg market",
+        "relevance": "high",
+        "detail": "Multiple Yelp snippets surface buyer frustration with 'long forms' and 'wait lists' from competitors. Not The Rug's direct, personal intake process is an unclaimed counter-positioning asset. Not currently stated on website or social in buyer-facing language."
+      },
+      {
+        "signal": "Senior dog care is an active buyer trigger in adjacent zip codes",
+        "relevance": "high",
+        "detail": "Greenpoint Yelp snippets show senior dog care as a decision driver. Not The Rug has direct testimonial evidence of surgical rehab support — a stronger proof point than most competitors can claim. Not surfaced in current content strategy."
+      },
+      {
+        "signal": "$15/walk low-price competitor active in Williamsburg North Side",
+        "relevance": "medium",
+        "detail": "One operator is price-undercutting significantly. Not The Rug's 5-star positioning and service depth (GPS, 45 min, individual walks, photo updates) make direct price competition irrelevant, but the signal is worth monitoring for volume or review activity."
+      },
+      {
+        "signal": "87% of dog walking searches start on Rover or Wag — 13% is unclaimed local search",
+        "relevance": "high",
+        "detail": "Buyers searching '[neighborhood] dog walker' on Google are the highest-intent segment not routed through platform competitors. Not The Rug's Yelp #1 ranking covers some of this, but Google neighborhood SEO (explicit neighborhood naming in review responses, Google Business Profile posts, and website copy) remains an underdeveloped channel."
+      },
+      {
+        "signal": "Instagram and TikTok account for 25% of new client acquisitions in pet services",
+        "relevance": "medium",
+        "detail": "Industry benchmark. Not The Rug has 1,321 posts and strong credibility — engagement rate per post is the unknown variable. Content cadence around the April event calendar is the near-term lever."
+      }
+    ],
+    "reviewInsights": [
+      {
+        "source": "Yelp",
+        "insight": "Review count stable at 34. No new reviews detected this cycle.",
+        "sentiment": "neutral",
+        "actionableTakeaway": "No response required today. Continue monitoring. Next review response should name the neighborhood and specific service to reinforce local SEO signal.",
+        "url": "https://yelp.com/biz/not-the-rug"
+      }
+    ],
+    "partnershipOpportunities": [
+      {
+        "partner": "Local Williamsburg veterinary practices",
+        "type": "referral",
+        "finding": "World Veterinary Day on April 25 is a natural activation point. A public thank-you post tagging a local vet creates visible referral relationship signaling and goodwill.",
+        "priority": "medium",
+        "url": "https://www.worldveterinaryday.org"
+      },
+      {
+        "partner": "Local Williamsburg groomers and pet stores",
+        "type": "referral",
+        "finding": "Senior dog care and surgical rehab support are buyer triggers surfaced in competitor review data. Groomers and vets who work with senior dogs are high-value referral sources for Not The Rug's demonstrated capability in this segment.",
+        "priority": "medium",
+        "url": ""
+      }
+    ],
+    "escalations": [
+      {
+        "level": "IMPORTANT",
+        "status": "ESCALATED",
+        "summary": "National Hug Your Dog Day (April 10), National Pet Day (April 11), and Dog Bite Prevention Week (April 12) are 4–6 days out. Content must be drafted today to capture all three windows. Dog Bite Prevention Week was flagged in the previous brief — now at critical scheduling threshold."
+      },
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "National Pet ID Week (April 17–23) newly surfaced. GPS tracking is a direct, specific differentiator tie-in. One post bridges from safety week into ID week and extends the content runway with no additional creative lift."
+      },
+      {
+        "level": "QUIET",
+        "status": "NEW",
+        "summary": "Senior dog care and onboarding friction are recurring buyer triggers in the local Yelp landscape. Not The Rug has testimonial proof for both but neither is surfaced in current public-facing content or positioning."
+      },
+      {
+        "level": "QUIET",
+        "status": "RESOLVED",
+        "summary": "No new Yelp reviews this cycle. Review count stable at 34. No response action required today."
+      }
+    ],
+    "contentOpportunities": {
+      "found": true,
+      "opportunities": [
+        {
+          "topic": "National Hug Your Dog Day — client dog photo post",
+          "whyNow": "April 10 is 3 days out. Simple, warm, engagement-friendly content. Easy reach driver with low production lift.",
+          "format": "Single Instagram photo with short caption. Client dog preferred. Tag neighborhood.",
+          "priority": "high",
+          "source": "April 2026 Dog Holiday Calendar",
+          "url": "https://www.daysoftheyear.com/days/hug-your-dog-day/"
+        },
+        {
+          "topic": "National Pet Day — brand origin or Luis voice post",
+          "whyNow": "April 11 is 4 days out. High-volume hashtag day. Brand story or owner voice content performs well. Existing testimonials from nottherug.com are ready to pull.",
+          "format": "Instagram caption-forward post. Quote from Luis or a client testimonial. No heavy visual required.",
+          "priority": "high",
+          "source": "National Pet Day 2026",
+          "url": "https://www.nationalpetday.com"
+        },
+        {
+          "topic": "Dog Bite Prevention Week — safety model explainer",
+          "whyNow": "Starts April 12. No pack walks + double leash + GPS = a specific, credible safety case. Previous brief flagged this — must post by Saturday.",
+          "format": "Instagram carousel (3–5 slides) or strong single caption. Lead with a stat or direct question. Designed for saves and shares.",
+          "priority": "high",
+          "source": "AVMA National Dog Bite Prevention Week",
+          "url": "https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention"
+        },
+        {
+          "topic": "National Pet ID Week — GPS tracking post",
+          "whyNow": "April 17–23. Direct tie-in to existing service feature. Bridges from safety week content with minimal new creative effort.",
+          "format": "Single Instagram post. Short, direct caption: 'Every walk tracked. Every route logged. You always know where your dog is.' Map screenshot or phone visual.",
+          "priority": "medium",
+          "source": "April 2026 Dog Holiday Calendar",
+          "url": "https://www.daysoftheyear.com"
+        },
+        {
+          "topic": "Senior dog and special needs care — testimonial spotlight",
+          "whyNow": "Competitor review data shows senior dog care is an active buyer trigger in Williamsburg and Greenpoint. Not The Rug has a surgical rehab testimonial on file. This segment is underserved in current content.",
+          "format": "Instagram caption using existing client quote about surgical rehab support. Add a brief note about what personalized care looks like for dogs with special needs.",
+          "priority": "medium",
+          "source": "Yelp competitor snippets (Greenpoint/Williamsburg) + nottherug.com testimonials",
+          "url": "https://nottherug.com"
+        },
+        {
+          "topic": "Adopt a Shelter Pet Day — new adopter acquisition post",
+          "whyNow": "April 30. New dog owners are the highest-intent acquisition target. A post specifically addressing the first-week experience for new adopters with a clear CTA is a conversion-oriented content play.",
+          "format": "Instagram caption or short Reel. 'Just adopted? Here's what the first week of walks looks like.' Direct CTA to inquire or DM.",
+          "priority": "medium",
+          "source": "April 2026 Dog Holiday Calendar",
+          "url": "https://www.daysoftheyear.com"
+        }
+      ],
+      "searchedFor": [
+        "National Hug Your Dog Day April 2026",
+        "National Pet Day April 11 2026",
+        "National Dog Bite Prevention Week 2026",
+        "National Pet ID Week April 2026",
+        "dog walking Brooklyn local SEO neighborhood search behavior",
+        "senior dog care buyer triggers Brooklyn Williamsburg",
+        "Williamsburg dog walker competitor reviews 2026",
+        "Adopt a Shelter Pet Day 2026"
+      ]
+    }
+  },
+  "rawOutput": "## REASONING\n\n**What's new vs. previous brief:**\n- Previous brief flagged National Dog Bite Prevention Week (April 12–18) as the priority action — that's now 6 days away, escalating urgency.\n- New dates surfaced this cycle: National Hug Your Dog Day (April 10), National Pet Day + Dog Therapy Appreciation Day (April 11) — these weren't actioned in the previous brief and are NOW 4–5 days out.\n- No new Yelp reviews (34 remains stable) — previous brief flagged a new review to respond to, so that's RESOLVED or carry-forward.\n- Weather: 56°F, sunny, manageable — nearly identical to yesterday. No operational change needed.\n- Reddit: timed out again — gap continues, no new signal.\n- Competitor intel: No new moves detected. Low-price signal ($15/walk) is background context.\n- SEO finding about neighborhood search behavior is BACKGROUND but highly actionable and wasn't surfaced as a specific content/SEO opportunity in the previous brief.\n- Senior dog care as a buyer trigger is a pattern across multiple Yelp snippets — worth flagging as a content and positioning opportunity.\n- National Pet ID Week (April 17–23) is newly surfaced and actionable for Not The Rug (GPS tracking is a direct tie-in).\n\n**Patterns across domains:**\n- Multiple signals converge on the April 10–18 window: Hug Your Dog Day → Pet Day → Dog Bite Prevention Week. This is a content runway, not isolated dates.\n- Senior dog care mentioned in multiple Yelp competitor snippets as a buyer trigger — Not The Rug has testimonial evidence of surgical rehab support. Underutilized differentiator.\n- Onboarding friction (\"long forms,\" \"wait lists\") is a recurring competitor pain point. Not The Rug's intimate model is a direct answer but isn't being surfaced as such publicly.\n\n**Immediate vs. routine:**\n- IMMEDIATE: April 10 (Hug Your Dog Day) and April 11 (National Pet Day) are 4–5 days out. If posts aren't drafted today, they miss.\n- IMPORTANT: Dog Bite Prevention Week content should be posted by Saturday — previous brief already flagged, now escalating to urgent.\n- ROUTINE: Reddit monitoring gap, SEO neighborhood targeting.\n\n**Weather:** 56°F, sunny, up to 15mph wind, 4% precip. Identical to yesterday. Manageable. East River corridor walks may feel cooler due to wind.\n\n---\n\n=== DELTA ===\n\n[IMPORTANT] [ESCALATED] — National Hug Your Dog Day (April 10) and National Pet Day (April 11) are now 4–5 days out. No content drafted or flagged in previous brief. Window closes fast — draft today.\n\n[IMPORTANT] [ESCALATED] — Dog Bite Prevention Week (April 12–18) was flagged last brief as \"this week.\" It now starts in 6 days. Content needs to be ready to post by Saturday. If not drafted, the window closes.\n\n[IMPORTANT] [NEW] — National Pet ID Week (April 17–23) surfaces for the first time this cycle. Direct tie-in to Not The Rug's GPS tracking differentiator. Strong content bridge from Dog Bite Prevention Week into the following week.\n\n[QUIET] [NEW] — Senior dog care is a recurring buyer trigger across multiple Yelp competitor snippets. Not The Rug has direct testimonial evidence of surgical rehab support. Underutilized in public-facing content.\n\n[QUIET] [NEW] — Competitor onboarding friction (\"long forms,\" \"wait lists\") continues to surface in buyer language. Not The Rug's accessibility is a counter-positioning opportunity not yet explicitly claimed.\n\n[QUIET] [BACKGROUND] — $15/walk competitor present in Williamsburg North Side. Price-anchoring risk is low given Not The Rug's 5-star positioning, but worth monitoring if volume increases.\n\n[QUIET] [RESOLVED] — No new Yelp reviews this cycle. Review count stable at 34.\n\n[QUIET] [BACKGROUND] — Reddit signal gap continues. No threads surfaced. Monitor r/williamsburg and r/AskNYC directly.\n\n---\n\n=== HUMAN BRIEF ===\n\n**Tuesday, April 7, 2026 | Williamsburg**\n\n56°F, sunny, light wind. Same as yesterday — no route or timing changes. East River corridor walks may feel slightly cooler; nothing that changes operations.\n\nNo new Yelp reviews. Count holds at 34.\n\n**This week is your content runway.** Three hooks in five days:\n- **April 10** — National Hug Your Dog Day (client photo moment)\n- **April 11** — National Pet Day (brand story post)\n- **April 12** — Dog Bite Prevention Week opens (your safety model, stated plainly)\n\nDog Bite Prevention content was flagged yesterday — it needs to be drafted and scheduled today. Don't let the window slip.\n\nAlso new: **National Pet ID Week starts April 17.** Your GPS tracking is a direct, specific tie-in. Bridge from safety week into ID week with one additional post.\n\nCompetitor pattern worth noting: buyers in your market repeatedly cite onboarding friction and senior dog care as pain points. You have testimonials covering both. Use them.\n\n**PRIORITY ACTION:** Draft and schedule three posts today — Hug Your Dog Day (April 10), National Pet Day (April 11), and the Dog Bite Prevention Week safety post (April 12) — pulling directly from existing client testimonials on personalized care and rehab support.\n\n---\n\n=== AGENT DATA ===\n\n{\n  \"brandMentions\": [\n    {\n      \"source\": \"nottherug.com\",\n      \"author\": \"Client (anonymous)\",\n      \"content\": \"From their normal walk, we get text updates and pics everyday. He's even helped us with the rehab of one of our dogs recovering from surgery.\",\n      \"sentiment\": \"positive\",\n      \"reach\": \"medium\",\n      \"url\": \"https://nottherug.com\"\n    },\n    {\n      \"source\": \"nottherug.com\",\n      \"author\": \"Client (anonymous)\",\n      \"content\": \"Our two dogs adore him and Reana, our primary walker. You can trust Luis to take care of your dog as if it was his own. He is also flexible and accommodating with schedule changes.\",\n      \"sentiment\": \"positive\",\n      \"reach\": \"medium\",\n      \"url\": \"https://nottherug.com\"\n    },\n    {\n      \"source\": \"GetRecommended.com\",\n      \"author\": \"Client (anonymous)\",\n      \"content\": \"Not the Rug is the 2nd dog walking service we have used in Williamsburg and is heads above our last and the competitors. I can't imagine having such a happy dog without Not the Rug.\",\n      \"sentiment\": \"positive\",\n      \"reach\": \"medium\",\n      \"url\": \"https://getrecommended.com\"\n    },\n    {\n      \"source\": \"Yelp (Williamsburg South Side)\",\n      \"author\": \"Client (anonymous)\",\n      \"content\": \"The best dog walker and pet sitter in the 5 Boroughs. Honest and reliable. Your dog is in good hands with Not The Rug.\",\n      \"sentiment\": \"positive\",\n      \"reach\": \"medium\",\n      \"url\": \"https://yelp.com\"\n    }\n  ],\n  \"competitorIntel\": [\n    {\n      \"competitor\": \"Unnamed Williamsburg North Side walker\",\n      \"finding\": \"$15/walk price point surfaced in Yelp results — significantly below market average. Individual operator likely, not a scaled service.\",\n      \"impact\": \"low\",\n      \"url\": \"https://yelp.com\"\n    },\n    {\n      \"competitor\": \"Happy Pants NYC\",\n      \"finding\": \"Active content marketing (blog post May 2025). Homepage meta still placeholder as of April 2024 — SEO posture is weak despite content effort.\",\n      \"impact\": \"low\",\n      \"url\": \"https://happypantsnyc.com\"\n    },\n    {\n      \"competitor\": \"McCarren Bark\",\n      \"finding\": \"Positive Yelp reviews mentioning named walker Vanessa. Personalized walker identity is a shared differentiator — worth watching if they scale messaging.\",\n      \"impact\": \"medium\",\n      \"url\": \"https://yelp.com\"\n    },\n    {\n      \"competitor\": \"Unnamed South Side competitor (Paul and team)\",\n      \"finding\": \"Strong local reputation claim on Yelp. No detail on model or pricing. Monitor for service expansion signals.\",\n      \"impact\": \"medium\",\n      \"url\": \"https://yelp.com\"\n    },\n    {\n      \"competitor\": \"Greenpoint-area competitor (unnamed)\",\n      \"finding\": \"Senior dog care highlighted positively in reviews — a buyer segment being served by at least one competitor in adjacent zip code.\",\n      \"impact\": \"medium\",\n      \"url\": \"https://yelp.com\"\n    }\n  ],\n  \"weatherImpact\": {\n    \"summary\": \"56°F, sunny, partly cloudy through the operating window. Wind up to 15mph — East River corridor walks (Domino Park, Bushwick Inlet, East River State Park) will feel cooler than inland routes. Precipitation near zero (4%). No route changes, gear adjustments, or timing shifts required.\",\n    \"operationalTakeaway\": \"Standard operations. If running waterfront routes, expect wind chill — not a safety issue but worth noting for client communication on outdoor time.\",\n    \"severity\": \"none\"\n  },\n  \"localEvents\": [\n    {\n      \"event\": \"National Hug Your Dog Day\",\n      \"date\": \"2026-04-10\",\n      \"impact\": \"Client engagement moment — photo opportunity with owners or walkers and dogs.\",\n      \"opportunity\": \"Post a client dog photo with a warm, low-stakes caption. Tag the neighborhood. Easy reach driver.\",\n      \"url\": \"https://www.daysoftheyear.com/days/hug-your-dog-day/\"\n    },\n    {\n      \"event\": \"National Pet Day\",\n      \"date\": \"2026-04-11\",\n      \"impact\": \"High-volume hashtag day nationally. Broad reach potential for a single strong brand story post.\",\n      \"opportunity\": \"Use a client testimonial or Luis's own words about why he started Not The Rug. Brand origin content performs well on Pet Day.\",\n      \"url\": \"https://www.nationalpetday.com\"\n    },\n    {\n      \"event\": \"Dog Therapy Appreciation Day\",\n      \"date\": \"2026-04-11\",\n      \"impact\": \"Niche but relevant — connects to emotional support and wellbeing framing.\",\n      \"opportunity\": \"Pair with Pet Day post or use as a caption layer — 'every walk is a little therapy' angle.\",\n      \"url\": \"https://www.daysoftheyear.com\"\n    },\n    {\n      \"event\": \"National Dog Bite Prevention Week\",\n      \"date\": \"2026-04-12 to 2026-04-18\",\n      \"impact\": \"High. Direct alignment with Not The Rug's no-pack, double-leash, individual-walk model.\",\n      \"opportunity\": \"State the safety case plainly: no pack walks = lower incident risk. GPS tracking = accountability. Double leash = control. One strong carousel or caption. Lead with a stat or question to drive saves.\",\n      \"url\": \"https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention\"\n    },\n    {\n      \"event\": \"National Pet ID Week\",\n      \"date\": \"2026-04-17 to 2026-04-23\",\n      \"impact\": \"Medium. GPS tracking is a direct, specific tie-in — differentiates from walkers with no tech layer.\",\n      \"opportunity\": \"Follow Dog Bite Prevention Week with a GPS tracking post. 'Every walk is tracked. Every route logged. You always know where your dog is.' Short caption, map screenshot or phone visual.\",\n      \"url\": \"https://www.daysoftheyear.com\"\n    },\n    {\n      \"event\": \"World Veterinary Day\",\n      \"date\": \"2026-04-25\",\n      \"impact\": \"Low-medium. Partnership and referral ecosystem activation opportunity.\",\n      \"opportunity\": \"Tag or thank a local Williamsburg vet. Referral relationship reinforcement in public.\",\n      \"url\": \"https://www.worldveterinaryday.org\"\n    },\n    {\n      \"event\": \"Adopt a Shelter Pet Day\",\n      \"date\": \"2026-04-30\",\n      \"impact\": \"Medium. New adopters are a primary acquisition target — they need walkers immediately.\",\n      \"opportunity\": \"Post targeting new dog owners: 'Just adopted? Here's what the first week of walks looks like with Not The Rug.' Clear CTA to inquire.\",\n      \"url\": \"https://www.daysoftheyear.com\"\n    }\n  ],\n  \"redditSignals\": [\n    {\n      \"title\": \"Reddit signal gap — search timed out\",\n      \"subreddit\": \"r/williamsburg, r/Brooklyn, r/AskNYC, r/nyc\",\n      \"signalType\": \"participation_opportunity\",\n      \"summary\": \"No Reddit threads surfaced this cycle. Recommendation threads and complaint threads in these subreddits are a known unclaimed channel for Not The Rug.\",\n      \"actionableTakeaway\": \"Monitor r/williamsburg and r/AskNYC directly for 'dog walker' recommendation threads. When a thread appears, a helpful, specific response from Luis as a local operator is the correct move — not a promotional post.\",\n      \"url\": \"https://reddit.com/r/williamsburg\"\n    }\n  ],\n  \"localDemandSignals\": [\n    {\n      \"signal\": \"Onboarding friction is a recurring buyer pain point in Williamsburg market\",\n      \"relevance\": \"high\",\n      \"detail\": \"Multiple Yelp snippets surface buyer frustration with 'long forms' and 'wait lists' from competitors. Not The Rug's direct, personal intake process is an unclaimed counter-positioning asset. Not currently stated on website or social in buyer-facing language.\"\n    },\n    {\n      \"signal\": \"Senior dog care is an active buyer trigger in adjacent zip codes\",\n      \"relevance\": \"high\",\n      \"detail\": \"Greenpoint Yelp snippets show senior dog care as a decision driver. Not The Rug has direct testimonial evidence of surgical rehab support — a stronger proof point than most competitors can claim. Not surfaced in current content strategy.\"\n    },\n    {\n      \"signal\": \"$15/walk low-price competitor active in Williamsburg North Side\",\n      \"relevance\": \"medium\",\n      \"detail\": \"One operator is price-undercutting significantly. Not The Rug's 5-star positioning and service depth (GPS, 45 min, individual walks, photo updates) make direct price competition irrelevant, but the signal is worth monitoring for volume or review activity.\"\n    },\n    {\n      \"signal\": \"87% of dog walking searches start on Rover or Wag — 13% is unclaimed local search\",\n      \"relevance\": \"high\",\n      \"detail\": \"Buyers searching '[neighborhood] dog walker' on Google are the highest-intent segment not routed through platform competitors. Not The Rug's Yelp #1 ranking covers some of this, but Google neighborhood SEO (explicit neighborhood naming in review responses, Google Business Profile posts, and website copy) remains an underdeveloped channel.\"\n    },\n    {\n      \"signal\": \"Instagram and TikTok account for 25% of new client acquisitions in pet services\",\n      \"relevance\": \"medium\",\n      \"detail\": \"Industry benchmark. Not The Rug has 1,321 posts and strong credibility — engagement rate per post is the unknown variable. Content cadence around the April event calendar is the near-term lever.\"\n    }\n  ],\n  \"reviewInsights\": [\n    {\n      \"source\": \"Yelp\",\n      \"insight\": \"Review count stable at 34. No new reviews detected this cycle.\",\n      \"sentiment\": \"neutral\",\n      \"actionableTakeaway\": \"No response required today. Continue monitoring. Next review response should name the neighborhood and specific service to reinforce local SEO signal.\",\n      \"url\": \"https://yelp.com/biz/not-the-rug\"\n    }\n  ],\n  \"partnershipOpportunities\": [\n    {\n      \"partner\": \"Local Williamsburg veterinary practices\",\n      \"type\": \"referral\",\n      \"finding\": \"World Veterinary Day on April 25 is a natural activation point. A public thank-you post tagging a local vet creates visible referral relationship signaling and goodwill.\",\n      \"priority\": \"medium\",\n      \"url\": \"https://www.worldveterinaryday.org\"\n    },\n    {\n      \"partner\": \"Local Williamsburg groomers and pet stores\",\n      \"type\": \"referral\",\n      \"finding\": \"Senior dog care and surgical rehab support are buyer triggers surfaced in competitor review data. Groomers and vets who work with senior dogs are high-value referral sources for Not The Rug's demonstrated capability in this segment.\",\n      \"priority\": \"medium\",\n      \"url\": \"\"\n    }\n  ],\n  \"escalations\": [\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"ESCALATED\",\n      \"summary\": \"National Hug Your Dog Day (April 10), National Pet Day (April 11), and Dog Bite Prevention Week (April 12) are 4–6 days out. Content must be drafted today to capture all three windows. Dog Bite Prevention Week was flagged in the previous brief — now at critical scheduling threshold.\"\n    },\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"National Pet ID Week (April 17–23) newly surfaced. GPS tracking is a direct, specific differentiator tie-in. One post bridges from safety week into ID week and extends the content runway with no additional creative lift.\"\n    },\n    {\n      \"level\": \"QUIET\",\n      \"status\": \"NEW\",\n      \"summary\": \"Senior dog care and onboarding friction are recurring buyer triggers in the local Yelp landscape. Not The Rug has testimonial proof for both but neither is surfaced in current public-facing content or positioning.\"\n    },\n    {\n      \"level\": \"QUIET\",\n      \"status\": \"RESOLVED\",\n      \"summary\": \"No new Yelp reviews this cycle. Review count stable at 34. No response action required today.\"\n    }\n  ],\n  \"contentOpportunities\": {\n    \"found\": true,\n    \"opportunities\": [\n      {\n        \"topic\": \"National Hug Your Dog Day — client dog photo post\",\n        \"whyNow\": \"April 10 is 3 days out. Simple, warm, engagement-friendly content. Easy reach driver with low production lift.\",\n        \"format\": \"Single Instagram photo with short caption. Client dog preferred. Tag neighborhood.\",\n        \"priority\": \"high\",\n        \"source\": \"April 2026 Dog Holiday Calendar\",\n        \"url\": \"https://www.daysoftheyear.com/days/hug-your-dog-day/\"\n      },\n      {\n        \"topic\": \"National Pet Day — brand origin or Luis voice post\",\n        \"whyNow\": \"April 11 is 4 days out. High-volume hashtag day. Brand story or owner voice content performs well. Existing testimonials from nottherug.com are ready to pull.\",\n        \"format\": \"Instagram caption-forward post. Quote from Luis or a client testimonial. No heavy visual required.\",\n        \"priority\": \"high\",\n        \"source\": \"National Pet Day 2026\",\n        \"url\": \"https://www.nationalpetday.com\"\n      },\n      {\n        \"topic\": \"Dog Bite Prevention Week — safety model explainer\",\n        \"whyNow\": \"Starts April 12. No pack walks + double leash + GPS = a specific, credible safety case. Previous brief flagged this — must post by Saturday.\",\n        \"format\": \"Instagram carousel (3–5 slides) or strong single caption. Lead with a stat or direct question. Designed for saves and shares.\",\n        \"priority\": \"high\",\n        \"source\": \"AVMA National Dog Bite Prevention Week\",\n        \"url\": \"https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention\"\n      },\n      {\n        \"topic\": \"National Pet ID Week — GPS tracking post\",\n        \"whyNow\": \"April 17–23. Direct tie-in to existing service feature. Bridges from safety week content with minimal new creative effort.\",\n        \"format\": \"Single Instagram post. Short, direct caption: 'Every walk tracked. Every route logged. You always know where your dog is.' Map screenshot or phone visual.\",\n        \"priority\": \"medium\",\n        \"source\": \"April 2026 Dog Holiday Calendar\",\n        \"url\": \"https://www.daysoftheyear.com\"\n      },\n      {\n        \"topic\": \"Senior dog and special needs care — testimonial spotlight\",\n        \"whyNow\": \"Competitor review data shows senior dog care is an active buyer trigger in Williamsburg and Greenpoint. Not The Rug has a surgical rehab testimonial on file. This segment is underserved in current content.\",\n        \"format\": \"Instagram caption using existing client quote about surgical rehab support. Add a brief note about what personalized care looks like for dogs with special needs.\",\n        \"priority\": \"medium\",\n        \"source\": \"Yelp competitor snippets (Greenpoint/Williamsburg) + nottherug.com testimonials\",\n        \"url\": \"https://nottherug.com\"\n      },\n      {\n        \"topic\": \"Adopt a Shelter Pet Day — new adopter acquisition post\",\n        \"whyNow\": \"April 30. New dog owners are the highest-intent acquisition target. A post specifically addressing the first-week experience for new adopters with a clear CTA is a conversion-oriented content play.\",\n        \"format\": \"Instagram caption or short Reel. 'Just adopted? Here's what the first week of walks looks like.' Direct CTA to inquire or DM.\",\n        \"priority\": \"medium\",\n        \"source\": \"April 2026 Dog Holiday Calendar\",\n        \"url\": \"https://www.daysoftheyear.com\"\n      }\n    ],\n    \"searchedFor\": [\n      \"National Hug Your Dog Day April 2026\",\n      \"National Pet Day April 11 2026\",\n      \"National Dog Bite Prevention Week 2026\",\n      \"National Pet ID Week April 2026\",\n      \"dog walking Brooklyn local SEO neighborhood search behavior\",\n      \"senior dog care buyer triggers Brooklyn Williamsburg\",\n      \"Williamsburg dog walker competitor reviews 2026\",\n      \"Adopt a Shelter Pet Day 2026\"\n    ]\n  }\n}",
+  "stageCosts": [
+    {
+      "stage": "scout-search",
+      "model": "claude-sonnet-4-6",
+      "inputTokens": 105214,
+      "outputTokens": 4406,
+      "estimatedUsd": 0.38173199999999996
+    },
+    {
+      "stage": "scout-trim",
+      "model": "claude-haiku-4-5-20251001",
+      "inputTokens": 2195,
+      "outputTokens": 1102,
+      "estimatedUsd": 0.006163999999999999
+    },
+    {
+      "stage": "scout-synthesis",
+      "model": "claude-sonnet-4-6",
+      "inputTokens": 4534,
+      "outputTokens": 5517,
+      "estimatedUsd": 0.096357
+    }
+  ]
+}

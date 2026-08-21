@@ -37,7 +37,7 @@ export default function BookPage() {
       <nav id="main-nav">
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            <img id="nav-logo-img" src="/logos/ntr_offwhite_horiz.png" alt="Not The Rug" />
+            <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" />
           </Link>
           <div className="nav-links">
             <Link

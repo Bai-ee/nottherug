@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+  <!-- CSS alpha mask: white = visible. Subtle torn top + bottom edges, straight sides. -->
+  <path fill="#fff" d="
+    M 0 13
+    L 24 9 L 51 15 L 83 8 L 118 14 L 149 7 L 186 12 L 221 6 L 258 13 L 292 8
+    L 331 15 L 367 9 L 402 14 L 441 7 L 478 12 L 514 6 L 552 13 L 589 9
+    L 627 15 L 663 8 L 701 13 L 738 7 L 776 12 L 813 6 L 851 14 L 888 9
+    L 926 13 L 962 8 L 1000 12
+    L 1000 987
+    L 971 992 L 936 986 L 899 993 L 863 987 L 827 992 L 789 986 L 752 991 L 715 985
+    L 678 992 L 641 987 L 604 993 L 566 986 L 529 991 L 492 985 L 455 992 L 418 987
+    L 381 993 L 344 986 L 307 991 L 269 985 L 232 992 L 196 987 L 158 993 L 121 986
+    L 84 991 L 47 986 L 0 990
+    Z" />
+</svg>

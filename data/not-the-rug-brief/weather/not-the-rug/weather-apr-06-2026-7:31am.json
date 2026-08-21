@@ -1,0 +1,199 @@
+{
+  "clientId": "not-the-rug",
+  "provider": "nws",
+  "fetchedAt": "2026-04-06T12:31:39.142Z",
+  "operationalWindow": {
+    "timeZone": "America/New_York",
+    "date": "2026-04-06",
+    "startHour": 7,
+    "endHour": 19,
+    "durationHours": 12,
+    "startLocal": "2026-04-06T07:00",
+    "endLocal": "2026-04-06T19:00"
+  },
+  "neighborhoods": [
+    {
+      "name": "Brooklyn",
+      "latitude": 40.7184,
+      "longitude": -73.9571,
+      "source": "NWS",
+      "sourceUrls": {
+        "points": "https://api.weather.gov/points/40.7184,-73.9571",
+        "forecastHourly": "https://api.weather.gov/gridpoints/OKX/35,35/forecast/hourly",
+        "alerts": "https://api.weather.gov/alerts/active?point=40.7184,-73.9571"
+      },
+      "periods": [
+        {
+          "startTime": "2026-04-06T08:00:00-04:00",
+          "endTime": "2026-04-06T09:00:00-04:00",
+          "startLocalHour": 8,
+          "endLocalHour": 9,
+          "temperature": 43,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "12 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T09:00:00-04:00",
+          "endTime": "2026-04-06T10:00:00-04:00",
+          "startLocalHour": 9,
+          "endLocalHour": 10,
+          "temperature": 43,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "12 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T10:00:00-04:00",
+          "endTime": "2026-04-06T11:00:00-04:00",
+          "startLocalHour": 10,
+          "endLocalHour": 11,
+          "temperature": 46,
+          "temperatureUnit": "F",
+          "shortForecast": "Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "12 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T11:00:00-04:00",
+          "endTime": "2026-04-06T12:00:00-04:00",
+          "startLocalHour": 11,
+          "endLocalHour": 12,
+          "temperature": 47,
+          "temperatureUnit": "F",
+          "shortForecast": "Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "12 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T12:00:00-04:00",
+          "endTime": "2026-04-06T13:00:00-04:00",
+          "startLocalHour": 12,
+          "endLocalHour": 13,
+          "temperature": 49,
+          "temperatureUnit": "F",
+          "shortForecast": "Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "13 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T13:00:00-04:00",
+          "endTime": "2026-04-06T14:00:00-04:00",
+          "startLocalHour": 13,
+          "endLocalHour": 14,
+          "temperature": 52,
+          "temperatureUnit": "F",
+          "shortForecast": "Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "13 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T14:00:00-04:00",
+          "endTime": "2026-04-06T15:00:00-04:00",
+          "startLocalHour": 14,
+          "endLocalHour": 15,
+          "temperature": 54,
+          "temperatureUnit": "F",
+          "shortForecast": "Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 2,
+          "windSpeed": "13 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T15:00:00-04:00",
+          "endTime": "2026-04-06T16:00:00-04:00",
+          "startLocalHour": 15,
+          "endLocalHour": 16,
+          "temperature": 54,
+          "temperatureUnit": "F",
+          "shortForecast": "Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 2,
+          "windSpeed": "13 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T16:00:00-04:00",
+          "endTime": "2026-04-06T17:00:00-04:00",
+          "startLocalHour": 16,
+          "endLocalHour": 17,
+          "temperature": 54,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 2,
+          "windSpeed": "13 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T17:00:00-04:00",
+          "endTime": "2026-04-06T18:00:00-04:00",
+          "startLocalHour": 17,
+          "endLocalHour": 18,
+          "temperature": 56,
+          "temperatureUnit": "F",
+          "shortForecast": "Partly Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 3,
+          "windSpeed": "12 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-06T18:00:00-04:00",
+          "endTime": "2026-04-06T19:00:00-04:00",
+          "startLocalHour": 18,
+          "endLocalHour": 19,
+          "temperature": 54,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Cloudy",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 3,
+          "windSpeed": "10 mph",
+          "windDirection": "W",
+          "isDaytime": false
+        }
+      ],
+      "alerts": [],
+      "summary": {
+        "summary": "Mostly Sunny, Sunny, Partly Sunny | 43–56F | up to 3% precip chance | winds up to 13 mph",
+        "operationalTakeaway": "No major weather disruption expected for the operating window.",
+        "maxTempF": 56,
+        "minTempF": 43,
+        "maxPrecipChancePct": 3,
+        "maxWindMph": 13,
+        "flags": []
+      }
+    }
+  ],
+  "overall": {
+    "summary": "2026-04-06T07:00 to 2026-04-06T19:00 America/New_York | max temp 56F | max precip 3% | max wind 13 mph",
+    "operationalTakeaway": "Weather looks manageable across the service area.",
+    "affectedNeighborhoods": [],
+    "flags": []
+  }
+}

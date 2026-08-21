@@ -1,9 +1,148 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MeetGreetForm from '../components/MeetGreetForm';
+import AnimatedServiceCards from '../components/AnimatedServiceCards';
+
+// Large, washed-out background watermark print — points right (base rotate
+// 90deg turns the glyph's toes-up orientation into toes-right), scattered in
+// a loose two-row zigzag rather than one straight inline row. The wrapper
+// div is what GSAP animates (position/opacity); the svg's own rotate stays
+// static so the two transforms never fight each other.
+function PawTrailPrint({ left, top, rotate, size, opacity }: { left: string; top: string; rotate: number; size: number; opacity: number }) {
+  return (
+    <div className="hiw-paw-print" style={{ left, top }}>
+      <svg className="hiw-paw" viewBox="0 0 40 40" width={size} height={size} fill="currentColor"
+        style={{ transform: `rotate(${rotate}deg)`, opacity }} aria-hidden="true">
+        <ellipse cx="20" cy="27" rx="10" ry="8" />
+        <ellipse cx="10" cy="14" rx="4" ry="5" transform="rotate(-15 10 14)" />
+        <ellipse cx="18" cy="8" rx="4.5" ry="5.5" />
+        <ellipse cx="27" cy="9" rx="4.5" ry="5.5" transform="rotate(10 27 9)" />
+        <ellipse cx="33" cy="17" rx="4" ry="5" transform="rotate(25 33 17)" />
+      </svg>
+    </div>
+  );
+}
+
+// ---- Paw-trail tuning (temporary dev overlay — see #hiw-paw-tuning-panel) ----
+const PAW_TUNING_STORAGE_KEY = 'ntr-hiw-paw-trail-settings-v1';
+
+type PawSettings = {
+  opacity: number; size: number; baseRotation: number; rotationVariance: number;
+  startX: number; spreadX: number; rowTop: number; rowBottom: number;
+};
+type RevealSettings = {
+  pawDuration: number; pawStagger: number; pawEase: string; pawDistanceX: number;
+  copyDelay: number; copyDuration: number; copyStagger: number; copyEase: string; copyDistanceY: number;
+};
+type HideSettings = { pawDuration: number; copyDuration: number; ease: string };
+
+const DEFAULT_PAW_SETTINGS: PawSettings = {
+  opacity: 0.4, size: 140, baseRotation: 90, rotationVariance: 6,
+  startX: 4, spreadX: 79, rowTop: 12, rowBottom: 56,
+};
+const DEFAULT_REVEAL_SETTINGS: RevealSettings = {
+  pawDuration: 0.7, pawStagger: 0.32, pawEase: 'power2.out', pawDistanceX: 36,
+  copyDelay: 0.2, copyDuration: 0.5, copyStagger: 0.22, copyEase: 'power3.out', copyDistanceY: 16,
+};
+const DEFAULT_HIDE_SETTINGS: HideSettings = { pawDuration: 0.4, copyDuration: 0.35, ease: 'power3.out' };
+
+const EASE_OPTIONS = [
+  { value: 'power1.out', label: 'power1.out' },
+  { value: 'power2.out', label: 'power2.out' },
+  { value: 'power3.out', label: 'power3.out' },
+  { value: 'sine.out', label: 'sine.out' },
+  { value: 'back.out(1.4)', label: 'back.out(1.4)' },
+];
+
+function pawPosition(paw: PawSettings, i: number) {
+  const left = paw.startX + (paw.spreadX * i) / 3;
+  const top = i % 2 === 0 ? paw.rowTop : paw.rowBottom;
+  const rotate = paw.baseRotation + (i % 2 === 0 ? -paw.rotationVariance : paw.rotationVariance);
+  return { left, top, rotate };
+}
+
+function TuneSlider({ id, label, value, min, max, step, unit, onChange }: {
+  id: string; label: string; value: number; min: number; max: number; step: number; unit: string;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <label htmlFor={id} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <span style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--charcoal)' }}>
+        <span>{label}</span>
+        <span style={{ color: 'var(--mid-gray)' }}>{value}{unit}</span>
+      </span>
+      <input id={id} type="range" min={min} max={max} step={step} value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        style={{ width: '100%', accentColor: 'var(--sage-dark)' }} />
+    </label>
+  );
+}
+
+function TuneSelect({ id, label, value, onChange }: { id: string; label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <label htmlFor={id} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <span style={{ fontSize: 12, color: 'var(--charcoal)' }}>{label}</span>
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)}
+        style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(36,35,33,0.2)', fontSize: 13, width: '100%' }}>
+        {EASE_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+      </select>
+    </label>
+  );
+}
+
+function TuneSectionLabel({ children }: { children: string }) {
+  return <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, color: 'var(--charcoal)', marginTop: 4 }}>{children}</div>;
+}
 
 export default function Home() {
+  const [pawSettings, setPawSettings] = useState<PawSettings>(DEFAULT_PAW_SETTINGS);
+  const [revealSettings, setRevealSettings] = useState<RevealSettings>(DEFAULT_REVEAL_SETTINGS);
+  const [hideSettings, setHideSettings] = useState<HideSettings>(DEFAULT_HIDE_SETTINGS);
+  const [showPawTuning, setShowPawTuning] = useState(false);
+  const revealSettingsRef = useRef(revealSettings);
+  const hideSettingsRef = useRef(hideSettings);
+
+  useEffect(() => { revealSettingsRef.current = revealSettings; }, [revealSettings]);
+  useEffect(() => { hideSettingsRef.current = hideSettings; }, [hideSettings]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(PAW_TUNING_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        setPawSettings({ ...DEFAULT_PAW_SETTINGS, ...parsed.paw });
+        setRevealSettings({ ...DEFAULT_REVEAL_SETTINGS, ...parsed.reveal });
+        setHideSettings({ ...DEFAULT_HIDE_SETTINGS, ...parsed.hide });
+      }
+    } catch {
+      /* ignore malformed saved settings */
+    }
+  }, []);
+
+  // Reveal/hide timing changes take effect on the next play()/hide() call (read
+  // from the refs above). Distance changes also need the *resting* hidden state
+  // refreshed immediately, or the next reveal would start from a stale offset.
+  useEffect(() => {
+    (window as any).resetHowItWorksPawsHidden?.();
+  }, [revealSettings.pawDistanceX, revealSettings.copyDistanceY]);
+
+  const updatePaw = (field: keyof PawSettings, value: number) =>
+    setPawSettings((prev) => ({ ...prev, [field]: value }));
+  const updateReveal = (field: keyof RevealSettings, value: number | string) =>
+    setRevealSettings((prev) => ({ ...prev, [field]: value }));
+  const updateHide = (field: keyof HideSettings, value: number | string) =>
+    setHideSettings((prev) => ({ ...prev, [field]: value }));
+
+  const savePawTuningAsDefault = () =>
+    window.localStorage.setItem(PAW_TUNING_STORAGE_KEY, JSON.stringify({ paw: pawSettings, reveal: revealSettings, hide: hideSettings }));
+  const resetPawTuning = () => {
+    setPawSettings(DEFAULT_PAW_SETTINGS);
+    setRevealSettings(DEFAULT_REVEAL_SETTINGS);
+    setHideSettings(DEFAULT_HIDE_SETTINGS);
+    window.localStorage.removeItem(PAW_TUNING_STORAGE_KEY);
+  };
+
   useEffect(() => {
     (async () => {
       const gsapModule = await import('gsap');
@@ -101,6 +240,7 @@ export default function Home() {
       const statTargets  = [5, 5, 79, 15];
       const statSuffixes = ['★', '★', '', '+'];
       let statsAnimated  = false;
+      let careScrollMM: ReturnType<typeof gsap.matchMedia> | null = null;
 
       function initStatCounters() {
         if (prefersReducedMotion) return;
@@ -135,53 +275,222 @@ export default function Home() {
         ScrollTrigger.create({
           trigger: document.body,
           start: 'top+=60 top',
-          onEnter:     () => gsap.to('#main-nav', { boxShadow: '0 2px 32px rgba(0,0,0,0.09)', duration: 0.3 }),
-          onLeaveBack: () => gsap.to('#main-nav', { boxShadow: '0 0 0 rgba(0,0,0,0)',          duration: 0.3 })
+          onEnter:     () => { gsap.to('#main-nav', { boxShadow: '0 2px 32px rgba(0,0,0,0.09)', duration: 0.3 }); document.getElementById('main-nav')?.classList.add('nav-scrolled'); },
+          onLeaveBack: () => { gsap.to('#main-nav', { boxShadow: '0 0 0 rgba(0,0,0,0)',          duration: 0.3 }); document.getElementById('main-nav')?.classList.remove('nav-scrolled'); }
         });
       }
-
-      const revealedEls = new WeakSet<Element>();
 
       function initSectionReveals(pageEl: HTMLElement) {
         if (prefersReducedMotion || !pageEl) return;
 
         const cardSel = [
-          '.service-card', '.hiw-step', '.review-card', '.hood-card',
+          // :not() excludes the restored simple cards inside the personalized-
+          // care product row — that row has its own dedicated horizontal-scrub
+          // reveal (initPersonalizedCareScroll); this generic vertical
+          // fade-up would otherwise double up on top of it.
+          '.service-card:not(#home-animated-products-grid .service-card)', '.review-card', '.hood-card',
           '.trust-card', '.pricing-card', '.team-card', '.value-cell',
           '.process-step', '.cta-band', '.contact-card', '.package-tier',
           '.booking-form', '.phase-callout'
         ].join(',');
 
         const headingSel = [
-          '.section h2', '.section h3', '.section .label',
+          // :not() — card labels (h3 inside .service-card) must not get their
+          // own reveal; they'd animate separately on top of the card reveal.
+          '.section h2', '.section h3:not(.service-card h3)', '.section .label',
           '.page-hero h1', '.page-hero p', '.book-hero h1', '.book-hero p'
         ].join(',');
 
-        const cards    = Array.from(pageEl.querySelectorAll(cardSel)).filter(el => !revealedEls.has(el));
-        const headings = Array.from(pageEl.querySelectorAll(headingSel)).filter(el => !revealedEls.has(el));
+        const headings = Array.from(pageEl.querySelectorAll(headingSel));
+        const cards    = Array.from(pageEl.querySelectorAll(cardSel));
 
         if (headings.length) {
           gsap.set(headings, { autoAlpha: 0, y: 26 });
           ScrollTrigger.batch(headings, {
-            onEnter: batch => {
-              batch.forEach((el: Element) => revealedEls.add(el));
-              gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out' });
-            },
+            onEnter:     batch => gsap.to(batch, { autoAlpha: 1, y: 0,  duration: 0.7, stagger: 0.06, ease: 'power3.out', overwrite: true }),
+            onEnterBack: batch => gsap.to(batch, { autoAlpha: 1, y: 0,  duration: 0.7, stagger: 0.06, ease: 'power3.out', overwrite: true }),
+            onLeave:     batch => gsap.to(batch, { autoAlpha: 0, y: 26, duration: 0.4, stagger: 0.04, ease: 'power3.out', overwrite: true }),
+            onLeaveBack: batch => gsap.to(batch, { autoAlpha: 0, y: 26, duration: 0.4, stagger: 0.04, ease: 'power3.out', overwrite: true }),
             start: 'top 90%',
-            once: true
+            end: 'bottom top'
           });
         }
 
         if (cards.length) {
           gsap.set(cards, { autoAlpha: 0, y: 52 });
           ScrollTrigger.batch(cards, {
-            onEnter: batch => {
-              batch.forEach((el: Element) => revealedEls.add(el));
-              gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.85, stagger: 0.085, ease: 'power3.out' });
-            },
+            onEnter:     batch => gsap.to(batch, { autoAlpha: 1, y: 0,  duration: 0.85, stagger: 0.085, ease: 'power3.out', overwrite: true }),
+            onEnterBack: batch => gsap.to(batch, { autoAlpha: 1, y: 0,  duration: 0.85, stagger: 0.085, ease: 'power3.out', overwrite: true }),
+            onLeave:     batch => gsap.to(batch, { autoAlpha: 0, y: 52, duration: 0.4,  stagger: 0.05,  ease: 'power3.out', overwrite: true }),
+            onLeaveBack: batch => gsap.to(batch, { autoAlpha: 0, y: 52, duration: 0.4,  stagger: 0.05,  ease: 'power3.out', overwrite: true }),
             start: 'top 88%',
-            once: true
+            end: 'bottom top'
           });
+        }
+      }
+
+      // Paw-print trail: the four large background watermark prints (left to
+      // right, in DOM/left% order) fade + drift in from the left as if an
+      // unseen dog walked across the section; each step's description follows
+      // shortly after the print nearest it. Reverses the same way scrolling away.
+      function initHowItWorksSteps() {
+        if (prefersReducedMotion) return;
+        const paws   = Array.from(document.querySelectorAll('#home-how-it-works-paw-trail .hiw-paw-print'));
+        const copies = Array.from(document.querySelectorAll('#home-how-it-works-steps .hiw-step-copy'));
+        if (!paws.length && !copies.length) return;
+
+        // Timing/ease read from the refs (kept fresh by the tuning sliders) on
+        // every call, not just at setup — so a slider drag affects the very
+        // next Replay/scroll-trigger without needing to recreate the trigger.
+        function resetHidden() {
+          const r = revealSettingsRef.current;
+          gsap.set(paws, { autoAlpha: 0, x: -r.pawDistanceX });
+          gsap.set(copies, { autoAlpha: 0, y: r.copyDistanceY });
+        }
+        resetHidden();
+
+        function play() {
+          const r = revealSettingsRef.current;
+          gsap.timeline({ defaults: { overwrite: true } })
+            .to(paws,   { autoAlpha: 1, x: 0, duration: r.pawDuration, ease: r.pawEase, stagger: r.pawStagger }, 0)
+            .to(copies, { autoAlpha: 1, y: 0, duration: r.copyDuration, ease: r.copyEase, stagger: r.copyStagger }, r.copyDelay);
+        }
+        function hide() {
+          const r = revealSettingsRef.current;
+          const h = hideSettingsRef.current;
+          gsap.to(paws,   { autoAlpha: 0, x: -r.pawDistanceX, duration: h.pawDuration, ease: h.ease, overwrite: true });
+          gsap.to(copies, { autoAlpha: 0, y: r.copyDistanceY,  duration: h.copyDuration, ease: h.ease, overwrite: true });
+        }
+
+        ScrollTrigger.create({
+          trigger: '#home-how-it-works-steps',
+          start: 'top 85%',
+          end: 'bottom top',
+          onEnter: play,
+          onEnterBack: play,
+          onLeave: hide,
+          onLeaveBack: hide
+        });
+
+        (window as any).replayHowItWorksPaws = () => { hide(); setTimeout(play, 120); };
+        (window as any).resetHowItWorksPawsHidden = resetHidden;
+      }
+
+      // Horizontal product row — a direct port of GSAP's own reference
+      // implementation (codepen.io/GreenSock/pen/dydpJzY, "Horizontal
+      // scrolling gallery - ScrollTrigger"), minus its ScrollSmoother (a paid
+      // Club plugin this project doesn't license). The reference's core is
+      // exactly four things, and this keeps all four:
+      //
+      //   1. pin the gallery wrapper (here: the clipping scroll-window),
+      //   2. tween the strip inside it to x: -horizontalScrollLength,
+      //   3. ease:'none' + scrub:true so scroll px map 1:1 to horizontal px,
+      //   4. recompute that length on every ScrollTrigger refreshInit.
+      //
+      // The pinned element is #home-personalized-care-pin-stage: a wrapper
+      // that is exactly one viewport tall and carries this section's
+      // background. Pinning the element that owns the background is what makes
+      // the background sit perfectly still for the whole pin — pin an inner
+      // wrapper instead and the section keeps scrolling behind the frozen row,
+      // so the background drifts. Being a full viewport tall matters just as
+      // much: while pinned it covers the entire screen, so there is no
+      // unpinned strip of section visible above or below it to give the
+      // freeze away.
+      //
+      // This section has no heading of its own by design — it flows straight
+      // out of the Williamsburg trust section above into the carousel — so the
+      // stage holds nothing but the clipped row, and there's no reveal-driven
+      // element trapped inside the pin. (That matters: a scroll reveal whose
+      // trigger sits inside a pinned element fades out mid-pin, because its
+      // start/end are measured from its unpinned position.)
+      //
+      // `end` is horizontalScrollLength (the actual overflow), not the
+      // reference's full track width: a 1:1 ratio means the pin reserves
+      // exactly as much extra page height as there is row to travel, so
+      // nothing below the section gets pushed down by invented dead space.
+      //
+      // Scroll position is the single source of truth for the row's x. The
+      // ScrollTrigger instance is exposed on window so AnimatedServiceCards'
+      // arrows/dots/drag can scrollTo the matching position rather than
+      // animating x themselves — two systems writing the same transform was
+      // what broke earlier versions.
+      //
+      // Desktop only: mobile keeps the plain single-column .services-grid
+      // stack (globals.css, max-width:768px), no pin or carousel there.
+      function initPersonalizedCareScroll() {
+        careScrollMM?.revert();
+        careScrollMM = gsap.matchMedia();
+
+        careScrollMM.add('(min-width: 769px) and (prefers-reduced-motion: no-preference)', () => {
+          const stage = document.getElementById('home-personalized-care-pin-stage');
+          const clipWin = document.getElementById('home-personalized-care-scroll-window');
+          const track = document.getElementById('home-animated-products-grid');
+          if (!stage || !clipWin || !track) return;
+
+          gsap.set(track, { x: 0 });
+
+          let horizontalScrollLength = 0;
+          function refresh() {
+            horizontalScrollLength = Math.max(0, track!.scrollWidth - clipWin!.clientWidth);
+          }
+          refresh();
+
+          // Row already fits — pinning would freeze the page for zero payoff.
+          if (horizontalScrollLength <= 0) return;
+
+          const tween = gsap.to(track, {
+            x: () => -horizontalScrollLength,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: stage,
+              pin: stage,
+              // The stage is exactly one viewport tall, so pinning it at the
+              // very top of the viewport makes it cover the screen edge to
+              // edge for the whole pin — that's what keeps its background
+              // looking locked, with no unpinned strip visible above or below.
+              start: 'top top',
+              end: () => `+=${horizontalScrollLength}`,
+              scrub: true,
+              invalidateOnRefresh: true,
+              // No anticipatePin: it engages the pin early based on scroll
+              // velocity, which shifts the stage (and so its background) by a
+              // few px right at the hand-off. The reference doesn't use it and
+              // the background has to look dead still from the first frame.
+              // HIGHER refreshPriority = refreshed EARLIER (verified against
+              // this GSAP build, not assumed). This pin adds ~1061px of page
+              // height, so its spacer has to be in place before
+              // initSectionReveals' batch triggers (default priority 0)
+              // measure the sections below it. Without this, every reveal
+              // below the carousel — the whole reviews section, the CTA band,
+              // the footer cards — computed a start ~1061px too early and sat
+              // invisible while its section was plainly on screen.
+              refreshPriority: 1,
+            }
+          });
+
+          ScrollTrigger.addEventListener('refreshInit', refresh);
+          (window as any).personalizedCareScrollTrigger = tween.scrollTrigger;
+
+          return () => {
+            ScrollTrigger.removeEventListener('refreshInit', refresh);
+            delete (window as any).personalizedCareScrollTrigger;
+            gsap.set(track, { clearProps: 'transform' });
+          };
+        });
+
+        // Everything on the page has been created by now; this re-measures
+        // them all in refreshPriority order with the pin spacer in place.
+        ScrollTrigger.refresh();
+
+        // …and once more after the last image lands. The simple cards' icons
+        // carry no intrinsic size, so a late decode can still change the row's
+        // width — which is exactly the number the pin distance is derived
+        // from. Refreshing on load keeps the pin, and every trigger below it,
+        // measured against the final layout instead of a mid-load one.
+        if (document.readyState === 'complete') {
+          ScrollTrigger.refresh();
+        } else {
+          window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
         }
       }
 
@@ -189,7 +498,14 @@ export default function Home() {
         if (prefersReducedMotion) return;
         gsap.fromTo(pageEl,
           { autoAlpha: 0, y: 18 },
-          { autoAlpha: 1, y: 0, duration: 0.42, ease: 'power2.out' }
+          {
+            autoAlpha: 1, y: 0, duration: 0.42, ease: 'power2.out',
+            // y settles to 0 but the transform property itself stays on the
+            // element — a transformed ancestor makes position:fixed/absolute
+            // descendants (ScrollTrigger pins, portal-toggle buttons) resolve
+            // against IT instead of the viewport. Clear it once the tween lands.
+            onComplete: () => { gsap.set(pageEl, { clearProps: 'transform' }); },
+          }
         );
       }
 
@@ -216,6 +532,8 @@ export default function Home() {
             initHeroParallax();
             initStatCounters();
             setTimeout(() => initSectionReveals(target), 420);
+            setTimeout(() => initHowItWorksSteps(), 420);
+            setTimeout(() => initPersonalizedCareScroll(), 420);
           } else {
             initSectionReveals(target);
             setTimeout(() => ScrollTrigger.refresh(), 420);
@@ -238,46 +556,6 @@ export default function Home() {
           desc: 'Williamsburg is where Not The Rug was born, and it remains the heart of our operation. We know every building, every doorman, every park bench, and every dog on every block. When it comes to Williamsburg dog walking, nobody knows these streets better.',
           parks: ['McCarren Park', 'East River State Park', 'Domino Park', 'N 5th St Dog Run', 'Marcy Park'],
           seo: 'Dog walker Williamsburg Brooklyn'
-        },
-        greenpoint: {
-          name: 'Greenpoint',
-          color: '#9DB89A',
-          tagline: 'McGolrick Park specialists',
-          desc: "From McGolrick Park in the morning to the Greenpoint waterfront in the afternoon, our walkers know the best routes through this neighborhood's quiet tree-lined streets. A calm, residential neighborhood that's perfect for dogs who love exploring.",
-          parks: ['McGolrick Park', 'Monsignor McGolrick Park', 'Greenpoint Waterfront', 'Transmitter Park', 'India St Pier'],
-          seo: 'Dog walker Greenpoint Brooklyn'
-        },
-        bushwick: {
-          name: 'Bushwick',
-          color: '#C4A888',
-          tagline: 'Maria Hernandez Park routes',
-          desc: "Bushwick's blend of industrial streets and leafy residential blocks makes for fascinating walks. Maria Hernandez Park is our anchor, with multiple routes through the surrounding neighborhood suited to every temperament.",
-          parks: ['Maria Hernandez Park', 'Bushwick Inlet Park', 'Halsey Street Plaza', 'Irving Square Park'],
-          seo: 'Dog walker Bushwick Brooklyn'
-        },
-        bedstuy: {
-          name: 'Bed-Stuy',
-          color: '#A888C4',
-          tagline: 'Herbert Von King Park walks',
-          desc: "Beautiful brownstones, wide sidewalks, and some of Brooklyn's finest parks make Bed-Stuy a pleasure to walk in. Herbert Von King Park is a particular favorite for its off-leash hours and well-maintained grounds.",
-          parks: ['Herbert Von King Park', 'Marcus Garvey Park', 'Stuyvesant Heights Park', 'Tompkins Park'],
-          seo: 'Dog walker Bed-Stuy Brooklyn'
-        },
-        'park-slope': {
-          name: 'Park Slope',
-          color: '#88A8C4',
-          tagline: 'Prospect Park dog runs',
-          desc: "If you live in Park Slope with a dog, you already know you hit the lottery. Prospect Park's off-leash hours, the Long Meadow, and the dedicated dog beach make this neighborhood one of the best in the city for dogs.",
-          parks: ['Prospect Park', 'Long Meadow Dog Run', 'Prospect Park Lake', 'Bartel-Pritchard Square'],
-          seo: 'Dog walker Park Slope Brooklyn'
-        },
-        'east-williamsburg': {
-          name: 'East Williamsburg',
-          color: '#C4C488',
-          tagline: 'Expanding coverage area',
-          desc: "We've recently expanded to East Williamsburg to serve the growing community east of the BQE. Our walkers are building deep knowledge of this neighborhood's parks and best walking routes.",
-          parks: ['Bushwick Inlet Park', 'Flushing Ave Greenway', 'Cooper Park'],
-          seo: 'Dog walker East Williamsburg Brooklyn'
         }
       };
 
@@ -386,17 +664,7 @@ export default function Home() {
             <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('how-it-works'); }} data-page="how-it-works">How It Works</a>
             <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('about'); }} data-page="about">About Us</a>
             <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('safety'); }} data-page="safety">Safety &amp; Trust</a>
-            <div className="nav-dropdown">
-              <a href="#" onClick={(e) => e.preventDefault()} data-page="neighborhoods">Neighborhoods ▾</a>
-              <div className="dropdown-menu">
-                <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('williamsburg'); }}>Williamsburg</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('greenpoint'); }}>Greenpoint</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('bushwick'); }}>Bushwick</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('bedstuy'); }}>Bed-Stuy</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('park-slope'); }}>Park Slope</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('neighborhoods'); }}>All Neighborhoods →</a>
-              </div>
-            </div>
+            <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('williamsburg'); }} data-page="neighborhoods">Williamsburg</a>
             <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('reviews'); }} data-page="reviews">Reviews</a>
             <a href="/admin" id="nav-admin-login-link">Login</a>
             <a href="#" onClick={(e) => { e.preventDefault(); window.location.href='/book'; }} className="nav-cta" data-page="book">Book a Walk</a>
@@ -413,12 +681,24 @@ export default function Home() {
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('how-it-works'); }}>How It Works</a>
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('about'); }}>About Us</a>
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('safety'); }}>Safety &amp; Trust</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('neighborhoods'); }}>Neighborhoods</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('williamsburg'); }}>Williamsburg</a>
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('reviews'); }}>Reviews</a>
         <a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('contact'); }}>Contact</a>
         <a href="#" onClick={(e) => { e.preventDefault(); window.location.href='/book'; }} className="mobile-cta">Book a Walk</a>
         <a href="/admin" id="mobile-menu-login-link">Login</a>
       </div>
+
+      {/* Fixed circular brand seal, bottom-right of the viewport. Deliberately
+          a sibling of #page-home (like <nav> above), NOT nested inside it:
+          #page-home carries a leftover inline transform from the page-transition
+          tween (clears async, on a timer — see pageTransitionIn) which,
+          for as long as it's non-none, makes it the containing block for any
+          position:fixed descendant instead of the viewport. Siblings of
+          #page-home aren't affected by that at all, so this never depends on
+          the clear having already run. Visibility (home only) is handled in
+          CSS via #home-floating-logo-badge's :has() selector instead of DOM
+          nesting. Same asset as the hero polaroid's badge. */}
+      <img id="home-floating-logo-badge" src="/logos/notRugGreen.png" alt="Not The Rug NYC dog walking" />
 
       {/* PAGE: HOME */}
       <div id="page-home" className="page active">
@@ -426,68 +706,129 @@ export default function Home() {
         {/* Hero */}
         <section className="hero">
           <div className="hero-visual" id="hero-visual-video-shell">
-            <div className="hero-video-frame" id="hero-video-frame">
-              <video id="hero-bg-video" autoPlay muted loop playsInline preload="auto">
-                <source src="logos/Not_The_Rug_2023_clipped_web.webm" type="video/webm" />
-                <source src="logos/Not_The_Rug_2023_clipped_web.mp4" type="video/mp4" />
-              </video>
-              <div className="hero-img-overlay"></div>
-              <div className="hero-img-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'4px'}}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park, Williamsburg</div>
-            </div>
-            {/* Scrolling social proof — sits directly under the video, no overlap */}
-            <div className="social-proof-strip">
-              <div className="proof-track" id="proof-track">
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Luis&apos;s professionalism puts even the most nervous pet parent at ease&quot;</span><span className="proof-author">— Jessica Y., Williamsburg</span></div>
-                <div className="proof-sep"></div>
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Seriously — hire Not The Rug. They won&apos;t disappoint.&quot;</span><span className="proof-author">— Jayne A., Williamsburg</span></div>
-                <div className="proof-sep"></div>
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Trust Luis to take care of your dog as if it was his own&quot;</span><span className="proof-author">— Kassie T., Williamsburg</span></div>
-                <div className="proof-sep"></div>
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Daily updates, cute photos, and my dog LOVES her walker&quot;</span><span className="proof-author">— Hayley M., Williamsburg</span></div>
-                <div className="proof-sep"></div>
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Luis&apos;s professionalism puts even the most nervous pet parent at ease&quot;</span><span className="proof-author">— Jessica Y., Williamsburg</span></div>
-                <div className="proof-sep"></div>
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Seriously — hire Not The Rug. They won&apos;t disappoint.&quot;</span><span className="proof-author">— Jayne A., Williamsburg</span></div>
-                <div className="proof-sep"></div>
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Trust Luis to take care of your dog as if it was his own&quot;</span><span className="proof-author">— Kassie T., Williamsburg</span></div>
-                <div className="proof-sep"></div>
-                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Daily updates, cute photos, and my dog LOVES her walker&quot;</span><span className="proof-author">— Hayley M., Williamsburg</span></div>
-                <div className="proof-sep"></div>
+            <figure className="polaroid polaroid-tilt-right taped taped-center" id="hero-polaroid-frame">
+              <div className="polaroid-window" id="hero-polaroid-window">
+                <video id="hero-bg-video" autoPlay muted loop playsInline preload="auto">
+                  <source src="logos/Not_The_Rug_2023_clipped_web.webm" type="video/webm" />
+                  <source src="logos/Not_The_Rug_2023_clipped_web.mp4" type="video/mp4" />
+                </video>
               </div>
-            </div>
+              <figcaption className="polaroid-caption" id="hero-polaroid-caption"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'4px'}}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park, Williamsburg</figcaption>
+              <img className="polaroid-badge" id="hero-polaroid-badge" src="/logos/notRugGreen.png" alt="Not The Rug NYC dog walking badge" />
+            </figure>
           </div>
           <div className="hero-content" id="hero-content-shell">
+            <div className="hero-eyebrow" id="hero-eyebrow-stamp-row">
+              <span className="stamp-label" id="hero-stamp-label">Williamsburg, Brooklyn &middot; Est. 2011</span>
+            </div>
             <h1 className="hero-h1">Your dog deserves<br /><em>someone they know.</em></h1>
-            <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently and earn the trust of both you and your dog. Because peace of mind starts with knowing exactly who&apos;s holding the leash.</p>
+            <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently. Because peace of mind starts with knowing exactly who&apos;s holding the leash.</p>
             <div className="hero-actions" id="hero-actions-row">
-              <button className="btn btn-primary" id="hero-cta-primary" onClick={() => window.location.href='/book'}>Book a Free Meet &amp; Greet</button>
+              <button className="btn btn-primary" id="hero-cta-primary" onClick={() => window.location.href='/book'}>Book Luis, for a Meet &amp; Greet</button>
               <button className="btn btn-ghost" id="hero-cta-secondary" onClick={() => (window as any).showPage('services')}>View Services</button>
             </div>
-            <div className="hero-stats" id="hero-stats-strip">
-              <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
-                <div className="hero-stat-num">5★</div>
-                <div className="hero-stat-label">Yelp<br />rating</div>
-              </a>
-              <div className="hero-stat-divider" aria-hidden="true"></div>
-              <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-                <div className="hero-stat-num">5★</div>
-                <div className="hero-stat-label">Google<br />rating</div>
-              </a>
-              <div className="hero-stat-divider" aria-hidden="true"></div>
-              <a className="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-                <div className="hero-stat-num">79</div>
-                <div className="hero-stat-label">Verified<br />reviews</div>
-              </a>
-              <div className="hero-stat-divider" aria-hidden="true"></div>
-              <div className="hero-stat-item">
-                <div className="hero-stat-num">15+</div>
-                <div className="hero-stat-label">Years in<br />Williamsburg</div>
-              </div>
+          </div>
+          <div className="hero-stats" id="hero-stats-strip">
+            <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
+              <div className="hero-stat-num">5★</div>
+              <div className="hero-stat-label">Yelp<br />rating</div>
+            </a>
+            <div className="hero-stat-divider" aria-hidden="true"></div>
+            <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+              <div className="hero-stat-num">5★</div>
+              <div className="hero-stat-label">Google<br />rating</div>
+            </a>
+            <div className="hero-stat-divider" aria-hidden="true"></div>
+            <a className="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+              <div className="hero-stat-num">79</div>
+              <div className="hero-stat-label">Verified<br />reviews</div>
+            </a>
+            <div className="hero-stat-divider" aria-hidden="true"></div>
+            <div className="hero-stat-item">
+              <div className="hero-stat-num">15+</div>
+              <div className="hero-stat-label">Years in<br />Williamsburg</div>
             </div>
           </div>
         </section>
 
-        {/* Trust bar */}
+        {/* Scrolling social proof — full-width marquee between hero and trust bar */}
+        <div className="social-proof-strip" id="home-proof-marquee">
+          <div className="proof-track" id="proof-track">
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Luis&apos;s professionalism puts even the most nervous pet parent at ease&quot;</span><span className="proof-author">— Jessica Y., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Seriously — hire Not The Rug. They won&apos;t disappoint.&quot;</span><span className="proof-author">— Jayne A., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Trust Luis to take care of your dog as if it was his own&quot;</span><span className="proof-author">— Kassie T., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Daily updates, cute photos, and my dog LOVES her walker&quot;</span><span className="proof-author">— Hayley M., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Luis&apos;s professionalism puts even the most nervous pet parent at ease&quot;</span><span className="proof-author">— Jessica Y., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Seriously — hire Not The Rug. They won&apos;t disappoint.&quot;</span><span className="proof-author">— Jayne A., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Trust Luis to take care of your dog as if it was his own&quot;</span><span className="proof-author">— Kassie T., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+                <div className="proof-item"><div className="stars">★★★★★</div><span className="proof-quote">&quot;Daily updates, cute photos, and my dog LOVES her walker&quot;</span><span className="proof-author">— Hayley M., Williamsburg</span></div>
+                <div className="proof-sep"></div>
+          </div>
+        </div>
+
+        {/* How it works strip */}
+        <section className="section" id="home-how-it-works-section">
+          {/* Background watermark trail — large, faint, right-pointing paw prints
+              scattered in a two-row zigzag (not one straight inline row), as if an
+              unseen dog walked across the section from left to right. */}
+          <div id="home-how-it-works-paw-trail" aria-hidden="true">
+            {[0, 1, 2, 3].map((i) => {
+              const pos = pawPosition(pawSettings, i);
+              return (
+                <PawTrailPrint key={i} left={`${pos.left}%`} top={`${pos.top}%`} rotate={pos.rotate}
+                  size={pawSettings.size} opacity={pawSettings.opacity} />
+              );
+            })}
+          </div>
+          <div className="container">
+            <div id="home-how-it-works-header" style={{textAlign:'center', marginBottom:'64px'}}>
+              <h2>From the first hello to your dog&apos;s <em style={{fontStyle:'normal'}}>daily routine</em></h2>
+            </div>
+            <div className="hiw-steps" id="home-how-it-works-steps">
+              <div className="hiw-step">
+                <div className="hiw-step-copy">
+                  <div className="hiw-step-number" aria-hidden="true">1</div>
+                  <h4>Phone Call &amp; Meet &amp; Greet</h4>
+                  <p>A free in-home consultation so you and your dog can meet your walker before the first walk.</p>
+                </div>
+              </div>
+              <div className="hiw-step">
+                <div className="hiw-step-copy">
+                  <div className="hiw-step-number" aria-hidden="true">2</div>
+                  <h4>Set Your Schedule</h4>
+                  <p>Choose your walking frequency, preferred times, and any special instructions.</p>
+                </div>
+              </div>
+              <div className="hiw-step">
+                <div className="hiw-step-copy">
+                  <div className="hiw-step-number" aria-hidden="true">3</div>
+                  <h4>First Walk</h4>
+                  <p>GPS-tracked 45-minute adventure with post-walk photo report sent to your phone.</p>
+                </div>
+              </div>
+              <div className="hiw-step">
+                <div className="hiw-step-copy">
+                  <div className="hiw-step-number" aria-hidden="true">4</div>
+                  <h4>Ongoing Care</h4>
+                  <p>Same walker, same routine. Your dog knows the drill and so do we.</p>
+                </div>
+              </div>
+            </div>
+            <div style={{textAlign:'center', marginTop:'56px'}}>
+              <button className="btn btn-outline-white" onClick={() => (window as any).showPage('how-it-works')}>Learn More About Our Process</button>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust bar — moved off the fold, now sits on the border between
+            How It Works and the Williamsburg trust section. */}
         <div className="trust-bar">
           <div className="trust-bar-inner">
             <div className="trust-item">
@@ -513,67 +854,298 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Services preview */}
-        <section className="section">
-          <div className="container">
-            <div style={{textAlign:'center', marginBottom:'56px'}}>
-              <div className="label">What We Offer</div>
-              <h2>Personalized care for <em style={{fontFamily:'var(--font-italic)', fontStyle:'italic', color:'var(--sage-dark)'}}>every dog</em></h2>
-              <div className="divider divider-center"></div>
-              <p style={{color:'var(--mid-gray)', maxWidth:'480px', margin:'0 auto', fontSize:'16px'}}>Small group walks, solo sessions, puppy care, and boarding — all delivered by a team your dog will actually look forward to seeing.</p>
+        {/* Services preview. Only the closing disclaimer sits in the normal
+            centered .container; the carousel renders outside it so the product
+            row stretches the full page width, edge to edge. Moved above the
+            Williamsburg trust section (below) — that section's own background
+            stays untouched, only page order changed. */}
+        <section className="section" id="home-personalized-care-section">
+          {/* The pin stage is the element ScrollTrigger pins AND the element
+              that carries this section's background (paper grain + cream veil
+              + product_background.png). Those two have to be the same element:
+              if the background lived on the <section> while only an inner
+              wrapper were pinned, the section would keep scrolling behind the
+              frozen row and the background would visibly drift during the pin.
+              The stage is also a full viewport tall on desktop, so while it's
+              pinned it covers the whole screen — nothing unpinned shows around
+              it, and the background reads as completely locked. */}
+          {/* Animated product carousel — disabled per current direction; the
+              static rate cards below replace it. Left in place (not deleted)
+              in case it comes back. */}
+          {false && (
+            <div id="home-personalized-care-pin-stage">
+              <div id="home-personalized-care-scroll-window">
+                <AnimatedServiceCards />
+              </div>
             </div>
-            <div className="services-grid">
-              <div className="service-card" onClick={() => (window as any).showPage('services')}>
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="4" r="2"/><circle cx="4" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><path d="M12 17c-2.5 0-6 1.5-6 4v1h12v-1c0-2.5-3.5-4-6-4z"/></svg></div>
-                <h4>Small Group Visit</h4>
-                <p>45-minute visit with up to three dogs max. GPS tracked, personalized report card included, and paws cleaned before returning home.</p>
-                <div className="service-price">$33<span>/visit</span></div>
-                <div style={{marginTop:'12px'}}><span className="badge badge-sage">Most Popular</span></div>
+          )}
+          <div className="container" id="home-rates-preview-row">
+            <div id="home-williamsburg-trust-panel" style={{maxWidth:'720px', margin:'0 auto 40px', textAlign:'center'}}>
+              <div className="label">Our Home Neighborhood</div>
+              <h2 id="home-rates-preview-headline">A Williamsburg <em style={{fontStyle:'normal', color:'var(--sage-dark)'}}>service</em>, not a platform</h2>
+            </div>
+            <div className="grid-3" id="home-rates-preview-cards" style={{gap:'20px'}}>
+              <div className="service-card">
+                <h3>Solo Walk</h3>
+                <p>A private 60-minute walk.</p>
+                <div className="svc-price">$60<span>per walk</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
               </div>
-              <div className="service-card" onClick={() => (window as any).showPage('services')}>
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
-                <h4>Solo Visit</h4>
-                <p>A private 60-minute visit for nervous, anxious, or reactive dogs, or pups who simply do better with one-on-one attention. Built around patience, consistency, and positive reinforcement.</p>
-                <div className="service-price">$60<span>/visit</span></div>
-                <div style={{marginTop:'12px'}}><span className="badge badge-gold">Premium</span></div>
+              <div className="service-card">
+                <h3>Group Walk</h3>
+                <p>45-minute walk with up to three dogs max.</p>
+                <div className="svc-price">$33<span>per walk</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
               </div>
-              <div className="service-card" onClick={() => (window as any).showPage('services')}>
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-                <h4>Boarding &amp; Overnight Sitting</h4>
+              <div className="service-card">
+                <h3>Senior Dog Visits</h3>
+                <p>Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs.</p>
+                <div className="svc-price">$35<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
+              </div>
+            </div>
+
+            {/* Remaining services, same .service-card style as the top row. */}
+            <div className="grid-3" id="home-rates-preview-more-cards" style={{gap:'20px', marginTop:'20px'}}>
+              <div className="service-card">
+                <h3>Puppy Walk</h3>
+                <p>Designed for puppies still learning.</p>
+                <div className="svc-price">$35<span>per walk</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
+              </div>
+              <div className="service-card">
+                <h3>Boarding &amp; Overnight Sitting</h3>
                 <p>Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.</p>
-                <div className="service-price">$100<span>/night</span></div>
-                <div style={{marginTop:'12px'}}><span className="badge badge-terra">7+ day discounts</span></div>
+                <div className="svc-price">$100<span>/night</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
               </div>
-              <div className="service-card" onClick={() => (window as any).showPage('services')}>
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="4" r="2"/><circle cx="4" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><path d="M12 17c-2.5 0-6 1.5-6 4v1h12v-1c0-2.5-3.5-4-6-4z"/></svg></div>
-                <h4>Puppy Visits</h4>
-                <p>Designed for puppies still learning the ropes. Visits focus on potty breaks, enrichment, socialization, and positive reinforcement. Discounts available for multiple daily visits.</p>
-                <div className="service-price">$35<span>/visit</span></div>
-              </div>
-              <div className="service-card" onClick={() => (window as any).showPage('services')}>
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>
-                <h4>Senior Dog Visits</h4>
-                <p>Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.</p>
-                <div className="service-price">$35<span>/visit</span></div>
-              </div>
-              <div className="service-card" onClick={() => (window as any).showPage('services')}>
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-8.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5z"/><path d="M8 14v.5"/><path d="M16 14v.5"/><path d="M11.25 16.25h1.5L12 17l-.75-.75z"/></svg></div>
-                <h4>Cat Visits</h4>
+              <div className="service-card">
+                <h3>Cat Visits</h3>
                 <p>Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We&apos;ll also water plants, bring in the mail, and keep an eye on your home while you&apos;re away.</p>
-                <div className="service-price">$35<span>/visit</span></div>
+                <div className="svc-price">$35<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
               </div>
             </div>
+
             <div style={{textAlign:'center', marginTop:'40px'}}>
-              <button className="btn btn-outline" onClick={() => (window as any).showPage('services')}>See All Packages &amp; Rates</button>
+              <p style={{color:'var(--mid-gray)', fontSize:'15px'}}>No contracts. No hidden fees. Just dependable neighborhood care from a team your dog knows and trusts.</p>
             </div>
           </div>
         </section>
 
-        {/* Exclusive Benefits for Weekday Walking Clients */}
+        {/* Closing trust recap — safety credentials + Williamsburg-specific
+            proof combined into one section, positioned right before Reviews
+            as the site's final "why us" push before the ask. Reuses copy
+            verbatim from #page-safety and #page-neighborhoods (source of
+            truth for these claims) rather than inventing new copy; reuses
+            existing .trust-icon-box / .cert-strip / .btn classes so nothing
+            new had to be styled from scratch. */}
+        <section className="section" id="home-closing-trust-section">
+          <div className="container">
+            <div style={{textAlign:'center', marginBottom:'56px'}}>
+              <div className="label">Why Williamsburg Trusts Us</div>
+              <h2>Insured, background-checked, and <em style={{fontStyle:'normal', color:'var(--sage-light)'}}>local since 2011</em></h2>
+            </div>
+            <div className="grid-2" id="home-closing-trust-grid" style={{gap:'56px', alignItems:'start'}}>
+              <div id="home-closing-safety-list">
+                <div style={{display:'flex', gap:'16px', padding:'20px 0', borderBottom:'1px solid var(--light-gray)'}}>
+                  <div className="trust-icon-box" style={{flexShrink:0}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                  <div>
+                    <h4>Fully Insured &amp; Bonded</h4>
+                    <p>Comprehensive pet care liability insurance, fully bonded. Proof shared on request.</p>
+                  </div>
+                </div>
+                <div style={{display:'flex', gap:'16px', padding:'20px 0', borderBottom:'1px solid var(--light-gray)'}}>
+                  <div className="trust-icon-box" style={{flexShrink:0}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                  <div>
+                    <h4>Background-Checked Team</h4>
+                    <p>Every walker vetted before their first walk — the same way you&apos;d vet anyone holding a key to your home.</p>
+                  </div>
+                </div>
+                <div style={{display:'flex', gap:'16px', padding:'20px 0', borderBottom:'1px solid var(--light-gray)'}}>
+                  <div className="trust-icon-box" style={{flexShrink:0}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                  <div>
+                    <h4>GPS Tracking on Every Walk</h4>
+                    <p>A post-walk route map showing exactly where your dog went and how long they were out. No guessing.</p>
+                  </div>
+                </div>
+                <div style={{display:'flex', gap:'16px', padding:'20px 0'}}>
+                  <div className="trust-icon-box" style={{flexShrink:0}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                  <div>
+                    <h4>Double-Leash Safety Method</h4>
+                    <p>Secure collar-and-harness plus a leash belt — two points of contact on every walk, every dog.</p>
+                  </div>
+                </div>
+              </div>
+              <div id="home-closing-williamsburg-pitch">
+                <h3>We&apos;re a Williamsburg service, through and through</h3>
+                <p style={{fontSize:'16px', lineHeight:'1.8', marginTop:'12px'}}>We know every park, shortcut, and puddle to avoid — because we&apos;ve been walking these blocks since 2011. Not a citywide app dispatching whoever&apos;s nearest: the same local team, every time.</p>
+                <div className="divider" style={{margin:'28px 0'}}></div>
+                <div style={{display:'flex', gap:'14px', flexWrap:'wrap'}}>
+                  <button className="btn btn-primary" onClick={() => (window as any).showPage('book')}>Book a Walk in Williamsburg</button>
+                  <button className="btn btn-outline" onClick={() => (window as any).showPage('contact')}>Ask About Williamsburg Coverage</button>
+                </div>
+              </div>
+            </div>
+            <div className="cert-strip" id="home-closing-cert-strip" style={{justifyContent:'center', marginTop:'56px'}}>
+              <div className="cert-item">
+                <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+                <div className="cert-label">NAPPS Member</div>
+              </div>
+              <div className="cert-item">
+                <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+                <div className="cert-label">Background Checked</div>
+              </div>
+              <div className="cert-item">
+                <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
+                <div className="cert-label">Fully Insured</div>
+              </div>
+              <div className="cert-item">
+                <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                <div className="cert-label">Bonded</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured reviews — poster treatment (globals.css: POSTER TREATMENT).
+            Flat paper, hairline rules, page type system, inked .stamp-label
+            marks as the accent. .review-card / .booking-form class names are
+            kept on purpose: the GSAP reveal batch in initSectionReveals
+            selects on them. */}
+        <section className="section" id="home-featured-reviews-section">
+          <div className="container">
+            <div id="home-featured-reviews-header-row">
+              <div id="home-featured-reviews-header">
+                <div className="stamp-label stamp-label-heading">File 01 · Voices</div>
+                <h2>What our <em style={{fontStyle:'normal', color:'var(--sage-dark)'}}>clients</em> say</h2>
+              </div>
+              <button className="btn btn-ghost" onClick={() => (window as any).showPage('reviews')}>Read All Reviews</button>
+            </div>
+            <div className="grid-2" id="home-featured-reviews-grid">
+              <figure className="review-card" id="home-featured-review-card">
+                <div className="stamp-label zine-quote-stamp">Verified · Yelp</div>
+                <div className="stars">★★★★★</div>
+                <blockquote className="review-text">Luis and team are truly the best of the best. It&apos;s not easy to trust just anyone with our fur baby, but Luis&apos;s professionalism and kindness — combined with the GPS tracking — puts even the most nervous pet parent at ease.</blockquote>
+                <figcaption className="review-author">
+                  <div>
+                    <div className="review-name">Jessica Y.</div>
+                    <div className="review-meta">Rev. 01 · Williamsburg · Yelp</div>
+                  </div>
+                </figcaption>
+              </figure>
+              <div id="home-featured-reviews-secondary">
+                <figure className="review-card">
+                  <div className="stars">★★★★★</div>
+                  <blockquote className="review-text">We&apos;ve been with Not The Rug for over two years and couldn&apos;t be more grateful. Luis has saved us so many times with our busy schedules. He even helped rehab one of our dogs after surgery — adjusting walks and carrying our guy outside to help him heal. Seriously — hire Not The Rug.</blockquote>
+                  <figcaption className="review-author">
+                    <div>
+                      <div className="review-name">Jayne A.</div>
+                      <div className="review-meta">Rev. 02 · Williamsburg · Yelp</div>
+                    </div>
+                  </figcaption>
+                </figure>
+                <figure className="review-card">
+                  <div className="stars">★★★★★</div>
+                  <blockquote className="review-text">Luis and his amazing team are the best! Our two dogs adore him and Reana, our primary walker. You can trust Luis to take care of your dog as if it was his own — flexible with schedule changes and always reliable. Your dogs will be in great hands!</blockquote>
+                  <figcaption className="review-author">
+                    <div>
+                      <div className="review-name">Kassie T.</div>
+                      <div className="review-meta">Rev. 03 · Williamsburg · Yelp</div>
+                    </div>
+                  </figcaption>
+                </figure>
+                <div id="home-featured-reviews-stat-strip">
+                  <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
+                    <div className="hero-stat-num" style={{fontSize:'28px'}}>5★</div>
+                    <div className="hero-stat-label">Yelp rating</div>
+                  </a>
+                  <div className="hero-stat-divider"></div>
+                  <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+                    <div className="hero-stat-num" style={{fontSize:'28px'}}>5★</div>
+                    <div className="hero-stat-label">Google rating</div>
+                  </a>
+                  <div className="hero-stat-divider"></div>
+                  <a className="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
+                    <div className="hero-stat-num" style={{fontSize:'28px'}}>79</div>
+                    <div className="hero-stat-label">Verified reviews</div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {false && (
+        /* Other services */
+        <section className="section bg-warm" id="home-other-services-section">
+          <div className="container">
+            <div style={{textAlign:'center', marginBottom:'56px'}}>
+              <div className="label">More Ways We Help</div>
+              <h2>Additional services &amp; care</h2>
+              <div className="divider divider-center"></div>
+            </div>
+            <div className="grid-3" id="home-other-services-grid" style={{gap:'32px'}}>
+
+              {/* Senior Dog Visits */}
+              <div className="service-card" onClick={() => (window as any).showPage('services')}>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-senior.svg" alt="" loading="lazy" /></div>
+                <h3>Senior Dog Visits</h3>
+                <p>Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.</p>
+                <div className="svc-price">$35<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
+              </div>
+
+              {/* Boarding & Overnight Sitting */}
+              <div className="service-card" onClick={() => (window as any).showPage('services')}>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-boarding.svg" alt="" loading="lazy" /></div>
+                <h3>Boarding &amp; Overnight Sitting</h3>
+                <p>Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.</p>
+                <div className="svc-price">$100<span>/night</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
+                <div className="svc-badge">7+ day discounts</div>
+              </div>
+
+              {/* Cat Visits */}
+              <div className="service-card" onClick={() => (window as any).showPage('services')}>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-cat.svg" alt="" loading="lazy" /></div>
+                <h3>Cat Visits</h3>
+                <p>Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We&apos;ll also water plants, bring in the mail, and keep an eye on your home while you&apos;re away.</p>
+                <div className="svc-price">$35<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
+              </div>
+
+            </div>
+            <div style={{textAlign:'center', marginTop:'40px'}}>
+              <button className="btn btn-outline" onClick={() => (window as any).showPage('services')}>See All Services &amp; Rates</button>
+            </div>
+          </div>
+        </section>
+        )}
+
+        {/* Book CTA + Meet & Greet form (merged CTA band + contact sheet) */}
+        <section className="section" id="home-contact-sheet-section">
+          <div className="container">
+            <div id="home-contact-sheet-header">
+              <div className="stamp-label stamp-label-dark stamp-label-heading">Form 02 · Meet &amp; Greet</div>
+              <h2>What We&apos;d Like to Know....</h2>
+            </div>
+            <div id="home-book-form-wrap" className="booking-form-wrap">
+              <div className="booking-form" id="home-contact-sheet-form-sheet">
+                <div className="booking-form-body">
+                  <MeetGreetForm paneId="home-meetgreet" source="home" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {false && (
+        /* Exclusive Benefits for Weekday Walking Clients */
         <section className="section bg-warm" id="home-weekday-benefits-section">
           <div className="container">
             <div style={{maxWidth:'720px', margin:'0 auto'}}>
-              <div className="label">For Regular Clients</div>
+              <div className="label label-tape" id="regular-clients-label-tape">For Regular Clients</div>
               <h2>Exclusive benefits for weekday walking clients</h2>
               <div className="divider"></div>
               <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8', marginBottom:'32px'}}>Our regular weekday clients receive priority access to services that are not available to the public.</p>
@@ -581,8 +1153,8 @@ export default function Home() {
                 {[
                   'Early morning and evening visits',
                   'Weekend walks',
-                  'Overnight boarding and pet sitting',
-                  'Holiday care, when available'
+                  'Last-minute requests',
+                  'Longer visits when timing, weather, and your dog allow'
                 ].map((benefit) => (
                   <div key={benefit} style={{display:'flex', alignItems:'flex-start', gap:'12px', background:'white', borderRadius:'var(--radius)', padding:'18px 20px', border:'1px solid var(--light-gray)'}}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0, marginTop:'1px', color:'var(--sage-dark)'}}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -590,42 +1162,14 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <p style={{color:'var(--mid-gray)', fontSize:'15px', lineHeight:'1.7'}}>These services are reserved for families who are part of our regular weekday walking program, allowing us to provide the consistent, dependable care we&apos;re known for.</p>
+              <p style={{color:'var(--mid-gray)', fontSize:'15px', lineHeight:'1.7'}}>These services are reserved for families in our regular weekday walking program, helping us provide the consistent, dependable care we&apos;re known for.</p>
             </div>
           </div>
         </section>
+        )}
 
-        {/* Simple, transparent pricing */}
-        <section className="section" id="home-pricing-section">
-          <div className="container">
-            <div style={{textAlign:'center', marginBottom:'56px'}}>
-              <div className="label">Pricing</div>
-              <h2>Simple, transparent pricing</h2>
-              <div className="divider divider-center"></div>
-              <p style={{color:'var(--mid-gray)', maxWidth:'440px', margin:'0 auto', fontSize:'16px'}}>We believe great care should be easy to understand.</p>
-            </div>
-            <div className="grid-3" style={{gap:'24px', marginBottom:'40px'}}>
-              <div className="pricing-card" style={{background:'var(--cream)', border:'1px solid var(--light-gray)', borderRadius:'var(--radius-lg)', padding:'36px 32px'}}>
-                <div style={{fontFamily:'var(--font-display)', fontSize:'20px', marginBottom:'8px'}}>Regular Schedule</div>
-                <div style={{fontFamily:'var(--font-display)', fontSize:'42px', color:'var(--sage-dark)', lineHeight:1, marginBottom:'8px'}}>$33<span style={{fontSize:'18px', color:'var(--mid-gray)', fontFamily:'var(--font-body)'}}> per visit</span></div>
-                <p style={{color:'var(--mid-gray)', fontSize:'14px', lineHeight:'1.7', marginBottom:0}}>For dogs booked 9 or more visits per month. Perfect for families who want a consistent routine and the same familiar faces each week.</p>
-              </div>
-              <div className="pricing-card" style={{background:'var(--cream)', border:'1px solid var(--light-gray)', borderRadius:'var(--radius-lg)', padding:'36px 32px'}}>
-                <div style={{fontFamily:'var(--font-display)', fontSize:'20px', marginBottom:'8px'}}>Flexible Schedule</div>
-                <div style={{fontFamily:'var(--font-display)', fontSize:'42px', color:'var(--sage-dark)', lineHeight:1, marginBottom:'8px'}}>$35<span style={{fontSize:'18px', color:'var(--mid-gray)', fontFamily:'var(--font-body)'}}> per visit</span></div>
-                <p style={{color:'var(--mid-gray)', fontSize:'14px', lineHeight:'1.7', marginBottom:0}}>For dogs booked 8 visits or fewer per month. Great for occasional care when you need an extra hand.</p>
-              </div>
-              <div className="pricing-card" style={{background:'var(--cream)', border:'1px solid var(--light-gray)', borderRadius:'var(--radius-lg)', padding:'36px 32px'}}>
-                <div style={{fontFamily:'var(--font-display)', fontSize:'20px', marginBottom:'8px'}}>Boarding &amp; Overnight Sitting</div>
-                <div style={{fontFamily:'var(--font-display)', fontSize:'42px', color:'var(--sage-dark)', lineHeight:1, marginBottom:'8px'}}>$100<span style={{fontSize:'18px', color:'var(--mid-gray)', fontFamily:'var(--font-body)'}}> per night</span></div>
-                <p style={{color:'var(--mid-gray)', fontSize:'14px', lineHeight:'1.7', marginBottom:0}}>Book 7 consecutive nights or more and receive $10 off each night, bringing your rate to $90 per night.</p>
-              </div>
-            </div>
-            <p style={{textAlign:'center', color:'var(--mid-gray)', fontSize:'15px'}}>No contracts. No hidden fees. Just dependable, neighborhood care from a team your dog will know and trust.</p>
-          </div>
-        </section>
-
-        {/* Every Visit Includes */}
+        {false && (
+        /* Every Visit Includes */
         <section className="section bg-warm" id="home-visit-includes-section">
           <div className="container">
             <div style={{textAlign:'center', marginBottom:'56px'}}>
@@ -635,14 +1179,15 @@ export default function Home() {
             </div>
             <div className="grid-3" id="standard-of-care-grid" style={{gap:'28px'}}>
               {[
-                {title:'Professionally Trained Team', desc:'Every member of our team is trained in dog body language, safety, and positive reinforcement. We make it look effortless because experience, patience, and consistency matter.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>},
-                {title:'GPS Tracking', desc:"Follow your dog's adventure with GPS tracking and a visit summary after every outing.", icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>},
-                {title:'Photo & Visit Report', desc:"Receive photos, potty updates, and notes about your dog's mood and adventure.", icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>},
-                {title:'Safety-First Equipment', desc:'Every dog is walked using our secure collar-and-harness safety system for added peace of mind.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>},
-                {title:'Healthy Treats', desc:'Every visit includes a high-value, grain-free chicken treat, or your own treats if you prefer.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M17 10c.7-.7 1-1.6 1-2.5a3.5 3.5 0 0 0-3.5-3.5C13.6 4 12.7 4.3 12 5L5 12c-.7.7-1 1.6-1 2.5a3.5 3.5 0 0 0 3.5 3.5c.9 0 1.8-.3 2.5-1l7-7z"/></svg>},
-                {title:'Clean Paws & Fresh Water', desc:'We wipe paws with unscented wipes, refill water bowls, and help keep your home clean.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>},
-                {title:'Meals & Medication', desc:"Need us to feed your dog or administer medication? We're happy to do it at no additional charge.", icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>},
-                {title:'Direct Communication', desc:'Need us? Reach your walker or owner directly. No bots. No call centers. Just real people who know your dog.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>},
+                {title:'Professionally Trained Team', desc:'Every team member is trained in dog body language, safety, and positive reinforcement. We make it look easy because experience, patience, and consistency matter.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>},
+                {title:'GPS Tracking', desc:"Follow your dog's adventure with GPS tracking and receive a personalized visit summary after every outing.", icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>},
+                {title:'Photo & Visit Report', desc:"Receive photos, potty updates, and notes about your dog's walk, mood, and adventure.", icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>},
+                {title:'Safety-First Equipment', desc:'Every dog is walked using our secure leash belt, collar, and harness system for added safety and peace of mind.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>},
+                {title:'Healthy Treats', desc:'Every visit includes a high-value, grain- and chicken-free treat, or your own treats if you prefer.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M17 10c.7-.7 1-1.6 1-2.5a3.5 3.5 0 0 0-3.5-3.5C13.6 4 12.7 4.3 12 5L5 12c-.7.7-1 1.6-1 2.5a3.5 3.5 0 0 0 3.5 3.5c.9 0 1.8-.3 2.5-1l7-7z"/></svg>},
+                {title:'Clean Paws & Fresh Water', desc:'We wipe paws with unscented wipes, refresh water bowls, and help keep your home clean.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>},
+                {title:'Meals & Medication', desc:"Need us to feed your dog or administer medication? We're happy to help at no additional charge.", icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>},
+                {title:'Temperature & Packages', desc:"We'll bring in packages, check your home's temperature, and adjust blinds, shades, or the AC to help keep your pup comfortable.", icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>},
+                {title:'Direct Communication', desc:'Need us? Reach your walker or the owner directly. No bots. No call centers. Just real people who know your dog.', icon:<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>},
               ].map((item) => (
                 <div key={item.title} style={{background:'white', borderRadius:'var(--radius-lg)', padding:'32px 28px', border:'1px solid var(--light-gray)'}}>
                   <div style={{marginBottom:'16px', color:'var(--sage-dark)'}}>{item.icon}</div>
@@ -653,95 +1198,10 @@ export default function Home() {
             </div>
           </div>
         </section>
+        )}
 
-        {/* How it works strip */}
-        <section className="section">
-          <div className="container">
-            <div style={{textAlign:'center', marginBottom:'64px'}}>
-              <div className="label">Simple Process</div>
-              <h2>From first hello<br />to daily routine</h2>
-            </div>
-            <div className="hiw-steps">
-              <div className="hiw-step">
-                <div className="hiw-num">1</div>
-                <h4>Meet &amp; Greet</h4>
-                <p>Free in-home consultation so your dog meets your walker before the first walk.</p>
-              </div>
-              <div className="hiw-step">
-                <div className="hiw-num">2</div>
-                <h4>Set Your Schedule</h4>
-                <p>Choose your walking frequency, preferred times, and any special instructions.</p>
-              </div>
-              <div className="hiw-step">
-                <div className="hiw-num">3</div>
-                <h4>First Walk</h4>
-                <p>GPS-tracked 45-minute adventure with post-walk photo report sent to your phone.</p>
-              </div>
-              <div className="hiw-step">
-                <div className="hiw-num">4</div>
-                <h4>Ongoing Care</h4>
-                <p>Same walker, same routine. Your dog knows the drill and so do we.</p>
-              </div>
-            </div>
-            <div style={{textAlign:'center', marginTop:'56px'}}>
-              <button className="btn btn-primary" onClick={() => (window as any).showPage('how-it-works')}>Learn More About Our Process</button>
-            </div>
-          </div>
-        </section>
-
-        {/* Featured reviews */}
-        <section className="section">
-          <div className="container">
-            <div style={{marginBottom:'48px', display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:'20px'}}>
-              <div>
-                <div className="label">Client Feedback</div>
-                <h2>What our clients say</h2>
-                <div className="divider"></div>
-              </div>
-              <button className="btn btn-ghost" onClick={() => (window as any).showPage('reviews')}>Read All Reviews</button>
-            </div>
-            <div className="grid-3">
-              <div className="review-card card-hover">
-                <div className="review-mark">&quot;</div>
-                <div className="stars">★★★★★</div>
-                <p className="review-text">Luis and team are truly the best of the best. It&apos;s not easy to trust just anyone with our fur baby, but Luis&apos;s professionalism and kindness — combined with the GPS tracking — puts even the most nervous pet parent at ease.</p>
-                <div className="review-author">
-                  <div className="review-avatar"><div className="review-avatar-ph">JY</div></div>
-                  <div>
-                    <div className="review-name">Jessica Y.</div>
-                    <div className="review-meta">Williamsburg · Yelp</div>
-                  </div>
-                </div>
-              </div>
-              <div className="review-card card-hover">
-                <div className="review-mark">&quot;</div>
-                <div className="stars">★★★★★</div>
-                <p className="review-text">We&apos;ve been with Not The Rug for over two years and couldn&apos;t be more grateful. Luis has saved us so many times with our busy schedules. He even helped rehab one of our dogs after surgery — adjusting walks and carrying our guy outside to help him heal. Seriously — hire Not The Rug.</p>
-                <div className="review-author">
-                  <div className="review-avatar"><div className="review-avatar-ph">JA</div></div>
-                  <div>
-                    <div className="review-name">Jayne A.</div>
-                    <div className="review-meta">Williamsburg · Yelp</div>
-                  </div>
-                </div>
-              </div>
-              <div className="review-card card-hover">
-                <div className="review-mark">&quot;</div>
-                <div className="stars">★★★★★</div>
-                <p className="review-text">Luis and his amazing team are the best! Our two dogs adore him and Reana, our primary walker. You can trust Luis to take care of your dog as if it was his own — flexible with schedule changes and always reliable. Your dogs will be in great hands!</p>
-                <div className="review-author">
-                  <div className="review-avatar"><div className="review-avatar-ph">KT</div></div>
-                  <div>
-                    <div className="review-name">Kassie T.</div>
-                    <div className="review-meta">Williamsburg · Yelp</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Owner pull quote */}
+        {false && (
+        /* Owner pull quote */
         <section id="founder-quote-section">
           <div className="container">
             <blockquote id="founder-quote-block">
@@ -754,63 +1214,26 @@ export default function Home() {
             </blockquote>
           </div>
         </section>
+        )}
 
-        {/* Neighborhood teaser */}
+        {false && (
+        /* Neighborhood teaser */
         <section className="section bg-warm">
           <div className="container">
             <div style={{textAlign:'center', marginBottom:'48px'}}>
               <div className="label">Service Areas</div>
-              <h2>We know every street,<br />every park, every shortcut</h2>
-              <p style={{color:'var(--mid-gray)', maxWidth:'440px', margin:'16px auto 0', fontSize:'16px'}}>15 years of walks means 15 years of neighborhood knowledge. Find your area below.</p>
+              <h2>We know Williamsburg street by street</h2>
+              <p style={{color:'var(--mid-gray)', maxWidth:'440px', margin:'16px auto 0', fontSize:'16px'}}>Fifteen years of daily walks in one neighborhood. This is the block we know best.</p>
             </div>
             <div className="hood-cards-grid">
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('williamsburg')}>
+              <div id="home-williamsburg-hood-card" className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('williamsburg')}>
                 <div className="hood-card-img img-placeholder img-ph-1" style={{height:'100%', position:'absolute', inset:0}}></div>
                 <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Williamsburg</div><div className="hood-card-desc">Our home neighborhood since 2011</div></div></div>
               </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('greenpoint')}>
-                <div className="hood-card-img img-placeholder img-ph-2" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Greenpoint</div><div className="hood-card-desc">McGolrick Park specialists</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('bushwick')}>
-                <div className="hood-card-img img-placeholder img-ph-3" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Bushwick</div><div className="hood-card-desc">Maria Hernandez Park routes</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('bedstuy')}>
-                <div className="hood-card-img img-placeholder img-ph-4" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Bed-Stuy</div><div className="hood-card-desc">Herbert Von King Park walks</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('park-slope')}>
-                <div className="hood-card-img img-placeholder img-ph-5" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Park Slope</div><div className="hood-card-desc">Prospect Park dog runs</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showPage('neighborhoods')} style={{background:'var(--sage-dark)', position:'relative'}}>
-                <div style={{position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', color:'white', gap:'12px'}}>
-                  <div><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>
-                  <div style={{fontFamily:'var(--font-display)', fontSize:'22px'}}>+ More Areas</div>
-                  <div style={{fontSize:'13px', opacity:.7}}>View full coverage map</div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
-
-        {/* CTA band */}
-        <section className="section">
-          <div className="container">
-            <div className="cta-band">
-              <div>
-                <div className="label label-dark">Get Started Today</div>
-                <h2 style={{color:'white'}}>Ready for a walker<br />your dog actually loves?</h2>
-                <p>Book a free meet &amp; greet — no commitment required. We&apos;ll come to you.</p>
-              </div>
-              <div className="cta-band-actions">
-                <button className="btn btn-outline-white" onClick={() => window.location.href='/book'}>Book Meet &amp; Greet</button>
-                <button className="btn" style={{color:'rgba(255,255,255,0.7)', padding:'14px 0'}} onClick={() => (window as any).showPage('contact')}>Contact Us →</button>
-              </div>
-            </div>
-          </div>
-        </section>
+        )}
 
       </div>{/* /page-home */}
 
@@ -832,91 +1255,61 @@ export default function Home() {
 
               {/* Small Group Visit */}
               <div className="service-card">
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="4" r="2"/><circle cx="4" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><path d="M12 17c-2.5 0-6 1.5-6 4v1h12v-1c0-2.5-3.5-4-6-4z"/></svg></div>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-small-group.svg" alt="" loading="lazy" /></div>
                 <h3>Small Group Visit</h3>
                 <p>45-minute visit with up to three dogs max. GPS tracked, personalized report card included, and paws cleaned before returning home.</p>
                 <div className="svc-price">$33<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
                 <div className="svc-badge">Most Popular</div>
               </div>
 
               {/* Solo Visit */}
               <div className="service-card">
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-solo.svg" alt="" loading="lazy" /></div>
                 <h3>Solo Visit</h3>
                 <p>A private 60-minute visit for nervous, anxious, or reactive dogs, or pups who simply do better with one-on-one attention. Built around patience, consistency, and positive reinforcement.</p>
                 <div className="svc-price">$60<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
                 <div className="svc-badge">Premium</div>
-              </div>
-
-              {/* Boarding & Overnight Sitting */}
-              <div className="service-card">
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-                <h3>Boarding &amp; Overnight Sitting</h3>
-                <p>Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.</p>
-                <div className="svc-price">$100<span>/night</span></div>
-                <div className="svc-badge">7+ day discounts</div>
               </div>
 
               {/* Puppy Visits */}
               <div className="service-card">
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="4" r="2"/><circle cx="4" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><path d="M12 17c-2.5 0-6 1.5-6 4v1h12v-1c0-2.5-3.5-4-6-4z"/></svg></div>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-puppy.svg" alt="" loading="lazy" /></div>
                 <h3>Puppy Visits</h3>
                 <p>Designed for puppies still learning the ropes. Visits focus on potty breaks, enrichment, socialization, and positive reinforcement. Discounts available for multiple daily visits.</p>
                 <div className="svc-price">$35<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
               </div>
 
               {/* Senior Dog Visits */}
               <div className="service-card">
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-senior.svg" alt="" loading="lazy" /></div>
                 <h3>Senior Dog Visits</h3>
                 <p>Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.</p>
                 <div className="svc-price">$35<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
+              </div>
+
+              {/* Boarding & Overnight Sitting */}
+              <div className="service-card">
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-boarding.svg" alt="" loading="lazy" /></div>
+                <h3>Boarding &amp; Overnight Sitting</h3>
+                <p>Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.</p>
+                <div className="svc-price">$100<span>/night</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
+                <div className="svc-badge">7+ day discounts</div>
               </div>
 
               {/* Cat Visits */}
               <div className="service-card">
-                <div className="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-8.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5z"/><path d="M8 14v.5"/><path d="M16 14v.5"/><path d="M11.25 16.25h1.5L12 17l-.75-.75z"/></svg></div>
+                <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-cat.svg" alt="" loading="lazy" /></div>
                 <h3>Cat Visits</h3>
                 <p>Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We&apos;ll also water plants, bring in the mail, and keep an eye on your home while you&apos;re away.</p>
                 <div className="svc-price">$35<span>/visit</span></div>
+                <div className="price-tax-note" style={{fontSize:'12px', color:'var(--mid-gray)', fontWeight:400, marginTop:'2px'}}>+ sales tax</div>
               </div>
 
-            </div>
-          </div>
-        </section>
-
-        {/* Monthly packages */}
-        <section className="section bg-texture" style={{backgroundColor:'var(--cream)', paddingTop:0}}>
-          <div className="container">
-            <div className="package-banner">
-              <div>
-                <div className="label" style={{color:'var(--gold-light)'}}>Save with Packages</div>
-                <h2 style={{color:'white'}}>Monthly walking plans</h2>
-                <p style={{color:'rgba(255,255,255,0.65)', maxWidth:'480px', marginTop:'12px', fontSize:'16px'}}>Commit to a regular schedule and save up to 20%. Predictable care for your dog, predictable billing for you.</p>
-              </div>
-              <div className="package-tiers">
-                <div className="package-tier">
-                  <div className="package-tier-name">The Casual</div>
-                  <div className="package-tier-price">~$140/mo</div>
-                  <div className="package-tier-desc">4 walks/month — occasional care when you need it</div>
-                  <div className="package-tier-save">Standard rate</div>
-                  <button className="btn btn-outline-white btn-sm" style={{width:'100%', justifyContent:'center'}} onClick={() => window.location.href='/book'}>Get Started</button>
-                </div>
-                <div className="package-tier" style={{borderColor:'rgba(201,169,110,0.5)', background:'rgba(201,169,110,0.1)'}}>
-                  <div className="package-tier-name">The Regular</div>
-                  <div className="package-tier-price">~$660/mo</div>
-                  <div className="package-tier-desc">5 walks/week — daily structure your dog thrives on</div>
-                  <div className="package-tier-save">Save 6% vs. single rate</div>
-                  <button className="btn btn-outline-white btn-sm" style={{width:'100%', justifyContent:'center'}} onClick={() => window.location.href='/book'}>Get Started</button>
-                </div>
-                <div className="package-tier">
-                  <div className="package-tier-name">The Committed</div>
-                  <div className="package-tier-price">Custom</div>
-                  <div className="package-tier-desc">Multiple services bundled — walking + training + boarding</div>
-                  <div className="package-tier-save">Best value</div>
-                  <button className="btn btn-outline-white btn-sm" style={{width:'100%', justifyContent:'center'}} onClick={() => (window as any).showPage('contact')}>Let&apos;s Talk</button>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -1069,35 +1462,35 @@ export default function Home() {
                   <div className="process-num-big">01</div>
                   <div className="process-content">
                     <h3>Reach Out</h3>
-                    <p>Fill out our simple intake form or give us a call. Tell us about your dog — breed, age, personality, any quirks we should know about. We respond within 2 hours on weekdays.</p>
+                    <p>Fill out our simple intake form or give us a call. Tell us where you&apos;re located in Williamsburg and a little about your dog, including breed, age, weight, personality, quirks, or allergies. We respond within 2 hours on weekdays.</p>
                   </div>
                 </div>
                 <div className="process-step">
                   <div className="process-num-big">02</div>
                   <div className="process-content">
                     <h3>Free Meet &amp; Greet</h3>
-                    <p>We come to your home. Your dog meets their future walker in their own space, on their own terms. We discuss your routine, review key handling, and answer every question. No charge, no commitment.</p>
+                    <p>We come to your home so your dog can meet their future walker in their own space, on their own terms. We&apos;ll review your routine, key handling notes, and answer any questions. No charge, no commitment.</p>
                   </div>
                 </div>
                 <div className="process-step">
                   <div className="process-num-big">03</div>
                   <div className="process-content">
                     <h3>Set Up Your Profile</h3>
-                    <p>We&apos;ll log feeding schedules, vet contacts, emergency protocols, door codes, and any behavioral notes. Your dog&apos;s profile travels with their walker on every visit.</p>
+                    <p>Add schedules, vet contacts and records, birthdays, emergency protocols, door codes, and behavioral notes. Your dog&apos;s profile travels with their walker on every visit.</p>
                   </div>
                 </div>
                 <div className="process-step">
                   <div className="process-num-big">04</div>
                   <div className="process-content">
                     <h3>First Walk</h3>
-                    <p>Your assigned walker arrives within a 15-minute window. GPS tracking starts, your dog gets 45 minutes of proper exercise, and you receive a photo report when they&apos;re home safe.</p>
+                    <p>Your assigned walker arrives within a 15/30-minute window, starts GPS tracking, and gives your dog a walk. You&apos;ll receive a photo report once they&apos;re home safe.</p>
                   </div>
                 </div>
                 <div className="process-step">
                   <div className="process-num-big">05</div>
                   <div className="process-content">
                     <h3>Ongoing &amp; Recurring</h3>
-                    <p>Same walker, same time, same route calibrated to your dog&apos;s preferences. Monthly invoicing, simple cancellation policy (48-hour notice), and an open line to us whenever you need it.</p>
+                    <p>Same walker, same time, and a familiar routine built around your dog&apos;s preferences. Monthly invoicing, a simple 24-hour cancellation policy, and an open line to us whenever you need it.</p>
                   </div>
                 </div>
               </div>
@@ -1143,21 +1536,6 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="phase-callout" style={{marginTop:'24px'}}>
-                    <div className="phase-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-                    <div>
-                      <div className="phase-tag">Coming Soon — Phase 2</div>
-                      <h4>Real-Time Walk App</h4>
-                      <p>We&apos;re building a dedicated client app for live GPS tracking, instant messaging with your walker, and booking management — all in one place.</p>
-                      <ul className="phase-list">
-                        <li>Live GPS map during the walk</li>
-                        <li>Instant photo push notifications</li>
-                        <li>In-app booking and scheduling</li>
-                        <li>Walker rating and feedback</li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1185,15 +1563,14 @@ export default function Home() {
                 <div className="label">Founded 2011</div>
                 <h2>A neighborhood service, not a platform</h2>
                 <div className="divider"></div>
-                <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8', marginBottom:'20px'}}>Not The Rug was founded in 2011 by Luis, a Williamsburg resident since 2006. Before that, Luis spent years in broadcasting and music — working as a Program Director at SiriusXM Radio and consulting for Red Bull on music strategy and cultural programming. In 2008, the pace of that world pushed him to step away. He took a job walking dogs on the Upper West Side, and the work changed everything. It started with two dogs — Suzy and Oliver — and daily walks rooted in close observation. What began as a reset became a calling, and what started as a favor for a few friends on N 7th Street became Brooklyn&apos;s most trusted neighborhood dog walking service.</p>
-                <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8', marginBottom:'20px'}}>The name is a promise. Your dog will not ruin your rug because they&apos;ll be properly walked, genuinely cared for, and returned home happy. It&apos;s also a nod to the neighborhood&apos;s sense of humor — we don&apos;t take ourselves too seriously, but we take your dog very seriously.</p>
-                <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8'}}>We&apos;ve never expanded beyond what we can do well. We don&apos;t use gig workers. We don&apos;t dispatch strangers. Every walker on our team has been with us for years, knows the neighborhood by heart, and knows your dog by name.</p>
+                <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8', marginBottom:'20px'}}>Not The Rug was founded in 2011 by Luis, a Williamsburg resident since 2006. Before dog walking, Luis spent years in broadcasting and music, including work as a Program Director at SiriusXM Radio and consulting for Red Bull on music strategy and cultural programming.</p>
+                <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8', marginBottom:'20px'}}>In 2008, the pace of that world pushed him to step away. He took a job walking dogs on the Upper West Side, and the work changed everything. It started with two dogs, Suzy and Oliver, and daily walks rooted in patience, observation, and trust. What began as a reset became a calling.</p>
+                <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8', marginBottom:'20px'}}>The name is a promise: your dog won&apos;t ruin your rug because they&apos;ll be properly walked, genuinely cared for, and returned home happy. It&apos;s also a nod to the neighborhood&apos;s sense of humor. We don&apos;t take ourselves too seriously, but we take your dog very seriously.</p>
+                <p style={{color:'var(--mid-gray)', fontSize:'16px', lineHeight:'1.8'}}>We&apos;ve never expanded beyond what we can do well. We don&apos;t dispatch strangers. Every walker on our team is trained, trusted, and familiar with the neighborhood. Most importantly, they know your dog by name.</p>
               </div>
               <div>
                 <div style={{aspectRatio:'4/5', borderRadius:'var(--radius-lg)', overflow:'hidden', marginBottom:'20px'}}>
-                  <div className="img-placeholder img-ph-2" style={{height:'100%'}}>
-                    <div className="img-label">Luis, founder · Williamsburg 2011</div>
-                  </div>
+                  <div id="about-founder-image" style={{height:'100%', backgroundImage:"url('/img/team/luis-action.jpg')", backgroundSize:'cover', backgroundPosition:'center'}}></div>
                 </div>
                 <div className="grid-2" style={{gap:'12px'}}>
                   <div style={{background:'var(--cream)', border:'1px solid var(--light-gray)', borderRadius:'var(--radius)', padding:'20px', textAlign:'center'}}>
@@ -1210,39 +1587,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Values */}
-        <section className="section bg-warm">
-          <div className="container">
-            <div style={{textAlign:'center', marginBottom:'48px'}}>
-              <div className="label">How We Work</div>
-              <h2>The principles behind every walk</h2>
-            </div>
-            <p style={{textAlign:'center', color:'var(--mid-gray)', maxWidth:'620px', margin:'0 auto 48px', fontSize:'16px', lineHeight:'1.8'}}>Our walks are structured and consistent, giving dogs a familiar rhythm from pickup to drop-off. Our walkers stay present, adjust pace as needed, and respond in real time to what each dog is communicating — on the leash and in their body. Repetition builds trust. Dogs move with more ease, and the transition from walk to rest becomes natural rather than chaotic.</p>
-            <div className="values-grid">
-              <div className="value-cell">
-                <div className="value-num">01</div>
-                <h4>Consistency Over Convenience</h4>
-                <p>We turn down more clients than we take on. Not because we&apos;re exclusive — because we only take new clients when we can assign a consistent walker who has true capacity. Your dog doesn&apos;t need a different person every week.</p>
-              </div>
-              <div className="value-cell" style={{background:'var(--cream)'}}>
-                <div className="value-num">02</div>
-                <h4>Small Groups, Real Attention</h4>
-                <p>Three dogs maximum per walk. Always. That&apos;s not a marketing line — it&apos;s a practical commitment to safe, attentive care. Your dog gets exercise and engagement, not crowd management.</p>
-              </div>
-              <div className="value-cell" style={{background:'var(--cream)'}}>
-                <div className="value-num">03</div>
-                <h4>Neighborhood Expertise</h4>
-                <p>We know which parks get flooded in rain, which blocks have aggressive off-leash dogs, which routes are best for reactive dogs, and which shortcuts to use in summer heat. 15 years builds that kind of knowledge.</p>
-              </div>
-              <div className="value-cell">
-                <div className="value-num">04</div>
-                <h4>Real People, Always Reachable</h4>
-                <p>Luis&apos;s personal number is on the website. You can text or call your walker directly. There&apos;s no support ticket system here. If something happens — good or bad — you hear from a human, immediately.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Team */}
         <section className="section">
           <div className="container">
@@ -1253,114 +1597,91 @@ export default function Home() {
             </div>
             <div className="grid-3">
               <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-2" style={{height:'280px'}}></div>
+                <div className="team-photo" style={{height:'280px', backgroundImage:"url('/img/team/luis.jpg')", backgroundSize:'150%', backgroundPosition:'48% 40%'}} role="img" aria-label="Luis, Not The Rug dog walker"></div>
                 <div className="team-info">
                   <div className="team-name">Luis</div>
                   <div className="team-role">Founder &amp; Lead Walker</div>
-                  <p className="team-bio">Former SiriusXM Program Director and Red Bull music strategist who traded the broadcast world for Brooklyn sidewalks. Founded Not The Rug in 2011 after discovering dog walking on the Upper West Side. Williamsburg resident since 2006 — he knows every block, every park, and most of the dogs by name.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">NAPPS Certified</span>
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                  </div>
+                  <p className="team-bio">A former SiriusXM Program Director and Red Bull music strategist, Luis traded the broadcast world for Brooklyn sidewalks. He founded Not The Rug in 2011 after discovering dog walking on the Upper West Side. A Williamsburg resident since 2006, he knows the blocks, the parks, and most of the dogs by name.</p>
                 </div>
               </div>
               <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-1" style={{height:'280px'}}></div>
-                <div className="team-info">
-                  <div className="team-name">Joseph</div>
-                  <div className="team-role">Senior Walker · 5+ Years</div>
-                  <p className="team-bio">Film buff and former skateboarder who discovered dogs were his real calling. Clients say their dogs hear his footsteps in the hallway before the doorbell rings.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                    <span className="badge badge-gold">5+ Year Veteran</span>
-                  </div>
-                </div>
-              </div>
-              <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-3" style={{height:'280px'}}></div>
-                <div className="team-info">
-                  <div className="team-name">Marcus</div>
-                  <div className="team-role">Walker &amp; Training Specialist</div>
-                  <p className="team-bio">Former Petco trainer with a background in positive reinforcement methodology. Specializes in reactive and anxious dogs. Owns a rescue named Potato.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">Training Specialist</span>
-                    <span className="badge badge-terra">Reactive Dog Expert</span>
-                  </div>
-                </div>
-              </div>
-              <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-5" style={{height:'280px'}}></div>
-                <div className="team-info">
-                  <div className="team-name">Léa <span style={{fontWeight:400, fontSize:'13px', color:'var(--mid-gray)'}}>(pronounced lay-uh)</span></div>
-                  <div className="team-role">Walker · 5+ Years</div>
-                  <p className="team-bio">Environmental science background and lifelong animal advocate. Owns a mutt named Miso and approaches each walk like a miniature nature expedition.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                    <span className="badge badge-gold">5+ Year Veteran</span>
-                  </div>
-                </div>
-              </div>
-              <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-4" style={{height:'280px'}}></div>
+                <div className="team-photo" style={{height:'280px', backgroundImage:"url('/img/team/lincoln.jpg')", backgroundSize:'275%', backgroundPosition:'46% 48%'}} role="img" aria-label="Lincoln, Not The Rug dog walker"></div>
                 <div className="team-info">
                   <div className="team-name">Lincoln</div>
-                  <div className="team-role">Walker</div>
-                  <p className="team-bio">Originally from South Louisiana where she grew up caring for everything from dogs to miniature donkeys to emus, Lincoln moved to Brooklyn three years ago with her three Southern pups. Her deep respect for animals and steady, generous approach make her a trusted presence on every walk.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                  </div>
+                  <div className="team-role">Manager &amp; Senior Walker</div>
+                  <p className="team-bio">Originally from South Louisiana, with roots in DownEast Maine, Lincoln grew up surrounded by animals, including dogs, miniature donkeys, and even emus. If it had four legs or feathers, she likely helped care for it. Four years ago, Lincoln moved to Brooklyn with her three Southern pups, bringing her deep respect for animals with her. Her understanding of animal behavior, along with her steady and generous approach, makes her a trusted presence on the team. Now a Williamsburg local, Lincoln feels lucky to do this work every day.</p>
                 </div>
               </div>
               <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-1" style={{height:'280px'}}></div>
+                <div className="team-photo" style={{height:'280px', backgroundImage:"url('/img/team/marcus.jpg')", backgroundSize:'275%', backgroundPosition:'48% 3%'}} role="img" aria-label="Marcus, Not The Rug dog walker"></div>
                 <div className="team-info">
-                  <div className="team-name">Nina</div>
-                  <div className="team-role">Senior Walker · Longest-Serving</div>
-                  <p className="team-bio">Auntie Nina has been around dogs since infancy and treats every one like family. Born and raised in New Jersey, she&apos;s one of Not The Rug&apos;s longest-serving team members with deep relationships across clients and pups alike. Probably holding an iced latte — any season.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                    <span className="badge badge-gold">5+ Year Veteran</span>
-                  </div>
+                  <div className="team-name">Marcus</div>
+                  <div className="team-role">Senior Walker</div>
+                  <p className="team-bio">Marcus has spent his life around animals, from growing up with pets to working as a dog trainer at Petco. He brings a thoughtful understanding of how dogs communicate, learn, and respond. A theater kid, video gamer, curious thinker, and devoted animal lover, Marcus sees every walk as a chance to build trust and connection. Say hello when you see him in the neighborhood — he&apos;s always happy to meet pups and their people.</p>
                 </div>
               </div>
               <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-3" style={{height:'280px'}}></div>
+                <div className="team-photo" style={{height:'280px', backgroundImage:"url('/img/team/christian.jpg')", backgroundSize:'170%', backgroundPosition:'60% 42%'}} role="img" aria-label="Christian, Not The Rug dog walker"></div>
                 <div className="team-info">
                   <div className="team-name">Christian</div>
-                  <div className="team-role">Walker</div>
-                  <p className="team-bio">After six years as a chef and kitchen manager, Christian traded the kitchen for the neighborhood — bringing the same discipline, focus, and attention to detail to every walk. Patient, steady, and deeply caring with every dog in his charge.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                  </div>
+                  <div className="team-role">Senior Walker</div>
+                  <p className="team-bio">Christian spent more than six years working as a chef and kitchen manager, where he developed discipline, focus, and strong attention to detail. Over time, he realized he wanted work that felt more grounded and connected. With a lifelong love for animals, Christian chose a new path that brought more balance into his life. He brings patience, care, and a steady presence to every walk, treating each dog with the same respect he would give his own.</p>
                 </div>
               </div>
               <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-5" style={{height:'280px'}}></div>
+                <div className="team-photo" style={{height:'280px', backgroundImage:"url('/img/team/shawn.jpg')", backgroundSize:'290%', backgroundPosition:'53% 3%'}} role="img" aria-label="Shawn, Not The Rug dog walker"></div>
                 <div className="team-info">
                   <div className="team-name">Shawn</div>
                   <div className="team-role">Walker</div>
-                  <p className="team-bio">Artist, musician, and visual creator, Shawn brings a calm, grounded presence to every walk. After two years with another service, he joined Not The Rug for its more intentional approach to care — and it shows.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                  </div>
+                  <p className="team-bio">Shawn brings care, precision, and a calm presence to every walk. An artist, musician, and visual creator, he approaches dog care with patience and intention. Before joining Not The Rug, Shawn spent two years with another service and came to us wanting a more thoughtful approach to the work. He has been a strong addition to the team, and we&apos;re glad to have him.</p>
                 </div>
               </div>
               <div className="team-card card-hover">
-                <div className="team-photo img-placeholder img-ph-2" style={{height:'280px'}}></div>
+                <div className="team-photo" style={{height:'280px', backgroundImage:"url('/img/team/yenny.jpg')", backgroundSize:'265%', backgroundPosition:'47% 9%'}} role="img" aria-label="Yenny, Not The Rug dog walker"></div>
                 <div className="team-info">
-                  <div className="team-name">Ivan</div>
+                  <div className="team-name">Yenny</div>
                   <div className="team-role">Walker</div>
-                  <p className="team-bio">The definition of an animal lover — Ivan&apos;s home crew includes Lucy the dachshund, Casper the parrot, cats, and a 50-gallon fish tank. A recent Brooklyn College graduate with over three years of professional experience, he brings genuine enthusiasm to every walk.</p>
-                  <div className="team-certifications">
-                    <span className="badge badge-sage">CPR/First Aid</span>
-                  </div>
+                  <p className="team-bio">Yenny is an experienced dog walker and a returning member of the Not The Rug team. Before joining us, she spent three years managing a doggy daycare in Long Island City, working with dogs of all personalities and energy levels. After stepping away to have her baby, Yenny is back with us and already reconnecting with the neighborhood pups. We&apos;re excited to have her back.</p>
                 </div>
               </div>
-              <div className="team-card" style={{border:'2px dashed var(--sage-light)', background:'var(--cream)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px', textAlign:'center'}}>
+              <div id="join-team-card" className="team-card" style={{gridColumn:'1 / -1', border:'2px dashed var(--sage-light)', background:'var(--cream)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px', textAlign:'center'}}>
                 <div style={{marginBottom:'16px'}}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></div>
                 <h4 style={{fontFamily:'var(--font-display)', fontSize:'22px', marginBottom:'10px'}}>Join the team</h4>
                 <p style={{fontSize:'14px', color:'var(--mid-gray)', marginBottom:'20px'}}>We hire experienced, passionate walkers who want to build real relationships — not just fill shifts.</p>
                 <button className="btn btn-outline btn-sm" onClick={() => (window as any).showPage('contact')}>Learn More</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How We Work */}
+        <section className="section bg-warm">
+          <div className="container">
+            <div style={{textAlign:'center', marginBottom:'48px'}}>
+              <div className="label">How We Work</div>
+              <h2>The principles behind every walk</h2>
+            </div>
+            <p style={{textAlign:'center', color:'var(--mid-gray)', maxWidth:'620px', margin:'0 auto 48px', fontSize:'16px', lineHeight:'1.8'}}>Our walks are structured, consistent, and responsive. From pickup to drop-off, we give each dog a familiar rhythm while staying present to their pace, mood, leash cues, and body language. That repetition builds trust, helping dogs move with more ease and settle calmly when they return home.</p>
+            <div className="values-grid">
+              <div className="value-cell">
+                <div className="value-num">01</div>
+                <h4>Consistency Over Convenience</h4>
+                <p>We don&apos;t take on every client — not to be exclusive, but to protect the quality of care. We only accept new dogs when we can assign a consistent walker with the time and capacity to do the job well. Your dog deserves a familiar person, not a different face every week.</p>
+              </div>
+              <div className="value-cell" style={{background:'var(--cream)'}}>
+                <div className="value-num">02</div>
+                <h4>Small Groups, Real Attention</h4>
+                <p>Three dogs maximum per walk. Always. It&apos;s not a marketing line. It&apos;s how we keep walks safe, calm, and attentive. Your dog gets real exercise and engagement, not crowd management.</p>
+              </div>
+              <div className="value-cell" style={{background:'var(--cream)'}}>
+                <div className="value-num">03</div>
+                <h4>Neighborhood Expertise</h4>
+                <p>We know the Williamsburg details that only come from years of daily walks: which areas of the park flood after rain, which blocks to avoid, which routes help reactive dogs feel calmer, and where to find shade in summer heat. Fifteen years builds that kind of knowledge.</p>
+              </div>
+              <div className="value-cell">
+                <div className="value-num">04</div>
+                <h4>Real People, Always Reachable</h4>
+                <p>Luis&apos;s personal number is on the website, and you can text or call your walker directly. No support tickets. No call centers. Just real people who know your dog and respond when you need them.</p>
               </div>
             </div>
           </div>
@@ -1407,14 +1728,7 @@ export default function Home() {
                 <div className="trust-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
                 <div>
                   <h4>Double-Leash Safety Method</h4>
-                  <p>All our walkers use our signature dual collar-and-harness method — front clip harnesses paired with martingale collars, secured with Geartac security belts. Two points of contact means if one fails, your dog is still safe. Every walker carries a trainer treat pouch and follows a strict no-phone-while-walking policy. We conduct weekly gear checks on all equipment, and every new team member completes four weeks of walking and safety training directly with the owner before their first solo walk. This is non-negotiable regardless of breed or temperament.</p>
-                </div>
-              </div>
-              <div className="trust-card">
-                <div className="trust-icon-box"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-                <div>
-                  <h4>CPR &amp; First Aid Certified</h4>
-                  <p>Our entire active team is certified in pet CPR and first aid. We also maintain current contact for each client&apos;s vet and have an emergency protocol reviewed at every onboarding.</p>
+                  <p>Every dog is walked with our secure collar-and-harness system, supported by a leash belt for added protection. Two points of contact help keep your dog safe, and every walker follows our no-phone-while-walking policy, completes hands-on safety training, and receives regular gear checks.</p>
                 </div>
               </div>
               <div className="trust-card">
@@ -1435,14 +1749,6 @@ export default function Home() {
               <div className="cert-item">
                 <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
                 <div className="cert-label">NAPPS Member</div>
-              </div>
-              <div className="cert-item">
-                <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-                <div className="cert-label">Pet CPR Certified</div>
-              </div>
-              <div className="cert-item">
-                <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg></div>
-                <div className="cert-label">First Aid Certified</div>
               </div>
               <div className="cert-item">
                 <div className="cert-badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
@@ -1467,7 +1773,7 @@ export default function Home() {
               <div style={{maxWidth:'720px', margin:'0 auto'}}>
                 <details style={{borderBottom:'1px solid var(--light-gray)', padding:'18px 0', cursor:'pointer'}}>
                   <summary style={{fontWeight:600, fontSize:'15px', listStyle:'none', display:'flex', justifyContent:'space-between'}}>What happens if my dog gets injured on a walk? <span style={{color:'var(--sage)'}}>+</span></summary>
-                  <p style={{color:'var(--mid-gray)', fontSize:'14px', marginTop:'12px', lineHeight:'1.7'}}>We contact you immediately, administer first aid if needed, and transport to your designated vet or the nearest emergency clinic. Our insurance covers veterinary costs arising from walker negligence. We document everything and stay with your dog until you can be there.</p>
+                  <p style={{color:'var(--mid-gray)', fontSize:'14px', marginTop:'12px', lineHeight:'1.7'}}>We contact you immediately, provide basic first aid if needed, and take your dog to your designated vet or the nearest emergency clinic. We document everything clearly and stay with your dog until you can be there. Our insurance covers veterinary costs related to walker negligence.</p>
                 </details>
                 <details style={{borderBottom:'1px solid var(--light-gray)', padding:'18px 0', cursor:'pointer'}}>
                   <summary style={{fontWeight:600, fontSize:'15px', listStyle:'none', display:'flex', justifyContent:'space-between'}}>Will my dog always have the same walker? <span style={{color:'var(--sage)'}}>+</span></summary>
@@ -1479,11 +1785,11 @@ export default function Home() {
                 </details>
                 <details style={{borderBottom:'1px solid var(--light-gray)', padding:'18px 0', cursor:'pointer'}}>
                   <summary style={{fontWeight:600, fontSize:'15px', listStyle:'none', display:'flex', justifyContent:'space-between'}}>What&apos;s your cancellation policy? <span style={{color:'var(--sage)'}}>+</span></summary>
-                  <p style={{color:'var(--mid-gray)', fontSize:'14px', marginTop:'12px', lineHeight:'1.7'}}>48-hour notice for individual walks, no charge. For boarding, we request 72-hour notice for full refunds. We understand life is unpredictable and handle edge cases with flexibility.</p>
+                  <p style={{color:'var(--mid-gray)', fontSize:'14px', marginTop:'12px', lineHeight:'1.7'}}>For individual walks, we ask for 24 hours&apos; notice to avoid a charge. For boarding, we ask for 72 hours&apos; notice. We understand life happens and handle special circumstances with flexibility.</p>
                 </details>
                 <details style={{borderTop:'1px solid var(--light-gray)', padding:'18px 0', cursor:'pointer'}}>
                   <summary style={{fontWeight:600, fontSize:'15px', listStyle:'none', display:'flex', justifyContent:'space-between'}}>Why do you clean dogs&apos; paws after every walk? <span style={{color:'var(--sage)'}}>+</span></summary>
-                  <p style={{color:'var(--mid-gray)', fontSize:'14px', marginTop:'12px', lineHeight:'1.7'}}>Dogs perspire through their mouth and feet, and outdoor debris such as rat poison, fertilizer, and construction materials can be harmful if left on paws. We clean every dog&apos;s paws thoroughly after every walk, regardless of weather conditions. It&apos;s a small step that protects your dog&apos;s health and keeps your home clean.</p>
+                  <p style={{color:'var(--mid-gray)', fontSize:'14px', marginTop:'12px', lineHeight:'1.7'}}>We clean paws after every walk to help remove dirt, debris, and anything harmful your dog may have stepped in outside. It&apos;s a simple step that supports your dog&apos;s health and helps keep your home clean.</p>
                 </details>
               </div>
             </div>
@@ -1497,8 +1803,8 @@ export default function Home() {
         <div className="page-hero" style={{background:"linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('dogs/IMAGE 00005.png') center 20%/cover no-repeat"}}>
           <div className="container">
             <div className="label" style={{color:'var(--sage-light)'}}>Service Areas</div>
-            <h1>Brooklyn is our<br />backyard</h1>
-            <p>We serve six neighborhoods and know every park, shortcut, and puddle to avoid. Select your area below.</p>
+            <h1>Williamsburg is our<br />backyard</h1>
+            <p>We&apos;re a Williamsburg service through and through — we know every park, shortcut, and puddle to avoid.</p>
           </div>
           <a href="https://instagram.com/placeholder" target="_blank" rel="noopener" className="page-hero-label" id="page-hero-label-neighborhoods"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Pepper · @pepper_bklyn</a>
         </div>
@@ -1506,29 +1812,9 @@ export default function Home() {
         <section className="section">
           <div className="container">
             <div className="grid-3" style={{gap:'24px'}}>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('williamsburg')} style={{aspectRatio:'1', position:'relative'}}>
+              <div id="neighborhoods-williamsburg-hood-card" className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('williamsburg')} style={{aspectRatio:'1', position:'relative'}}>
                 <div className="hood-card-img img-placeholder img-ph-1" style={{height:'100%', position:'absolute', inset:0}}></div>
                 <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Williamsburg</div><div className="hood-card-desc">Our home since 2011</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('greenpoint')} style={{aspectRatio:'1', position:'relative'}}>
-                <div className="hood-card-img img-placeholder img-ph-2" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Greenpoint</div><div className="hood-card-desc">McGolrick Park specialists</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('bushwick')} style={{aspectRatio:'1', position:'relative'}}>
-                <div className="hood-card-img img-placeholder img-ph-3" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Bushwick</div><div className="hood-card-desc">Maria Hernandez routes</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('bedstuy')} style={{aspectRatio:'1', position:'relative'}}>
-                <div className="hood-card-img img-placeholder img-ph-4" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Bed-Stuy</div><div className="hood-card-desc">Herbert Von King Park</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('park-slope')} style={{aspectRatio:'1', position:'relative'}}>
-                <div className="hood-card-img img-placeholder img-ph-5" style={{height:'100%', position:'absolute', inset:0}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">Park Slope</div><div className="hood-card-desc">Prospect Park dog runs</div></div></div>
-              </div>
-              <div className="hood-card card-hover" onClick={() => (window as any).showNeighborhood('east-williamsburg')} style={{aspectRatio:'1', position:'relative'}}>
-                <div className="hood-card-img img-placeholder img-ph-1" style={{height:'100%', position:'absolute', inset:0, filter:'hue-rotate(60deg)'}}></div>
-                <div className="hood-card-overlay"><div className="hood-card-label"><div className="hood-card-name">East Williamsburg</div><div className="hood-card-desc">Expanding coverage</div></div></div>
               </div>
             </div>
           </div>
@@ -1811,7 +2097,7 @@ export default function Home() {
                     <div className="contact-method-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
                     <div>
                       <h4>Email</h4>
-                      <p>For less urgent inquiries, new client intake, or detailed questions.</p>
+                      <p>For new client intake, less urgent inquiries, or detailed questions.</p>
                       <a href="mailto:luis@nottherug.com" style={{display:'block', marginTop:'10px'}}>luis@nottherug.com</a>
                     </div>
                   </div>
@@ -1819,7 +2105,7 @@ export default function Home() {
                     <div className="contact-method-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
                     <div>
                       <h4>Service Area</h4>
-                      <p>We&apos;re based in Williamsburg and serve Greenpoint, Bushwick, Bed-Stuy, Park Slope, and East Williamsburg.</p>
+                      <p>We&apos;re based in Williamsburg and serve North Williamsburg and much of South Williamsburg. We do our best to cover as much of the neighborhood as possible, but some areas may depend on staff availability.</p>
                       <p style={{marginTop:'8px', fontSize:'13px', color:'var(--mid-gray)'}}>281 N 7th St, Ste 13, Brooklyn, NY 11211<br />b/t Havemeyer St &amp; Meeker Ave · Williamsburg North Side</p>
                     </div>
                   </div>
@@ -1827,7 +2113,7 @@ export default function Home() {
                     <div className="contact-method-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
                     <div>
                       <h4>Response Hours</h4>
-                      <p>Mon–Fri, 8 AM–7 PM · Sat–Sun, 9 AM–5 PM</p>
+                      <p>Mon–Fri, 9 AM–7 PM · Sat–Sun, 10 AM–4 PM</p>
                       <p style={{marginTop:'4px', fontSize:'13px', color:'var(--mid-gray)'}}>Typically reply within 2 hours on weekdays</p>
                     </div>
                   </div>
@@ -1863,11 +2149,6 @@ export default function Home() {
                     <label>Neighborhood</label>
                     <select className="form-control form-select">
                       <option>Williamsburg</option>
-                      <option>Greenpoint</option>
-                      <option>Bushwick</option>
-                      <option>Bed-Stuy</option>
-                      <option>Park Slope</option>
-                      <option>East Williamsburg</option>
                       <option>Other</option>
                     </select>
                   </div>
@@ -1887,6 +2168,7 @@ export default function Home() {
       {/* FOOTER */}
       <footer id="main-footer">
         <div className="container">
+          <div id="footer-content-zone">
           <div className="footer-grid">
             <div className="footer-brand">
               <div className="footer-logo">Not The Rug</div>
@@ -1911,18 +2193,12 @@ export default function Home() {
                 <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('services'); }}>Puppy Visits</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('services'); }}>Senior Dog Care</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('services'); }}>Boarding</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showPage('services'); }}>Monthly Plans</a></li>
               </ul>
             </div>
             <div className="footer-col">
-              <h4>Neighborhoods</h4>
+              <h4>Service Area</h4>
               <ul>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('williamsburg'); }}>Williamsburg</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('greenpoint'); }}>Greenpoint</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('bushwick'); }}>Bushwick</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('bedstuy'); }}>Bed-Stuy</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('park-slope'); }}>Park Slope</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); (window as any).showNeighborhood('east-williamsburg'); }}>East Williamsburg</a></li>
               </ul>
             </div>
             <div className="footer-col">
@@ -1937,22 +2213,105 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div id="footer-cta-shell" style={{borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:'32px', marginBottom:'32px', textAlign:'center'}}>
-            <h4 style={{fontFamily:'var(--font-body)', fontSize:'14px', fontWeight:500, color:'rgba(255,255,255,0.55)', marginBottom:'8px'}}>Ready to get started?</h4>
-            <p style={{fontSize:'13px', color:'rgba(255,255,255,0.4)', marginBottom:'16px', maxWidth:'320px', marginLeft:'auto', marginRight:'auto'}}>Book a free meet &amp; greet and tell us about your dog. No commitment — just a chance to connect.</p>
-            <div style={{display:'flex', justifyContent:'center'}}>
-              <button className="btn btn-primary btn-sm" style={{whiteSpace:'nowrap'}} onClick={() => window.location.href='/book'}>Book a Free Meet &amp; Greet</button>
+          <div id="footer-cta-shell" style={{display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:'24px', borderTop:'1px solid rgba(255,255,255,0.15)', paddingTop:'28px', marginBottom:'28px'}}>
+            <div id="footer-cta-copy" style={{maxWidth:'440px'}}>
+              <h4 style={{fontFamily:'var(--font-body)', fontSize:'14px', fontWeight:500, color:'rgba(255,255,255,0.6)', marginBottom:'6px'}}>Ready to get started?</h4>
+              <p style={{fontSize:'13px', color:'rgba(255,255,255,0.5)', margin:0}}>Book a free meet &amp; greet and tell us about your dog. No commitment — just a chance to connect.</p>
             </div>
+            <button className="btn btn-primary btn-sm" style={{whiteSpace:'nowrap'}} onClick={() => window.location.href='/book'}>Book Luis, for a Meet &amp; Greet</button>
           </div>
+          <div className="divider-word divider-word-dark" id="footer-est-divider" aria-hidden="true">Brooklyn &middot; Est. 2011</div>
           <div className="footer-bottom">
             <div className="footer-copy">© 2026 Not The Rug · 281 N 7th St, Ste 13, Brooklyn, NY 11211 · b/t Havemeyer St &amp; Meeker Ave · All rights reserved</div>
             <div style={{display:'flex', gap:'24px'}}>
-              <a href="#" style={{fontSize:'13px', color:'rgba(255,255,255,0.35)'}}>Privacy</a>
-              <a href="#" style={{fontSize:'13px', color:'rgba(255,255,255,0.35)'}}>Terms</a>
+              <a href="#" style={{fontSize:'13px', color:'rgba(255,255,255,0.5)'}}>Privacy</a>
+              <a href="#" style={{fontSize:'13px', color:'rgba(255,255,255,0.5)'}}>Terms</a>
             </div>
           </div>
+          </div>{/* /footer-content-zone */}
         </div>
       </footer>
+
+      {/* Temporary dev overlay for dialing in the how-it-works paw trail —
+          remove once the animation is finalized. */}
+      {showPawTuning ? (
+        <aside
+          id="hiw-paw-tuning-panel"
+          style={{
+            position: 'fixed', top: 0, right: 0, width: 340, height: '100vh', overflowY: 'auto',
+            background: 'var(--warm-white)', borderLeft: '1px solid rgba(36,35,33,0.12)',
+            padding: 24, zIndex: 9999, boxShadow: '-2px 0 10px rgba(35,31,24,0.06)',
+            display: 'flex', flexDirection: 'column', gap: 20,
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--charcoal)' }}>Paw Trail Tuning</div>
+            <button type="button" onClick={() => setShowPawTuning(false)}
+              style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid rgba(36,35,33,0.2)', background: 'transparent', color: 'var(--charcoal)', fontSize: 12, cursor: 'pointer' }}>
+              Hide
+            </button>
+          </div>
+
+          <button type="button" onClick={() => (window as any).replayHowItWorksPaws?.()}
+            style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: 'var(--sage-dark)', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            ▶ Replay
+          </button>
+
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button type="button" onClick={savePawTuningAsDefault}
+              style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: 'none', background: 'var(--sage-dark)', color: 'var(--warm-white)', fontSize: 13, cursor: 'pointer' }}>
+              Save as Default
+            </button>
+            <button type="button" onClick={resetPawTuning}
+              style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: '1px solid rgba(36,35,33,0.2)', background: 'transparent', color: 'var(--charcoal)', fontSize: 13, cursor: 'pointer' }}>
+              Reset
+            </button>
+          </div>
+
+          <TuneSectionLabel>Paw Print</TuneSectionLabel>
+          <TuneSlider id="paw-opacity" label="Opacity" value={pawSettings.opacity} min={0.05} max={1} step={0.01} unit="" onChange={(v) => updatePaw('opacity', v)} />
+          <TuneSlider id="paw-size" label="Size" value={pawSettings.size} min={40} max={260} step={2} unit="px" onChange={(v) => updatePaw('size', v)} />
+          <TuneSlider id="paw-base-rotation" label="Base rotation (0=up, 90=right)" value={pawSettings.baseRotation} min={-180} max={180} step={1} unit="°" onChange={(v) => updatePaw('baseRotation', v)} />
+          <TuneSlider id="paw-rotation-variance" label="Rotation variance" value={pawSettings.rotationVariance} min={0} max={30} step={1} unit="°" onChange={(v) => updatePaw('rotationVariance', v)} />
+          <TuneSlider id="paw-start-x" label="Start X (leftmost print)" value={pawSettings.startX} min={0} max={40} step={1} unit="%" onChange={(v) => updatePaw('startX', v)} />
+          <TuneSlider id="paw-spread-x" label="Spread X (across all 4)" value={pawSettings.spreadX} min={20} max={95} step={1} unit="%" onChange={(v) => updatePaw('spreadX', v)} />
+          <TuneSlider id="paw-row-top" label="Top row Y" value={pawSettings.rowTop} min={0} max={90} step={1} unit="%" onChange={(v) => updatePaw('rowTop', v)} />
+          <TuneSlider id="paw-row-bottom" label="Bottom row Y" value={pawSettings.rowBottom} min={0} max={90} step={1} unit="%" onChange={(v) => updatePaw('rowBottom', v)} />
+
+          <div style={{ height: 1, background: 'rgba(36,35,33,0.12)' }} />
+          <TuneSectionLabel>Walk-in Reveal (paws)</TuneSectionLabel>
+          <TuneSlider id="reveal-paw-duration" label="Duration" value={revealSettings.pawDuration} min={0.1} max={2} step={0.05} unit="s" onChange={(v) => updateReveal('pawDuration', v)} />
+          <TuneSlider id="reveal-paw-stagger" label="Stagger between prints" value={revealSettings.pawStagger} min={0} max={1} step={0.02} unit="s" onChange={(v) => updateReveal('pawStagger', v)} />
+          <TuneSlider id="reveal-paw-distance" label="Start distance (walk-in X)" value={revealSettings.pawDistanceX} min={0} max={150} step={2} unit="px" onChange={(v) => updateReveal('pawDistanceX', v)} />
+          <TuneSelect id="reveal-paw-ease" label="Ease" value={revealSettings.pawEase} onChange={(v) => updateReveal('pawEase', v)} />
+
+          <div style={{ height: 1, background: 'rgba(36,35,33,0.12)' }} />
+          <TuneSectionLabel>Description Reveal (copy)</TuneSectionLabel>
+          <TuneSlider id="reveal-copy-delay" label="Delay after paws start" value={revealSettings.copyDelay} min={0} max={1} step={0.02} unit="s" onChange={(v) => updateReveal('copyDelay', v)} />
+          <TuneSlider id="reveal-copy-duration" label="Duration" value={revealSettings.copyDuration} min={0.1} max={2} step={0.05} unit="s" onChange={(v) => updateReveal('copyDuration', v)} />
+          <TuneSlider id="reveal-copy-stagger" label="Stagger between steps" value={revealSettings.copyStagger} min={0} max={1} step={0.02} unit="s" onChange={(v) => updateReveal('copyStagger', v)} />
+          <TuneSlider id="reveal-copy-distance" label="Start distance (Y)" value={revealSettings.copyDistanceY} min={0} max={80} step={2} unit="px" onChange={(v) => updateReveal('copyDistanceY', v)} />
+          <TuneSelect id="reveal-copy-ease" label="Ease" value={revealSettings.copyEase} onChange={(v) => updateReveal('copyEase', v)} />
+
+          <div style={{ height: 1, background: 'rgba(36,35,33,0.12)' }} />
+          <TuneSectionLabel>Hide (scroll away)</TuneSectionLabel>
+          <TuneSlider id="hide-paw-duration" label="Paw duration" value={hideSettings.pawDuration} min={0.1} max={1.5} step={0.05} unit="s" onChange={(v) => updateHide('pawDuration', v)} />
+          <TuneSlider id="hide-copy-duration" label="Copy duration" value={hideSettings.copyDuration} min={0.1} max={1.5} step={0.05} unit="s" onChange={(v) => updateHide('copyDuration', v)} />
+          <TuneSelect id="hide-ease" label="Ease" value={hideSettings.ease} onChange={(v) => updateHide('ease', v)} />
+        </aside>
+      ) : (
+        <button
+          type="button" id="hiw-paw-tuning-toggle" onClick={() => setShowPawTuning(true)}
+          style={{
+            position: 'fixed', bottom: 16, right: 16, zIndex: 9998,
+            padding: '10px 18px', borderRadius: 8, border: '1px solid rgba(36,35,33,0.2)',
+            background: 'var(--warm-white)', color: 'var(--charcoal)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            boxShadow: '0 2px 10px rgba(35,31,24,0.16)',
+          }}
+        >
+          🐾 Tune Paws
+        </button>
+      )}
     </>
   );
 }

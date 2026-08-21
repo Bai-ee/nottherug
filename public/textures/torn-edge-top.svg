@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+  <!-- CSS alpha mask: white = visible. Torn top edge only; sides and bottom straight. -->
+  <path fill="#fff" d="
+    M 0 14
+    L 26 8 L 58 15 L 92 7 L 127 13 L 161 6 L 198 12 L 233 7 L 269 14 L 304 8
+    L 341 15 L 377 9 L 413 14 L 450 7 L 486 12 L 523 6 L 560 13 L 596 8
+    L 633 15 L 669 9 L 706 13 L 742 7 L 779 12 L 815 6 L 852 14 L 888 9
+    L 925 13 L 961 7 L 1000 11
+    L 1000 1000 L 0 1000 Z" />
+</svg>

@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not The Rug — Daily Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <style>
+    /* === NTR DESIGN TOKENS === */
+    :root {
+      --cream:            #EEF4DB;
+      --warm-white:       #F5F9EE;
+      --charcoal:         #1F2318;
+      --mid-gray:         #5C6455;
+      --light-gray:       #D5E0BE;
+      --sage:             #7A9068;
+      --sage-light:       #B4C89E;
+      --sage-dark:        #4E5A42;
+      --terracotta:       #C4674B;
+      --gold-light:       #E8D4A8;
+      --font-display:     'Fraunces', 'DM Serif Display', serif;
+      --font-body:        'Outfit', sans-serif;
+      --font-italic:      'Fraunces', serif;
+      --radius:           12px;
+      --radius-lg:        24px;
+    }
+
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--charcoal);
+      line-height: 1.65;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    ul { list-style: none; }
+    a {
+      color: var(--sage-dark);
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 3px;
+    }
+    a:hover { color: var(--charcoal); }
+
+    /* === LAYOUT === */
+    .brief-wrap { max-width: 680px; margin: 0 auto; }
+
+    /* === HERO === */
+    .brief-hero {
+      background: var(--sage-dark);
+      padding: 52px 28px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .brief-hero::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle at top right, rgba(180,200,158,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 22px;
+    }
+    .hero-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--sage-light); flex-shrink: 0;
+    }
+    .hero-eyebrow-text {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: 13px; font-weight: 300;
+      color: var(--gold-light); letter-spacing: 0.02em;
+    }
+    .brief-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 9vw, 56px); font-weight: 700;
+      color: white; line-height: 1.05; margin-bottom: 4px;
+    }
+    .brief-subtitle {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: clamp(16px, 4vw, 20px); font-weight: 300;
+      color: var(--sage-light); margin-bottom: 28px;
+    }
+    .brief-greeting {
+      font-size: 16px; font-weight: 500;
+      color: rgba(255,255,255,0.88); margin-bottom: 6px;
+    }
+    .brief-date {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: 14px; font-weight: 300;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* === SECTIONS === */
+    .brief-section { padding: 44px 28px; }
+    .bg-warm  { background: var(--warm-white); }
+    .bg-cream { background: var(--cream); }
+    .sep { height: 1px; background: var(--light-gray); }
+
+    /* === SECTION HEADER === */
+    .section-eyebrow {
+      font-family: var(--font-italic);
+      font-size: 13px; font-weight: 300; font-style: italic;
+      color: var(--mid-gray); margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400; font-size: clamp(26px, 6vw, 38px);
+      color: var(--charcoal); line-height: 1.1;
+    }
+    .section-rule {
+      width: 32px; height: 2px;
+      background: var(--sage); border-radius: 1px;
+      margin: 16px 0 28px;
+    }
+
+    /* === SUB-HEADING === */
+    .sub-head {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 400;
+      color: var(--charcoal); margin-bottom: 12px;
+    }
+    .sub-head::before {
+      content: ''; display: inline-block;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--sage); flex-shrink: 0;
+    }
+
+    /* === ITEM LIST === */
+    .item-list { display: grid; gap: 10px; margin-bottom: 28px; }
+    .item-list:last-child { margin-bottom: 0; }
+    .item-row {
+      padding: 14px 16px;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: var(--radius);
+    }
+    .bg-warm .item-row { background: var(--cream); }
+    .item-title {
+      font-size: 15px; font-weight: 600; color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .item-title a { font-weight: 600; }
+    .item-body { font-size: 14px; color: var(--mid-gray); line-height: 1.55; }
+    .item-meta { font-size: 13px; color: var(--mid-gray); font-style: italic; margin-top: 4px; }
+    .item-takeaway { font-size: 13px; color: var(--charcoal); font-weight: 500; margin-top: 6px; }
+
+    /* === WEATHER CALLOUT === */
+    .weather-box {
+      background: var(--light-gray);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      font-size: 16px; color: var(--charcoal);
+      line-height: 1.65; margin-bottom: 28px;
+    }
+
+    /* === CONTENT PIECE === */
+    .content-piece { margin-bottom: 28px; }
+    .content-piece:last-child { margin-bottom: 0; }
+    .content-piece-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px;
+      margin-bottom: 10px;
+    }
+    .piece-label {
+      font-family: var(--font-display);
+      font-size: 19px; font-weight: 400; color: var(--charcoal);
+    }
+    .piece-note {
+      flex-shrink: 0; align-self: center;
+      font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--mid-gray);
+      background: var(--light-gray);
+      padding: 5px 10px; border-radius: 4px;
+      white-space: nowrap;
+    }
+    .content-body {
+      font-size: 16px; color: var(--charcoal); line-height: 1.7;
+      background: var(--warm-white);
+      border-left: 3px solid var(--light-gray);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .content-body p { margin: 0 0 10px; }
+    .content-body p:last-child { margin-bottom: 0; }
+    .piece-flags { margin-top: 12px; display: grid; gap: 8px; }
+    .piece-flag {
+      font-size: 14px; font-weight: 500; color: var(--terracotta);
+      background: rgba(196,103,75,0.08);
+      border: 1px solid rgba(196,103,75,0.2);
+      border-radius: var(--radius); padding: 10px 14px;
+    }
+
+    /* === QUALITY === */
+    .quality-banner {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 10px 16px; border-radius: 6px; margin-bottom: 16px;
+    }
+    .quality-ready   { background: rgba(78,90,66,0.12); color: var(--sage-dark); }
+    .quality-review  { background: rgba(196,103,75,0.12); color: var(--terracotta); }
+    .quality-blocked { background: rgba(196,103,75,0.18); color: var(--terracotta); border: 1px solid rgba(196,103,75,0.3); }
+    .quality-neutral { background: rgba(92,100,85,0.10); color: var(--mid-gray); }
+    .flag-list { display: grid; gap: 8px; }
+    .flag-item {
+      font-size: 14px; color: var(--terracotta);
+      background: rgba(196,103,75,0.07);
+      border: 1px solid rgba(196,103,75,0.18);
+      border-radius: var(--radius); padding: 11px 14px; line-height: 1.5;
+    }
+
+    /* === MISC === */
+    .fallback { font-size: 15px; color: var(--mid-gray); font-style: italic; margin-bottom: 28px; }
+
+    /* === MOBILE === */
+    @media (max-width: 480px) {
+      .brief-hero { padding: 40px 20px 36px; }
+      .brief-section { padding: 36px 20px; }
+      .content-piece-header { flex-direction: column; }
+      .piece-note { align-self: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="brief-hero" id="brief-hero-header">
+  <div class="brief-wrap">
+    <div class="hero-eyebrow">
+      <div class="hero-dot"></div>
+      <span class="hero-eyebrow-text">Founder Intelligence · Brooklyn Dog Walking</span>
+    </div>
+    <div class="brief-title">Not The Rug</div>
+    <div class="brief-subtitle">Daily Brief</div>
+    <div class="brief-greeting">Hello Team</div>
+    <div class="brief-date">It’s Sunday, May 3 2026 — 1:55pm</div>
+  </div>
+</header>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-our-world">
+  <div class="brief-wrap">
+    <h2 class="section-title">Our World</h2>
+    <div class="section-rule"></div>
+
+    <div class="sub-head">Weather Impact</div>
+    <div class="weather-box">
+      Brooklyn · 7:00 AM–7:00 PM · Mostly Cloudy, Partly Sunny · 2026-05-03T07:00 to 2026-05-03T19:00 America/New_York | max temp 59F | max precip 0% | max wind 20 mph There is an active NWS alert in at least one service neighborhood. Review it before locking routes or sending weather-led content. <a href="https://api.weather.gov/gridpoints/OKX/35,42/forecast/hourly" target="_blank" rel="noreferrer">Source →</a>
+    </div>
+
+    <div class="sub-head">Review Insights</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.yelp.com/biz/not-the-rug-brooklyn" target="_blank" rel="noreferrer">Yelp</a></div>
+              <div class="item-body">Review count stable at 37. No new reviews detected since yesterday&#39;s benchmark. Three reviews added in the prior cycle (34→37) represent recent positive momentum worth protecting.</div>
+              <div class="item-takeaway">Takeaway: Respond to all three recent reviews if not already done. Active response behavior signals to prospective clients that the business is attentive. No new review to action today.</div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-cream" id="section-todays-content">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">content ready to post</div>
+    <h2 class="section-title">Today’s Content</h2>
+    <div class="section-rule"></div>
+    
+        <div class="content-piece">
+          <div class="content-piece-header">
+            <span class="piece-label">Instagram Post Copy</span>
+            <span class="piece-note">ready to post</span>
+          </div>
+          <div class="content-body"><p>This is Mochi on Bedford Ave, absolutely unbothered by the clouds and very bothered by a pigeon three feet away.</p>
+<p>Walks like this are why we do what we do. Same streets, same dogs, same faces — since 2011. Be Kind to Animals Week starts May 4, but honestly, this is just a regular Sunday for us.</p>
+<p>DM us if you&#39;re looking for a walker who actually knows your block. 🐾</p>
+<p>#NotTheRug #WilliamsburgDogs #BrooklynDogs</p></div>
+          <div class="piece-flags"><div class="piece-flag">&#9888; Be Kind to Animals Week reference states &#39;starts May 4&#39; but the content_angle notes today is May 3, creating a temporal ambiguity for the reader. The post could read as either forward-looking or slightly misdated depending on post-publish time.</div></div>
+        </div>
+
+        <div class="content-piece">
+          <div class="content-piece-header">
+            <span class="piece-label">Content Angle</span>
+            <span class="piece-note">strategy recap</span>
+          </div>
+          <div class="content-body"><p>Scout flagged a two-day visibility gap and flagged Be Kind to Animals Week (May 4–10) as a mutual-reach opportunity, but today is May 3 — one day before the week begins — so making that the main hook would create a timing mismatch. Instead, this post uses the neighborhood-authority pillar to create organic signal today: a named dog, a specific street, and a light reference to Be Kind to Animals Week as a forward-looking cue rather than the lead. The tone positions the business as a permanent fixture of the neighborhood rather than a brand running a promotional calendar. The soft CTA targets new clients who are already in Williamsburg and looking for a known local operator, which also feeds the review and visibility recovery goal. Next priority: if a client photo on a named street can be confirmed, publish this Monday May 4 with an explicit Be Kind to Animals Week tie-in and a tag to a Brooklyn rescue to capture mutual reach from the rescue&#39;s audience — especially adopters who will need walking services immediately.</p></div>
+          
+        </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-operational-context">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">context</div>
+    <h2 class="section-title">Operational Context</h2>
+    <div class="section-rule"></div>
+
+    <div class="sub-head">Competitors</div>
+    <p class="fallback">No competitor activity detected.</p>
+
+    <div class="sub-head">Partnership / Referral Opportunities</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.barcshelter.org" target="_blank" rel="noreferrer">Brooklyn animal shelters or rescues (e.g., Sean Casey Animal Rescue, BARC Shelter)</a></div>
+              <div class="item-body">Be Kind to Animals Week runs through May 9. Tagging a local Brooklyn rescue in content this week creates mutual visibility, goodwill signal, and referral surface with adopters who immediately need walking services.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Williamsburg-area vets and groomers</div>
+              <div class="item-body">No current referral partnerships surfaced in brand intelligence. Neighborhood vets and groomers are the highest-conversion referral source for a hyperlocal walking service. One warm outreach per week builds pipeline without paid acquisition.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Local Events</div>
+    <p class="fallback">No local events or holiday hooks surfaced this cycle.</p>
+
+    <div class="sub-head">Reddit Signals</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/" target="_blank" rel="noreferrer">Latino picnic in Williamsburg</a></div>
+              <div class="item-meta">williamsburg</div>
+              <div class="item-body">Hey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we&#39;re wondering if there&#39;s enough interest to host one in Williamsburg? (for the WBurg &amp; Brooklyn people)
+
+Just looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and</div>
+              <div class="item-takeaway">Takeaway: Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/" target="_blank" rel="noreferrer">My girl is crossing the rainbow bridge tomorrow</a></div>
+              <div class="item-meta">olddogs</div>
+              <div class="item-body">You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&amp;format=pjpg&amp;auto=webp&amp;s=09654dda2accd29e5fe206c94ee7008e2547f90f
+
+George went over the rainbow bridge on January 16th, at age 17, so he’ll meet La</div>
+              <div class="item-takeaway">Takeaway: Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/" target="_blank" rel="noreferrer">Regrets about naming my puppy</a></div>
+              <div class="item-meta">puppy101</div>
+              <div class="item-body">So for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.
+
+A few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said somet</div>
+              <div class="item-takeaway">Takeaway: Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Local Demand Signals</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Memorial Day travel demand window opening</div>
+              <div class="item-body">Memorial Day is approximately three weeks out. Dog owners who travel for long weekends begin booking pet care now. Not The Rug should surface availability for May 24–26 coverage this week to capture early inquiries before platform competitors (Rover, Wag) dominate search intent.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Flea and tick season content actively circulating on TikTok</div>
+              <div class="item-body">Short-form content around flea and tick prevention is generating engagement nationally. Local angle: a walker who knows neighborhood routes — grass exposure, park density, ground cover — adds credibility a generic pet brand cannot. Still an open content entry point for this week.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Summer heat prep becoming relevant search and content theme</div>
+              <div class="item-body">May is the practical window for educating dog owners on heat management before peak summer. Content on walk timing, hydration, pavement temperature, and breed-specific heat sensitivity positions Not The Rug as a credible local expert ahead of demand.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Content Opportunities</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.tiktok.com/@petmarketnyc/video/7633485762666712350" target="_blank" rel="noreferrer">It’s flea and tick season—or as your pet calls it, &quot;The Great Itch-pocalypse.&quot; 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie</a></div>
+              
+              <div class="item-body">It’s flea and tick season—or as your pet calls it, &quot;The Great Itch-pocalypse.&quot; 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a &quot;No Vacancy&quot; sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea &amp; Tick Spray: For those who like a little &quot;spritz and go&quot; action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online 🚀 Speedy Service: We deliver faster than</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://x.com/tsdeepthroat/status/2050978594520797297" target="_blank" rel="noreferrer">#queens #brooklyn #nyc  talk to me daddy</a></div>
+              
+              <div class="item-body">#queens #brooklyn #nyc talk to me daddy</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.tiktok.com/@petheavenlux/video/7635007948825120022" target="_blank" rel="noreferrer">Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare</a></div>
+              
+              <div class="item-body">Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare</div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-quality-score">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">guardian review</div>
+    <h2 class="section-title">Quality Score</h2>
+    <div class="section-rule"></div>
+    <div class="quality-banner quality-ready">Ready to publish — 97/100</div>
+    <p class="fallback">No surfaced issues.</p>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-cream" id="section-sources">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">references</div>
+    <h2 class="section-title">Sources</h2>
+    <div class="section-rule"></div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Our World: Weather Impact</div>
+              <div class="item-body"><a href="https://api.weather.gov/gridpoints/OKX/35,42/forecast/hourly" target="_blank" rel="noreferrer">https://api.weather.gov/gridpoints/OKX/35,42/forecast/hourly</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Review Insights: Yelp</div>
+              <div class="item-body"><a href="https://www.yelp.com/biz/not-the-rug-brooklyn" target="_blank" rel="noreferrer">https://www.yelp.com/biz/not-the-rug-brooklyn</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Reddit Signals: Latino picnic in Williamsburg</div>
+              <div class="item-body"><a href="https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/" target="_blank" rel="noreferrer">https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Reddit Signals: My girl is crossing the rainbow bridge tomorrow</div>
+              <div class="item-body"><a href="https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/" target="_blank" rel="noreferrer">https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Reddit Signals: Regrets about naming my puppy</div>
+              <div class="item-body"><a href="https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/" target="_blank" rel="noreferrer">https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Partnership / Referral Opportunities: Brooklyn animal shelters or rescues (e.g., Sean Casey Animal Rescue, BARC Shelter)</div>
+              <div class="item-body"><a href="https://www.barcshelter.org" target="_blank" rel="noreferrer">https://www.barcshelter.org</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: It’s flea and tick season—or as your pet calls it, &quot;The Great Itch-pocalypse.&quot; 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie</div>
+              <div class="item-body"><a href="https://www.tiktok.com/@petmarketnyc/video/7633485762666712350" target="_blank" rel="noreferrer">https://www.tiktok.com/@petmarketnyc/video/7633485762666712350</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: #queens #brooklyn #nyc  talk to me daddy</div>
+              <div class="item-body"><a href="https://x.com/tsdeepthroat/status/2050978594520797297" target="_blank" rel="noreferrer">https://x.com/tsdeepthroat/status/2050978594520797297</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare</div>
+              <div class="item-body"><a href="https://www.tiktok.com/@petheavenlux/video/7635007948825120022" target="_blank" rel="noreferrer">https://www.tiktok.com/@petheavenlux/video/7635007948825120022</a></div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+</body>
+</html>

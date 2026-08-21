@@ -1,0 +1,25 @@
+{
+  "clientId": "not-the-rug",
+  "provider": "web-search",
+  "fetchedAt": "2026-04-06T02:07:53.571Z",
+  "overallStatus": "mixed",
+  "founderStatus": "unable_to_verify",
+  "sources": [
+    {
+      "key": "yelp",
+      "label": "Yelp",
+      "reviewCount": 0,
+      "ratingValue": null,
+      "verificationStatus": "unverified",
+      "sourceUrl": "http://www.yelp.com/biz/not-the-rug-brooklyn",
+      "notes": "The Yelp URL for 'not-the-rug-brooklyn' was found, but the search snippet returned only generic Yelp homepage text with no review count or star rating data visible. Specific review metrics could not be confirmed from the result."
+    }
+  ],
+  "diff": {
+    "yelp": {
+      "status": "count_decreased",
+      "countDelta": -34,
+      "ratingDelta": null
+    }
+  }
+}

@@ -9,3 +9,12 @@ node_modules/
 !public/logos/Not_The_Rug_2023_clipped_web.mp4
 .vercel
 tsconfig.tsbuildinfo
+
+# Local AI/editor workflow files (keep untracked)
+.agents/
+.claude/
+skills-lock.json
+
+# Raw founder photo sources (only optimized public/img/** is committed)
+updated_images/
+ignore/

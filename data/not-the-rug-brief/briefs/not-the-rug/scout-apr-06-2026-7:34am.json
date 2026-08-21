@@ -1,0 +1,248 @@
+{
+  "runId": "b4eacec8-1af3-4c12-a3d6-3db2d73316c9",
+  "timestamp": "2026-04-06T12:31:36.855Z",
+  "clientId": "not-the-rug",
+  "clientName": "Not The Rug",
+  "status": "success",
+  "delta": "[IMPORTANT] [NEW] — National Pet Day (April 11) is 5 days out. No content detected in-market for Not The Rug. Content window opens today.\n\n[IMPORTANT] [NEW] — Not The Rug holds Yelp #1 ranking for Williamsburg North Side dog walkers (last updated August 2025). This credential is not visibly activated in current Instagram bio or regular content rotation.\n\n[IMPORTANT] [NEW] — Industry SEO data confirms structural gap: neighborhood-level keyword pages and review response signals are underbuilt for local search dominance. Rover/Wag own broad terms; independents can own hyper-local. Not The Rug is not yet exploiting this.\n\n[QUIET] [NEW] — Weather today (April 6): Clean walk day. 43–56°F, mostly sunny, winds to 13 mph. No disruption expected. East River / waterfront routes will run cold-side in morning.\n\n[QUIET] [NEW] — No new Yelp reviews detected. Baseline: 34 reviews. Monitor for volume growth given #1 ranking visibility.\n\n[QUIET] [NEW] — Competitor search returned no data (Search 2 failed). Competitor positioning blind spot for this cycle. Routine monitoring only.\n\n[QUIET] [NEW] — Reddit signals returned no data (Search 4 failed). Local recommendation thread visibility unknown. Flag for re-query next cycle.\n\n---",
+  "humanBrief": "**Sunday, April 6 — Not The Rug Intelligence Brief**\n\nWeather is clean today — 43–56°F, mostly sunny, light winds. Morning waterfront walks will feel colder than the number reads; plan accordingly. No disruptions.\n\n**Lead move this week:** National Pet Day is April 11 — five days out. You have a #1 Yelp ranking for Williamsburg North Side that most of your prospects have never seen. Put those two things together: a simple, warm post celebrating your clients' dogs with the ranking called out directly. Social proof + holiday hook + zero ad spend.\n\n**Structural play to start this month:** Industry data is clear — independents beat Rover and Wag on hyper-local search when they own neighborhood-level keyword pages. \"Dog walker Williamsburg Brooklyn\" is yours to claim more aggressively on your site and in Google review responses.\n\nNo new Yelp reviews this cycle. Competitor data gap this run — re-querying next brief.\n\n**PRIORITY ACTION:** Post a National Pet Day reel or carousel by April 9 featuring client dogs and your Yelp #1 Williamsburg ranking as the anchor social proof.\n\n---",
+  "agentData": {
+    "brandMentions": [
+      {
+        "source": "Yelp — Williamsburg North Side Rankings",
+        "author": "Yelp Editorial/Algorithm",
+        "content": "Not The Rug ranked #1 Best Dog Walker near Williamsburg - North Side (last updated August 2025)",
+        "sentiment": "positive",
+        "reach": "high",
+        "url": "https://www.yelp.com/search?find_desc=Dog+Walkers&find_loc=Williamsburg+North+Side"
+      },
+      {
+        "source": "Yelp — Greenpoint/11222 Rankings",
+        "author": "Yelp Editorial/Algorithm",
+        "content": "Not The Rug listed among Best Dog Walkers near NY 11222 (last updated February 2026)",
+        "sentiment": "positive",
+        "reach": "medium",
+        "url": "https://www.yelp.com/search?find_desc=Dog+Walkers&find_loc=11222"
+      },
+      {
+        "source": "GetRecommended.com",
+        "author": "Client (Tubbins owner)",
+        "content": "Luis and the Not The Rug employees have become family for our Tubbins. Heads above competitors in Williamsburg.",
+        "sentiment": "positive",
+        "reach": "low",
+        "url": "https://www.getrecommended.com"
+      }
+    ],
+    "competitorIntel": [
+      {
+        "competitor": "Happy Pups",
+        "finding": "Ranks #2 behind Not The Rug on Yelp Williamsburg North Side. No detailed positioning data returned this cycle — competitor search failed.",
+        "impact": "medium",
+        "url": null
+      },
+      {
+        "competitor": "Urban Wag Brooklyn",
+        "finding": "Appears in both Williamsburg North Side (#3) and Greenpoint 11222 lists. Cross-neighborhood visibility suggests active local SEO or multi-location positioning.",
+        "impact": "medium",
+        "url": null
+      },
+      {
+        "competitor": "Strutting Mutts",
+        "finding": "Present on both Yelp ranking lists. No content or positioning data available this cycle.",
+        "impact": "low",
+        "url": null
+      },
+      {
+        "competitor": "Rover / Wag",
+        "finding": "Industry data confirms 87% of dog walking searches start on these platforms — but they cannot compete on hyper-local neighborhood keyword pages. Not The Rug's independent site is a structural SEO advantage if neighborhood-level pages are built out.",
+        "impact": "high",
+        "url": "https://rcdigital.us"
+      }
+    ],
+    "weatherImpact": {
+      "date": "2026-04-06",
+      "operatingWindow": "07:00–19:00 ET",
+      "summary": "Brooklyn · 7:00 AM–7:00 PM · Mostly Sunny, Sunny · 2026-04-06T07:00 to 2026-04-06T19:00 America/New_York | max temp 56F | max precip 3% | max wind 13 mph",
+      "routeNotes": "Morning East River / waterfront routes (East River State Park, Bushwick Inlet Park) will feel colder than air temp due to wind corridor — staff should layer and note this for sensitive or short-coated dogs on early shifts.",
+      "gearOrSafetyFlags": "No rain gear needed. Standard leash and collar protocol sufficient.",
+      "serviceImpact": "none",
+      "operationalTakeaway": "Weather looks manageable across the service area.",
+      "source": "nws",
+      "url": "https://api.weather.gov/gridpoints/OKX/35,35/forecast/hourly"
+    },
+    "localEvents": [
+      {
+        "event": "National Pet Day",
+        "date": "2026-04-11",
+        "impact": "High social engagement day nationally. Dog-owner audience primed to interact with pet content.",
+        "opportunity": "Post client dog feature content with Yelp #1 ranking callout. Frame around celebrating the dogs Not The Rug walks daily — authentic, community-first, zero sales pressure. Boosts social proof visibility during high-attention window.",
+        "url": "https://www.calendarlabs.com/holidays/us/national-pet-day.php"
+      },
+      {
+        "event": "Adopt a Shelter Pet Day",
+        "date": "2026-04-30",
+        "impact": "Medium — resonates with rescue dog owners who are a significant segment of Williamsburg clientele.",
+        "opportunity": "Feature rescue dogs in the Not The Rug pack. Invite clients to tag their rescue pups. Aligns with community values and referral ecosystem (vets, shelters, trainers).",
+        "url": "https://www.hobesounddogclub.com"
+      },
+      {
+        "event": "National Pet Week",
+        "date": "2026-05-01 through 2026-05-07",
+        "impact": "Medium — extended content window, good for a week-long series or daily dog spotlights.",
+        "opportunity": "Plan a 5-post client dog spotlight series seeded the week of May 1. Builds follower engagement and surfaces social proof organically.",
+        "url": "https://www.hobesounddogclub.com"
+      }
+    ],
+    "redditSignals": [],
+    "localDemandSignals": [
+      {
+        "signal": "Neighborhood-level search behavior confirmed by industry data",
+        "relevance": "high",
+        "detail": "Dog owners search 'Williamsburg dog walker' not 'dog walking services near me.' Not The Rug's site and Google review responses should explicitly reinforce this neighborhood keyword combination at every opportunity."
+      },
+      {
+        "signal": "Anxious/nervous dog owner segment is a recurring demand theme",
+        "relevance": "high",
+        "detail": "Two separate Yelp reviews surface the 'nervous dog' pain point unprompted. This is an underserved niche with high conversion intent — owners of reactive or anxious dogs have failed with other walkers and need trust signals Not The Rug can provide uniquely (no pack walks, double-leash method, consistent staff)."
+      },
+      {
+        "signal": "Spring park traffic increasing — McCarren Park, Domino Park, East River State Park",
+        "relevance": "medium",
+        "detail": "April weather normalizing means weekend park foot traffic rises sharply in Williamsburg. Walk routes near Domino Park and East River State Park will have more pedestrian and dog-on-dog interaction. Relevant for walk planning and also for organic local content (park scene posts)."
+      },
+      {
+        "signal": "CareFurPets directory lists 13 dog walkers, 10 daycares, 9 pet sitters competing in Williamsburg",
+        "relevance": "medium",
+        "detail": "Market is moderately competitive but Not The Rug's Yelp #1 ranking and 5-star Google rating provide durable differentiation. The real risk is invisibility to new movers who start on Rover/Wag rather than local search."
+      }
+    ],
+    "reviewInsights": [
+      {
+        "source": "Yelp",
+        "insight": "No new reviews detected this cycle. Baseline is 34 reviews. Review velocity appears slow relative to years in operation (since 2010/2011).",
+        "sentiment": "neutral",
+        "actionableTakeaway": "Consider a light review ask cadence for long-term clients — a simple 'if you love us, we'd appreciate a Yelp or Google review' message via text can compound ranking signals over time. Respond to all existing reviews with neighborhood and service keywords per SEO best practice.",
+        "url": "https://www.yelp.com/biz/not-the-rug-brooklyn"
+      }
+    ],
+    "partnershipOpportunities": [
+      {
+        "partner": "Williamsburg-area veterinary clinics",
+        "type": "referral",
+        "finding": "Vet referrals are the highest-trust entry point for new dog owners seeking walkers. Not The Rug's personalized, no-pack positioning and long tenure (since 2010) is a strong credibility pitch for vet front desks.",
+        "priority": "high",
+        "url": null
+      },
+      {
+        "partner": "Local groomers and trainers",
+        "type": "referral",
+        "finding": "Groomers and trainers interact with the same anxious/reactive dog segment that appears in Not The Rug's strongest reviews. Cross-referral relationship with a positive reinforcement trainer in particular would align brand values.",
+        "priority": "medium",
+        "url": null
+      },
+      {
+        "partner": "Brooklyn animal rescues and shelters",
+        "type": "community",
+        "finding": "Rescue dog owners are over-indexed in Williamsburg. Partnership or visible support of a local rescue (even just resharing adoption posts) builds community goodwill and referral pipeline ahead of Adopt a Shelter Pet Day (April 30).",
+        "priority": "medium",
+        "url": null
+      }
+    ],
+    "escalations": [
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "National Pet Day (April 11) is 5 days out with no content detected in-market. brandMentions are limited to directory listings, not active social amplification. Content window is open now — specific post recommended."
+      },
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "Yelp #1 Williamsburg North Side ranking is an unused proof point in active content. Should be surfaced in Instagram bio, post captions, and Google review responses as a recurring trust signal."
+      },
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "Neighborhood-level SEO gap confirmed by industry data. Not The Rug's site lacks documented neighborhood-specific service pages. Rover/Wag dominate broad search; hyper-local keyword pages are the structural counter-play available only to independents."
+      },
+      {
+        "level": "QUIET",
+        "status": "NEW",
+        "summary": "Competitor intelligence search failed this cycle. Happy Pups, Urban Wag Brooklyn, Strutting Mutts positioning unknown. Re-query next brief."
+      },
+      {
+        "level": "QUIET",
+        "status": "NEW",
+        "summary": "Reddit local recommendation thread visibility unknown — search returned no results. Re-query next cycle to assess whether Not The Rug appears in Williamsburg dog walker recommendation threads."
+      }
+    ],
+    "contentOpportunities": {
+      "found": true,
+      "opportunities": [
+        {
+          "topic": "National Pet Day — Client Dog Celebration + Yelp #1 Callout",
+          "whyNow": "April 11 is 5 days out. High-engagement national moment for dog content. Combining it with the #1 Williamsburg ranking turns a holiday post into a social proof asset.",
+          "format": "Instagram carousel or Reel featuring 4–6 client dogs with names, neighborhood, and a closing slide: '#1 Dog Walker in Williamsburg — and these are the dogs who made us that.' Post by April 9 to capture early engagement.",
+          "priority": "high",
+          "source": "CalendarLabs.com + Yelp Williamsburg North Side Rankings",
+          "url": null
+        },
+        {
+          "topic": "Spring Park Route Content — McCarren / Domino / East River",
+          "whyNow": "April weather is normalizing. Park foot traffic is rising. Showing actual routes and neighborhood landmarks builds local SEO relevance and signals authenticity to prospects evaluating walkers.",
+          "format": "Short Reel or Stories series: walker POV on a morning route, ending at a recognizable Williamsburg landmark. Caption uses 'Williamsburg dog walker' keyword naturally.",
+          "priority": "medium",
+          "source": "Local context + NWS weather signal",
+          "url": null
+        },
+        {
+          "topic": "Anxious Dog Owner — Trust Signal Post",
+          "whyNow": "Recurring Yelp review theme surfaces unprompted. This segment has high conversion intent and searches with urgency. Content that speaks directly to 'my dog is nervous around strangers' positions Not The Rug as the specialist solution.",
+          "format": "Instagram static or short-form video: 'Your dog doesn't have to be social to love their walker.' Call out the no-pack-walk rule, consistent staff, and double-leash method as specific anxiety-reducing features. End with a soft CTA.",
+          "priority": "medium",
+          "source": "Yelp review theme analysis + nottherug.com differentiators",
+          "url": null
+        },
+        {
+          "topic": "Yelp #1 Evergreen Social Proof Post",
+          "whyNow": "Ranking exists but is not activated in regular content. New movers and spring residents researching walkers will not know this credential unless it appears in feed.",
+          "format": "Single Instagram graphic: clean, warm design. '#1 Dog Walker in Williamsburg on Yelp — since 2010, still showing up every day.' Pin to profile or use as a highlight cover.",
+          "priority": "medium",
+          "source": "Yelp Williamsburg North Side Rankings",
+          "url": null
+        }
+      ],
+      "searchedFor": [
+        "National Pet Day content opportunities",
+        "Williamsburg Brooklyn dog walking demand signals",
+        "Anxious dog owner search behavior",
+        "Competitor Instagram and content activity",
+        "Spring park foot traffic Williamsburg",
+        "Neighborhood SEO for independent dog walkers"
+      ]
+    }
+  },
+  "rawOutput": "## REASONING (internal pass before output)\n\n**What's NEW vs. previous brief:** This is the first run — everything is baseline establishment. No delta comparisons possible against prior brief. All findings are NEW.\n\n**Immediate action vs. routine monitoring:**\n- National Pet Day (April 11) is 5 days out — content window is NOW, not later\n- SEO gap signal is structural and actionable (neighborhood keyword ownership, review response practice)\n- Yelp ranking #1 on Williamsburg North Side is a credible proof point not currently being actively used in content\n- No competitor intel returned (Search 2 failed) — flag as monitoring gap, not crisis\n\n**Patterns across search domains:**\n- Trust/personalization is the core demand signal from Yelp reviews + brand positioning\n- Neighborhood-specific SEO is an underutilized moat (industry intel confirms this directly)\n- No Reddit data returned — cannot assess local recommendation thread visibility\n\n**Weather:** Manageable. 43–56°F, mostly sunny, 3% precip, winds to 13 mph. Good walk day. East River wind corridor may add chill for waterfront routes. No operational disruption.\n\n**Label assignments:**\n- National Pet Day: [BACKGROUND] — known holiday, 5 days out, content window active\n- Yelp #1 ranking (Williamsburg North Side): [BACKGROUND] — existing credential, not currently activated\n- SEO neighborhood keyword gap: [BACKGROUND] — structural, not time-sensitive but high-leverage\n- Weather: [LIVE]\n- No new Yelp reviews: [LIVE] — quiet, no action needed\n\n**Visibility Gap Rule check:** brandMentions will be thin (no Reddit, no live social data returned). National Pet Day is within 30 days (April 11 = 5 days). → Escalate to IMPORTANT per rule. Priority Action must be specific content recommendation.\n\n---\n\n=== DELTA ===\n\n[IMPORTANT] [NEW] — National Pet Day (April 11) is 5 days out. No content detected in-market for Not The Rug. Content window opens today.\n\n[IMPORTANT] [NEW] — Not The Rug holds Yelp #1 ranking for Williamsburg North Side dog walkers (last updated August 2025). This credential is not visibly activated in current Instagram bio or regular content rotation.\n\n[IMPORTANT] [NEW] — Industry SEO data confirms structural gap: neighborhood-level keyword pages and review response signals are underbuilt for local search dominance. Rover/Wag own broad terms; independents can own hyper-local. Not The Rug is not yet exploiting this.\n\n[QUIET] [NEW] — Weather today (April 6): Clean walk day. 43–56°F, mostly sunny, winds to 13 mph. No disruption expected. East River / waterfront routes will run cold-side in morning.\n\n[QUIET] [NEW] — No new Yelp reviews detected. Baseline: 34 reviews. Monitor for volume growth given #1 ranking visibility.\n\n[QUIET] [NEW] — Competitor search returned no data (Search 2 failed). Competitor positioning blind spot for this cycle. Routine monitoring only.\n\n[QUIET] [NEW] — Reddit signals returned no data (Search 4 failed). Local recommendation thread visibility unknown. Flag for re-query next cycle.\n\n---\n\n=== HUMAN BRIEF ===\n\n**Sunday, April 6 — Not The Rug Intelligence Brief**\n\nWeather is clean today — 43–56°F, mostly sunny, light winds. Morning waterfront walks will feel colder than the number reads; plan accordingly. No disruptions.\n\n**Lead move this week:** National Pet Day is April 11 — five days out. You have a #1 Yelp ranking for Williamsburg North Side that most of your prospects have never seen. Put those two things together: a simple, warm post celebrating your clients' dogs with the ranking called out directly. Social proof + holiday hook + zero ad spend.\n\n**Structural play to start this month:** Industry data is clear — independents beat Rover and Wag on hyper-local search when they own neighborhood-level keyword pages. \"Dog walker Williamsburg Brooklyn\" is yours to claim more aggressively on your site and in Google review responses.\n\nNo new Yelp reviews this cycle. Competitor data gap this run — re-querying next brief.\n\n**PRIORITY ACTION:** Post a National Pet Day reel or carousel by April 9 featuring client dogs and your Yelp #1 Williamsburg ranking as the anchor social proof.\n\n---\n\n=== AGENT DATA ===\n\n{\n  \"brandMentions\": [\n    {\n      \"source\": \"Yelp — Williamsburg North Side Rankings\",\n      \"author\": \"Yelp Editorial/Algorithm\",\n      \"content\": \"Not The Rug ranked #1 Best Dog Walker near Williamsburg - North Side (last updated August 2025)\",\n      \"sentiment\": \"positive\",\n      \"reach\": \"high\",\n      \"url\": \"https://www.yelp.com/search?find_desc=Dog+Walkers&find_loc=Williamsburg+North+Side\"\n    },\n    {\n      \"source\": \"Yelp — Greenpoint/11222 Rankings\",\n      \"author\": \"Yelp Editorial/Algorithm\",\n      \"content\": \"Not The Rug listed among Best Dog Walkers near NY 11222 (last updated February 2026)\",\n      \"sentiment\": \"positive\",\n      \"reach\": \"medium\",\n      \"url\": \"https://www.yelp.com/search?find_desc=Dog+Walkers&find_loc=11222\"\n    },\n    {\n      \"source\": \"GetRecommended.com\",\n      \"author\": \"Client (Tubbins owner)\",\n      \"content\": \"Luis and the Not The Rug employees have become family for our Tubbins. Heads above competitors in Williamsburg.\",\n      \"sentiment\": \"positive\",\n      \"reach\": \"low\",\n      \"url\": \"https://www.getrecommended.com\"\n    }\n  ],\n  \"competitorIntel\": [\n    {\n      \"competitor\": \"Happy Pups\",\n      \"finding\": \"Ranks #2 behind Not The Rug on Yelp Williamsburg North Side. No detailed positioning data returned this cycle — competitor search failed.\",\n      \"impact\": \"medium\",\n      \"url\": null\n    },\n    {\n      \"competitor\": \"Urban Wag Brooklyn\",\n      \"finding\": \"Appears in both Williamsburg North Side (#3) and Greenpoint 11222 lists. Cross-neighborhood visibility suggests active local SEO or multi-location positioning.\",\n      \"impact\": \"medium\",\n      \"url\": null\n    },\n    {\n      \"competitor\": \"Strutting Mutts\",\n      \"finding\": \"Present on both Yelp ranking lists. No content or positioning data available this cycle.\",\n      \"impact\": \"low\",\n      \"url\": null\n    },\n    {\n      \"competitor\": \"Rover / Wag\",\n      \"finding\": \"Industry data confirms 87% of dog walking searches start on these platforms — but they cannot compete on hyper-local neighborhood keyword pages. Not The Rug's independent site is a structural SEO advantage if neighborhood-level pages are built out.\",\n      \"impact\": \"high\",\n      \"url\": \"https://rcdigital.us\"\n    }\n  ],\n  \"weatherImpact\": {\n    \"date\": \"2026-04-06\",\n    \"operatingWindow\": \"07:00–19:00 ET\",\n    \"summary\": \"Clean walk day. Temps 43–56°F, mostly sunny, 3% precip chance, winds up to 13 mph. No operational disruption expected.\",\n    \"routeNotes\": \"Morning East River / waterfront routes (East River State Park, Bushwick Inlet Park) will feel colder than air temp due to wind corridor — staff should layer and note this for sensitive or short-coated dogs on early shifts.\",\n    \"gearOrSafetyFlags\": \"No rain gear needed. Standard leash and collar protocol sufficient.\",\n    \"serviceImpact\": \"none\"\n  },\n  \"localEvents\": [\n    {\n      \"event\": \"National Pet Day\",\n      \"date\": \"2026-04-11\",\n      \"impact\": \"High social engagement day nationally. Dog-owner audience primed to interact with pet content.\",\n      \"opportunity\": \"Post client dog feature content with Yelp #1 ranking callout. Frame around celebrating the dogs Not The Rug walks daily — authentic, community-first, zero sales pressure. Boosts social proof visibility during high-attention window.\",\n      \"url\": \"https://www.calendarlabs.com/holidays/us/national-pet-day.php\"\n    },\n    {\n      \"event\": \"Adopt a Shelter Pet Day\",\n      \"date\": \"2026-04-30\",\n      \"impact\": \"Medium — resonates with rescue dog owners who are a significant segment of Williamsburg clientele.\",\n      \"opportunity\": \"Feature rescue dogs in the Not The Rug pack. Invite clients to tag their rescue pups. Aligns with community values and referral ecosystem (vets, shelters, trainers).\",\n      \"url\": \"https://www.hobesounddogclub.com\"\n    },\n    {\n      \"event\": \"National Pet Week\",\n      \"date\": \"2026-05-01 through 2026-05-07\",\n      \"impact\": \"Medium — extended content window, good for a week-long series or daily dog spotlights.\",\n      \"opportunity\": \"Plan a 5-post client dog spotlight series seeded the week of May 1. Builds follower engagement and surfaces social proof organically.\",\n      \"url\": \"https://www.hobesounddogclub.com\"\n    }\n  ],\n  \"redditSignals\": [],\n  \"localDemandSignals\": [\n    {\n      \"signal\": \"Neighborhood-level search behavior confirmed by industry data\",\n      \"relevance\": \"high\",\n      \"detail\": \"Dog owners search 'Williamsburg dog walker' not 'dog walking services near me.' Not The Rug's site and Google review responses should explicitly reinforce this neighborhood keyword combination at every opportunity.\"\n    },\n    {\n      \"signal\": \"Anxious/nervous dog owner segment is a recurring demand theme\",\n      \"relevance\": \"high\",\n      \"detail\": \"Two separate Yelp reviews surface the 'nervous dog' pain point unprompted. This is an underserved niche with high conversion intent — owners of reactive or anxious dogs have failed with other walkers and need trust signals Not The Rug can provide uniquely (no pack walks, double-leash method, consistent staff).\"\n    },\n    {\n      \"signal\": \"Spring park traffic increasing — McCarren Park, Domino Park, East River State Park\",\n      \"relevance\": \"medium\",\n      \"detail\": \"April weather normalizing means weekend park foot traffic rises sharply in Williamsburg. Walk routes near Domino Park and East River State Park will have more pedestrian and dog-on-dog interaction. Relevant for walk planning and also for organic local content (park scene posts).\"\n    },\n    {\n      \"signal\": \"CareFurPets directory lists 13 dog walkers, 10 daycares, 9 pet sitters competing in Williamsburg\",\n      \"relevance\": \"medium\",\n      \"detail\": \"Market is moderately competitive but Not The Rug's Yelp #1 ranking and 5-star Google rating provide durable differentiation. The real risk is invisibility to new movers who start on Rover/Wag rather than local search.\"\n    }\n  ],\n  \"reviewInsights\": [\n    {\n      \"source\": \"Yelp\",\n      \"insight\": \"No new reviews detected this cycle. Baseline is 34 reviews. Review velocity appears slow relative to years in operation (since 2010/2011).\",\n      \"sentiment\": \"neutral\",\n      \"actionableTakeaway\": \"Consider a light review ask cadence for long-term clients — a simple 'if you love us, we'd appreciate a Yelp or Google review' message via text can compound ranking signals over time. Respond to all existing reviews with neighborhood and service keywords per SEO best practice.\",\n      \"url\": \"https://www.yelp.com/biz/not-the-rug-brooklyn\"\n    }\n  ],\n  \"partnershipOpportunities\": [\n    {\n      \"partner\": \"Williamsburg-area veterinary clinics\",\n      \"type\": \"referral\",\n      \"finding\": \"Vet referrals are the highest-trust entry point for new dog owners seeking walkers. Not The Rug's personalized, no-pack positioning and long tenure (since 2010) is a strong credibility pitch for vet front desks.\",\n      \"priority\": \"high\",\n      \"url\": null\n    },\n    {\n      \"partner\": \"Local groomers and trainers\",\n      \"type\": \"referral\",\n      \"finding\": \"Groomers and trainers interact with the same anxious/reactive dog segment that appears in Not The Rug's strongest reviews. Cross-referral relationship with a positive reinforcement trainer in particular would align brand values.\",\n      \"priority\": \"medium\",\n      \"url\": null\n    },\n    {\n      \"partner\": \"Brooklyn animal rescues and shelters\",\n      \"type\": \"community\",\n      \"finding\": \"Rescue dog owners are over-indexed in Williamsburg. Partnership or visible support of a local rescue (even just resharing adoption posts) builds community goodwill and referral pipeline ahead of Adopt a Shelter Pet Day (April 30).\",\n      \"priority\": \"medium\",\n      \"url\": null\n    }\n  ],\n  \"escalations\": [\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"National Pet Day (April 11) is 5 days out with no content detected in-market. brandMentions are limited to directory listings, not active social amplification. Content window is open now — specific post recommended.\"\n    },\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"Yelp #1 Williamsburg North Side ranking is an unused proof point in active content. Should be surfaced in Instagram bio, post captions, and Google review responses as a recurring trust signal.\"\n    },\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"Neighborhood-level SEO gap confirmed by industry data. Not The Rug's site lacks documented neighborhood-specific service pages. Rover/Wag dominate broad search; hyper-local keyword pages are the structural counter-play available only to independents.\"\n    },\n    {\n      \"level\": \"QUIET\",\n      \"status\": \"NEW\",\n      \"summary\": \"Competitor intelligence search failed this cycle. Happy Pups, Urban Wag Brooklyn, Strutting Mutts positioning unknown. Re-query next brief.\"\n    },\n    {\n      \"level\": \"QUIET\",\n      \"status\": \"NEW\",\n      \"summary\": \"Reddit local recommendation thread visibility unknown — search returned no results. Re-query next cycle to assess whether Not The Rug appears in Williamsburg dog walker recommendation threads.\"\n    }\n  ],\n  \"contentOpportunities\": {\n    \"found\": true,\n    \"opportunities\": [\n      {\n        \"topic\": \"National Pet Day — Client Dog Celebration + Yelp #1 Callout\",\n        \"whyNow\": \"April 11 is 5 days out. High-engagement national moment for dog content. Combining it with the #1 Williamsburg ranking turns a holiday post into a social proof asset.\",\n        \"format\": \"Instagram carousel or Reel featuring 4–6 client dogs with names, neighborhood, and a closing slide: '#1 Dog Walker in Williamsburg — and these are the dogs who made us that.' Post by April 9 to capture early engagement.\",\n        \"priority\": \"high\",\n        \"source\": \"CalendarLabs.com + Yelp Williamsburg North Side Rankings\",\n        \"url\": null\n      },\n      {\n        \"topic\": \"Spring Park Route Content — McCarren / Domino / East River\",\n        \"whyNow\": \"April weather is normalizing. Park foot traffic is rising. Showing actual routes and neighborhood landmarks builds local SEO relevance and signals authenticity to prospects evaluating walkers.\",\n        \"format\": \"Short Reel or Stories series: walker POV on a morning route, ending at a recognizable Williamsburg landmark. Caption uses 'Williamsburg dog walker' keyword naturally.\",\n        \"priority\": \"medium\",\n        \"source\": \"Local context + NWS weather signal\",\n        \"url\": null\n      },\n      {\n        \"topic\": \"Anxious Dog Owner — Trust Signal Post\",\n        \"whyNow\": \"Recurring Yelp review theme surfaces unprompted. This segment has high conversion intent and searches with urgency. Content that speaks directly to 'my dog is nervous around strangers' positions Not The Rug as the specialist solution.\",\n        \"format\": \"Instagram static or short-form video: 'Your dog doesn't have to be social to love their walker.' Call out the no-pack-walk rule, consistent staff, and double-leash method as specific anxiety-reducing features. End with a soft CTA.\",\n        \"priority\": \"medium\",\n        \"source\": \"Yelp review theme analysis + nottherug.com differentiators\",\n        \"url\": null\n      },\n      {\n        \"topic\": \"Yelp #1 Evergreen Social Proof Post\",\n        \"whyNow\": \"Ranking exists but is not activated in regular content. New movers and spring residents researching walkers will not know this credential unless it appears in feed.\",\n        \"format\": \"Single Instagram graphic: clean, warm design. '#1 Dog Walker in Williamsburg on Yelp — since 2010, still showing up every day.' Pin to profile or use as a highlight cover.\",\n        \"priority\": \"medium\",\n        \"source\": \"Yelp Williamsburg North Side Rankings\",\n        \"url\": null\n      }\n    ],\n    \"searchedFor\": [\n      \"National Pet Day content opportunities\",\n      \"Williamsburg Brooklyn dog walking demand signals\",\n      \"Anxious dog owner search behavior\",\n      \"Competitor Instagram and content activity\",\n      \"Spring park foot traffic Williamsburg\",\n      \"Neighborhood SEO for independent dog walkers\"\n    ]\n  }\n}",
+  "stageCosts": [
+    {
+      "stage": "scout-search",
+      "model": "claude-sonnet-4-6",
+      "inputTokens": 71990,
+      "outputTokens": 3139,
+      "estimatedUsd": 0.263055
+    },
+    {
+      "stage": "scout-trim",
+      "model": "claude-haiku-4-5-20251001",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "estimatedUsd": 0
+    },
+    {
+      "stage": "scout-synthesis",
+      "model": "claude-sonnet-4-6",
+      "inputTokens": 4002,
+      "outputTokens": 4391,
+      "estimatedUsd": 0.07787100000000001
+    }
+  ]
+}

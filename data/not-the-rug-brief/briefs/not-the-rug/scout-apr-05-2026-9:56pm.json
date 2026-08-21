@@ -1,0 +1,193 @@
+{
+  "runId": "0f8ac46f-fe6d-4ad8-be16-d4cd612b1de3",
+  "timestamp": "2026-04-06T02:53:21.101Z",
+  "clientId": "not-the-rug",
+  "clientName": "Not The Rug",
+  "status": "success",
+  "delta": "[IMPORTANT] [NEW] — New Yelp review detected. No previous baseline. Review response window is open; engagement here directly affects #1 Williamsburg North Side ranking.\n\n[IMPORTANT] [NEW] — National Dog Bite Prevention Week begins April 12 (6 days out). Not The Rug's double-leash/collar method and GPS tracking are direct, credible proof points. No competitor data surfaced to counter this — own the safety narrative now.\n\n[QUIET] [NEW] — April holiday calendar loaded: National Pet ID Week (Apr 17–23), National Pet First Aid Awareness Month (all April), Canine Fitness Month (all April). Multiple low-effort content pegs available.\n\n[QUIET] [NEW] — Competitor search returned zero results. No intel on Rover, Wag, Swifto, or regional competitors this cycle. Monitoring gap — not a crisis, but blind spot noted.\n\n[QUIET] [NEW] — Reddit signals returned no data this cycle. Brand mention visibility unknown.\n\n---",
+  "humanBrief": "**Monday, April 6, 2026 | Williamsburg**\n\nClean spring day — 56°F, sunny, light wind. No route or timing changes needed.\n\nA new Yelp review came in. Respond today. You're sitting at #1 in Williamsburg North Side and every response reinforces that signal.\n\nBigger opportunity this week: **National Dog Bite Prevention Week starts Saturday, April 12.** This is tailor-made for Not The Rug. Your double-leash method, individual walks, and GPS tracking are exactly what this week is about. No pack walking = lower incident risk. Say it plainly. One post this week, one during the week. Instagram carousel or a single strong caption both work.\n\nApril is also National Pet First Aid Awareness Month and Canine Fitness Month — both support a steady drumbeat of safety and enrichment content through the month.\n\nNo competitor moves detected this cycle.\n\n**PRIORITY ACTION:** Draft and schedule two Instagram posts this week that directly connect Not The Rug's double-leash and individual-walk model to National Dog Bite Prevention Week (April 12–18), leading with a specific safety stat or question to drive saves and shares.\n\n---",
+  "agentData": {
+    "brandMentions": [],
+    "competitorIntel": [
+      {
+        "competitor": "Rover / Wag / Swifto / Regional competitors",
+        "finding": "No competitor data returned this cycle. Positioning, pricing, and review movement unknown.",
+        "impact": "medium",
+        "url": ""
+      }
+    ],
+    "weatherImpact": null,
+    "localEvents": [
+      {
+        "event": "National Dog Bite Prevention Week",
+        "date": "2026-04-12 to 2026-04-18",
+        "impact": "High relevance — directly maps to Not The Rug's double-leash, individual-walk, and GPS safety differentiators.",
+        "opportunity": "Two-post Instagram campaign this week. Lead with a safety question or stat. Frame individual walks and double-leash method as the standard, not a premium. Drives trust with new leads.",
+        "url": "https://www.4knines.com/blogs/news/dog-holidays"
+      },
+      {
+        "event": "National Pet ID Week",
+        "date": "2026-04-17 to 2026-04-23",
+        "impact": "Medium — overlaps with Dog Bite Prevention Week. GPS tracking angle is a natural bridge.",
+        "opportunity": "Short post or Story: 'Every walk is GPS-tracked. Your dog is always findable.' Simple. Credible. Owned.",
+        "url": "https://www.4knines.com/blogs/news/dog-holidays"
+      },
+      {
+        "event": "National Pet First Aid Awareness Month",
+        "date": "April 2026",
+        "impact": "Medium — supports ongoing safety narrative throughout April.",
+        "opportunity": "One mid-month post on walker training and emergency protocols. Reinforces the 'not a gig-economy operation' positioning.",
+        "url": "https://www.4knines.com/blogs/news/dog-holidays"
+      },
+      {
+        "event": "Canine Fitness Month",
+        "date": "April 2026",
+        "impact": "Low-medium — soft content hook, good for engagement.",
+        "opportunity": "45-minute walk content: show route variety, sniff stops, East River or McCarren Park footage. Tie to enrichment and mental stimulation angle.",
+        "url": "https://www.4knines.com/blogs/news/dog-holidays"
+      },
+      {
+        "event": "National Hug Your Dog Day",
+        "date": "2026-04-10",
+        "impact": "Low — high noise nationally, low differentiation.",
+        "opportunity": "Optional: single warm client photo repost if a strong image is available. Low effort only.",
+        "url": "https://www.4knines.com/blogs/news/dog-holidays"
+      },
+      {
+        "event": "Adopt a Shelter Pet Day / National Therapy Animal Day",
+        "date": "2026-04-30",
+        "impact": "Low-medium — community goodwill angle.",
+        "opportunity": "End-of-month Story or post celebrating client dogs who were adopted. Builds neighborhood warmth and shareability.",
+        "url": "https://www.4knines.com/blogs/news/dog-holidays"
+      }
+    ],
+    "redditSignals": [],
+    "localDemandSignals": [
+      {
+        "signal": "Spring park traffic increasing — McCarren, Domino, East River State Park",
+        "relevance": "medium",
+        "detail": "April weekend foot traffic at local dog parks climbs with warmer weather. Content showing familiar Williamsburg routes and park stops resonates with local dog owners evaluating walkers."
+      },
+      {
+        "signal": "Sniffari / enrichment walk framing gaining traction in pet content",
+        "relevance": "medium",
+        "detail": "National Puppy Day coverage and holiday guides are surfacing 'sniffari' language — slow, scent-led walks framed as enrichment. Not The Rug's 45-minute individual walks fit this naturally. Adopting this vocabulary in captions could increase discoverability and resonate with engaged dog owners."
+      }
+    ],
+    "reviewInsights": [
+      {
+        "source": "Yelp",
+        "insight": "New review detected. Total now at 34. No content available for analysis this cycle.",
+        "sentiment": "neutral",
+        "actionableTakeaway": "Respond to the new review today. Timely, personal responses reinforce the #1 Williamsburg North Side ranking and signal active ownership to prospective clients reading reviews.",
+        "url": "https://www.yelp.com/biz/not-the-rug-brooklyn"
+      }
+    ],
+    "partnershipOpportunities": [
+      {
+        "partner": "Williamsburg-area veterinarians",
+        "type": "referral",
+        "finding": "Not The Rug's safety-first messaging (double leash, GPS, trained walkers) is highly aligned with what vets look for when recommending walkers to anxious or medically complex dogs.",
+        "priority": "high",
+        "url": ""
+      },
+      {
+        "partner": "Local groomers and pet stores (Bedford Ave / N 7th area)",
+        "type": "referral",
+        "finding": "Referral ecosystem is warm territory given 13+ years in the neighborhood. National Dog Bite Prevention Week is a natural reason to reach out and share safety content — positions Luis as a community resource, not just a vendor.",
+        "priority": "medium",
+        "url": ""
+      }
+    ],
+    "escalations": [
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "New Yelp review detected. Respond today to protect ranking signal and demonstrate active ownership to prospective clients."
+      },
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "National Dog Bite Prevention Week begins April 12 — 6 days out. No competitor data available to assess how others will position. Not The Rug should move first with credible, specific safety content tied to its documented methods."
+      },
+      {
+        "level": "QUIET",
+        "status": "NEW",
+        "summary": "Competitor intelligence returned zero results this cycle. Monitoring gap across Rover, Wag, Swifto, and regional competitors. No immediate risk identified, but blind spot should be addressed in next search cycle."
+      },
+      {
+        "level": "QUIET",
+        "status": "NEW",
+        "summary": "Reddit brand mention data unavailable this cycle. Not The Rug's visibility in local recommendation threads is unknown. Flag for targeted search next run."
+      }
+    ],
+    "contentOpportunities": {
+      "found": true,
+      "opportunities": [
+        {
+          "topic": "National Dog Bite Prevention Week — Safety Differentiator Campaign",
+          "whyNow": "Starts April 12. Not The Rug's double-leash method, individual walks, and GPS tracking are direct proof points. This week creates cultural permission to talk about safety without sounding defensive.",
+          "format": "Instagram carousel (Day 1: stat or question hook → Day 2: double-leash method explainer → Day 3: 'what individual walking actually means') or two strong single-image caption posts across the week.",
+          "priority": "high",
+          "source": "4Knines 2026 Dog Holidays Guide",
+          "url": "https://www.4knines.com/blogs/news/dog-holidays"
+        },
+        {
+          "topic": "Sniffari Walk — Enrichment Angle for 45-Minute Individual Walks",
+          "whyNow": "Enrichment walk language is trending in pet content. Not The Rug's 45-minute solo walks are exactly this. Naming it gives the service a content hook and vocabulary that resonates with attentive dog owners.",
+          "format": "Short-form video (Reels): walker and dog on route, slow moments, sniff stops, familiar Williamsburg landmarks. Caption frames it as intentional enrichment, not just exercise.",
+          "priority": "medium",
+          "source": "HolidayToday.org National Puppy Day coverage / 4Knines",
+          "url": ""
+        },
+        {
+          "topic": "GPS Tracking — National Pet ID Week tie-in",
+          "whyNow": "April 17–23. Simple, ownable. 'Every walk is GPS-tracked' is a one-line differentiator most competitors can't match at this service level.",
+          "format": "Single Instagram post or Story. Screenshot or graphic of GPS route. Short caption. High credibility, low production effort.",
+          "priority": "medium",
+          "source": "4Knines 2026 Dog Holidays Guide",
+          "url": "https://www.4knines.com/blogs/news/dog-holidays"
+        },
+        {
+          "topic": "Walker Training — National Pet First Aid Awareness Month",
+          "whyNow": "April theme. Reinforces 'not a gig platform' positioning. Speaks directly to the segment of dog owners who research before hiring.",
+          "format": "Instagram caption post or Story. Brief, specific language about what walker training at Not The Rug actually includes. Avoids generic claims — specificity builds trust.",
+          "priority": "low",
+          "source": "4Knines 2026 Dog Holidays Guide",
+          "url": "https://www.4knines.com/blogs/news/dog-holidays"
+        }
+      ],
+      "searchedFor": [
+        "Not The Rug brand mentions and reviews",
+        "Williamsburg dog walking competitor positioning",
+        "Local dog owner events and holidays April 2026",
+        "Brooklyn dog walking Reddit demand signals",
+        "Pet industry operator trends and social intelligence"
+      ]
+    }
+  },
+  "rawOutput": "## REASONING\n\n**What's new vs. previous:** No previous brief exists — everything is NEW. Treating all findings as baseline.\n\n**Immediate vs. routine:**\n- New Yelp review detected → immediate action (respond promptly)\n- April holiday calendar has several actionable dates coming within weeks → time-sensitive content planning\n- No competitor data surfaced → gap in monitoring, but not actionable today\n- Weather is clean → no operational disruption\n\n**Patterns across domains:**\n- The \"sniffari\" / enrichment walk framing from holiday content aligns directly with Not The Rug's 45-minute, individual-walk model — strong content angle\n- National Dog Bite Prevention Week (April 12–18) and National Pet ID Week (April 17–23) both play directly into Not The Rug's documented safety differentiators (double leashing, GPS tracking)\n- April = National Pet First Aid Awareness Month → another safety credibility moment\n- No Reddit or competitor data returned — visibility gap is real\n\n**Weather:** 42–56°F, sunny to partly cloudy, winds to 15 mph, 4% precip. Clean spring day. No operational change warranted. `weatherImpact: null`\n\n**Visibility Gap Rule:** brandMentions is empty. No events within 30 days flagged... however, April 12–18 is National Dog Bite Prevention Week — within 7 days. That qualifies as upcoming and within 30 days. → **Escalate to IMPORTANT.** Priority action must be a specific content recommendation.\n\n**Label assessments:**\n- Holiday calendar dates → [BACKGROUND]\n- New Yelp review → [LIVE]\n- Competitor intel → no data / [BACKGROUND] placeholder\n\n---\n\n=== DELTA ===\n\n[IMPORTANT] [NEW] — New Yelp review detected. No previous baseline. Review response window is open; engagement here directly affects #1 Williamsburg North Side ranking.\n\n[IMPORTANT] [NEW] — National Dog Bite Prevention Week begins April 12 (6 days out). Not The Rug's double-leash/collar method and GPS tracking are direct, credible proof points. No competitor data surfaced to counter this — own the safety narrative now.\n\n[QUIET] [NEW] — April holiday calendar loaded: National Pet ID Week (Apr 17–23), National Pet First Aid Awareness Month (all April), Canine Fitness Month (all April). Multiple low-effort content pegs available.\n\n[QUIET] [NEW] — Competitor search returned zero results. No intel on Rover, Wag, Swifto, or regional competitors this cycle. Monitoring gap — not a crisis, but blind spot noted.\n\n[QUIET] [NEW] — Reddit signals returned no data this cycle. Brand mention visibility unknown.\n\n---\n\n=== HUMAN BRIEF ===\n\n**Monday, April 6, 2026 | Williamsburg**\n\nClean spring day — 56°F, sunny, light wind. No route or timing changes needed.\n\nA new Yelp review came in. Respond today. You're sitting at #1 in Williamsburg North Side and every response reinforces that signal.\n\nBigger opportunity this week: **National Dog Bite Prevention Week starts Saturday, April 12.** This is tailor-made for Not The Rug. Your double-leash method, individual walks, and GPS tracking are exactly what this week is about. No pack walking = lower incident risk. Say it plainly. One post this week, one during the week. Instagram carousel or a single strong caption both work.\n\nApril is also National Pet First Aid Awareness Month and Canine Fitness Month — both support a steady drumbeat of safety and enrichment content through the month.\n\nNo competitor moves detected this cycle.\n\n**PRIORITY ACTION:** Draft and schedule two Instagram posts this week that directly connect Not The Rug's double-leash and individual-walk model to National Dog Bite Prevention Week (April 12–18), leading with a specific safety stat or question to drive saves and shares.\n\n---\n\n=== AGENT DATA ===\n\n{\n  \"brandMentions\": [],\n  \"competitorIntel\": [\n    {\n      \"competitor\": \"Rover / Wag / Swifto / Regional competitors\",\n      \"finding\": \"No competitor data returned this cycle. Positioning, pricing, and review movement unknown.\",\n      \"impact\": \"medium\",\n      \"url\": \"\"\n    }\n  ],\n  \"weatherImpact\": null,\n  \"localEvents\": [\n    {\n      \"event\": \"National Dog Bite Prevention Week\",\n      \"date\": \"2026-04-12 to 2026-04-18\",\n      \"impact\": \"High relevance — directly maps to Not The Rug's double-leash, individual-walk, and GPS safety differentiators.\",\n      \"opportunity\": \"Two-post Instagram campaign this week. Lead with a safety question or stat. Frame individual walks and double-leash method as the standard, not a premium. Drives trust with new leads.\",\n      \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n    },\n    {\n      \"event\": \"National Pet ID Week\",\n      \"date\": \"2026-04-17 to 2026-04-23\",\n      \"impact\": \"Medium — overlaps with Dog Bite Prevention Week. GPS tracking angle is a natural bridge.\",\n      \"opportunity\": \"Short post or Story: 'Every walk is GPS-tracked. Your dog is always findable.' Simple. Credible. Owned.\",\n      \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n    },\n    {\n      \"event\": \"National Pet First Aid Awareness Month\",\n      \"date\": \"April 2026\",\n      \"impact\": \"Medium — supports ongoing safety narrative throughout April.\",\n      \"opportunity\": \"One mid-month post on walker training and emergency protocols. Reinforces the 'not a gig-economy operation' positioning.\",\n      \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n    },\n    {\n      \"event\": \"Canine Fitness Month\",\n      \"date\": \"April 2026\",\n      \"impact\": \"Low-medium — soft content hook, good for engagement.\",\n      \"opportunity\": \"45-minute walk content: show route variety, sniff stops, East River or McCarren Park footage. Tie to enrichment and mental stimulation angle.\",\n      \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n    },\n    {\n      \"event\": \"National Hug Your Dog Day\",\n      \"date\": \"2026-04-10\",\n      \"impact\": \"Low — high noise nationally, low differentiation.\",\n      \"opportunity\": \"Optional: single warm client photo repost if a strong image is available. Low effort only.\",\n      \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n    },\n    {\n      \"event\": \"Adopt a Shelter Pet Day / National Therapy Animal Day\",\n      \"date\": \"2026-04-30\",\n      \"impact\": \"Low-medium — community goodwill angle.\",\n      \"opportunity\": \"End-of-month Story or post celebrating client dogs who were adopted. Builds neighborhood warmth and shareability.\",\n      \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n    }\n  ],\n  \"redditSignals\": [],\n  \"localDemandSignals\": [\n    {\n      \"signal\": \"Spring park traffic increasing — McCarren, Domino, East River State Park\",\n      \"relevance\": \"medium\",\n      \"detail\": \"April weekend foot traffic at local dog parks climbs with warmer weather. Content showing familiar Williamsburg routes and park stops resonates with local dog owners evaluating walkers.\"\n    },\n    {\n      \"signal\": \"Sniffari / enrichment walk framing gaining traction in pet content\",\n      \"relevance\": \"medium\",\n      \"detail\": \"National Puppy Day coverage and holiday guides are surfacing 'sniffari' language — slow, scent-led walks framed as enrichment. Not The Rug's 45-minute individual walks fit this naturally. Adopting this vocabulary in captions could increase discoverability and resonate with engaged dog owners.\"\n    }\n  ],\n  \"reviewInsights\": [\n    {\n      \"source\": \"Yelp\",\n      \"insight\": \"New review detected. Total now at 34. No content available for analysis this cycle.\",\n      \"sentiment\": \"neutral\",\n      \"actionableTakeaway\": \"Respond to the new review today. Timely, personal responses reinforce the #1 Williamsburg North Side ranking and signal active ownership to prospective clients reading reviews.\",\n      \"url\": \"https://www.yelp.com/biz/not-the-rug-brooklyn\"\n    }\n  ],\n  \"partnershipOpportunities\": [\n    {\n      \"partner\": \"Williamsburg-area veterinarians\",\n      \"type\": \"referral\",\n      \"finding\": \"Not The Rug's safety-first messaging (double leash, GPS, trained walkers) is highly aligned with what vets look for when recommending walkers to anxious or medically complex dogs.\",\n      \"priority\": \"high\",\n      \"url\": \"\"\n    },\n    {\n      \"partner\": \"Local groomers and pet stores (Bedford Ave / N 7th area)\",\n      \"type\": \"referral\",\n      \"finding\": \"Referral ecosystem is warm territory given 13+ years in the neighborhood. National Dog Bite Prevention Week is a natural reason to reach out and share safety content — positions Luis as a community resource, not just a vendor.\",\n      \"priority\": \"medium\",\n      \"url\": \"\"\n    }\n  ],\n  \"escalations\": [\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"New Yelp review detected. Respond today to protect ranking signal and demonstrate active ownership to prospective clients.\"\n    },\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"National Dog Bite Prevention Week begins April 12 — 6 days out. No competitor data available to assess how others will position. Not The Rug should move first with credible, specific safety content tied to its documented methods.\"\n    },\n    {\n      \"level\": \"QUIET\",\n      \"status\": \"NEW\",\n      \"summary\": \"Competitor intelligence returned zero results this cycle. Monitoring gap across Rover, Wag, Swifto, and regional competitors. No immediate risk identified, but blind spot should be addressed in next search cycle.\"\n    },\n    {\n      \"level\": \"QUIET\",\n      \"status\": \"NEW\",\n      \"summary\": \"Reddit brand mention data unavailable this cycle. Not The Rug's visibility in local recommendation threads is unknown. Flag for targeted search next run.\"\n    }\n  ],\n  \"contentOpportunities\": {\n    \"found\": true,\n    \"opportunities\": [\n      {\n        \"topic\": \"National Dog Bite Prevention Week — Safety Differentiator Campaign\",\n        \"whyNow\": \"Starts April 12. Not The Rug's double-leash method, individual walks, and GPS tracking are direct proof points. This week creates cultural permission to talk about safety without sounding defensive.\",\n        \"format\": \"Instagram carousel (Day 1: stat or question hook → Day 2: double-leash method explainer → Day 3: 'what individual walking actually means') or two strong single-image caption posts across the week.\",\n        \"priority\": \"high\",\n        \"source\": \"4Knines 2026 Dog Holidays Guide\",\n        \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n      },\n      {\n        \"topic\": \"Sniffari Walk — Enrichment Angle for 45-Minute Individual Walks\",\n        \"whyNow\": \"Enrichment walk language is trending in pet content. Not The Rug's 45-minute solo walks are exactly this. Naming it gives the service a content hook and vocabulary that resonates with attentive dog owners.\",\n        \"format\": \"Short-form video (Reels): walker and dog on route, slow moments, sniff stops, familiar Williamsburg landmarks. Caption frames it as intentional enrichment, not just exercise.\",\n        \"priority\": \"medium\",\n        \"source\": \"HolidayToday.org National Puppy Day coverage / 4Knines\",\n        \"url\": \"\"\n      },\n      {\n        \"topic\": \"GPS Tracking — National Pet ID Week tie-in\",\n        \"whyNow\": \"April 17–23. Simple, ownable. 'Every walk is GPS-tracked' is a one-line differentiator most competitors can't match at this service level.\",\n        \"format\": \"Single Instagram post or Story. Screenshot or graphic of GPS route. Short caption. High credibility, low production effort.\",\n        \"priority\": \"medium\",\n        \"source\": \"4Knines 2026 Dog Holidays Guide\",\n        \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n      },\n      {\n        \"topic\": \"Walker Training — National Pet First Aid Awareness Month\",\n        \"whyNow\": \"April theme. Reinforces 'not a gig platform' positioning. Speaks directly to the segment of dog owners who research before hiring.\",\n        \"format\": \"Instagram caption post or Story. Brief, specific language about what walker training at Not The Rug actually includes. Avoids generic claims — specificity builds trust.\",\n        \"priority\": \"low\",\n        \"source\": \"4Knines 2026 Dog Holidays Guide\",\n        \"url\": \"https://www.4knines.com/blogs/news/dog-holidays\"\n      }\n    ],\n    \"searchedFor\": [\n      \"Not The Rug brand mentions and reviews\",\n      \"Williamsburg dog walking competitor positioning\",\n      \"Local dog owner events and holidays April 2026\",\n      \"Brooklyn dog walking Reddit demand signals\",\n      \"Pet industry operator trends and social intelligence\"\n    ]\n  }\n}",
+  "stageCosts": [
+    {
+      "stage": "scout-search",
+      "model": "claude-sonnet-4-6",
+      "inputTokens": 87286,
+      "outputTokens": 4386,
+      "estimatedUsd": 0.327648
+    },
+    {
+      "stage": "scout-trim",
+      "model": "claude-haiku-4-5-20251001",
+      "inputTokens": 2732,
+      "outputTokens": 627,
+      "estimatedUsd": 0.004693599999999999
+    },
+    {
+      "stage": "scout-synthesis",
+      "model": "claude-sonnet-4-6",
+      "inputTokens": 3390,
+      "outputTokens": 3331,
+      "estimatedUsd": 0.060135
+    }
+  ]
+}

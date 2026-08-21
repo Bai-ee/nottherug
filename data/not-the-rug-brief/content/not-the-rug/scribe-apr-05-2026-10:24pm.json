@@ -1,0 +1,267 @@
+{
+  "runId": "593a074c-2464-49b1-b573-37fb3a1fcf03",
+  "timestamp": "2026-04-06T03:23:56.680Z",
+  "clientId": "not-the-rug",
+  "status": "success",
+  "scoutBriefTimestamp": "2026-04-06T03:20:16.224Z",
+  "scoutAlertLevel": "IMPORTANT",
+  "scoutPriorityAction": "** Draft and schedule three posts today — Hug Your Dog Day (April 10), National Pet Day (April 11), and the Dog Bite Prevention Week safety post (April 12) — pulling directly from existing client testimonials on personalized care and rehab support.",
+  "content": {
+    "instagram_post_copy": "POST 1 — Schedule for April 10 (National Hug Your Dog Day)\n\nThis one is for the dogs who make the whole day better.\n\nEvery dog we walk in Williamsburg and Greenpoint has a person behind them who trusts us with the leash. That is not something we take lightly — and days like today are a good reminder of why we got into this in the first place.\n\nIf your dog is part of our crew: they are seen, they are cared for, and yes, they are definitely getting extra attention today.\n\nDM us if you want to get your dog on the schedule. 🐾\n\n#HugYourDogDay #WilliamsburgDogs #NotTheRug\n\n\nPOST 2 — Schedule for April 11 (National Pet Day)\n\nWe started this in 2011 because Williamsburg dogs deserved better than whoever was free that day.\n\nFifteen years later, the thing clients tell us most is that their dog finally has a walker who actually knows them — their pace, their quirks, their favorite block to slow down on.\n\nThat kind of familiarity does not happen by accident. It happens because we keep the same people on the same dogs, and we pay attention.\n\nHappy National Pet Day to every dog on our route. You are all doing great.\n\nReach out to get started — link in bio.\n\n#NationalPetDay #WilliamsburgDogs #NotTheRug\n\n\nPOST 3 — Schedule for April 12 (Dog Bite Prevention Week)\n\nDog Bite Prevention Week starts today. Here is what our safety model actually looks like on the ground.\n\nNo pack walks. Solo or small familiar groups only — dogs are not anonymous to us.\n\nDouble leash on every walk. Not just for reactive dogs. For everyone.\n\nGPS tracking on every outing. You know where your dog is. We know where your dog is.\n\nWe also work with dogs recovering from surgery or managing ongoing needs. The clients who come to us for that level of care are often the ones who have been burned by a platform that sent someone different every time.\n\nConsistency is not a perk. For some dogs, it is the whole thing.\n\nDM us if your dog needs a walker who will actually learn them.\n\n#DogBitePreventionWeek #WilliamsburgDogs #NotTheRug",
+    "content_angle": "This is a three-post scheduled package built to capture three consecutive high-visibility days — April 10, 11, and 12 — without conflating them or blurring the brand message across the run. Each post does a different job. The Hug Your Dog Day post is a low-lift reach driver: warm, photo-ready, neighborhood-rooted, designed to pull engagement from existing followers and their networks without asking much of them. The National Pet Day post is a quiet credibility play — it uses the brand's founding year and the testimonial signal around personalized, consistent care to make an identity claim that earns the day rather than just marking it. The Dog Bite Prevention Week post is the operational trust anchor: it names the specific safety practices (solo walks, double leash, GPS) that differentiate Not The Rug from platform-style services, and it opens the door to the surgical rehab and special needs client segment that Scout flagged as underserved and high-intent in the Williamsburg and Greenpoint market. Taken together, the three posts move a prospective client from warmth to familiarity to trust — the same arc most new clients need before they hand over the leash."
+  },
+  "contentOpportunities": [
+    {
+      "title": "National Hug Your Dog Day — client dog photo post",
+      "summary": "April 10 is 3 days out. Simple, warm, engagement-friendly content. Easy reach driver with low production lift.",
+      "priority": "high",
+      "format": "Single Instagram photo with short caption. Client dog preferred. Tag neighborhood.",
+      "source": "April 2026 Dog Holiday Calendar",
+      "url": "https://www.daysoftheyear.com/days/hug-your-dog-day/",
+      "windowHours": null,
+      "raw": {
+        "topic": "National Hug Your Dog Day — client dog photo post",
+        "whyNow": "April 10 is 3 days out. Simple, warm, engagement-friendly content. Easy reach driver with low production lift.",
+        "format": "Single Instagram photo with short caption. Client dog preferred. Tag neighborhood.",
+        "priority": "high",
+        "source": "April 2026 Dog Holiday Calendar",
+        "url": "https://www.daysoftheyear.com/days/hug-your-dog-day/"
+      }
+    },
+    {
+      "title": "National Pet Day — brand origin or Luis voice post",
+      "summary": "April 11 is 4 days out. High-volume hashtag day. Brand story or owner voice content performs well. Existing testimonials from nottherug.com are ready to pull.",
+      "priority": "high",
+      "format": "Instagram caption-forward post. Quote from Luis or a client testimonial. No heavy visual required.",
+      "source": "National Pet Day 2026",
+      "url": "https://www.nationalpetday.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "National Pet Day — brand origin or Luis voice post",
+        "whyNow": "April 11 is 4 days out. High-volume hashtag day. Brand story or owner voice content performs well. Existing testimonials from nottherug.com are ready to pull.",
+        "format": "Instagram caption-forward post. Quote from Luis or a client testimonial. No heavy visual required.",
+        "priority": "high",
+        "source": "National Pet Day 2026",
+        "url": "https://www.nationalpetday.com"
+      }
+    },
+    {
+      "title": "Dog Bite Prevention Week — safety model explainer",
+      "summary": "Starts April 12. No pack walks + double leash + GPS = a specific, credible safety case. Previous brief flagged this — must post by Saturday.",
+      "priority": "high",
+      "format": "Instagram carousel (3–5 slides) or strong single caption. Lead with a stat or direct question. Designed for saves and shares.",
+      "source": "AVMA National Dog Bite Prevention Week",
+      "url": "https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention",
+      "windowHours": null,
+      "raw": {
+        "topic": "Dog Bite Prevention Week — safety model explainer",
+        "whyNow": "Starts April 12. No pack walks + double leash + GPS = a specific, credible safety case. Previous brief flagged this — must post by Saturday.",
+        "format": "Instagram carousel (3–5 slides) or strong single caption. Lead with a stat or direct question. Designed for saves and shares.",
+        "priority": "high",
+        "source": "AVMA National Dog Bite Prevention Week",
+        "url": "https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention"
+      }
+    },
+    {
+      "title": "National Pet ID Week — GPS tracking post",
+      "summary": "April 17–23. Direct tie-in to existing service feature. Bridges from safety week content with minimal new creative effort.",
+      "priority": "medium",
+      "format": "Single Instagram post. Short, direct caption: 'Every walk tracked. Every route logged. You always know where your dog is.' Map screenshot or phone visual.",
+      "source": "April 2026 Dog Holiday Calendar",
+      "url": "https://www.daysoftheyear.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "National Pet ID Week — GPS tracking post",
+        "whyNow": "April 17–23. Direct tie-in to existing service feature. Bridges from safety week content with minimal new creative effort.",
+        "format": "Single Instagram post. Short, direct caption: 'Every walk tracked. Every route logged. You always know where your dog is.' Map screenshot or phone visual.",
+        "priority": "medium",
+        "source": "April 2026 Dog Holiday Calendar",
+        "url": "https://www.daysoftheyear.com"
+      }
+    },
+    {
+      "title": "Senior dog and special needs care — testimonial spotlight",
+      "summary": "Competitor review data shows senior dog care is an active buyer trigger in Williamsburg and Greenpoint. Not The Rug has a surgical rehab testimonial on file. This segment is underserved in current content.",
+      "priority": "medium",
+      "format": "Instagram caption using existing client quote about surgical rehab support. Add a brief note about what personalized care looks like for dogs with special needs.",
+      "source": "Yelp competitor snippets (Greenpoint/Williamsburg) + nottherug.com testimonials",
+      "url": "https://nottherug.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "Senior dog and special needs care — testimonial spotlight",
+        "whyNow": "Competitor review data shows senior dog care is an active buyer trigger in Williamsburg and Greenpoint. Not The Rug has a surgical rehab testimonial on file. This segment is underserved in current content.",
+        "format": "Instagram caption using existing client quote about surgical rehab support. Add a brief note about what personalized care looks like for dogs with special needs.",
+        "priority": "medium",
+        "source": "Yelp competitor snippets (Greenpoint/Williamsburg) + nottherug.com testimonials",
+        "url": "https://nottherug.com"
+      }
+    },
+    {
+      "title": "Adopt a Shelter Pet Day — new adopter acquisition post",
+      "summary": "April 30. New dog owners are the highest-intent acquisition target. A post specifically addressing the first-week experience for new adopters with a clear CTA is a conversion-oriented content play.",
+      "priority": "medium",
+      "format": "Instagram caption or short Reel. 'Just adopted? Here's what the first week of walks looks like.' Direct CTA to inquire or DM.",
+      "source": "April 2026 Dog Holiday Calendar",
+      "url": "https://www.daysoftheyear.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "Adopt a Shelter Pet Day — new adopter acquisition post",
+        "whyNow": "April 30. New dog owners are the highest-intent acquisition target. A post specifically addressing the first-week experience for new adopters with a clear CTA is a conversion-oriented content play.",
+        "format": "Instagram caption or short Reel. 'Just adopted? Here's what the first week of walks looks like.' Direct CTA to inquire or DM.",
+        "priority": "medium",
+        "source": "April 2026 Dog Holiday Calendar",
+        "url": "https://www.daysoftheyear.com"
+      }
+    }
+  ],
+  "viralOpportunities": [
+    {
+      "title": "National Hug Your Dog Day — client dog photo post",
+      "summary": "April 10 is 3 days out. Simple, warm, engagement-friendly content. Easy reach driver with low production lift.",
+      "priority": "high",
+      "format": "Single Instagram photo with short caption. Client dog preferred. Tag neighborhood.",
+      "source": "April 2026 Dog Holiday Calendar",
+      "url": "https://www.daysoftheyear.com/days/hug-your-dog-day/",
+      "windowHours": null,
+      "raw": {
+        "topic": "National Hug Your Dog Day — client dog photo post",
+        "whyNow": "April 10 is 3 days out. Simple, warm, engagement-friendly content. Easy reach driver with low production lift.",
+        "format": "Single Instagram photo with short caption. Client dog preferred. Tag neighborhood.",
+        "priority": "high",
+        "source": "April 2026 Dog Holiday Calendar",
+        "url": "https://www.daysoftheyear.com/days/hug-your-dog-day/"
+      }
+    },
+    {
+      "title": "National Pet Day — brand origin or Luis voice post",
+      "summary": "April 11 is 4 days out. High-volume hashtag day. Brand story or owner voice content performs well. Existing testimonials from nottherug.com are ready to pull.",
+      "priority": "high",
+      "format": "Instagram caption-forward post. Quote from Luis or a client testimonial. No heavy visual required.",
+      "source": "National Pet Day 2026",
+      "url": "https://www.nationalpetday.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "National Pet Day — brand origin or Luis voice post",
+        "whyNow": "April 11 is 4 days out. High-volume hashtag day. Brand story or owner voice content performs well. Existing testimonials from nottherug.com are ready to pull.",
+        "format": "Instagram caption-forward post. Quote from Luis or a client testimonial. No heavy visual required.",
+        "priority": "high",
+        "source": "National Pet Day 2026",
+        "url": "https://www.nationalpetday.com"
+      }
+    },
+    {
+      "title": "Dog Bite Prevention Week — safety model explainer",
+      "summary": "Starts April 12. No pack walks + double leash + GPS = a specific, credible safety case. Previous brief flagged this — must post by Saturday.",
+      "priority": "high",
+      "format": "Instagram carousel (3–5 slides) or strong single caption. Lead with a stat or direct question. Designed for saves and shares.",
+      "source": "AVMA National Dog Bite Prevention Week",
+      "url": "https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention",
+      "windowHours": null,
+      "raw": {
+        "topic": "Dog Bite Prevention Week — safety model explainer",
+        "whyNow": "Starts April 12. No pack walks + double leash + GPS = a specific, credible safety case. Previous brief flagged this — must post by Saturday.",
+        "format": "Instagram carousel (3–5 slides) or strong single caption. Lead with a stat or direct question. Designed for saves and shares.",
+        "priority": "high",
+        "source": "AVMA National Dog Bite Prevention Week",
+        "url": "https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention"
+      }
+    },
+    {
+      "title": "National Pet ID Week — GPS tracking post",
+      "summary": "April 17–23. Direct tie-in to existing service feature. Bridges from safety week content with minimal new creative effort.",
+      "priority": "medium",
+      "format": "Single Instagram post. Short, direct caption: 'Every walk tracked. Every route logged. You always know where your dog is.' Map screenshot or phone visual.",
+      "source": "April 2026 Dog Holiday Calendar",
+      "url": "https://www.daysoftheyear.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "National Pet ID Week — GPS tracking post",
+        "whyNow": "April 17–23. Direct tie-in to existing service feature. Bridges from safety week content with minimal new creative effort.",
+        "format": "Single Instagram post. Short, direct caption: 'Every walk tracked. Every route logged. You always know where your dog is.' Map screenshot or phone visual.",
+        "priority": "medium",
+        "source": "April 2026 Dog Holiday Calendar",
+        "url": "https://www.daysoftheyear.com"
+      }
+    },
+    {
+      "title": "Senior dog and special needs care — testimonial spotlight",
+      "summary": "Competitor review data shows senior dog care is an active buyer trigger in Williamsburg and Greenpoint. Not The Rug has a surgical rehab testimonial on file. This segment is underserved in current content.",
+      "priority": "medium",
+      "format": "Instagram caption using existing client quote about surgical rehab support. Add a brief note about what personalized care looks like for dogs with special needs.",
+      "source": "Yelp competitor snippets (Greenpoint/Williamsburg) + nottherug.com testimonials",
+      "url": "https://nottherug.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "Senior dog and special needs care — testimonial spotlight",
+        "whyNow": "Competitor review data shows senior dog care is an active buyer trigger in Williamsburg and Greenpoint. Not The Rug has a surgical rehab testimonial on file. This segment is underserved in current content.",
+        "format": "Instagram caption using existing client quote about surgical rehab support. Add a brief note about what personalized care looks like for dogs with special needs.",
+        "priority": "medium",
+        "source": "Yelp competitor snippets (Greenpoint/Williamsburg) + nottherug.com testimonials",
+        "url": "https://nottherug.com"
+      }
+    },
+    {
+      "title": "Adopt a Shelter Pet Day — new adopter acquisition post",
+      "summary": "April 30. New dog owners are the highest-intent acquisition target. A post specifically addressing the first-week experience for new adopters with a clear CTA is a conversion-oriented content play.",
+      "priority": "medium",
+      "format": "Instagram caption or short Reel. 'Just adopted? Here's what the first week of walks looks like.' Direct CTA to inquire or DM.",
+      "source": "April 2026 Dog Holiday Calendar",
+      "url": "https://www.daysoftheyear.com",
+      "windowHours": null,
+      "raw": {
+        "topic": "Adopt a Shelter Pet Day — new adopter acquisition post",
+        "whyNow": "April 30. New dog owners are the highest-intent acquisition target. A post specifically addressing the first-week experience for new adopters with a clear CTA is a conversion-oriented content play.",
+        "format": "Instagram caption or short Reel. 'Just adopted? Here's what the first week of walks looks like.' Direct CTA to inquire or DM.",
+        "priority": "medium",
+        "source": "April 2026 Dog Holiday Calendar",
+        "url": "https://www.daysoftheyear.com"
+      }
+    }
+  ],
+  "guardianFlags": {
+    "readyToPublish": true,
+    "overallScore": 97,
+    "factualScore": 95,
+    "voiceScore": 98,
+    "hardBlock": false,
+    "concerns": [],
+    "flags": [
+      {
+        "type": "factual",
+        "severity": "minor",
+        "field": "instagram_post_copy",
+        "issue": "POST 2 states 'Fifteen years later' as a calculated reference to 2011 founding. If this content is scheduled for April 11, 2026, this is correct. If scheduled for any other year, the math will be wrong on publish date.",
+        "suggestion": "Either hardcode the founding year ('Since 2011') or confirm the scheduled publish date matches the math (2011 + 15 = 2026). Safer: 'Since 2011' + 'Over a decade later' removes the time-specific calculation risk."
+      },
+      {
+        "type": "factual",
+        "severity": "minor",
+        "field": "instagram_post_copy",
+        "issue": "POST 3 mentions 'dogs recovering from surgery or managing ongoing needs' as a service offering, which aligns with the 'Senior visit' and 'special needs' pricing tier ($25) in research. However, the phrasing 'recovering from surgery' could edge toward medical claim territory if read as treatment language. Current phrasing is acceptable but borderline.",
+        "suggestion": "Consider softening to 'dogs managing ongoing care needs' or 'dogs in their senior or recovery phase' to further distance from clinical/medical positioning while keeping the signal clear."
+      }
+    ],
+    "reviewRequired": false,
+    "note": "Guardian v1 — claude-haiku-4-5-20251001",
+    "guardianUsage": {
+      "inputTokens": 2152,
+      "outputTokens": 367,
+      "model": "claude-haiku-4-5-20251001"
+    }
+  },
+  "rawOutput": "REASONING:\n\nContent pillar: service_highlight — with a neighborhood_authority undertone.\n\nToday is April 6. None of the three target events (April 10, 11, 12) are live yet. The priority action is to draft all three posts today for scheduling. Per the TODAY POST SELECTION RULE, future events cannot lead the publishable post — but the task explicitly asks to draft and schedule three forward-dated posts. That means each post should be written for its own publish date, not for today. The constraint is that I should not write them as if they are live today. I'll write each post as a self-contained, date-appropriate caption — ready to publish on its actual date — and treat the output as a scheduled content package.\n\nPost 1 — April 10, National Hug Your Dog Day:\nPillar: neighborhood_authority / warmth\nEmotion: warmth, low-stakes joy, community pride\nAngle: A client dog photo moment grounded in the neighborhood. Feels like a real local business celebrating its dogs, not a brand doing a holiday post. Pull from the testimonial signal around personalized care.\n\nPost 2 — April 11, National Pet Day:\nPillar: trust_signal / brand story\nEmotion: pride, trust, quiet credibility\nAngle: Owner voice or brand origin. Founded in 2011 — that story earns the day without needing a megaphone. Testimonial language around personalized care fits here naturally.\n\nPost 3 — April 12, Dog Bite Prevention Week:\nPillar: service_highlight / safety\nEmotion: trust, reassurance, quiet confidence\nAngle: No pack walks, double leash, GPS — specific operational details that make this feel like a real safety explainer, not a scare post. Rehab/surgical support testimonial angle bridges to special needs care.\n\nFormatting check: Under 150 words per caption. First line works before the cut. Soft CTA. 3-5 hashtags max, local and topic-specific. No absolutes on walker consistency.\n\n\nINSTAGRAM_POST_COPY:\n\nPOST 1 — Schedule for April 10 (National Hug Your Dog Day)\n\nThis one is for the dogs who make the whole day better.\n\nEvery dog we walk in Williamsburg and Greenpoint has a person behind them who trusts us with the leash. That is not something we take lightly — and days like today are a good reminder of why we got into this in the first place.\n\nIf your dog is part of our crew: they are seen, they are cared for, and yes, they are definitely getting extra attention today.\n\nDM us if you want to get your dog on the schedule. 🐾\n\n#HugYourDogDay #WilliamsburgDogs #NotTheRug\n\n\nPOST 2 — Schedule for April 11 (National Pet Day)\n\nWe started this in 2011 because Williamsburg dogs deserved better than whoever was free that day.\n\nFifteen years later, the thing clients tell us most is that their dog finally has a walker who actually knows them — their pace, their quirks, their favorite block to slow down on.\n\nThat kind of familiarity does not happen by accident. It happens because we keep the same people on the same dogs, and we pay attention.\n\nHappy National Pet Day to every dog on our route. You are all doing great.\n\nReach out to get started — link in bio.\n\n#NationalPetDay #WilliamsburgDogs #NotTheRug\n\n\nPOST 3 — Schedule for April 12 (Dog Bite Prevention Week)\n\nDog Bite Prevention Week starts today. Here is what our safety model actually looks like on the ground.\n\nNo pack walks. Solo or small familiar groups only — dogs are not anonymous to us.\n\nDouble leash on every walk. Not just for reactive dogs. For everyone.\n\nGPS tracking on every outing. You know where your dog is. We know where your dog is.\n\nWe also work with dogs recovering from surgery or managing ongoing needs. The clients who come to us for that level of care are often the ones who have been burned by a platform that sent someone different every time.\n\nConsistency is not a perk. For some dogs, it is the whole thing.\n\nDM us if your dog needs a walker who will actually learn them.\n\n#DogBitePreventionWeek #WilliamsburgDogs #NotTheRug\n\n\nCONTENT_ANGLE:\n\nThis is a three-post scheduled package built to capture three consecutive high-visibility days — April 10, 11, and 12 — without conflating them or blurring the brand message across the run. Each post does a different job. The Hug Your Dog Day post is a low-lift reach driver: warm, photo-ready, neighborhood-rooted, designed to pull engagement from existing followers and their networks without asking much of them. The National Pet Day post is a quiet credibility play — it uses the brand's founding year and the testimonial signal around personalized, consistent care to make an identity claim that earns the day rather than just marking it. The Dog Bite Prevention Week post is the operational trust anchor: it names the specific safety practices (solo walks, double leash, GPS) that differentiate Not The Rug from platform-style services, and it opens the door to the surgical rehab and special needs client segment that Scout flagged as underserved and high-intent in the Williamsburg and Greenpoint market. Taken together, the three posts move a prospective client from warmth to familiarity to trust — the same arc most new clients need before they hand over the leash.",
+  "scribeStageCost": {
+    "stage": "scribe",
+    "model": "claude-sonnet-4-6",
+    "inputTokens": 3207,
+    "outputTokens": 1268,
+    "estimatedUsd": 0.028641
+  },
+  "guardianStageCost": {
+    "stage": "guardian",
+    "model": "claude-haiku-4-5-20251001",
+    "inputTokens": 2152,
+    "outputTokens": 367,
+    "estimatedUsd": 0.0031896
+  }
+}

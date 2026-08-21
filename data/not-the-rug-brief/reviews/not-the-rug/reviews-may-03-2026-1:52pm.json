@@ -1,0 +1,25 @@
+{
+  "clientId": "not-the-rug",
+  "provider": "web-search",
+  "fetchedAt": "2026-05-03T18:51:49.865Z",
+  "overallStatus": "no_new_reviews",
+  "founderStatus": "no_new_yelp_reviews",
+  "sources": [
+    {
+      "key": "yelp",
+      "label": "Yelp",
+      "reviewCount": 37,
+      "ratingValue": null,
+      "verificationStatus": "unverified",
+      "sourceUrl": "https://www.yelp.com/biz/not-the-rug-brooklyn-8",
+      "notes": "Review count of 37 is confirmed from the Yelp page title snippet (updated April 2026). Star rating was not surfaced in the search result snippet and cannot be confirmed without visiting the page directly — marked unverified for rating only."
+    }
+  ],
+  "diff": {
+    "yelp": {
+      "status": "no_change",
+      "countDelta": 0,
+      "ratingDelta": null
+    }
+  }
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 type Props = {
@@ -19,6 +19,14 @@ const REACTIVITY_OPTIONS = [
 ];
 
 const ALLERGY_OPTIONS = ['Chicken', 'Grain', 'Other'];
+
+const STEPS = [
+  { key: 'you', label: 'You', title: 'First — a little about you' },
+  { key: 'dog', label: 'Your dog', title: 'Now, tell us about your dog' },
+  { key: 'care', label: 'The care', title: 'What kind of care are you looking for?' },
+  { key: 'quirks', label: 'Quirks', title: 'Anything we should watch for?' },
+  { key: 'wrap', label: 'Wrap up', title: 'Last step — anything else?' },
+];
 
 const initial = {
   ownerName: '',
@@ -42,6 +50,26 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [showCalendly, setShowCalendly] = useState(false);
+  const [step, setStep] = useState(0);
+  const lastStep = step === STEPS.length - 1;
+  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [trackH, setTrackH] = useState<number | undefined>(undefined);
+
+  // Carousel row height follows the ACTIVE panel (not the tallest one) so
+  // short steps don't leave a block of dead whitespace below the fields.
+  useEffect(() => {
+    const panel = panelRefs.current[step];
+    if (!panel) return;
+    const measure = () => setTrackH(panel.offsetHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(panel);
+    window.addEventListener('resize', measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [step]);
 
   const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
 
@@ -123,10 +151,53 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
 
   return (
     <div id={paneId} data-section={`meetgreet-${source}`} style={hidden ? { display: 'none' } : undefined}>
-      <h3 style={{ fontFamily: 'var(--font-display)', marginBottom: '6px' }}>Let&apos;s meet your dog</h3>
-      <p style={{ color: 'var(--mid-gray)', fontSize: '14px', marginBottom: '28px' }}>
-        Fill this out and we&apos;ll reach out within 2 hours on weekdays to schedule your free visit.
-      </p>
+      <style>{`
+        @keyframes mgStepTitleIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+          [data-section="meetgreet-carousel-track"] { transition: none !important; }
+          [data-section="meetgreet-carousel-row"] { transition: none !important; }
+          [data-section="meetgreet-progress-row"] h3 { animation: none !important; }
+        }
+      `}</style>
+
+      {/* Row 1 — conversational progress header */}
+      <div id={`${paneId}-progress-row`} data-section="meetgreet-progress-row" style={{ marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '12px' }}>
+          <span style={{ fontFamily: 'var(--font-mono, "Space Mono", monospace)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--mid-gray)' }}>
+            Step {step + 1} of {STEPS.length} · {STEPS[step].label}
+          </span>
+          <div style={{ display: 'flex', gap: '6px' }} aria-label="Form steps">
+            {STEPS.map((s, i) => (
+              <button
+                key={s.key}
+                type="button"
+                aria-label={`Go to step ${i + 1}: ${s.label}`}
+                aria-current={i === step ? 'step' : undefined}
+                onClick={() => setStep(i)}
+                style={{ width: i === step ? '22px' : '8px', height: '8px', borderRadius: '99px', border: 'none', padding: 0, cursor: 'pointer', background: i === step ? 'var(--sage-dark)' : i < step ? 'var(--sage-light, #edf3db)' : 'var(--light-gray)', transition: 'all 0.3s' }}
+              />
+            ))}
+          </div>
+        </div>
+        <h3 key={STEPS[step].key} style={{ fontFamily: 'var(--font-display)', margin: 0, animation: 'mgStepTitleIn 0.35s ease both' }}>
+          {STEPS[step].title}
+        </h3>
+        {step === 0 && (
+          <p style={{ color: 'var(--mid-gray)', fontSize: '14px', margin: '6px 0 0' }}>
+            A few quick questions — about a minute. We&apos;ll reach out within 2 hours on weekdays to schedule your free visit.
+          </p>
+        )}
+      </div>
+
+      {/* Row 2 — sliding step panels */}
+      <div id={`${paneId}-carousel-row`} data-section="meetgreet-carousel-row" style={{ overflow: 'hidden', margin: '0 -4px', height: trackH, transition: 'height 0.45s cubic-bezier(0.22, 1, 0.36, 1)' }}>
+        <div
+          id={`${paneId}-carousel-track`}
+          data-section="meetgreet-carousel-track"
+          style={{ display: 'flex', alignItems: 'flex-start', transform: `translateX(-${step * 100}%)`, transition: 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)' }}
+        >
+          {/* Panel 1 — about you */}
+          <div ref={el => { panelRefs.current[0] = el; }} inert={step !== 0} aria-hidden={step !== 0} style={{ flex: '0 0 100%', minWidth: 0, padding: '4px' }}>
 
       {/* Owner info */}
       <div className="form-row">
@@ -165,6 +236,11 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         </div>
       </div>
 
+          </div>
+
+          {/* Panel 2 — your dog */}
+          <div ref={el => { panelRefs.current[1] = el; }} inert={step !== 1} aria-hidden={step !== 1} style={{ flex: '0 0 100%', minWidth: 0, padding: '4px' }}>
+
       {/* Dog info */}
       <div className="form-row">
         <div className="form-group">
@@ -178,6 +254,22 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
             value={form.breedAge} onChange={e => update('breedAge', e.target.value)} />
         </div>
       </div>
+
+      <div data-survey="vaccinations" className="form-group" style={{ marginBottom: '20px' }}>
+        <label>Is your dog up to date on vaccinations?</label>
+        <select className="form-control form-select"
+          value={form.vaccinations} onChange={e => update('vaccinations', e.target.value)}>
+          <option>Yes — fully vaccinated</option>
+          <option>Mostly — a few pending</option>
+          <option>No</option>
+          <option>Not sure</option>
+        </select>
+      </div>
+
+          </div>
+
+          {/* Panel 3 — the care */}
+          <div ref={el => { panelRefs.current[2] = el; }} inert={step !== 2} aria-hidden={step !== 2} style={{ flex: '0 0 100%', minWidth: 0, padding: '4px' }}>
 
       <div className="form-group" style={{ marginBottom: '20px' }}>
         <label>Service Interested In</label>
@@ -193,16 +285,22 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         </select>
       </div>
 
-      <div data-survey="vaccinations" className="form-group" style={{ marginBottom: '20px' }}>
-        <label>Is your dog up to date on vaccinations?</label>
+      <div data-survey="walk-frequency" className="form-group" style={{ marginBottom: '20px' }}>
+        <label>Preferred walk frequency</label>
         <select className="form-control form-select"
-          value={form.vaccinations} onChange={e => update('vaccinations', e.target.value)}>
-          <option>Yes — fully vaccinated</option>
-          <option>Mostly — a few pending</option>
-          <option>No</option>
-          <option>Not sure</option>
+          value={form.walkFrequency} onChange={e => update('walkFrequency', e.target.value)}>
+          <option>Once a week</option>
+          <option>2–3 times a week</option>
+          <option>Daily (Mon–Fri)</option>
+          <option>Daily including weekends</option>
+          <option>As-needed / occasional</option>
         </select>
       </div>
+
+          </div>
+
+          {/* Panel 4 — quirks */}
+          <div ref={el => { panelRefs.current[3] = el; }} inert={step !== 3} aria-hidden={step !== 3} style={{ flex: '0 0 100%', minWidth: 0, padding: '4px' }}>
 
       {/* Reactivity / socialization checkboxes */}
       <div data-survey="reactivity" className="form-group" style={{ marginBottom: '20px' }}>
@@ -256,17 +354,10 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         )}
       </div>
 
-      <div data-survey="walk-frequency" className="form-group" style={{ marginBottom: '20px' }}>
-        <label>Preferred walk frequency</label>
-        <select className="form-control form-select"
-          value={form.walkFrequency} onChange={e => update('walkFrequency', e.target.value)}>
-          <option>Once a week</option>
-          <option>2–3 times a week</option>
-          <option>Daily (Mon–Fri)</option>
-          <option>Daily including weekends</option>
-          <option>As-needed / occasional</option>
-        </select>
-      </div>
+          </div>
+
+          {/* Panel 5 — wrap up */}
+          <div ref={el => { panelRefs.current[4] = el; }} inert={step !== 4} aria-hidden={step !== 4} style={{ flex: '0 0 100%', minWidth: 0, padding: '4px' }}>
 
       <div className="form-group" style={{ marginBottom: '20px' }}>
         <label>Anything we should know?</label>
@@ -296,15 +387,45 @@ export default function MeetGreetForm({ paneId, source, hidden = false }: Props)
         </div>
       </label>
 
-      <button
-        type="button"
-        className="btn btn-primary"
-        style={{ width: '100%', justifyContent: 'center', padding: '16px' }}
-        disabled={status === 'submitting'}
-        onClick={handleSubmit}
-      >
-        {status === 'submitting' ? 'Sending…' : phoneConsult ? 'Request Phone Consultation' : 'Request My Free Meet & Greet'}
-      </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Nav row — back / next / submit */}
+      <div id={`${paneId}-carousel-nav-row`} data-section="meetgreet-carousel-nav-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginTop: '16px', borderTop: '1px dashed var(--light-gray)', paddingTop: '20px' }}>
+        {step > 0 ? (
+          <button
+            type="button"
+            className="btn"
+            style={{ padding: '13px 20px', background: 'transparent', border: 'none', color: 'var(--mid-gray)' }}
+            onClick={() => setStep(step - 1)}
+          >
+            ← Back
+          </button>
+        ) : (
+          <span aria-hidden="true" />
+        )}
+        {!lastStep ? (
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ padding: '15px 34px' }}
+            onClick={() => setStep(step + 1)}
+          >
+            Next →
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ padding: '15px 28px' }}
+            disabled={status === 'submitting'}
+            onClick={handleSubmit}
+          >
+            {status === 'submitting' ? 'Sending…' : phoneConsult ? 'Request Phone Consultation' : 'Request My Free Meet & Greet'}
+          </button>
+        )}
+      </div>
 
       {status === 'success' && (
         <p className="form-note" style={{ color: 'var(--sage-light, #6b8e6b)' }}>

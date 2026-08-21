@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not The Rug — Daily Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <style>
+    /* === NTR DESIGN TOKENS === */
+    :root {
+      --cream:            #EEF4DB;
+      --warm-white:       #F5F9EE;
+      --charcoal:         #1F2318;
+      --mid-gray:         #5C6455;
+      --light-gray:       #D5E0BE;
+      --sage:             #7A9068;
+      --sage-light:       #B4C89E;
+      --sage-dark:        #4E5A42;
+      --terracotta:       #C4674B;
+      --gold-light:       #E8D4A8;
+      --font-display:     'Fraunces', 'DM Serif Display', serif;
+      --font-body:        'Outfit', sans-serif;
+      --font-italic:      'Fraunces', serif;
+      --radius:           12px;
+      --radius-lg:        24px;
+    }
+
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--charcoal);
+      line-height: 1.65;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    ul { list-style: none; }
+    a {
+      color: var(--sage-dark);
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 3px;
+    }
+    a:hover { color: var(--charcoal); }
+
+    /* === LAYOUT === */
+    .brief-wrap { max-width: 680px; margin: 0 auto; }
+
+    /* === HERO === */
+    .brief-hero {
+      background: var(--sage-dark);
+      padding: 52px 28px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .brief-hero::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle at top right, rgba(180,200,158,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 22px;
+    }
+    .hero-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--sage-light); flex-shrink: 0;
+    }
+    .hero-eyebrow-text {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: 13px; font-weight: 300;
+      color: var(--gold-light); letter-spacing: 0.02em;
+    }
+    .brief-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 9vw, 56px); font-weight: 700;
+      color: white; line-height: 1.05; margin-bottom: 4px;
+    }
+    .brief-subtitle {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: clamp(16px, 4vw, 20px); font-weight: 300;
+      color: var(--sage-light); margin-bottom: 28px;
+    }
+    .brief-greeting {
+      font-size: 16px; font-weight: 500;
+      color: rgba(255,255,255,0.88); margin-bottom: 6px;
+    }
+    .brief-date {
+      font-family: var(--font-italic);
+      font-style: italic; font-size: 14px; font-weight: 300;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* === SECTIONS === */
+    .brief-section { padding: 44px 28px; }
+    .bg-warm  { background: var(--warm-white); }
+    .bg-cream { background: var(--cream); }
+    .sep { height: 1px; background: var(--light-gray); }
+
+    /* === SECTION HEADER === */
+    .section-eyebrow {
+      font-family: var(--font-italic);
+      font-size: 13px; font-weight: 300; font-style: italic;
+      color: var(--mid-gray); margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 400; font-size: clamp(26px, 6vw, 38px);
+      color: var(--charcoal); line-height: 1.1;
+    }
+    .section-rule {
+      width: 32px; height: 2px;
+      background: var(--sage); border-radius: 1px;
+      margin: 16px 0 28px;
+    }
+
+    /* === SUB-HEADING === */
+    .sub-head {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 400;
+      color: var(--charcoal); margin-bottom: 12px;
+    }
+    .sub-head::before {
+      content: ''; display: inline-block;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--sage); flex-shrink: 0;
+    }
+
+    /* === ITEM LIST === */
+    .item-list { display: grid; gap: 10px; margin-bottom: 28px; }
+    .item-list:last-child { margin-bottom: 0; }
+    .item-row {
+      padding: 14px 16px;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: var(--radius);
+    }
+    .bg-warm .item-row { background: var(--cream); }
+    .item-title {
+      font-size: 15px; font-weight: 600; color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .item-title a { font-weight: 600; }
+    .item-body { font-size: 14px; color: var(--mid-gray); line-height: 1.55; }
+    .item-meta { font-size: 13px; color: var(--mid-gray); font-style: italic; margin-top: 4px; }
+    .item-takeaway { font-size: 13px; color: var(--charcoal); font-weight: 500; margin-top: 6px; }
+
+    /* === WEATHER CALLOUT === */
+    .weather-box {
+      background: var(--light-gray);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      font-size: 16px; color: var(--charcoal);
+      line-height: 1.65; margin-bottom: 28px;
+    }
+
+    /* === CONTENT PIECE === */
+    .content-piece { margin-bottom: 28px; }
+    .content-piece:last-child { margin-bottom: 0; }
+    .content-piece-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px;
+      margin-bottom: 10px;
+    }
+    .piece-label {
+      font-family: var(--font-display);
+      font-size: 19px; font-weight: 400; color: var(--charcoal);
+    }
+    .piece-note {
+      flex-shrink: 0; align-self: center;
+      font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--mid-gray);
+      background: var(--light-gray);
+      padding: 5px 10px; border-radius: 4px;
+      white-space: nowrap;
+    }
+    .content-body {
+      font-size: 16px; color: var(--charcoal); line-height: 1.7;
+      background: var(--warm-white);
+      border-left: 3px solid var(--light-gray);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .content-body p { margin: 0 0 10px; }
+    .content-body p:last-child { margin-bottom: 0; }
+    .piece-flags { margin-top: 12px; display: grid; gap: 8px; }
+    .piece-flag {
+      font-size: 14px; font-weight: 500; color: var(--terracotta);
+      background: rgba(196,103,75,0.08);
+      border: 1px solid rgba(196,103,75,0.2);
+      border-radius: var(--radius); padding: 10px 14px;
+    }
+
+    /* === QUALITY === */
+    .quality-banner {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 10px 16px; border-radius: 6px; margin-bottom: 16px;
+    }
+    .quality-ready   { background: rgba(78,90,66,0.12); color: var(--sage-dark); }
+    .quality-review  { background: rgba(196,103,75,0.12); color: var(--terracotta); }
+    .quality-blocked { background: rgba(196,103,75,0.18); color: var(--terracotta); border: 1px solid rgba(196,103,75,0.3); }
+    .quality-neutral { background: rgba(92,100,85,0.10); color: var(--mid-gray); }
+    .flag-list { display: grid; gap: 8px; }
+    .flag-item {
+      font-size: 14px; color: var(--terracotta);
+      background: rgba(196,103,75,0.07);
+      border: 1px solid rgba(196,103,75,0.18);
+      border-radius: var(--radius); padding: 11px 14px; line-height: 1.5;
+    }
+
+    /* === MISC === */
+    .fallback { font-size: 15px; color: var(--mid-gray); font-style: italic; margin-bottom: 28px; }
+
+    /* === MOBILE === */
+    @media (max-width: 480px) {
+      .brief-hero { padding: 40px 20px 36px; }
+      .brief-section { padding: 36px 20px; }
+      .content-piece-header { flex-direction: column; }
+      .piece-note { align-self: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="brief-hero" id="brief-hero-header">
+  <div class="brief-wrap">
+    <div class="hero-eyebrow">
+      <div class="hero-dot"></div>
+      <span class="hero-eyebrow-text">Founder Intelligence · Brooklyn Dog Walking</span>
+    </div>
+    <div class="brief-title">Not The Rug</div>
+    <div class="brief-subtitle">Daily Brief</div>
+    <div class="brief-greeting">Hello Team</div>
+    <div class="brief-date">It’s Sunday, April 5 2026 — 10:23pm</div>
+  </div>
+</header>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-our-world">
+  <div class="brief-wrap">
+    <h2 class="section-title">Our World</h2>
+    <div class="section-rule"></div>
+
+    <div class="sub-head">Weather Impact</div>
+    <div class="weather-box">
+      56°F, sunny, partly cloudy through the operating window. Wind up to 15mph — East River corridor walks (Domino Park, Bushwick Inlet, East River State Park) will feel cooler than inland routes. Precipitation near zero (4%). No route changes, gear adjustments, or timing shifts required. Standard operations. If running waterfront routes, expect wind chill — not a safety issue but worth noting for client communication on outdoor time.
+    </div>
+
+    <div class="sub-head">Review Insights</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://yelp.com/biz/not-the-rug" target="_blank" rel="noreferrer">Yelp</a></div>
+              <div class="item-body">Review count stable at 34. No new reviews detected this cycle.</div>
+              <div class="item-takeaway">Takeaway: No response required today. Continue monitoring. Next review response should name the neighborhood and specific service to reinforce local SEO signal.</div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-cream" id="section-todays-content">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">content ready to post</div>
+    <h2 class="section-title">Today’s Content</h2>
+    <div class="section-rule"></div>
+    
+        <div class="content-piece">
+          <div class="content-piece-header">
+            <span class="piece-label">Instagram Post Copy</span>
+            <span class="piece-note">ready to post</span>
+          </div>
+          <div class="content-body"><p>POST 1 — Schedule for April 10 (National Hug Your Dog Day)</p>
+<p>This one is for the dogs who make the whole day better.</p>
+<p>Every dog we walk in Williamsburg and Greenpoint has a person behind them who trusts us with the leash. That is not something we take lightly — and days like today are a good reminder of why we got into this in the first place.</p>
+<p>If your dog is part of our crew: they are seen, they are cared for, and yes, they are definitely getting extra attention today.</p>
+<p>DM us if you want to get your dog on the schedule. 🐾</p>
+<p>#HugYourDogDay #WilliamsburgDogs #NotTheRug</p>
+<p>POST 2 — Schedule for April 11 (National Pet Day)</p>
+<p>We started this in 2011 because Williamsburg dogs deserved better than whoever was free that day.</p>
+<p>Fifteen years later, the thing clients tell us most is that their dog finally has a walker who actually knows them — their pace, their quirks, their favorite block to slow down on.</p>
+<p>That kind of familiarity does not happen by accident. It happens because we keep the same people on the same dogs, and we pay attention.</p>
+<p>Happy National Pet Day to every dog on our route. You are all doing great.</p>
+<p>Reach out to get started — link in bio.</p>
+<p>#NationalPetDay #WilliamsburgDogs #NotTheRug</p>
+<p>POST 3 — Schedule for April 12 (Dog Bite Prevention Week)</p>
+<p>Dog Bite Prevention Week starts today. Here is what our safety model actually looks like on the ground.</p>
+<p>No pack walks. Solo or small familiar groups only — dogs are not anonymous to us.</p>
+<p>Double leash on every walk. Not just for reactive dogs. For everyone.</p>
+<p>GPS tracking on every outing. You know where your dog is. We know where your dog is.</p>
+<p>We also work with dogs recovering from surgery or managing ongoing needs. The clients who come to us for that level of care are often the ones who have been burned by a platform that sent someone different every time.</p>
+<p>Consistency is not a perk. For some dogs, it is the whole thing.</p>
+<p>DM us if your dog needs a walker who will actually learn them.</p>
+<p>#DogBitePreventionWeek #WilliamsburgDogs #NotTheRug</p></div>
+          <div class="piece-flags"><div class="piece-flag">&#9888; POST 2 states &#39;Fifteen years later&#39; as a calculated reference to 2011 founding. If this content is scheduled for April 11, 2026, this is correct. If scheduled for any other year, the math will be wrong on publish date.</div><div class="piece-flag">&#9888; POST 3 mentions &#39;dogs recovering from surgery or managing ongoing needs&#39; as a service offering, which aligns with the &#39;Senior visit&#39; and &#39;special needs&#39; pricing tier ($25) in research. However, the phrasing &#39;recovering from surgery&#39; could edge toward medical claim territory if read as treatment language. Current phrasing is acceptable but borderline.</div></div>
+        </div>
+
+        <div class="content-piece">
+          <div class="content-piece-header">
+            <span class="piece-label">Content Angle</span>
+            <span class="piece-note">strategy recap</span>
+          </div>
+          <div class="content-body"><p>This is a three-post scheduled package built to capture three consecutive high-visibility days — April 10, 11, and 12 — without conflating them or blurring the brand message across the run. Each post does a different job. The Hug Your Dog Day post is a low-lift reach driver: warm, photo-ready, neighborhood-rooted, designed to pull engagement from existing followers and their networks without asking much of them. The National Pet Day post is a quiet credibility play — it uses the brand&#39;s founding year and the testimonial signal around personalized, consistent care to make an identity claim that earns the day rather than just marking it. The Dog Bite Prevention Week post is the operational trust anchor: it names the specific safety practices (solo walks, double leash, GPS) that differentiate Not The Rug from platform-style services, and it opens the door to the surgical rehab and special needs client segment that Scout flagged as underserved and high-intent in the Williamsburg and Greenpoint market. Taken together, the three posts move a prospective client from warmth to familiarity to trust — the same arc most new clients need before they hand over the leash.</p></div>
+          
+        </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-operational-context">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">context</div>
+    <h2 class="section-title">Operational Context</h2>
+    <div class="section-rule"></div>
+
+    <div class="sub-head">Competitors</div>
+    <ul class="item-list">
+          
+              <li class="item-row">
+                <div class="item-title"><a href="https://yelp.com" target="_blank" rel="noreferrer">McCarren Bark</a></div>
+                <div class="item-body">Positive Yelp reviews mentioning named walker Vanessa. Personalized walker identity is a shared differentiator — worth watching if they scale messaging.</div>
+              </li>
+              <li class="item-row">
+                <div class="item-title"><a href="https://yelp.com" target="_blank" rel="noreferrer">Unnamed South Side competitor (Paul and team)</a></div>
+                <div class="item-body">Strong local reputation claim on Yelp. No detail on model or pricing. Monitor for service expansion signals.</div>
+              </li>
+              <li class="item-row">
+                <div class="item-title"><a href="https://yelp.com" target="_blank" rel="noreferrer">Greenpoint-area competitor (unnamed)</a></div>
+                <div class="item-body">Senior dog care highlighted positively in reviews — a buyer segment being served by at least one competitor in adjacent zip code.</div>
+              </li>
+              <li class="item-row">
+                <div class="item-title"><a href="https://yelp.com" target="_blank" rel="noreferrer">Unnamed Williamsburg North Side walker</a></div>
+                <div class="item-body">$15/walk price point surfaced in Yelp results — significantly below market average. Individual operator likely, not a scaled service.</div>
+              </li>
+              <li class="item-row">
+                <div class="item-title"><a href="https://happypantsnyc.com" target="_blank" rel="noreferrer">Happy Pants NYC</a></div>
+                <div class="item-body">Active content marketing (blog post May 2025). Homepage meta still placeholder as of April 2024 — SEO posture is weak despite content effort.</div>
+              </li>
+        </ul>
+
+    <div class="sub-head">Partnership / Referral Opportunities</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.worldveterinaryday.org" target="_blank" rel="noreferrer">Local Williamsburg veterinary practices</a></div>
+              <div class="item-body">World Veterinary Day on April 25 is a natural activation point. A public thank-you post tagging a local vet creates visible referral relationship signaling and goodwill.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Local Williamsburg groomers and pet stores</div>
+              <div class="item-body">Senior dog care and surgical rehab support are buyer triggers surfaced in competitor review data. Groomers and vets who work with senior dogs are high-value referral sources for Not The Rug&#39;s demonstrated capability in this segment.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Local Events</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">National Hug Your Dog Day</div>
+              <div class="item-meta">2026-04-10</div>
+              <div class="item-body">Client engagement moment — photo opportunity with owners or walkers and dogs.</div>
+              <div class="item-takeaway">Opportunity: Post a client dog photo with a warm, low-stakes caption. Tag the neighborhood. Easy reach driver.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">National Pet Day</div>
+              <div class="item-meta">2026-04-11</div>
+              <div class="item-body">High-volume hashtag day nationally. Broad reach potential for a single strong brand story post.</div>
+              <div class="item-takeaway">Opportunity: Use a client testimonial or Luis&#39;s own words about why he started Not The Rug. Brand origin content performs well on Pet Day.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Dog Therapy Appreciation Day</div>
+              <div class="item-meta">2026-04-11</div>
+              <div class="item-body">Niche but relevant — connects to emotional support and wellbeing framing.</div>
+              <div class="item-takeaway">Opportunity: Pair with Pet Day post or use as a caption layer — &#39;every walk is a little therapy&#39; angle.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">National Dog Bite Prevention Week</div>
+              <div class="item-meta">2026-04-12 to 2026-04-18</div>
+              <div class="item-body">High. Direct alignment with Not The Rug&#39;s no-pack, double-leash, individual-walk model.</div>
+              <div class="item-takeaway">Opportunity: State the safety case plainly: no pack walks = lower incident risk. GPS tracking = accountability. Double leash = control. One strong carousel or caption. Lead with a stat or question to drive saves.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">National Pet ID Week</div>
+              <div class="item-meta">2026-04-17 to 2026-04-23</div>
+              <div class="item-body">Medium. GPS tracking is a direct, specific tie-in — differentiates from walkers with no tech layer.</div>
+              <div class="item-takeaway">Opportunity: Follow Dog Bite Prevention Week with a GPS tracking post. &#39;Every walk is tracked. Every route logged. You always know where your dog is.&#39; Short caption, map screenshot or phone visual.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Reddit Signals</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://reddit.com/r/williamsburg" target="_blank" rel="noreferrer">Reddit signal gap — search timed out</a></div>
+              <div class="item-meta">r/williamsburg, r/Brooklyn, r/AskNYC, r/nyc</div>
+              <div class="item-body">No Reddit threads surfaced this cycle. Recommendation threads and complaint threads in these subreddits are a known unclaimed channel for Not The Rug.</div>
+              <div class="item-takeaway">Takeaway: Monitor r/williamsburg and r/AskNYC directly for &#39;dog walker&#39; recommendation threads. When a thread appears, a helpful, specific response from Luis as a local operator is the correct move — not a promotional post.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Local Demand Signals</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Onboarding friction is a recurring buyer pain point in Williamsburg market</div>
+              <div class="item-body">Multiple Yelp snippets surface buyer frustration with &#39;long forms&#39; and &#39;wait lists&#39; from competitors. Not The Rug&#39;s direct, personal intake process is an unclaimed counter-positioning asset. Not currently stated on website or social in buyer-facing language.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Senior dog care is an active buyer trigger in adjacent zip codes</div>
+              <div class="item-body">Greenpoint Yelp snippets show senior dog care as a decision driver. Not The Rug has direct testimonial evidence of surgical rehab support — a stronger proof point than most competitors can claim. Not surfaced in current content strategy.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">$15/walk low-price competitor active in Williamsburg North Side</div>
+              <div class="item-body">One operator is price-undercutting significantly. Not The Rug&#39;s 5-star positioning and service depth (GPS, 45 min, individual walks, photo updates) make direct price competition irrelevant, but the signal is worth monitoring for volume or review activity.</div>
+            </li>
+        </ul>
+
+    <div class="sub-head">Content Opportunities</div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.daysoftheyear.com/days/hug-your-dog-day/" target="_blank" rel="noreferrer">National Hug Your Dog Day — client dog photo post</a></div>
+              
+              <div class="item-body">April 10 is 3 days out. Simple, warm, engagement-friendly content. Easy reach driver with low production lift.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.nationalpetday.com" target="_blank" rel="noreferrer">National Pet Day — brand origin or Luis voice post</a></div>
+              
+              <div class="item-body">April 11 is 4 days out. High-volume hashtag day. Brand story or owner voice content performs well. Existing testimonials from nottherug.com are ready to pull.</div>
+            </li>
+            <li class="item-row">
+              <div class="item-title"><a href="https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention" target="_blank" rel="noreferrer">Dog Bite Prevention Week — safety model explainer</a></div>
+              
+              <div class="item-body">Starts April 12. No pack walks + double leash + GPS = a specific, credible safety case. Previous brief flagged this — must post by Saturday.</div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-warm" id="section-quality-score">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">guardian review</div>
+    <h2 class="section-title">Quality Score</h2>
+    <div class="section-rule"></div>
+    <div class="quality-banner quality-ready">Ready to publish — 97/100</div>
+    <p class="fallback">No surfaced issues.</p>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<section class="brief-section bg-cream" id="section-sources">
+  <div class="brief-wrap">
+    <div class="section-eyebrow">references</div>
+    <h2 class="section-title">Sources</h2>
+    <div class="section-rule"></div>
+    <ul class="item-list">
+          
+            <li class="item-row">
+              <div class="item-title">Review Insights: Yelp</div>
+              <div class="item-body"><a href="https://yelp.com/biz/not-the-rug" target="_blank" rel="noreferrer">https://yelp.com/biz/not-the-rug</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Competitors: Unnamed Williamsburg North Side walker</div>
+              <div class="item-body"><a href="https://yelp.com" target="_blank" rel="noreferrer">https://yelp.com</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Competitors: Happy Pants NYC</div>
+              <div class="item-body"><a href="https://happypantsnyc.com" target="_blank" rel="noreferrer">https://happypantsnyc.com</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Reddit Signals: Reddit signal gap — search timed out</div>
+              <div class="item-body"><a href="https://reddit.com/r/williamsburg" target="_blank" rel="noreferrer">https://reddit.com/r/williamsburg</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Partnership / Referral Opportunities: Local Williamsburg veterinary practices</div>
+              <div class="item-body"><a href="https://www.worldveterinaryday.org" target="_blank" rel="noreferrer">https://www.worldveterinaryday.org</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: National Hug Your Dog Day — client dog photo post</div>
+              <div class="item-body"><a href="https://www.daysoftheyear.com/days/hug-your-dog-day/" target="_blank" rel="noreferrer">https://www.daysoftheyear.com/days/hug-your-dog-day/</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: National Pet Day — brand origin or Luis voice post</div>
+              <div class="item-body"><a href="https://www.nationalpetday.com" target="_blank" rel="noreferrer">https://www.nationalpetday.com</a></div>
+            </li>
+            <li class="item-row">
+              <div class="item-title">Content Opportunities: Dog Bite Prevention Week — safety model explainer</div>
+              <div class="item-body"><a href="https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention" target="_blank" rel="noreferrer">https://www.avma.org/resources-tools/animal-health-and-welfare/dog-bite-prevention</a></div>
+            </li>
+        </ul>
+  </div>
+</section>
+
+</body>
+</html>

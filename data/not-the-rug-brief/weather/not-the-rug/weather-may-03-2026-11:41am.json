@@ -1,0 +1,161 @@
+{
+  "clientId": "not-the-rug",
+  "provider": "nws",
+  "fetchedAt": "2026-05-03T16:41:02.093Z",
+  "operationalWindow": {
+    "timeZone": "America/New_York",
+    "date": "2026-05-03",
+    "startHour": 7,
+    "endHour": 19,
+    "durationHours": 12,
+    "startLocal": "2026-05-03T07:00",
+    "endLocal": "2026-05-03T19:00"
+  },
+  "neighborhoods": [
+    {
+      "name": "Brooklyn",
+      "latitude": 40.7184,
+      "longitude": -73.9571,
+      "source": "NWS",
+      "sourceUrls": {
+        "points": "https://api.weather.gov/points/40.7184,-73.9571",
+        "forecastHourly": "https://api.weather.gov/gridpoints/OKX/35,42/forecast/hourly",
+        "alerts": "https://api.weather.gov/alerts/active?point=40.7184,-73.9571"
+      },
+      "periods": [
+        {
+          "startTime": "2026-05-03T12:00:00-04:00",
+          "endTime": "2026-05-03T13:00:00-04:00",
+          "startLocalHour": 12,
+          "endLocalHour": 13,
+          "temperature": 55,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Cloudy",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "18 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-05-03T13:00:00-04:00",
+          "endTime": "2026-05-03T14:00:00-04:00",
+          "startLocalHour": 13,
+          "endLocalHour": 14,
+          "temperature": 57,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Cloudy",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "18 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-05-03T14:00:00-04:00",
+          "endTime": "2026-05-03T15:00:00-04:00",
+          "startLocalHour": 14,
+          "endLocalHour": 15,
+          "temperature": 58,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Cloudy",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "18 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-05-03T15:00:00-04:00",
+          "endTime": "2026-05-03T16:00:00-04:00",
+          "startLocalHour": 15,
+          "endLocalHour": 16,
+          "temperature": 59,
+          "temperatureUnit": "F",
+          "shortForecast": "Partly Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "20 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-05-03T16:00:00-04:00",
+          "endTime": "2026-05-03T17:00:00-04:00",
+          "startLocalHour": 16,
+          "endLocalHour": 17,
+          "temperature": 59,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "20 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-05-03T17:00:00-04:00",
+          "endTime": "2026-05-03T18:00:00-04:00",
+          "startLocalHour": 17,
+          "endLocalHour": 18,
+          "temperature": 59,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Sunny",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "20 mph",
+          "windDirection": "NW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-05-03T18:00:00-04:00",
+          "endTime": "2026-05-03T19:00:00-04:00",
+          "startLocalHour": 18,
+          "endLocalHour": 19,
+          "temperature": 59,
+          "temperatureUnit": "F",
+          "shortForecast": "Mostly Clear",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 0,
+          "windSpeed": "17 mph",
+          "windDirection": "W",
+          "isDaytime": false
+        }
+      ],
+      "alerts": [
+        {
+          "event": "Special Weather Statement",
+          "headline": "Special Weather Statement issued May 2 at 1:45PM EDT by NWS Upton NY",
+          "severity": "Moderate",
+          "urgency": "Expected",
+          "certainty": "Observed",
+          "onset": "2026-05-02T13:45:00-04:00",
+          "expires": "2026-05-03T20:00:00-04:00"
+        }
+      ],
+      "summary": {
+        "summary": "Mostly Cloudy, Partly Sunny, Mostly Sunny | 55–59F | winds up to 20 mph | alerts: Special Weather Statement",
+        "operationalTakeaway": "Review official NWS alerts before assigning routes or promising timing.",
+        "maxTempF": 59,
+        "minTempF": 55,
+        "maxPrecipChancePct": 0,
+        "maxWindMph": 20,
+        "flags": [
+          "windy",
+          "official-alert"
+        ]
+      }
+    }
+  ],
+  "overall": {
+    "summary": "2026-05-03T07:00 to 2026-05-03T19:00 America/New_York | max temp 59F | max precip 0% | max wind 20 mph",
+    "operationalTakeaway": "There is an active NWS alert in at least one service neighborhood. Review it before locking routes or sending weather-led content.",
+    "affectedNeighborhoods": [
+      "Brooklyn"
+    ],
+    "flags": [
+      "windy",
+      "official-alert"
+    ]
+  }
+}

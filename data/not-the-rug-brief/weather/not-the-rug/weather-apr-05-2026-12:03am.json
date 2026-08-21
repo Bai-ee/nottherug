@@ -1,0 +1,219 @@
+{
+  "clientId": "not-the-rug",
+  "provider": "nws",
+  "fetchedAt": "2026-04-05T05:03:35.591Z",
+  "operationalWindow": {
+    "timeZone": "America/New_York",
+    "date": "2026-04-05",
+    "startHour": 7,
+    "endHour": 19,
+    "durationHours": 12,
+    "startLocal": "2026-04-05T07:00",
+    "endLocal": "2026-04-05T19:00"
+  },
+  "neighborhoods": [
+    {
+      "name": "Brooklyn",
+      "latitude": 40.7184,
+      "longitude": -73.9571,
+      "source": "NWS",
+      "sourceUrls": {
+        "points": "https://api.weather.gov/points/40.7184,-73.9571",
+        "forecastHourly": "https://api.weather.gov/gridpoints/OKX/35,35/forecast/hourly",
+        "alerts": "https://api.weather.gov/alerts/active?point=40.7184,-73.9571"
+      },
+      "periods": [
+        {
+          "startTime": "2026-04-05T07:00:00-04:00",
+          "endTime": "2026-04-05T08:00:00-04:00",
+          "startLocalHour": 7,
+          "endLocalHour": 8,
+          "temperature": 51,
+          "temperatureUnit": "F",
+          "shortForecast": "Areas Of Drizzle",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 49,
+          "windSpeed": "8 mph",
+          "windDirection": "S",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T08:00:00-04:00",
+          "endTime": "2026-04-05T09:00:00-04:00",
+          "startLocalHour": 8,
+          "endLocalHour": 9,
+          "temperature": 52,
+          "temperatureUnit": "F",
+          "shortForecast": "Areas Of Drizzle",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 24,
+          "windSpeed": "8 mph",
+          "windDirection": "S",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T09:00:00-04:00",
+          "endTime": "2026-04-05T10:00:00-04:00",
+          "startLocalHour": 9,
+          "endLocalHour": 10,
+          "temperature": 55,
+          "temperatureUnit": "F",
+          "shortForecast": "Areas Of Drizzle",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 24,
+          "windSpeed": "9 mph",
+          "windDirection": "S",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T10:00:00-04:00",
+          "endTime": "2026-04-05T11:00:00-04:00",
+          "startLocalHour": 10,
+          "endLocalHour": 11,
+          "temperature": 59,
+          "temperatureUnit": "F",
+          "shortForecast": "Areas Of Drizzle",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 24,
+          "windSpeed": "12 mph",
+          "windDirection": "SW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T11:00:00-04:00",
+          "endTime": "2026-04-05T12:00:00-04:00",
+          "startLocalHour": 11,
+          "endLocalHour": 12,
+          "temperature": 62,
+          "temperatureUnit": "F",
+          "shortForecast": "Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 91,
+          "windSpeed": "12 mph",
+          "windDirection": "SW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T12:00:00-04:00",
+          "endTime": "2026-04-05T13:00:00-04:00",
+          "startLocalHour": 12,
+          "endLocalHour": 13,
+          "temperature": 62,
+          "temperatureUnit": "F",
+          "shortForecast": "Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 91,
+          "windSpeed": "12 mph",
+          "windDirection": "SW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T13:00:00-04:00",
+          "endTime": "2026-04-05T14:00:00-04:00",
+          "startLocalHour": 13,
+          "endLocalHour": 14,
+          "temperature": 64,
+          "temperatureUnit": "F",
+          "shortForecast": "Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 91,
+          "windSpeed": "10 mph",
+          "windDirection": "SW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T14:00:00-04:00",
+          "endTime": "2026-04-05T15:00:00-04:00",
+          "startLocalHour": 14,
+          "endLocalHour": 15,
+          "temperature": 62,
+          "temperatureUnit": "F",
+          "shortForecast": "Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 94,
+          "windSpeed": "9 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T15:00:00-04:00",
+          "endTime": "2026-04-05T16:00:00-04:00",
+          "startLocalHour": 15,
+          "endLocalHour": 16,
+          "temperature": 61,
+          "temperatureUnit": "F",
+          "shortForecast": "Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 94,
+          "windSpeed": "9 mph",
+          "windDirection": "W",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T16:00:00-04:00",
+          "endTime": "2026-04-05T17:00:00-04:00",
+          "startLocalHour": 16,
+          "endLocalHour": 17,
+          "temperature": 61,
+          "temperatureUnit": "F",
+          "shortForecast": "Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 94,
+          "windSpeed": "10 mph",
+          "windDirection": "SW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T17:00:00-04:00",
+          "endTime": "2026-04-05T18:00:00-04:00",
+          "startLocalHour": 17,
+          "endLocalHour": 18,
+          "temperature": 59,
+          "temperatureUnit": "F",
+          "shortForecast": "Slight Chance Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 20,
+          "windSpeed": "10 mph",
+          "windDirection": "SW",
+          "isDaytime": true
+        },
+        {
+          "startTime": "2026-04-05T18:00:00-04:00",
+          "endTime": "2026-04-05T19:00:00-04:00",
+          "startLocalHour": 18,
+          "endLocalHour": 19,
+          "temperature": 59,
+          "temperatureUnit": "F",
+          "shortForecast": "Slight Chance Rain Showers",
+          "detailedForecast": "",
+          "probabilityOfPrecipitation": 20,
+          "windSpeed": "10 mph",
+          "windDirection": "W",
+          "isDaytime": false
+        }
+      ],
+      "alerts": [],
+      "summary": {
+        "summary": "Areas Of Drizzle, Rain Showers, Slight Chance Rain Showers | 51–64F | up to 94% precip chance | winds up to 12 mph",
+        "operationalTakeaway": "Expect wetter routes and slower transitions; plan towel, paw-cleanup, and shorter loop contingencies.",
+        "maxTempF": 64,
+        "minTempF": 51,
+        "maxPrecipChancePct": 94,
+        "maxWindMph": 12,
+        "flags": [
+          "rain-risk"
+        ]
+      }
+    }
+  ],
+  "overall": {
+    "summary": "2026-04-05T07:00 to 2026-04-05T19:00 America/New_York | max temp 64F | max precip 94% | max wind 12 mph",
+    "operationalTakeaway": "Build in rain slowdown and cleanup time. Content should focus on practical routine adjustments, not generic weather talk.",
+    "affectedNeighborhoods": [
+      "Brooklyn"
+    ],
+    "flags": [
+      "rain-risk"
+    ]
+  }
+}

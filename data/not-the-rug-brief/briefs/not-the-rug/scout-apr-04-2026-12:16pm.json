@@ -1,0 +1,155 @@
+{
+  "runId": "e91b8450-5322-479c-8c12-ce83e5a32408",
+  "timestamp": "2026-04-04T17:13:16.567Z",
+  "clientId": "not-the-rug",
+  "clientName": "Not The Rug",
+  "status": "success",
+  "delta": "[IMPORTANT] [NEW] — National Pet Day (April 11) is 7 days out. No content observed in preparation. Content window opens today. Escalated per Visibility Gap Rule: no live brand mentions detected and event is within 30-day horizon.\n\n[BACKGROUND] [NEW] — Industry data confirms 87% of dog walking searches originate on Rover or Wag, leaving only 13% of organic search volume accessible to independent operators. NTR's independent positioning creates a long-term SEO opportunity but requires proactive local keyword and GBP optimization to capture it.\n\n[BACKGROUND] [NEW] — NTR holds #1 Yelp ranking for Williamsburg North Side (August 2025) and Greenpoint 11222 (February 2026). Review volume baseline: 34 Yelp reviews. No new reviews detected — first capture, used as baseline only.\n\n[QUIET] [NEW] — Today's weather (74°F, sunny, 16% precip) is best walking conditions of the season so far. No operational disruption. Opportunity for organic walk content.\n\n[QUIET] [NEW] — Competitor review and Reddit demand data not retrieved this cycle. No fabricated signals inserted. These slots remain open for next brief.\n\n---",
+  "humanBrief": "**Not The Rug — Daily Intelligence Brief | April 4, 2026**\n\n**Weather:** 74°F and sunny — best walk day of spring so far. No route changes needed. If you're out today, shoot footage. Use it.\n\n**National Pet Day is April 11 — 7 days out.** This is your highest-value content moment of the month. The angle that fits NTR specifically: not generic pet celebration, but what it means to trust someone with your dog every single day. Luis's tenure, named walkers, no pack walking — that's the story. One carousel or Reel this week, one story the day of. Testimonial pull from reviews would land naturally here.\n\n**Structural note:** 87% of dog walking searches run through Rover or Wag. Your independence is a differentiator — but only if people can find you. GBP photo freshness and review recency are the highest-leverage organic signals available to you right now.\n\n**Yelp baseline captured:** 34 reviews, 5 stars. Monitoring starts now.\n\nPRIORITY ACTION: Draft and schedule a National Pet Day Instagram post this weekend that leads with a named walker moment or client testimonial to activate NTR's trust positioning before competitors flood the hashtag.\n\n---",
+  "agentData": {
+    "brandMentions": [],
+    "competitorIntel": [
+      {
+        "competitor": "Rover / Wag (platforms)",
+        "finding": "87% of dog walking searches originate on platform apps, leaving only 13% of search volume accessible to independent operators through organic channels. A single independent operator can rank for 200+ local keyword combinations vs. platform-centralized profiles.",
+        "impact": "high",
+        "url": ""
+      },
+      {
+        "competitor": "Happy Pups / Urban Wag Brooklyn / Your Spoiled Pets",
+        "finding": "Named as Williamsburg competitors in local listings. One competitor has advertised at $15/walk — significant undercut on price. No current review or positioning data retrieved this cycle.",
+        "impact": "medium",
+        "url": ""
+      }
+    ],
+    "weatherImpact": null,
+    "localEvents": [
+      {
+        "event": "National Pet Day",
+        "date": "2026-04-11",
+        "impact": "High social engagement window. Pet content peaks across Instagram and TikTok on this date annually.",
+        "opportunity": "Lead with NTR's trust and consistency positioning — named walkers, long-term client relationships, no pack walking. Pull from existing testimonials. Reel or carousel format. Post day-before and day-of for maximum reach window.",
+        "url": "https://www.calendarlabs.com/holidays/us/national-pet-day.php"
+      },
+      {
+        "event": "Adopt a Shelter Pet Day",
+        "date": "2026-04-30",
+        "impact": "Low-to-medium. Adoption-focused rather than service-focused, but creates community goodwill content angle.",
+        "opportunity": "If any current NTR clients have rescue dogs, a short 'rescue dog now thriving' client story would be authentic and shareable.",
+        "url": "https://www.hobesounddogclub.com/dog-events"
+      },
+      {
+        "event": "National Pet Week",
+        "date": "2026-05-01 through 2026-05-07",
+        "impact": "Medium. Full week allows sustained content cadence — daily dog spotlights, walker features, or neighborhood route showcases.",
+        "opportunity": "Plan a 5-post series during this week: one per day featuring Williamsburg landmarks + NTR dogs. Builds local SEO signal and Instagram authority simultaneously.",
+        "url": "https://www.hobesounddogclub.com/dog-events"
+      }
+    ],
+    "redditSignals": [],
+    "localDemandSignals": [
+      {
+        "signal": "Hyper-local search behavior confirmed — pet owners search '[Neighborhood] dog walker' not generic terms",
+        "relevance": "high",
+        "detail": "Industry data confirms pet owners will not travel across town and search with neighborhood specificity. NTR's Williamsburg-only focus is a direct match to this behavior. Opportunity: ensure Google Business Profile, Yelp, and website copy all include 'Williamsburg dog walker' and sub-neighborhood terms (North Side, South Side, East Williamsburg) to capture full local search surface."
+      },
+      {
+        "signal": "Post-COVID preference for in-home/personal pet care over large-scale operations",
+        "relevance": "high",
+        "detail": "Consumer behavior data shows continued preference for personalized, in-home-style care following COVID disruption to kennels and group facilities. NTR's no-pack-walking, named-walker model directly addresses this preference — an angle underutilized in current marketing copy."
+      },
+      {
+        "signal": "Spring park traffic increasing — McCarren, Domino, East River State Park",
+        "relevance": "medium",
+        "detail": "74°F day in early April signals start of high-park-traffic season. Foot traffic at McCarren and Domino will increase through May. Opportunity for geo-tagged content at these locations to build local search association."
+      }
+    ],
+    "reviewInsights": [
+      {
+        "source": "Yelp",
+        "insight": "Baseline captured at 34 reviews, 5-star rating. No new reviews detected — this is the first monitoring snapshot. Future briefs will flag any additions or rating changes.",
+        "sentiment": "positive",
+        "actionableTakeaway": "Review velocity matters for local ranking. With 34 reviews over ~14 years of operation, there is meaningful room to accelerate review acquisition. Consider a soft ask via daily text update touchpoint with long-term clients.",
+        "url": "https://www.yelp.com/biz/not-the-rug-brooklyn"
+      }
+    ],
+    "partnershipOpportunities": [
+      {
+        "partner": "Williamsburg veterinary clinics (e.g., local independent vets)",
+        "type": "referral",
+        "finding": "Referral ecosystem identified as high-leverage channel. Vets are the most trusted recommendation source for new dog owners seeking walkers. No current NTR vet partnership data surfaced.",
+        "priority": "high",
+        "url": ""
+      },
+      {
+        "partner": "Local groomers and pet stores (Williamsburg)",
+        "type": "referral",
+        "finding": "Groomers and pet supply stores in the neighborhood have direct access to dog owner clientele at high-trust moments. Leaving cards or building reciprocal referral relationships is a low-cost acquisition channel.",
+        "priority": "medium",
+        "url": ""
+      }
+    ],
+    "escalations": [
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "National Pet Day (April 11) is 7 days out. No content preparation detected. Brand mentions bucket is empty. Visibility Gap Rule triggered: escalated to IMPORTANT. Priority action is content creation and scheduling this weekend."
+      },
+      {
+        "level": "IMPORTANT",
+        "status": "NEW",
+        "summary": "Platform concentration risk: 87% of dog walking searches flow through Rover/Wag. NTR operates independently. Long-term visibility requires consistent local SEO investment — GBP photo freshness, review recency, and neighborhood-specific keyword presence are highest-leverage actions available without paid spend."
+      },
+      {
+        "level": "QUIET",
+        "status": "NEW",
+        "summary": "Competitor review data and Reddit demand signals not retrieved this cycle. No fabricated data inserted. These represent monitoring gaps to resolve in next brief run."
+      }
+    ],
+    "contentOpportunities": {
+      "found": true,
+      "opportunities": [
+        {
+          "topic": "National Pet Day — Trust as the real celebration",
+          "whyNow": "April 11 is 7 days out. Content posted 2-3 days ahead performs better in Instagram algorithm than day-of posts. This is the last weekend to draft, design, and schedule.",
+          "format": "Instagram carousel (3-5 slides) or Reel. Slide 1: Hook — 'Every day is pet day when your walker knows your dog by name.' Slides 2-4: Pull 1-2 testimonial quotes with dog names/photos if available. Final slide: soft CTA to DM or book.",
+          "priority": "high",
+          "source": "calendarlabs.com / hobesounddogclub.com",
+          "url": "https://www.calendarlabs.com/holidays/us/national-pet-day.php"
+        },
+        {
+          "topic": "Spring walk conditions — today's weather as content",
+          "whyNow": "74°F, sunny, low wind. First real spring walk day of the season. Authentic in-the-moment content performs well and builds neighborhood presence. McCarren or Domino Park backdrop adds local SEO signal via geotag.",
+          "format": "Instagram Story or single feed post. Short video clip of a walk in progress, geotag McCarren Park or Domino Park. Caption: 'First real spring walk of the year. Williamsburg delivered.' No hard sell needed.",
+          "priority": "medium",
+          "source": "NWS Live Weather Data",
+          "url": ""
+        },
+        {
+          "topic": "The 'why no pack walking' explainer",
+          "whyNow": "Industry data shows 87% of searches go to platforms that default to pack or group walks. NTR's individual walk model is a genuine differentiator that most new prospects don't know to ask about.",
+          "format": "Short-form video (Reel, 30-45 seconds). Luis or a walker explains in plain language why they don't do pack walks and what that means for your dog's safety and experience. No script feel — conversational and direct.",
+          "priority": "medium",
+          "source": "Brand positioning data / industry intel",
+          "url": ""
+        },
+        {
+          "topic": "Yelp review velocity — quiet ask campaign",
+          "whyNow": "34 reviews over 14 years of operation. Review recency is a direct local ranking signal. Spring client re-engagement is natural — people are thinking about outdoor routines again.",
+          "format": "Not a public post — an operational action. Add a one-line soft ask to the daily text update sent to long-term clients: 'If you have a minute, a Yelp or Google review helps us more than you know.' Rotate through client list over 4-6 weeks.",
+          "priority": "high",
+          "source": "Yelp baseline / industry local SEO data",
+          "url": ""
+        }
+      ],
+      "searchedFor": [
+        "Not The Rug Brooklyn brand mentions",
+        "Williamsburg dog walker competitor reviews",
+        "Brooklyn dog owner Reddit threads",
+        "National Pet Day 2026 content trends",
+        "Dog walking industry operator intelligence 2026"
+      ]
+    }
+  },
+  "rawOutput": "## REASONING (internal, pre-output)\n\n**What's new vs. prior brief:** This is Brief #1 — no delta baseline exists. Everything is NEW.\n\n**Immediate action vs. routine monitoring:**\n- National Pet Day (April 11) is 7 days out — actionable content window opening NOW\n- Weather today is excellent (74°F, sunny, low precip) — prime walk conditions, but no operational disruption requiring urgent comms\n- 87% of searches going through Rover/Wag is a structural threat worth flagging as background intelligence\n- No Reddit signals, no competitor review data retrieved — gaps noted but not fabricated\n\n**Patterns across domains:**\n- Trust/intimacy positioning is consistently the brand's strongest asset across all review sources\n- Industry data confirms hyper-local search behavior (\"Williamsburg dog walker\") — NTR's Williamsburg-only focus is a competitive advantage that's underutilized in SEO terms\n- Platform concentration risk (Rover/Wag owning 87% of search) vs. NTR's independent positioning = structural visibility gap\n\n**Weather:** 74°F, mostly sunny, 16% precip, 16mph winds — genuinely good walking day. No operational change needed. No route disruption. Setting weatherImpact to null (no meaningful operational change).\n\n**Brand mentions:** No live Reddit or competitor review data. Visibility Gap Rule applies: brandMentions empty + upcoming event within 30 days → escalate to IMPORTANT.\n\n**Priority Action:** National Pet Day content push is the clearest immediate lever. Should be specific.\n\n**Review Insights:** Yelp baseline captured at 34 reviews. No change to report — first run.\n\n---\n\n=== DELTA ===\n\n[IMPORTANT] [NEW] — National Pet Day (April 11) is 7 days out. No content observed in preparation. Content window opens today. Escalated per Visibility Gap Rule: no live brand mentions detected and event is within 30-day horizon.\n\n[BACKGROUND] [NEW] — Industry data confirms 87% of dog walking searches originate on Rover or Wag, leaving only 13% of organic search volume accessible to independent operators. NTR's independent positioning creates a long-term SEO opportunity but requires proactive local keyword and GBP optimization to capture it.\n\n[BACKGROUND] [NEW] — NTR holds #1 Yelp ranking for Williamsburg North Side (August 2025) and Greenpoint 11222 (February 2026). Review volume baseline: 34 Yelp reviews. No new reviews detected — first capture, used as baseline only.\n\n[QUIET] [NEW] — Today's weather (74°F, sunny, 16% precip) is best walking conditions of the season so far. No operational disruption. Opportunity for organic walk content.\n\n[QUIET] [NEW] — Competitor review and Reddit demand data not retrieved this cycle. No fabricated signals inserted. These slots remain open for next brief.\n\n---\n\n=== HUMAN BRIEF ===\n\n**Not The Rug — Daily Intelligence Brief | April 4, 2026**\n\n**Weather:** 74°F and sunny — best walk day of spring so far. No route changes needed. If you're out today, shoot footage. Use it.\n\n**National Pet Day is April 11 — 7 days out.** This is your highest-value content moment of the month. The angle that fits NTR specifically: not generic pet celebration, but what it means to trust someone with your dog every single day. Luis's tenure, named walkers, no pack walking — that's the story. One carousel or Reel this week, one story the day of. Testimonial pull from reviews would land naturally here.\n\n**Structural note:** 87% of dog walking searches run through Rover or Wag. Your independence is a differentiator — but only if people can find you. GBP photo freshness and review recency are the highest-leverage organic signals available to you right now.\n\n**Yelp baseline captured:** 34 reviews, 5 stars. Monitoring starts now.\n\nPRIORITY ACTION: Draft and schedule a National Pet Day Instagram post this weekend that leads with a named walker moment or client testimonial to activate NTR's trust positioning before competitors flood the hashtag.\n\n---\n\n=== AGENT DATA ===\n\n{\n  \"brandMentions\": [],\n  \"competitorIntel\": [\n    {\n      \"competitor\": \"Rover / Wag (platforms)\",\n      \"finding\": \"87% of dog walking searches originate on platform apps, leaving only 13% of search volume accessible to independent operators through organic channels. A single independent operator can rank for 200+ local keyword combinations vs. platform-centralized profiles.\",\n      \"impact\": \"high\",\n      \"url\": \"\"\n    },\n    {\n      \"competitor\": \"Happy Pups / Urban Wag Brooklyn / Your Spoiled Pets\",\n      \"finding\": \"Named as Williamsburg competitors in local listings. One competitor has advertised at $15/walk — significant undercut on price. No current review or positioning data retrieved this cycle.\",\n      \"impact\": \"medium\",\n      \"url\": \"\"\n    }\n  ],\n  \"weatherImpact\": null,\n  \"localEvents\": [\n    {\n      \"event\": \"National Pet Day\",\n      \"date\": \"2026-04-11\",\n      \"impact\": \"High social engagement window. Pet content peaks across Instagram and TikTok on this date annually.\",\n      \"opportunity\": \"Lead with NTR's trust and consistency positioning — named walkers, long-term client relationships, no pack walking. Pull from existing testimonials. Reel or carousel format. Post day-before and day-of for maximum reach window.\",\n      \"url\": \"https://www.calendarlabs.com/holidays/us/national-pet-day.php\"\n    },\n    {\n      \"event\": \"Adopt a Shelter Pet Day\",\n      \"date\": \"2026-04-30\",\n      \"impact\": \"Low-to-medium. Adoption-focused rather than service-focused, but creates community goodwill content angle.\",\n      \"opportunity\": \"If any current NTR clients have rescue dogs, a short 'rescue dog now thriving' client story would be authentic and shareable.\",\n      \"url\": \"https://www.hobesounddogclub.com/dog-events\"\n    },\n    {\n      \"event\": \"National Pet Week\",\n      \"date\": \"2026-05-01 through 2026-05-07\",\n      \"impact\": \"Medium. Full week allows sustained content cadence — daily dog spotlights, walker features, or neighborhood route showcases.\",\n      \"opportunity\": \"Plan a 5-post series during this week: one per day featuring Williamsburg landmarks + NTR dogs. Builds local SEO signal and Instagram authority simultaneously.\",\n      \"url\": \"https://www.hobesounddogclub.com/dog-events\"\n    }\n  ],\n  \"redditSignals\": [],\n  \"localDemandSignals\": [\n    {\n      \"signal\": \"Hyper-local search behavior confirmed — pet owners search '[Neighborhood] dog walker' not generic terms\",\n      \"relevance\": \"high\",\n      \"detail\": \"Industry data confirms pet owners will not travel across town and search with neighborhood specificity. NTR's Williamsburg-only focus is a direct match to this behavior. Opportunity: ensure Google Business Profile, Yelp, and website copy all include 'Williamsburg dog walker' and sub-neighborhood terms (North Side, South Side, East Williamsburg) to capture full local search surface.\"\n    },\n    {\n      \"signal\": \"Post-COVID preference for in-home/personal pet care over large-scale operations\",\n      \"relevance\": \"high\",\n      \"detail\": \"Consumer behavior data shows continued preference for personalized, in-home-style care following COVID disruption to kennels and group facilities. NTR's no-pack-walking, named-walker model directly addresses this preference — an angle underutilized in current marketing copy.\"\n    },\n    {\n      \"signal\": \"Spring park traffic increasing — McCarren, Domino, East River State Park\",\n      \"relevance\": \"medium\",\n      \"detail\": \"74°F day in early April signals start of high-park-traffic season. Foot traffic at McCarren and Domino will increase through May. Opportunity for geo-tagged content at these locations to build local search association.\"\n    }\n  ],\n  \"reviewInsights\": [\n    {\n      \"source\": \"Yelp\",\n      \"insight\": \"Baseline captured at 34 reviews, 5-star rating. No new reviews detected — this is the first monitoring snapshot. Future briefs will flag any additions or rating changes.\",\n      \"sentiment\": \"positive\",\n      \"actionableTakeaway\": \"Review velocity matters for local ranking. With 34 reviews over ~14 years of operation, there is meaningful room to accelerate review acquisition. Consider a soft ask via daily text update touchpoint with long-term clients.\",\n      \"url\": \"https://www.yelp.com/biz/not-the-rug-brooklyn\"\n    }\n  ],\n  \"partnershipOpportunities\": [\n    {\n      \"partner\": \"Williamsburg veterinary clinics (e.g., local independent vets)\",\n      \"type\": \"referral\",\n      \"finding\": \"Referral ecosystem identified as high-leverage channel. Vets are the most trusted recommendation source for new dog owners seeking walkers. No current NTR vet partnership data surfaced.\",\n      \"priority\": \"high\",\n      \"url\": \"\"\n    },\n    {\n      \"partner\": \"Local groomers and pet stores (Williamsburg)\",\n      \"type\": \"referral\",\n      \"finding\": \"Groomers and pet supply stores in the neighborhood have direct access to dog owner clientele at high-trust moments. Leaving cards or building reciprocal referral relationships is a low-cost acquisition channel.\",\n      \"priority\": \"medium\",\n      \"url\": \"\"\n    }\n  ],\n  \"escalations\": [\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"National Pet Day (April 11) is 7 days out. No content preparation detected. Brand mentions bucket is empty. Visibility Gap Rule triggered: escalated to IMPORTANT. Priority action is content creation and scheduling this weekend.\"\n    },\n    {\n      \"level\": \"IMPORTANT\",\n      \"status\": \"NEW\",\n      \"summary\": \"Platform concentration risk: 87% of dog walking searches flow through Rover/Wag. NTR operates independently. Long-term visibility requires consistent local SEO investment — GBP photo freshness, review recency, and neighborhood-specific keyword presence are highest-leverage actions available without paid spend.\"\n    },\n    {\n      \"level\": \"QUIET\",\n      \"status\": \"NEW\",\n      \"summary\": \"Competitor review data and Reddit demand signals not retrieved this cycle. No fabricated data inserted. These represent monitoring gaps to resolve in next brief run.\"\n    }\n  ],\n  \"contentOpportunities\": {\n    \"found\": true,\n    \"opportunities\": [\n      {\n        \"topic\": \"National Pet Day — Trust as the real celebration\",\n        \"whyNow\": \"April 11 is 7 days out. Content posted 2-3 days ahead performs better in Instagram algorithm than day-of posts. This is the last weekend to draft, design, and schedule.\",\n        \"format\": \"Instagram carousel (3-5 slides) or Reel. Slide 1: Hook — 'Every day is pet day when your walker knows your dog by name.' Slides 2-4: Pull 1-2 testimonial quotes with dog names/photos if available. Final slide: soft CTA to DM or book.\",\n        \"priority\": \"high\",\n        \"source\": \"calendarlabs.com / hobesounddogclub.com\",\n        \"url\": \"https://www.calendarlabs.com/holidays/us/national-pet-day.php\"\n      },\n      {\n        \"topic\": \"Spring walk conditions — today's weather as content\",\n        \"whyNow\": \"74°F, sunny, low wind. First real spring walk day of the season. Authentic in-the-moment content performs well and builds neighborhood presence. McCarren or Domino Park backdrop adds local SEO signal via geotag.\",\n        \"format\": \"Instagram Story or single feed post. Short video clip of a walk in progress, geotag McCarren Park or Domino Park. Caption: 'First real spring walk of the year. Williamsburg delivered.' No hard sell needed.\",\n        \"priority\": \"medium\",\n        \"source\": \"NWS Live Weather Data\",\n        \"url\": \"\"\n      },\n      {\n        \"topic\": \"The 'why no pack walking' explainer\",\n        \"whyNow\": \"Industry data shows 87% of searches go to platforms that default to pack or group walks. NTR's individual walk model is a genuine differentiator that most new prospects don't know to ask about.\",\n        \"format\": \"Short-form video (Reel, 30-45 seconds). Luis or a walker explains in plain language why they don't do pack walks and what that means for your dog's safety and experience. No script feel — conversational and direct.\",\n        \"priority\": \"medium\",\n        \"source\": \"Brand positioning data / industry intel\",\n        \"url\": \"\"\n      },\n      {\n        \"topic\": \"Yelp review velocity — quiet ask campaign\",\n        \"whyNow\": \"34 reviews over 14 years of operation. Review recency is a direct local ranking signal. Spring client re-engagement is natural — people are thinking about outdoor routines again.\",\n        \"format\": \"Not a public post — an operational action. Add a one-line soft ask to the daily text update sent to long-term clients: 'If you have a minute, a Yelp or Google review helps us more than you know.' Rotate through client list over 4-6 weeks.\",\n        \"priority\": \"high\",\n        \"source\": \"Yelp baseline / industry local SEO data\",\n        \"url\": \"\"\n      }\n    ],\n    \"searchedFor\": [\n      \"Not The Rug Brooklyn brand mentions\",\n      \"Williamsburg dog walker competitor reviews\",\n      \"Brooklyn dog owner Reddit threads\",\n      \"National Pet Day 2026 content trends\",\n      \"Dog walking industry operator intelligence 2026\"\n    ]\n  }\n}"
+}

@@ -1,0 +1,3831 @@
+{
+  "status": "success",
+  "fetchedAt": "2026-05-03T16:40:59.849Z",
+  "clientId": "not-the-rug",
+  "topic": "Brooklyn NYC dog walking pet care Williamsburg",
+  "sources": "reddit,x,youtube,tiktok,instagram,hackernews",
+  "lookbackDays": 7,
+  "rawOutput": {
+    "artifacts": {
+      "grounding": []
+    },
+    "clusters": [
+      {
+        "candidate_ids": [
+          "https://tiktok.com/@petmarketnyc/video/7633485762666712350"
+        ],
+        "cluster_id": "cluster-1",
+        "representative_ids": [
+          "https://tiktok.com/@petmarketnyc/video/7633485762666712350"
+        ],
+        "score": 42.844077285594295,
+        "sources": [
+          "tiktok"
+        ],
+        "title": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg"
+        ],
+        "cluster_id": "cluster-2",
+        "representative_ids": [
+          "https://reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg"
+        ],
+        "score": 42.45258297819392,
+        "sources": [
+          "reddit"
+        ],
+        "title": "Latino picnic in Williamsburg",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/bkbpreynoso/status/2050958073766846591"
+        ],
+        "cluster_id": "cluster-3",
+        "representative_ids": [
+          "https://x.com/bkbpreynoso/status/2050958073766846591"
+        ],
+        "score": 41.393399470899475,
+        "sources": [
+          "x"
+        ],
+        "title": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/blondiepredicts/status/2050963225970086383"
+        ],
+        "cluster_id": "cluster-4",
+        "representative_ids": [
+          "https://x.com/blondiepredicts/status/2050963225970086383"
+        ],
+        "score": 41.36160256410256,
+        "sources": [
+          "x"
+        ],
+        "title": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://tiktok.com/@petheavenlux/video/7635007948825120022"
+        ],
+        "cluster_id": "cluster-5",
+        "representative_ids": [
+          "https://tiktok.com/@petheavenlux/video/7635007948825120022"
+        ],
+        "score": 39.82286216443214,
+        "sources": [
+          "tiktok"
+        ],
+        "title": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://tiktok.com/@rolo1461/video/7635012187924237590"
+        ],
+        "cluster_id": "cluster-6",
+        "representative_ids": [
+          "https://tiktok.com/@rolo1461/video/7635012187924237590"
+        ],
+        "score": 39.57020697167756,
+        "sources": [
+          "tiktok"
+        ],
+        "title": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/scootercasterny/status/2050936274177954198"
+        ],
+        "cluster_id": "cluster-7",
+        "representative_ids": [
+          "https://x.com/scootercasterny/status/2050936274177954198"
+        ],
+        "score": 39.327281420765026,
+        "sources": [
+          "x"
+        ],
+        "title": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/mrandyngo/status/2050967037866811569",
+          "https://x.com/overitall69/status/2050968692939190435"
+        ],
+        "cluster_id": "cluster-8",
+        "representative_ids": [
+          "https://x.com/mrandyngo/status/2050967037866811569",
+          "https://x.com/overitall69/status/2050968692939190435"
+        ],
+        "score": 39.31006720430108,
+        "sources": [
+          "x"
+        ],
+        "title": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow"
+        ],
+        "cluster_id": "cluster-9",
+        "representative_ids": [
+          "https://reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow"
+        ],
+        "score": 38.83758759241402,
+        "sources": [
+          "reddit"
+        ],
+        "title": "My girl is crossing the rainbow bridge tomorrow",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy"
+        ],
+        "cluster_id": "cluster-10",
+        "representative_ids": [
+          "https://reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy"
+        ],
+        "score": 38.237790164452875,
+        "sources": [
+          "reddit"
+        ],
+        "title": "Regrets about naming my puppy",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/bkconservatives/status/2050964123744108998"
+        ],
+        "cluster_id": "cluster-11",
+        "representative_ids": [
+          "https://x.com/bkconservatives/status/2050964123744108998"
+        ],
+        "score": 38.04617572786691,
+        "sources": [
+          "x"
+        ],
+        "title": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Part",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/jsegarra86/status/2050969566772129826"
+        ],
+        "cluster_id": "cluster-12",
+        "representative_ids": [
+          "https://x.com/jsegarra86/status/2050969566772129826"
+        ],
+        "score": 37.63725260416667,
+        "sources": [
+          "x"
+        ],
+        "title": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/cameronheiese/status/2050954134384156761"
+        ],
+        "cluster_id": "cluster-13",
+        "representative_ids": [
+          "https://x.com/cameronheiese/status/2050954134384156761"
+        ],
+        "score": 37.01551258330129,
+        "sources": [
+          "x"
+        ],
+        "title": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/mr_conniption/status/2050933953834385655"
+        ],
+        "cluster_id": "cluster-14",
+        "representative_ids": [
+          "https://x.com/mr_conniption/status/2050933953834385655"
+        ],
+        "score": 36.79938829052748,
+        "sources": [
+          "x"
+        ],
+        "title": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/zzpoofs007/status/2050973793896517781"
+        ],
+        "cluster_id": "cluster-15",
+        "representative_ids": [
+          "https://x.com/zzpoofs007/status/2050973793896517781"
+        ],
+        "score": 36.76036444338025,
+        "sources": [
+          "x"
+        ],
+        "title": "Queens NYC is my soul, Brooklyn has my heart.",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/mr_miss_jones/status/2050928504536015068"
+        ],
+        "cluster_id": "cluster-16",
+        "representative_ids": [
+          "https://x.com/mr_miss_jones/status/2050928504536015068"
+        ],
+        "score": 36.745819959458764,
+        "sources": [
+          "x"
+        ],
+        "title": "@mmpadellan Good morning from NYC Brooklyn",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://tiktok.com/@mrmartin.co/video/7633841413439917342"
+        ],
+        "cluster_id": "cluster-17",
+        "representative_ids": [
+          "https://tiktok.com/@mrmartin.co/video/7633841413439917342"
+        ],
+        "score": 35.97070030442732,
+        "sources": [
+          "tiktok"
+        ],
+        "title": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet sp",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/visionary_vvm/status/2050926861153112146"
+        ],
+        "cluster_id": "cluster-18",
+        "representative_ids": [
+          "https://x.com/visionary_vvm/status/2050926861153112146"
+        ],
+        "score": 35.74851591361182,
+        "sources": [
+          "x"
+        ],
+        "title": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with IC",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://tiktok.com/@rhinopetplates/video/7633535828349685023"
+        ],
+        "cluster_id": "cluster-19",
+        "representative_ids": [
+          "https://tiktok.com/@rhinopetplates/video/7633535828349685023"
+        ],
+        "score": 35.66432338800905,
+        "sources": [
+          "tiktok"
+        ],
+        "title": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s ho",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/pastordw2/status/2050939167136211389"
+        ],
+        "cluster_id": "cluster-20",
+        "representative_ids": [
+          "https://x.com/pastordw2/status/2050939167136211389"
+        ],
+        "score": 35.62296568627451,
+        "sources": [
+          "x"
+        ],
+        "title": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and in",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/oakley294524/status/2050970971922747726"
+        ],
+        "cluster_id": "cluster-21",
+        "representative_ids": [
+          "https://x.com/oakley294524/status/2050970971922747726"
+        ],
+        "score": 35.31757180336924,
+        "sources": [
+          "x"
+        ],
+        "title": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from buildi",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/mendoncamelanie/status/2050974598506619172"
+        ],
+        "cluster_id": "cluster-22",
+        "representative_ids": [
+          "https://x.com/mendoncamelanie/status/2050974598506619172"
+        ],
+        "score": 34.65502273373117,
+        "sources": [
+          "x"
+        ],
+        "title": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://x.com/_elf_angel_film/status/2050954834090578407"
+        ],
+        "cluster_id": "cluster-23",
+        "representative_ids": [
+          "https://x.com/_elf_angel_film/status/2050954834090578407"
+        ],
+        "score": 34.64709383753501,
+        "sources": [
+          "x"
+        ],
+        "title": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+        "uncertainty": "single-source"
+      },
+      {
+        "candidate_ids": [
+          "https://instagram.com/reel/dxoxpb_dlnd"
+        ],
+        "cluster_id": "cluster-24",
+        "representative_ids": [
+          "https://instagram.com/reel/dxoxpb_dlnd"
+        ],
+        "score": 29.231125040180004,
+        "sources": [
+          "instagram"
+        ],
+        "title": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+        "uncertainty": "single-source"
+      }
+    ],
+    "errors_by_source": {},
+    "generated_at": "2026-05-03T16:41:52.949148+00:00",
+    "items_by_source": {
+      "hackernews": [],
+      "instagram": [
+        {
+          "author": "emilyputnamtv",
+          "body": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+          "date_confidence": "high",
+          "engagement": {
+            "comments": 2,
+            "likes": 58,
+            "views": 983
+          },
+          "engagement_score": 50,
+          "freshness": 80,
+          "item_id": "IG7",
+          "local_rank_score": 0.25,
+          "local_relevance": 0,
+          "metadata": {
+            "hashtags": [
+              "goodmorning",
+              "amnewsers",
+              "mondaymotivation"
+            ]
+          },
+          "published_at": "2026-04-27",
+          "relevance_hint": 0,
+          "snippet": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! #goodmorning #amnewsers #mondaymotivation",
+          "source": "instagram",
+          "source_quality": 0.58,
+          "title": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+          "url": "https://www.instagram.com/reel/DXoXpB_DlNd/",
+          "why_relevant": "Instagram: POV it’s Monday morning at @news10nbc 😊 Start the work week"
+        }
+      ],
+      "reddit": [
+        {
+          "body": "My girl is crossing the rainbow bridge tomorrow\nThis is Lacey. She’s just shy of 14, her birthday is May 30. She’s a Golden and she’s been with us since she was 12 weeks old. \n\nShe ended up getting 4 cancers in her life, two of which were rare, but it never slowed her down. Her most recent cancer was in her neck (thyroid carcinoma and extra-osseous osteosarcoma) and the mass grew so fast. She had emergency surgery because it was compressing her trachea and making it difficult for her to breathe. By the time they went in, the mass was so big i\nYou have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+          "container": "olddogs",
+          "date_confidence": "high",
+          "engagement": {
+            "num_comments": 387,
+            "score": 6211,
+            "upvote_ratio": 1
+          },
+          "engagement_score": 87,
+          "freshness": 83,
+          "item_id": "R3",
+          "local_rank_score": 0.42450000000000004,
+          "local_relevance": 0.2,
+          "metadata": {
+            "comment_insights": [],
+            "top_comments": [
+              {
+                "author": "MagicalOak",
+                "excerpt": "You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever.",
+                "score": 65
+              },
+              {
+                "author": "Bl8kStrr",
+                "excerpt": "😔Lacey we will miss and always love you😢",
+                "score": 28
+              },
+              {
+                "author": "Beautiful-Tooth-1507",
+                "excerpt": "https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+                "score": 24
+              },
+              {
+                "author": "RingOk664",
+                "excerpt": "Someone sent this to me when I had to send my boy to heaven. Holding him as he passed was more painful than losing my parents. But...I did not want him to suffer anymore.\n\nhttps://preview.redd.it/rdtz",
+                "score": 21
+              },
+              {
+                "author": "Silly-RedRabbit",
+                "excerpt": "What adorable photos! I love her giant carrot and her princess smile while she’s wearing her crown. It’s so hard, but you’re making the right choice for your baby girl. Goodbye sweet Lacey ❤️ ",
+                "score": 17
+              },
+              {
+                "author": "myleelalee",
+                "excerpt": "I am so sorry. 💔",
+                "score": 9
+              },
+              {
+                "author": "Fossilwench",
+                "excerpt": "Its very clear Ms.Lacey girl has had the most fastidious, thoughtful exemplary care throughout her life thanks to you. your decision is not one of giving up on her but instead recognizing her needs be",
+                "score": 9
+              },
+              {
+                "author": "Physical_Butterfly16",
+                "excerpt": "My pup crossed the 23rd and will be waiting to greet yours. They may gossip together.\n\nhttps://preview.redd.it/7odyo7ea01yg1.jpeg?width=980&format=pjpg&auto=webp&s=b2e55bd7c7db5ffe2087121a8ba15580ba86",
+                "score": 6
+              },
+              {
+                "author": "mrCheesemonger",
+                "excerpt": "RIP good girl. My Maude who left us in 2023 is waiting for her with treats and toys. The worst day to be a dog owner - every time. Your pain is our pain\n\nhttps://preview.redd.it/udxsy0udx3yg1.jpeg?wid",
+                "score": 6
+              },
+              {
+                "author": "fumforfun69",
+                "excerpt": "She was loved ",
+                "score": 5
+              }
+            ]
+          },
+          "published_at": "2026-04-28",
+          "relevance_hint": 1,
+          "snippet": "You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+          "source": "reddit",
+          "source_quality": 0.6,
+          "title": "My girl is crossing the rainbow bridge tomorrow",
+          "url": "https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/",
+          "why_relevant": "Reddit public search"
+        },
+        {
+          "body": "Latino picnic in Williamsburg\nHey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we're wondering if there's enough interest to host one in Williamsburg? (for the WBurg & Brooklyn people)\n\nJust looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and expand their circles.\n\nThink it will be fun especially as the weather starts to warm up for the summ",
+          "container": "williamsburg",
+          "date_confidence": "high",
+          "engagement": {
+            "num_comments": 34,
+            "score": 55,
+            "upvote_ratio": 0.9
+          },
+          "engagement_score": 34,
+          "freshness": 90,
+          "item_id": "R10",
+          "local_rank_score": 0.41500000000000004,
+          "local_relevance": 0.24,
+          "metadata": {
+            "comment_insights": [],
+            "top_comments": []
+          },
+          "published_at": "2026-04-30",
+          "relevance_hint": 0.134,
+          "snippet": "Hey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we're wondering if there's enough interest to host one in Williamsburg? (for the WBurg & Brooklyn people)\n\nJust looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and",
+          "source": "reddit",
+          "source_quality": 0.6,
+          "title": "Latino picnic in Williamsburg",
+          "url": "https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/",
+          "why_relevant": "Reddit public search"
+        },
+        {
+          "body": "Regrets about naming my puppy\nSo for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.\n\nA few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said something like \"Stop it😂\" \"Really?😂\". At the time I was very confused.\n\nNow, I know why they were gigglin",
+          "container": "puppy101",
+          "date_confidence": "high",
+          "engagement": {
+            "num_comments": 696,
+            "score": 414,
+            "upvote_ratio": 0.93
+          },
+          "engagement_score": 64,
+          "freshness": 83,
+          "item_id": "R6",
+          "local_rank_score": 0.395,
+          "local_relevance": 0.19,
+          "metadata": {
+            "comment_insights": [],
+            "top_comments": []
+          },
+          "published_at": "2026-04-28",
+          "relevance_hint": 0.897,
+          "snippet": "So for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.\n\nA few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said somet",
+          "source": "reddit",
+          "source_quality": 0.6,
+          "title": "Regrets about naming my puppy",
+          "url": "https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/",
+          "why_relevant": "Reddit public search"
+        }
+      ],
+      "tiktok": [
+        {
+          "author": "petmarketnyc",
+          "body": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a \"No Vacancy\" sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea & Tick Spray: For those who like a little \"spritz and go\" action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online  🚀 Speedy Service: We deliver faster than your dog runs when they hear the treat bag—under 3 hours when you shop online! #PetMarketNYC #FleaAndTick #PetCare #NoMoreItch #NYCPets",
+          "date_confidence": "high",
+          "engagement": {
+            "comments": 1,
+            "likes": 16,
+            "shares": 0,
+            "views": 423
+          },
+          "engagement_score": 29,
+          "freshness": 80,
+          "item_id": "TK67",
+          "local_rank_score": 0.43700000000000006,
+          "local_relevance": 0.32,
+          "metadata": {
+            "hashtags": [
+              "petmarketnyc",
+              "fleaandtick",
+              "petcare",
+              "nomoreitch",
+              "nycpets"
+            ]
+          },
+          "published_at": "2026-04-27",
+          "relevance_hint": 0.62,
+          "snippet": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a \"No Vacancy\" sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea & Tick Spray: For those who like a little \"spritz and go\" action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online 🚀 Speedy Service: We deliver faster than",
+          "source": "tiktok",
+          "source_quality": 0.58,
+          "title": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie",
+          "url": "https://www.tiktok.com/@petmarketnyc/video/7633485762666712350",
+          "why_relevant": "TikTok: It’s flea and tick season—or as your pet calls it, \"The Grea"
+        },
+        {
+          "author": "petheavenlux",
+          "body": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+          "date_confidence": "high",
+          "engagement": {
+            "comments": 1,
+            "likes": 136,
+            "shares": 4,
+            "views": 8769
+          },
+          "engagement_score": 68,
+          "freshness": 93,
+          "item_id": "TK41",
+          "local_rank_score": 0.41750000000000004,
+          "local_relevance": 0.18,
+          "metadata": {
+            "hashtags": [
+              "dog",
+              "dogsoftiktok",
+              "petsoftiktok",
+              "doglover",
+              "petcare"
+            ]
+          },
+          "published_at": "2026-05-01",
+          "relevance_hint": 0.35,
+          "snippet": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+          "source": "tiktok",
+          "source_quality": 0.58,
+          "title": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+          "url": "https://www.tiktok.com/@petheavenlux/video/7635007948825120022",
+          "why_relevant": "TikTok: Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #dogl"
+        },
+        {
+          "author": "rolo1461",
+          "body": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+          "date_confidence": "high",
+          "engagement": {
+            "comments": 2,
+            "likes": 21,
+            "shares": 0,
+            "views": 256
+          },
+          "engagement_score": 27,
+          "freshness": 93,
+          "item_id": "TK79",
+          "local_rank_score": 0.37650000000000006,
+          "local_relevance": 0.18,
+          "metadata": {
+            "hashtags": [
+              "walkoftheday",
+              "dogwalking",
+              "puppydog",
+              "puppywalk",
+              "cavapoo"
+            ]
+          },
+          "published_at": "2026-05-01",
+          "relevance_hint": 0.23,
+          "snippet": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+          "source": "tiktok",
+          "source_quality": 0.58,
+          "title": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+          "url": "https://www.tiktok.com/@rolo1461/video/7635012187924237590",
+          "why_relevant": "TikTok: #walkoftheday #dogwalking #puppydog #puppywalk #cavapoo"
+        },
+        {
+          "author": "mrmartin.co",
+          "body": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet spa in New York 🔥  🚐 We bring the FULL professional spa experience right to your door:  ✔️ Bath & deep cleaning  ✔️ Haircut & styling  ✔️ Nail trimming  ✔️ Ear cleaning  ✔️ Oral hygiene  No stress. No travel. No waiting.  Your pet stays comfortable at home… and we handle EVERYTHING.  💎 Luxury grooming. Professional care. At your doorstep.  📲 Book now — spots fill fa #NYCPets #DogGroomingNYC #CatGrooming #MobileGrooming #PetSpa DogSpa NYCDogs PetCareNYC LuxuryPets DogLife CatLife PetLovers GroomingService ViralNYC NYCBusiness PetTransformation BeforeAfterDog PetReel DogReels CatReels",
+          "date_confidence": "high",
+          "engagement": {
+            "comments": 0,
+            "likes": 3,
+            "shares": 0,
+            "views": 56
+          },
+          "engagement_score": 0,
+          "freshness": 83,
+          "item_id": "TK90",
+          "local_rank_score": 0.3765,
+          "local_relevance": 0.26,
+          "metadata": {
+            "hashtags": [
+              "nycpets",
+              "doggroomingnyc",
+              "catgrooming",
+              "mobilegrooming",
+              "petspa"
+            ]
+          },
+          "published_at": "2026-04-28",
+          "relevance_hint": 0.47,
+          "snippet": "🚨 NEW YORK 🚨 Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨ We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet spa in New York 🔥 🚐 We bring the FULL professional spa experience right to your door: ✔️ Bath & deep cleaning ✔️ Haircut & styling ✔️ Nail trimming ✔️ Ear cleaning ✔️ Oral hygiene No stress. No travel. No waiting. Your pet stays comfortable at home… and we handle EVERYTHING. 💎 Luxury grooming. Professional care. At your doorstep. 📲 Book now — spots fill fa #NYCPets #DogGroomingNYC #CatGrooming #MobileGrooming #PetSpa DogSpa NYCDogs PetCareNYC LuxuryPets DogLife CatLife PetLovers GroomingService ViralNYC NYCBusiness PetTransformation BeforeAfterDog PetReel",
+          "source": "tiktok",
+          "source_quality": 0.58,
+          "title": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet sp",
+          "url": "https://www.tiktok.com/@mrmartin.co/video/7633841413439917342",
+          "why_relevant": "TikTok: 🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU"
+        },
+        {
+          "author": "rhinopetplates",
+          "body": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s home for a private, customized in-home cooking demonstration for his pet parents and their house manager. Because Terry isn’t just any pup… he’s a senior with specific nutritional needs, and his family wanted to make sure he’s cared for perfectly — even while they’re away in Spain this summer 🇪🇸✈️ So what did we do? 👨‍🍳 Trained their in-home cook & house manager 🥩 Built a customized meal plan just for Terry 🥦 Focused on senior support, digestion & clean energy ❄️ Provided frozen Rhino meals for consistency while traveling Because consistency = comfort… and comfort = everything for a senior dog ❤️ This is what makes Rhino Pet Plates different — we don’t just deliver meals… we step into your world and make sure your dog is cared for the right way, even when you’re not there. Veterinary-guided. Chef-driven. Family-first. 📍NYC in-home demonstrations available 📦 Fresh & frozen meals available for travel Book your in-home pet food demonstration and learn how to cook for your dog the right way 🐾 #RhinoPetPlates #NYCPets #UpperEastSideDogs #SeniorDogCare #DogNutrition",
+          "date_confidence": "high",
+          "engagement": {
+            "comments": 0,
+            "likes": 5,
+            "shares": 0,
+            "views": 74
+          },
+          "engagement_score": 4,
+          "freshness": 80,
+          "item_id": "TK89",
+          "local_rank_score": 0.36,
+          "local_relevance": 0.24,
+          "metadata": {
+            "hashtags": [
+              "rhinopetplates",
+              "nycpets",
+              "uppereastsidedogs",
+              "seniordogcare",
+              "dognutrition"
+            ]
+          },
+          "published_at": "2026-04-27",
+          "relevance_hint": 0.47,
+          "snippet": "Trained their in-home cook & house manager 🥩 Built a customized meal plan just for Terry 🥦 Focused on senior support, digestion & clean energy ❄️ Provided frozen Rhino meals for consistency while traveling Because consistency = comfort… and comfort = everything for a senior dog ❤️ This is what makes Rhino Pet Plates different — we don’t just deliver meals… we step into your world and make sure your dog is cared for the right way, even when you’re not there. Veterinary-guided. Chef-driven. Family-first. 📍NYC in-home demonstrations available 📦 Fresh & frozen meals available for travel Book your in-home pet food demonstration and learn how to cook for your",
+          "source": "tiktok",
+          "source_quality": 0.58,
+          "title": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s ho",
+          "url": "https://www.tiktok.com/@rhinopetplates/video/7633535828349685023",
+          "why_relevant": "TikTok: Upper East Side energy meets next-level pet care 🏙️🐾 Today,"
+        }
+      ],
+      "x": [
+        {
+          "author": "ScooterCasterNY",
+          "body": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out of the Wyckoff Hospital building after earlier detainement off site, as protesters massed outside.\n\n Agents rushed ran into the ambulance bay with pepper spray canisters pointed at anyone in their way. Later running out with a suspect dragging him into a car waiting outside.\n\nNYPD arrested several activists while trash and objects were thrown onto Stanhope",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 640,
+            "replies": 73,
+            "reposts": 256
+          },
+          "engagement_score": 100,
+          "freshness": 100,
+          "item_id": "X24",
+          "local_rank_score": 0.4085,
+          "local_relevance": 0.09,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC ICE dragged a man in custody out of the Wyckoff Hospital building after earlier detainement off site, as protesters massed outside. Agents rushed ran into the ambulance bay with pepper spray canisters pointed at anyone in their way. Later running out with a suspect dragging him into a car waiting outside. NYPD arrested several activists while trash and objects were thrown onto Stanhope",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out",
+          "url": "https://x.com/ScooterCasterNY/status/2050936274177954198",
+          "why_relevant": ""
+        },
+        {
+          "author": "MrAndyNgo",
+          "body": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.  https://t.co/NTILHyXqkd",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 340,
+            "replies": 36,
+            "reposts": 104
+          },
+          "engagement_score": 87,
+          "freshness": 100,
+          "item_id": "X9",
+          "local_rank_score": 0.3955,
+          "local_relevance": 0.09,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody. https://t.co/NTILHyXqkd",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.",
+          "url": "https://x.com/MrAndyNgo/status/2050967037866811569",
+          "why_relevant": ""
+        },
+        {
+          "author": "BKBPReynoso",
+          "body": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. \n\nTo our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 10,
+            "replies": 1,
+            "reposts": 4
+          },
+          "engagement_score": 31,
+          "freshness": 100,
+          "item_id": "X15",
+          "local_rank_score": 0.372,
+          "local_relevance": 0.14,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. To our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.",
+          "url": "https://x.com/BKBPReynoso/status/2050958073766846591",
+          "why_relevant": ""
+        },
+        {
+          "author": "JSegarra86",
+          "body": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 0,
+            "reposts": 0
+          },
+          "freshness": 100,
+          "item_id": "X6",
+          "local_rank_score": 0.36050000000000004,
+          "local_relevance": 0.17,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+          "url": "https://x.com/JSegarra86/status/2050969566772129826",
+          "why_relevant": ""
+        },
+        {
+          "author": "BlondiePredicts",
+          "body": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request?\n\nSame day. NYC high is just insane",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 7,
+            "replies": 0,
+            "reposts": 0
+          },
+          "engagement_score": 18,
+          "freshness": 100,
+          "item_id": "X11",
+          "local_rank_score": 0.35900000000000004,
+          "local_relevance": 0.14,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.4,
+          "snippet": "I’ll start: Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request? Same day. NYC high is just insane",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i",
+          "url": "https://x.com/BlondiePredicts/status/2050963225970086383",
+          "why_relevant": ""
+        },
+        {
+          "author": "zzpoofs007",
+          "body": "Queens NYC is my soul, Brooklyn has my heart.",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 0,
+            "reposts": 0
+          },
+          "freshness": 100,
+          "item_id": "X4",
+          "local_rank_score": 0.34750000000000003,
+          "local_relevance": 0.15,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.29,
+          "snippet": "Queens NYC is my soul, Brooklyn has my heart.",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "Queens NYC is my soul, Brooklyn has my heart.",
+          "url": "https://x.com/zzpoofs007/status/2050973793896517781",
+          "why_relevant": ""
+        },
+        {
+          "author": "Mr_miss_jones",
+          "body": "@mmpadellan Good morning from NYC Brooklyn",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 0,
+            "reposts": 0
+          },
+          "freshness": 100,
+          "item_id": "X26",
+          "local_rank_score": 0.34750000000000003,
+          "local_relevance": 0.15,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.29,
+          "snippet": "@mmpadellan Good morning from NYC Brooklyn",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "@mmpadellan Good morning from NYC Brooklyn",
+          "url": "https://x.com/Mr_miss_jones/status/2050928504536015068",
+          "why_relevant": ""
+        },
+        {
+          "author": "BKConservatives",
+          "body": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Party Exec Secretary Chung Dick on hand. Presented by Ray Huang, a Director of the Association. #Brooklyn #Conservative #chineseamerican #nyc https://t.co/IenxoXVKmh",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 2,
+            "replies": 0,
+            "reposts": 0
+          },
+          "engagement_score": 9,
+          "freshness": 100,
+          "item_id": "X10",
+          "local_rank_score": 0.3435,
+          "local_relevance": 0.13,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.19,
+          "snippet": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Party Exec Secretary Chung Dick on hand. Presented by Ray Huang, a Director of the Association. #Brooklyn #Conservative #chineseamerican #nyc https://t.co/IenxoXVKmh",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Part",
+          "url": "https://x.com/BKConservatives/status/2050964123744108998",
+          "why_relevant": ""
+        },
+        {
+          "author": "Visionary_VVM",
+          "body": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with ICE?\n\n#communitysafety\n#nyc",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 1,
+            "reposts": 0
+          },
+          "engagement_score": 0,
+          "freshness": 100,
+          "item_id": "X27",
+          "local_rank_score": 0.341,
+          "local_relevance": 0.14,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.19,
+          "snippet": "I’m gutted by all of this ICE activity in our city. Brooklyn was a war zone yesterday! @NYCMayor what’s up with NYPD still working with ICE? #communitysafety #nyc",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with IC",
+          "url": "https://x.com/Visionary_VVM/status/2050926861153112146",
+          "why_relevant": ""
+        },
+        {
+          "author": "PastorDW2",
+          "body": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and install a otodox parliament where the jew that bb and trump is beating up forcing to go kill their poor Palienstian neighbors out of office",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 0,
+            "reposts": 1
+          },
+          "engagement_score": 1,
+          "freshness": 100,
+          "item_id": "X21",
+          "local_rank_score": 0.3355,
+          "local_relevance": 0.13,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.19,
+          "snippet": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and install a otodox parliament where the jew that bb and trump is beating up forcing to go kill their poor Palienstian neighbors out of office",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and in",
+          "url": "https://x.com/PastorDW2/status/2050939167136211389",
+          "why_relevant": ""
+        },
+        {
+          "author": "Oakley294524",
+          "body": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from building a new business center in Brooklyn/NYC!\nThey wanted kickbacks &amp; they told her to F-off! Amazon was bringing 5,000 jobs to NYC +  tax money/billions!",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 0,
+            "reposts": 0
+          },
+          "freshness": 100,
+          "item_id": "X5",
+          "local_rank_score": 0.3345,
+          "local_relevance": 0.13,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.19,
+          "snippet": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions! AOC + her group of dirty Democrats blocked Amazon from building a new business center in Brooklyn/NYC! They wanted kickbacks &amp; they told her to F-off! Amazon was bringing 5,000 jobs to NYC + tax money/billions!",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from buildi",
+          "url": "https://x.com/Oakley294524/status/2050970971922747726",
+          "why_relevant": ""
+        },
+        {
+          "author": "CameronHeiese",
+          "body": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 1,
+            "replies": 0,
+            "reposts": 1
+          },
+          "engagement_score": 8,
+          "freshness": 100,
+          "item_id": "X17",
+          "local_rank_score": 0.323,
+          "local_relevance": 0.1,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.19,
+          "snippet": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+          "url": "https://x.com/CameronHeiese/status/2050954134384156761",
+          "why_relevant": ""
+        },
+        {
+          "author": "MendoncaMelanie",
+          "body": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 0,
+            "reposts": 0
+          },
+          "freshness": 100,
+          "item_id": "X3",
+          "local_rank_score": 0.3215,
+          "local_relevance": 0.11,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+          "url": "https://x.com/MendoncaMelanie/status/2050974598506619172",
+          "why_relevant": ""
+        },
+        {
+          "author": "_elf_angel_film",
+          "body": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 0,
+            "replies": 0,
+            "reposts": 0
+          },
+          "freshness": 100,
+          "item_id": "X16",
+          "local_rank_score": 0.3215,
+          "local_relevance": 0.11,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+          "url": "https://x.com/_elf_angel_film/status/2050954834090578407",
+          "why_relevant": ""
+        },
+        {
+          "author": "mr_conniption",
+          "body": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will fight against Deed Theft and for a Statewide Eviction Moratorium at 1pm.",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 1,
+            "replies": 0,
+            "reposts": 2
+          },
+          "engagement_score": 10,
+          "freshness": 100,
+          "item_id": "X25",
+          "local_rank_score": 0.3185,
+          "local_relevance": 0.09,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will fight against Deed Theft and for a Statewide Eviction Moratorium at 1pm.",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will",
+          "url": "https://x.com/mr_conniption/status/2050933953834385655",
+          "why_relevant": ""
+        },
+        {
+          "author": "overitall69",
+          "body": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC.  https://t.co/ZyIqrib1Op",
+          "date_confidence": "high",
+          "engagement": {
+            "likes": 2,
+            "replies": 0,
+            "reposts": 0
+          },
+          "engagement_score": 9,
+          "freshness": 100,
+          "item_id": "X7",
+          "local_rank_score": 0.3175,
+          "local_relevance": 0.09,
+          "metadata": {},
+          "published_at": "2026-05-03",
+          "relevance_hint": 0.25,
+          "snippet": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC. https://t.co/ZyIqrib1Op",
+          "source": "x",
+          "source_quality": 0.68,
+          "title": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC.",
+          "url": "https://x.com/overitall69/status/2050968692939190435",
+          "why_relevant": ""
+        }
+      ],
+      "youtube": []
+    },
+    "provider_runtime": {
+      "planner_model": "deterministic",
+      "reasoning_provider": "local",
+      "rerank_model": "local-score",
+      "x_search_backend": "bird"
+    },
+    "query_plan": {
+      "cluster_mode": "story",
+      "freshness_mode": "strict_recent",
+      "intent": "breaking_news",
+      "notes": [
+        "fallback-plan"
+      ],
+      "raw_topic": "Brooklyn NYC dog walking pet care Williamsburg",
+      "source_weights": {
+        "hackernews": 0.1875,
+        "instagram": 0.10416666666666667,
+        "reddit": 0.23958333333333331,
+        "tiktok": 0.10416666666666667,
+        "x": 0.2604166666666667,
+        "youtube": 0.10416666666666667
+      },
+      "subqueries": [
+        {
+          "label": "primary",
+          "ranking_query": "What recent evidence from the last 30 days is most relevant to Brooklyn NYC dog walking pet care Williamsburg, especially about brooklyn nyc dog walking pet care?",
+          "search_query": "brooklyn nyc dog walking pet care",
+          "sources": [
+            "reddit",
+            "x",
+            "youtube",
+            "tiktok",
+            "instagram",
+            "hackernews"
+          ],
+          "weight": 0.5882352941176471
+        },
+        {
+          "label": "reaction",
+          "ranking_query": "What new reactions or follow-up reporting from the last 30 days matter for Brooklyn NYC dog walking pet care Williamsburg?",
+          "search_query": "brooklyn nyc dog walking pet care reaction update",
+          "sources": [
+            "reddit",
+            "x",
+            "youtube",
+            "tiktok",
+            "instagram",
+            "hackernews"
+          ],
+          "weight": 0.4117647058823529
+        }
+      ]
+    },
+    "range_from": "2026-04-26",
+    "range_to": "2026-05-03",
+    "ranked_candidates": [
+      {
+        "candidate_id": "https://tiktok.com/@petmarketnyc/video/7633485762666712350",
+        "cluster_id": "cluster-1",
+        "engagement": 29,
+        "explanation": "fallback-local-score",
+        "final_score": 42.844077285594295,
+        "freshness": 80,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 40,
+        "item_id": "TK67",
+        "local_relevance": 0.32,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "TK67",
+              "native_rank": 1,
+              "source": "tiktok",
+              "subquery_label": "primary"
+            },
+            {
+              "item_id": "TK67",
+              "native_rank": 2,
+              "source": "tiktok",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:tiktok": 1,
+          "reaction:tiktok": 2
+        },
+        "rerank_score": 44.199999999999996,
+        "rrf_score": 0.0016963091423772047,
+        "snippet": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a \"No Vacancy\" sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea & Tick Spray: For those who like a little \"spritz and go\" action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online 🚀 Speedy Service: We deliver faster than",
+        "source": "tiktok",
+        "source_items": [
+          {
+            "author": "petmarketnyc",
+            "body": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a \"No Vacancy\" sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea & Tick Spray: For those who like a little \"spritz and go\" action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online  🚀 Speedy Service: We deliver faster than your dog runs when they hear the treat bag—under 3 hours when you shop online! #PetMarketNYC #FleaAndTick #PetCare #NoMoreItch #NYCPets",
+            "date_confidence": "high",
+            "engagement": {
+              "comments": 1,
+              "likes": 16,
+              "shares": 0,
+              "views": 423
+            },
+            "engagement_score": 29,
+            "freshness": 80,
+            "item_id": "TK67",
+            "local_rank_score": 0.43700000000000006,
+            "local_relevance": 0.32,
+            "metadata": {
+              "hashtags": [
+                "petmarketnyc",
+                "fleaandtick",
+                "petcare",
+                "nomoreitch",
+                "nycpets"
+              ]
+            },
+            "published_at": "2026-04-27",
+            "relevance_hint": 0.62,
+            "snippet": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a \"No Vacancy\" sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea & Tick Spray: For those who like a little \"spritz and go\" action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online 🚀 Speedy Service: We deliver faster than",
+            "source": "tiktok",
+            "source_quality": 0.58,
+            "title": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie",
+            "url": "https://www.tiktok.com/@petmarketnyc/video/7633485762666712350",
+            "why_relevant": "TikTok: It’s flea and tick season—or as your pet calls it, \"The Grea"
+          }
+        ],
+        "source_quality": 0.58,
+        "sources": [
+          "tiktok"
+        ],
+        "subquery_labels": [
+          "primary",
+          "reaction"
+        ],
+        "title": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie",
+        "url": "https://www.tiktok.com/@petmarketnyc/video/7633485762666712350"
+      },
+      {
+        "candidate_id": "https://reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg",
+        "cluster_id": "cluster-2",
+        "engagement": 34,
+        "explanation": "fallback-local-score",
+        "final_score": 42.45258297819392,
+        "freshness": 90,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 50,
+        "item_id": "R10",
+        "local_relevance": 0.24,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "R10",
+              "native_rank": 1,
+              "source": "reddit",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "R10",
+              "native_rank": 2,
+              "source": "reddit",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:reddit": 2,
+          "reaction:reddit": 1
+        },
+        "rerank_score": 40.8,
+        "rrf_score": 0.003890331912775686,
+        "snippet": "Hey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we're wondering if there's enough interest to host one in Williamsburg? (for the WBurg & Brooklyn people)\n\nJust looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and",
+        "source": "reddit",
+        "source_items": [
+          {
+            "body": "Latino picnic in Williamsburg\nHey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we're wondering if there's enough interest to host one in Williamsburg? (for the WBurg & Brooklyn people)\n\nJust looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and expand their circles.\n\nThink it will be fun especially as the weather starts to warm up for the summ",
+            "container": "williamsburg",
+            "date_confidence": "high",
+            "engagement": {
+              "num_comments": 34,
+              "score": 55,
+              "upvote_ratio": 0.9
+            },
+            "engagement_score": 34,
+            "freshness": 90,
+            "item_id": "R10",
+            "local_rank_score": 0.41500000000000004,
+            "local_relevance": 0.24,
+            "metadata": {
+              "comment_insights": [],
+              "top_comments": []
+            },
+            "published_at": "2026-04-30",
+            "relevance_hint": 0.134,
+            "snippet": "Hey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we're wondering if there's enough interest to host one in Williamsburg? (for the WBurg & Brooklyn people)\n\nJust looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and",
+            "source": "reddit",
+            "source_quality": 0.6,
+            "title": "Latino picnic in Williamsburg",
+            "url": "https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/",
+            "why_relevant": "Reddit public search"
+          }
+        ],
+        "source_quality": 0.6,
+        "sources": [
+          "reddit"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "Latino picnic in Williamsburg",
+        "url": "https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/"
+      },
+      {
+        "candidate_id": "https://x.com/bkbpreynoso/status/2050958073766846591",
+        "cluster_id": "cluster-3",
+        "engagement": 31,
+        "explanation": "fallback-local-score",
+        "final_score": 41.393399470899475,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 50,
+        "item_id": "X15",
+        "local_relevance": 0.14,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X15",
+              "native_rank": 3,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X15",
+              "native_rank": 3,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 3,
+          "reaction:x": 3
+        },
+        "rerank_score": 36.6,
+        "rrf_score": 0.004133597883597884,
+        "snippet": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. To our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "BKBPReynoso",
+            "body": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. \n\nTo our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 10,
+              "replies": 1,
+              "reposts": 4
+            },
+            "engagement_score": 31,
+            "freshness": 100,
+            "item_id": "X15",
+            "local_rank_score": 0.36550000000000005,
+            "local_relevance": 0.13,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. To our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.",
+            "url": "https://x.com/BKBPReynoso/status/2050958073766846591",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.",
+        "url": "https://x.com/BKBPReynoso/status/2050958073766846591"
+      },
+      {
+        "candidate_id": "https://x.com/blondiepredicts/status/2050963225970086383",
+        "cluster_id": "cluster-4",
+        "engagement": 18,
+        "explanation": "fallback-local-score",
+        "final_score": 41.36160256410256,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 46,
+        "item_id": "X11",
+        "local_relevance": 0.14,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X11",
+              "native_rank": 5,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X11",
+              "native_rank": 5,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 5,
+          "reaction:x": 5
+        },
+        "rerank_score": 36.6,
+        "rrf_score": 0.004006410256410257,
+        "snippet": "I’ll start: Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request? Same day. NYC high is just insane",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "BlondiePredicts",
+            "body": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request?\n\nSame day. NYC high is just insane",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 7,
+              "replies": 0,
+              "reposts": 0
+            },
+            "engagement_score": 18,
+            "freshness": 100,
+            "item_id": "X11",
+            "local_rank_score": 0.35250000000000004,
+            "local_relevance": 0.13,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.3,
+            "snippet": "I’ll start: Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request? Same day. NYC high is just insane",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i",
+            "url": "https://x.com/BlondiePredicts/status/2050963225970086383",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i",
+        "url": "https://x.com/BlondiePredicts/status/2050963225970086383"
+      },
+      {
+        "candidate_id": "https://tiktok.com/@petheavenlux/video/7635007948825120022",
+        "cluster_id": "cluster-5",
+        "engagement": 68,
+        "explanation": "fallback-local-score",
+        "final_score": 39.82286216443214,
+        "freshness": 93,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 47.95,
+        "item_id": "TK41",
+        "local_relevance": 0.18,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "TK41",
+              "native_rank": 2,
+              "source": "tiktok",
+              "subquery_label": "primary"
+            },
+            {
+              "item_id": "TK41",
+              "native_rank": 1,
+              "source": "tiktok",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:tiktok": 2,
+          "reaction:tiktok": 1
+        },
+        "rerank_score": 37,
+        "rrf_score": 0.0016914486577285595,
+        "snippet": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+        "source": "tiktok",
+        "source_items": [
+          {
+            "author": "petheavenlux",
+            "body": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+            "date_confidence": "high",
+            "engagement": {
+              "comments": 1,
+              "likes": 136,
+              "shares": 4,
+              "views": 8769
+            },
+            "engagement_score": 68,
+            "freshness": 93,
+            "item_id": "TK41",
+            "local_rank_score": 0.41750000000000004,
+            "local_relevance": 0.18,
+            "metadata": {
+              "hashtags": [
+                "dog",
+                "dogsoftiktok",
+                "petsoftiktok",
+                "doglover",
+                "petcare"
+              ]
+            },
+            "published_at": "2026-05-01",
+            "relevance_hint": 0.35,
+            "snippet": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+            "source": "tiktok",
+            "source_quality": 0.58,
+            "title": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+            "url": "https://www.tiktok.com/@petheavenlux/video/7635007948825120022",
+            "why_relevant": "TikTok: Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #dogl"
+          }
+        ],
+        "source_quality": 0.58,
+        "sources": [
+          "tiktok"
+        ],
+        "subquery_labels": [
+          "primary",
+          "reaction"
+        ],
+        "title": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+        "url": "https://www.tiktok.com/@petheavenlux/video/7635007948825120022"
+      },
+      {
+        "candidate_id": "https://tiktok.com/@rolo1461/video/7635012187924237590",
+        "cluster_id": "cluster-6",
+        "engagement": 27,
+        "explanation": "fallback-local-score",
+        "final_score": 39.57020697167756,
+        "freshness": 93,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 53.35,
+        "item_id": "TK79",
+        "local_relevance": 0.18,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "TK79",
+              "native_rank": 3,
+              "source": "tiktok",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "reaction:tiktok": 3
+        },
+        "rerank_score": 37,
+        "rrf_score": 0.0006808278867102397,
+        "snippet": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+        "source": "tiktok",
+        "source_items": [
+          {
+            "author": "rolo1461",
+            "body": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+            "date_confidence": "high",
+            "engagement": {
+              "comments": 2,
+              "likes": 21,
+              "shares": 0,
+              "views": 256
+            },
+            "engagement_score": 27,
+            "freshness": 93,
+            "item_id": "TK79",
+            "local_rank_score": 0.37650000000000006,
+            "local_relevance": 0.18,
+            "metadata": {
+              "hashtags": [
+                "walkoftheday",
+                "dogwalking",
+                "puppydog",
+                "puppywalk",
+                "cavapoo"
+              ]
+            },
+            "published_at": "2026-05-01",
+            "relevance_hint": 0.23,
+            "snippet": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+            "source": "tiktok",
+            "source_quality": 0.58,
+            "title": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+            "url": "https://www.tiktok.com/@rolo1461/video/7635012187924237590",
+            "why_relevant": "TikTok: #walkoftheday #dogwalking #puppydog #puppywalk #cavapoo"
+          }
+        ],
+        "source_quality": 0.58,
+        "sources": [
+          "tiktok"
+        ],
+        "subquery_labels": [
+          "reaction"
+        ],
+        "title": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+        "url": "https://www.tiktok.com/@rolo1461/video/7635012187924237590"
+      },
+      {
+        "candidate_id": "https://x.com/scootercasterny/status/2050936274177954198",
+        "cluster_id": "cluster-7",
+        "engagement": 100,
+        "explanation": "fallback-local-score",
+        "final_score": 39.327281420765026,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 50,
+        "item_id": "X24",
+        "local_relevance": 0.09,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X24",
+              "native_rank": 1,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X24",
+              "native_rank": 1,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 1,
+          "reaction:x": 1
+        },
+        "rerank_score": 33.1,
+        "rrf_score": 0.00426912568306011,
+        "snippet": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC ICE dragged a man in custody out of the Wyckoff Hospital building after earlier detainement off site, as protesters massed outside. Agents rushed ran into the ambulance bay with pepper spray canisters pointed at anyone in their way. Later running out with a suspect dragging him into a car waiting outside. NYPD arrested several activists while trash and objects were thrown onto Stanhope",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "ScooterCasterNY",
+            "body": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out of the Wyckoff Hospital building after earlier detainement off site, as protesters massed outside.\n\n Agents rushed ran into the ambulance bay with pepper spray canisters pointed at anyone in their way. Later running out with a suspect dragging him into a car waiting outside.\n\nNYPD arrested several activists while trash and objects were thrown onto Stanhope",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 640,
+              "replies": 73,
+              "reposts": 256
+            },
+            "engagement_score": 100,
+            "freshness": 100,
+            "item_id": "X24",
+            "local_rank_score": 0.402,
+            "local_relevance": 0.08,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC ICE dragged a man in custody out of the Wyckoff Hospital building after earlier detainement off site, as protesters massed outside. Agents rushed ran into the ambulance bay with pepper spray canisters pointed at anyone in their way. Later running out with a suspect dragging him into a car waiting outside. NYPD arrested several activists while trash and objects were thrown onto Stanhope",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out",
+            "url": "https://x.com/ScooterCasterNY/status/2050936274177954198",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out",
+        "url": "https://x.com/ScooterCasterNY/status/2050936274177954198"
+      },
+      {
+        "candidate_id": "https://x.com/mrandyngo/status/2050967037866811569",
+        "cluster_id": "cluster-8",
+        "engagement": 87,
+        "explanation": "fallback-local-score",
+        "final_score": 39.31006720430108,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 50,
+        "item_id": "X9",
+        "local_relevance": 0.09,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X9",
+              "native_rank": 2,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X9",
+              "native_rank": 2,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 2,
+          "reaction:x": 2
+        },
+        "rerank_score": 33.1,
+        "rrf_score": 0.004200268817204302,
+        "snippet": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody. https://t.co/NTILHyXqkd",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "MrAndyNgo",
+            "body": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.  https://t.co/NTILHyXqkd",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 340,
+              "replies": 36,
+              "reposts": 104
+            },
+            "engagement_score": 87,
+            "freshness": 100,
+            "item_id": "X9",
+            "local_rank_score": 0.389,
+            "local_relevance": 0.08,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody. https://t.co/NTILHyXqkd",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.",
+            "url": "https://x.com/MrAndyNgo/status/2050967037866811569",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.",
+        "url": "https://x.com/MrAndyNgo/status/2050967037866811569"
+      },
+      {
+        "candidate_id": "https://reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow",
+        "cluster_id": "cluster-9",
+        "engagement": 87,
+        "explanation": "fallback-local-score",
+        "final_score": 38.83758759241402,
+        "freshness": 83,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 40,
+        "item_id": "R3",
+        "local_relevance": 0.2,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "R3",
+              "native_rank": 1,
+              "source": "reddit",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:reddit": 1
+        },
+        "rerank_score": 36.6,
+        "rrf_score": 0.0023103503696560593,
+        "snippet": "You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+        "source": "reddit",
+        "source_items": [
+          {
+            "body": "My girl is crossing the rainbow bridge tomorrow\nThis is Lacey. She’s just shy of 14, her birthday is May 30. She’s a Golden and she’s been with us since she was 12 weeks old. \n\nShe ended up getting 4 cancers in her life, two of which were rare, but it never slowed her down. Her most recent cancer was in her neck (thyroid carcinoma and extra-osseous osteosarcoma) and the mass grew so fast. She had emergency surgery because it was compressing her trachea and making it difficult for her to breathe. By the time they went in, the mass was so big i\nYou have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+            "container": "olddogs",
+            "date_confidence": "high",
+            "engagement": {
+              "num_comments": 387,
+              "score": 6211,
+              "upvote_ratio": 1
+            },
+            "engagement_score": 87,
+            "freshness": 83,
+            "item_id": "R3",
+            "local_rank_score": 0.42450000000000004,
+            "local_relevance": 0.2,
+            "metadata": {
+              "comment_insights": [],
+              "top_comments": [
+                {
+                  "author": "MagicalOak",
+                  "excerpt": "You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever.",
+                  "score": 65
+                },
+                {
+                  "author": "Bl8kStrr",
+                  "excerpt": "😔Lacey we will miss and always love you😢",
+                  "score": 28
+                },
+                {
+                  "author": "Beautiful-Tooth-1507",
+                  "excerpt": "https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+                  "score": 24
+                },
+                {
+                  "author": "RingOk664",
+                  "excerpt": "Someone sent this to me when I had to send my boy to heaven. Holding him as he passed was more painful than losing my parents. But...I did not want him to suffer anymore.\n\nhttps://preview.redd.it/rdtz",
+                  "score": 21
+                },
+                {
+                  "author": "Silly-RedRabbit",
+                  "excerpt": "What adorable photos! I love her giant carrot and her princess smile while she’s wearing her crown. It’s so hard, but you’re making the right choice for your baby girl. Goodbye sweet Lacey ❤️ ",
+                  "score": 17
+                },
+                {
+                  "author": "myleelalee",
+                  "excerpt": "I am so sorry. 💔",
+                  "score": 9
+                },
+                {
+                  "author": "Fossilwench",
+                  "excerpt": "Its very clear Ms.Lacey girl has had the most fastidious, thoughtful exemplary care throughout her life thanks to you. your decision is not one of giving up on her but instead recognizing her needs be",
+                  "score": 9
+                },
+                {
+                  "author": "Physical_Butterfly16",
+                  "excerpt": "My pup crossed the 23rd and will be waiting to greet yours. They may gossip together.\n\nhttps://preview.redd.it/7odyo7ea01yg1.jpeg?width=980&format=pjpg&auto=webp&s=b2e55bd7c7db5ffe2087121a8ba15580ba86",
+                  "score": 6
+                },
+                {
+                  "author": "mrCheesemonger",
+                  "excerpt": "RIP good girl. My Maude who left us in 2023 is waiting for her with treats and toys. The worst day to be a dog owner - every time. Your pain is our pain\n\nhttps://preview.redd.it/udxsy0udx3yg1.jpeg?wid",
+                  "score": 6
+                },
+                {
+                  "author": "fumforfun69",
+                  "excerpt": "She was loved ",
+                  "score": 5
+                }
+              ]
+            },
+            "published_at": "2026-04-28",
+            "relevance_hint": 1,
+            "snippet": "You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+            "source": "reddit",
+            "source_quality": 0.6,
+            "title": "My girl is crossing the rainbow bridge tomorrow",
+            "url": "https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/",
+            "why_relevant": "Reddit public search"
+          }
+        ],
+        "source_quality": 0.6,
+        "sources": [
+          "reddit"
+        ],
+        "subquery_labels": [
+          "primary"
+        ],
+        "title": "My girl is crossing the rainbow bridge tomorrow",
+        "url": "https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/"
+      },
+      {
+        "candidate_id": "https://reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy",
+        "cluster_id": "cluster-10",
+        "engagement": 64,
+        "explanation": "fallback-local-score",
+        "final_score": 38.237790164452875,
+        "freshness": 83,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 40,
+        "item_id": "R6",
+        "local_relevance": 0.19,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "R6",
+              "native_rank": 2,
+              "source": "reddit",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "reaction:reddit": 2
+        },
+        "rerank_score": 35.9,
+        "rrf_score": 0.0015911606578115115,
+        "snippet": "So for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.\n\nA few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said somet",
+        "source": "reddit",
+        "source_items": [
+          {
+            "body": "Regrets about naming my puppy\nSo for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.\n\nA few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said something like \"Stop it😂\" \"Really?😂\". At the time I was very confused.\n\nNow, I know why they were gigglin",
+            "container": "puppy101",
+            "date_confidence": "high",
+            "engagement": {
+              "num_comments": 696,
+              "score": 414,
+              "upvote_ratio": 0.93
+            },
+            "engagement_score": 64,
+            "freshness": 83,
+            "item_id": "R6",
+            "local_rank_score": 0.395,
+            "local_relevance": 0.19,
+            "metadata": {
+              "comment_insights": [],
+              "top_comments": []
+            },
+            "published_at": "2026-04-28",
+            "relevance_hint": 0.897,
+            "snippet": "So for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.\n\nA few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said somet",
+            "source": "reddit",
+            "source_quality": 0.6,
+            "title": "Regrets about naming my puppy",
+            "url": "https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/",
+            "why_relevant": "Reddit public search"
+          }
+        ],
+        "source_quality": 0.6,
+        "sources": [
+          "reddit"
+        ],
+        "subquery_labels": [
+          "reaction"
+        ],
+        "title": "Regrets about naming my puppy",
+        "url": "https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/"
+      },
+      {
+        "candidate_id": "https://x.com/bkconservatives/status/2050964123744108998",
+        "cluster_id": "cluster-11",
+        "engagement": 9,
+        "explanation": "fallback-local-score",
+        "final_score": 38.04617572786691,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 28,
+        "item_id": "X10",
+        "local_relevance": 0.13,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X10",
+              "native_rank": 6,
+              "source": "x",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "reaction:x": 6
+        },
+        "rerank_score": 35.900000000000006,
+        "rrf_score": 0.0016247029114676175,
+        "snippet": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Party Exec Secretary Chung Dick on hand. Presented by Ray Huang, a Director of the Association. #Brooklyn #Conservative #chineseamerican #nyc https://t.co/IenxoXVKmh",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "BKConservatives",
+            "body": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Party Exec Secretary Chung Dick on hand. Presented by Ray Huang, a Director of the Association. #Brooklyn #Conservative #chineseamerican #nyc https://t.co/IenxoXVKmh",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 2,
+              "replies": 0,
+              "reposts": 0
+            },
+            "engagement_score": 9,
+            "freshness": 100,
+            "item_id": "X10",
+            "local_rank_score": 0.3435,
+            "local_relevance": 0.13,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Party Exec Secretary Chung Dick on hand. Presented by Ray Huang, a Director of the Association. #Brooklyn #Conservative #chineseamerican #nyc https://t.co/IenxoXVKmh",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Part",
+            "url": "https://x.com/BKConservatives/status/2050964123744108998",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction"
+        ],
+        "title": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Part",
+        "url": "https://x.com/BKConservatives/status/2050964123744108998"
+      },
+      {
+        "candidate_id": "https://x.com/jsegarra86/status/2050969566772129826",
+        "cluster_id": "cluster-12",
+        "explanation": "fallback-local-score",
+        "final_score": 37.63725260416667,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 18.25,
+        "item_id": "X6",
+        "local_relevance": 0.17,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X6",
+              "native_rank": 4,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X6",
+              "native_rank": 4,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 4,
+          "reaction:x": 4
+        },
+        "rerank_score": 38.7,
+        "rrf_score": 0.004069010416666667,
+        "snippet": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "JSegarra86",
+            "body": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 0,
+              "reposts": 0
+            },
+            "freshness": 100,
+            "item_id": "X6",
+            "local_rank_score": 0.354,
+            "local_relevance": 0.16,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.2,
+            "snippet": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+            "url": "https://x.com/JSegarra86/status/2050969566772129826",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+        "url": "https://x.com/JSegarra86/status/2050969566772129826"
+      },
+      {
+        "candidate_id": "https://x.com/cameronheiese/status/2050954134384156761",
+        "cluster_id": "cluster-13",
+        "engagement": 8,
+        "explanation": "fallback-local-score",
+        "final_score": 37.01551258330129,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 30.65,
+        "item_id": "X17",
+        "local_relevance": 0.1,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X17",
+              "native_rank": 12,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X17",
+              "native_rank": 8,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 8,
+          "reaction:x": 12
+        },
+        "rerank_score": 33.8,
+        "rrf_score": 0.0037420503332051777,
+        "snippet": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "CameronHeiese",
+            "body": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 1,
+              "replies": 0,
+              "reposts": 1
+            },
+            "engagement_score": 8,
+            "freshness": 100,
+            "item_id": "X17",
+            "local_rank_score": 0.323,
+            "local_relevance": 0.1,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+            "url": "https://x.com/CameronHeiese/status/2050954134384156761",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+        "url": "https://x.com/CameronHeiese/status/2050954134384156761"
+      },
+      {
+        "candidate_id": "https://x.com/mr_conniption/status/2050933953834385655",
+        "cluster_id": "cluster-14",
+        "engagement": 10,
+        "explanation": "fallback-local-score",
+        "final_score": 36.79938829052748,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 30,
+        "item_id": "X25",
+        "local_relevance": 0.09,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X25",
+              "native_rank": 11,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 11
+        },
+        "rerank_score": 33.1,
+        "rrf_score": 0.0021575531621099145,
+        "snippet": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will fight against Deed Theft and for a Statewide Eviction Moratorium at 1pm.",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "mr_conniption",
+            "body": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will fight against Deed Theft and for a Statewide Eviction Moratorium at 1pm.",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 1,
+              "replies": 0,
+              "reposts": 2
+            },
+            "engagement_score": 10,
+            "freshness": 100,
+            "item_id": "X25",
+            "local_rank_score": 0.3185,
+            "local_relevance": 0.09,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.25,
+            "snippet": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will fight against Deed Theft and for a Statewide Eviction Moratorium at 1pm.",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will",
+            "url": "https://x.com/mr_conniption/status/2050933953834385655",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "primary"
+        ],
+        "title": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will",
+        "url": "https://x.com/mr_conniption/status/2050933953834385655"
+      },
+      {
+        "candidate_id": "https://x.com/zzpoofs007/status/2050973793896517781",
+        "cluster_id": "cluster-15",
+        "explanation": "fallback-local-score",
+        "final_score": 36.76036444338025,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 26.35,
+        "item_id": "X4",
+        "local_relevance": 0.15,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X4",
+              "native_rank": 7,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X4",
+              "native_rank": 6,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 6,
+          "reaction:x": 7
+        },
+        "rerank_score": 37.3,
+        "rrf_score": 0.003921457773520987,
+        "snippet": "Queens NYC is my soul, Brooklyn has my heart.",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "zzpoofs007",
+            "body": "Queens NYC is my soul, Brooklyn has my heart.",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 0,
+              "reposts": 0
+            },
+            "freshness": 100,
+            "item_id": "X4",
+            "local_rank_score": 0.341,
+            "local_relevance": 0.14,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.24,
+            "snippet": "Queens NYC is my soul, Brooklyn has my heart.",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "Queens NYC is my soul, Brooklyn has my heart.",
+            "url": "https://x.com/zzpoofs007/status/2050973793896517781",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "Queens NYC is my soul, Brooklyn has my heart.",
+        "url": "https://x.com/zzpoofs007/status/2050973793896517781"
+      },
+      {
+        "candidate_id": "https://x.com/mr_miss_jones/status/2050928504536015068",
+        "cluster_id": "cluster-16",
+        "explanation": "fallback-local-score",
+        "final_score": 36.745819959458764,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 27.25,
+        "item_id": "X26",
+        "local_relevance": 0.15,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X26",
+              "native_rank": 8,
+              "source": "x",
+              "subquery_label": "reaction"
+            },
+            {
+              "item_id": "X26",
+              "native_rank": 7,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 7,
+          "reaction:x": 8
+        },
+        "rerank_score": 37.3,
+        "rrf_score": 0.0038632798378350464,
+        "snippet": "@mmpadellan Good morning from NYC Brooklyn",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "Mr_miss_jones",
+            "body": "@mmpadellan Good morning from NYC Brooklyn",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 0,
+              "reposts": 0
+            },
+            "freshness": 100,
+            "item_id": "X26",
+            "local_rank_score": 0.341,
+            "local_relevance": 0.14,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.24,
+            "snippet": "@mmpadellan Good morning from NYC Brooklyn",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "@mmpadellan Good morning from NYC Brooklyn",
+            "url": "https://x.com/Mr_miss_jones/status/2050928504536015068",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction",
+          "primary"
+        ],
+        "title": "@mmpadellan Good morning from NYC Brooklyn",
+        "url": "https://x.com/Mr_miss_jones/status/2050928504536015068"
+      },
+      {
+        "candidate_id": "https://x.com/overitall69/status/2050968692939190435",
+        "cluster_id": "cluster-8",
+        "engagement": 9,
+        "explanation": "fallback-local-score",
+        "final_score": 36.491896786492376,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 28,
+        "item_id": "X7",
+        "local_relevance": 0.09,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X7",
+              "native_rank": 12,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 12
+        },
+        "rerank_score": 33.1,
+        "rrf_score": 0.002127587145969499,
+        "snippet": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC. https://t.co/ZyIqrib1Op",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "overitall69",
+            "body": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC.  https://t.co/ZyIqrib1Op",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 2,
+              "replies": 0,
+              "reposts": 0
+            },
+            "engagement_score": 9,
+            "freshness": 100,
+            "item_id": "X7",
+            "local_rank_score": 0.3175,
+            "local_relevance": 0.09,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.25,
+            "snippet": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC. https://t.co/ZyIqrib1Op",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC.",
+            "url": "https://x.com/overitall69/status/2050968692939190435",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "primary"
+        ],
+        "title": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC.",
+        "url": "https://x.com/overitall69/status/2050968692939190435"
+      },
+      {
+        "candidate_id": "https://tiktok.com/@mrmartin.co/video/7633841413439917342",
+        "cluster_id": "cluster-17",
+        "engagement": 0,
+        "explanation": "fallback-local-score",
+        "final_score": 35.97070030442732,
+        "freshness": 83,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 0,
+        "item_id": "TK90",
+        "local_relevance": 0.26,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "TK90",
+              "native_rank": 3,
+              "source": "tiktok",
+              "subquery_label": "primary"
+            },
+            {
+              "item_id": "TK90",
+              "native_rank": 4,
+              "source": "tiktok",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:tiktok": 3,
+          "reaction:tiktok": 4
+        },
+        "rerank_score": 40.599999999999994,
+        "rrf_score": 0.001642801217709306,
+        "snippet": "🚨 NEW YORK 🚨 Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨ We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet spa in New York 🔥 🚐 We bring the FULL professional spa experience right to your door: ✔️ Bath & deep cleaning ✔️ Haircut & styling ✔️ Nail trimming ✔️ Ear cleaning ✔️ Oral hygiene No stress. No travel. No waiting. Your pet stays comfortable at home… and we handle EVERYTHING. 💎 Luxury grooming. Professional care. At your doorstep. 📲 Book now — spots fill fa #NYCPets #DogGroomingNYC #CatGrooming #MobileGrooming #PetSpa DogSpa NYCDogs PetCareNYC LuxuryPets DogLife CatLife PetLovers GroomingService ViralNYC NYCBusiness PetTransformation BeforeAfterDog PetReel",
+        "source": "tiktok",
+        "source_items": [
+          {
+            "author": "mrmartin.co",
+            "body": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet spa in New York 🔥  🚐 We bring the FULL professional spa experience right to your door:  ✔️ Bath & deep cleaning  ✔️ Haircut & styling  ✔️ Nail trimming  ✔️ Ear cleaning  ✔️ Oral hygiene  No stress. No travel. No waiting.  Your pet stays comfortable at home… and we handle EVERYTHING.  💎 Luxury grooming. Professional care. At your doorstep.  📲 Book now — spots fill fa #NYCPets #DogGroomingNYC #CatGrooming #MobileGrooming #PetSpa DogSpa NYCDogs PetCareNYC LuxuryPets DogLife CatLife PetLovers GroomingService ViralNYC NYCBusiness PetTransformation BeforeAfterDog PetReel DogReels CatReels",
+            "date_confidence": "high",
+            "engagement": {
+              "comments": 0,
+              "likes": 3,
+              "shares": 0,
+              "views": 56
+            },
+            "engagement_score": 0,
+            "freshness": 83,
+            "item_id": "TK90",
+            "local_rank_score": 0.3765,
+            "local_relevance": 0.26,
+            "metadata": {
+              "hashtags": [
+                "nycpets",
+                "doggroomingnyc",
+                "catgrooming",
+                "mobilegrooming",
+                "petspa"
+              ]
+            },
+            "published_at": "2026-04-28",
+            "relevance_hint": 0.47,
+            "snippet": "🚨 NEW YORK 🚨 Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨ We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet spa in New York 🔥 🚐 We bring the FULL professional spa experience right to your door: ✔️ Bath & deep cleaning ✔️ Haircut & styling ✔️ Nail trimming ✔️ Ear cleaning ✔️ Oral hygiene No stress. No travel. No waiting. Your pet stays comfortable at home… and we handle EVERYTHING. 💎 Luxury grooming. Professional care. At your doorstep. 📲 Book now — spots fill fa #NYCPets #DogGroomingNYC #CatGrooming #MobileGrooming #PetSpa DogSpa NYCDogs PetCareNYC LuxuryPets DogLife CatLife PetLovers GroomingService ViralNYC NYCBusiness PetTransformation BeforeAfterDog PetReel",
+            "source": "tiktok",
+            "source_quality": 0.58,
+            "title": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet sp",
+            "url": "https://www.tiktok.com/@mrmartin.co/video/7633841413439917342",
+            "why_relevant": "TikTok: 🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU"
+          }
+        ],
+        "source_quality": 0.58,
+        "sources": [
+          "tiktok"
+        ],
+        "subquery_labels": [
+          "primary",
+          "reaction"
+        ],
+        "title": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet sp",
+        "url": "https://www.tiktok.com/@mrmartin.co/video/7633841413439917342"
+      },
+      {
+        "candidate_id": "https://x.com/visionary_vvm/status/2050926861153112146",
+        "cluster_id": "cluster-18",
+        "engagement": 0,
+        "explanation": "fallback-local-score",
+        "final_score": 35.74851591361182,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 10,
+        "item_id": "X27",
+        "local_relevance": 0.14,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X27",
+              "native_rank": 9,
+              "source": "x",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "reaction:x": 9
+        },
+        "rerank_score": 36.6,
+        "rrf_score": 0.0015540636544472864,
+        "snippet": "I’m gutted by all of this ICE activity in our city. Brooklyn was a war zone yesterday! @NYCMayor what’s up with NYPD still working with ICE? #communitysafety #nyc",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "Visionary_VVM",
+            "body": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with ICE?\n\n#communitysafety\n#nyc",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 1,
+              "reposts": 0
+            },
+            "engagement_score": 0,
+            "freshness": 100,
+            "item_id": "X27",
+            "local_rank_score": 0.341,
+            "local_relevance": 0.14,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "I’m gutted by all of this ICE activity in our city. Brooklyn was a war zone yesterday! @NYCMayor what’s up with NYPD still working with ICE? #communitysafety #nyc",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with IC",
+            "url": "https://x.com/Visionary_VVM/status/2050926861153112146",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction"
+        ],
+        "title": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with IC",
+        "url": "https://x.com/Visionary_VVM/status/2050926861153112146"
+      },
+      {
+        "candidate_id": "https://tiktok.com/@rhinopetplates/video/7633535828349685023",
+        "cluster_id": "cluster-19",
+        "engagement": 4,
+        "explanation": "fallback-local-score",
+        "final_score": 35.66432338800905,
+        "freshness": 80,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 18,
+        "item_id": "TK89",
+        "local_relevance": 0.24,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "TK89",
+              "native_rank": 4,
+              "source": "tiktok",
+              "subquery_label": "primary"
+            },
+            {
+              "item_id": "TK89",
+              "native_rank": 5,
+              "source": "tiktok",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:tiktok": 4,
+          "reaction:tiktok": 5
+        },
+        "rerank_score": 38.599999999999994,
+        "rrf_score": 0.0016172935520361992,
+        "snippet": "Trained their in-home cook & house manager 🥩 Built a customized meal plan just for Terry 🥦 Focused on senior support, digestion & clean energy ❄️ Provided frozen Rhino meals for consistency while traveling Because consistency = comfort… and comfort = everything for a senior dog ❤️ This is what makes Rhino Pet Plates different — we don’t just deliver meals… we step into your world and make sure your dog is cared for the right way, even when you’re not there. Veterinary-guided. Chef-driven. Family-first. 📍NYC in-home demonstrations available 📦 Fresh & frozen meals available for travel Book your in-home pet food demonstration and learn how to cook for your",
+        "source": "tiktok",
+        "source_items": [
+          {
+            "author": "rhinopetplates",
+            "body": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s home for a private, customized in-home cooking demonstration for his pet parents and their house manager. Because Terry isn’t just any pup… he’s a senior with specific nutritional needs, and his family wanted to make sure he’s cared for perfectly — even while they’re away in Spain this summer 🇪🇸✈️ So what did we do? 👨‍🍳 Trained their in-home cook & house manager 🥩 Built a customized meal plan just for Terry 🥦 Focused on senior support, digestion & clean energy ❄️ Provided frozen Rhino meals for consistency while traveling Because consistency = comfort… and comfort = everything for a senior dog ❤️ This is what makes Rhino Pet Plates different — we don’t just deliver meals… we step into your world and make sure your dog is cared for the right way, even when you’re not there. Veterinary-guided. Chef-driven. Family-first. 📍NYC in-home demonstrations available 📦 Fresh & frozen meals available for travel Book your in-home pet food demonstration and learn how to cook for your dog the right way 🐾 #RhinoPetPlates #NYCPets #UpperEastSideDogs #SeniorDogCare #DogNutrition",
+            "date_confidence": "high",
+            "engagement": {
+              "comments": 0,
+              "likes": 5,
+              "shares": 0,
+              "views": 74
+            },
+            "engagement_score": 4,
+            "freshness": 80,
+            "item_id": "TK89",
+            "local_rank_score": 0.334,
+            "local_relevance": 0.2,
+            "metadata": {
+              "hashtags": [
+                "rhinopetplates",
+                "nycpets",
+                "uppereastsidedogs",
+                "seniordogcare",
+                "dognutrition"
+              ]
+            },
+            "published_at": "2026-04-27",
+            "relevance_hint": 0.47,
+            "snippet": "Trained their in-home cook & house manager 🥩 Built a customized meal plan just for Terry 🥦 Focused on senior support, digestion & clean energy ❄️ Provided frozen Rhino meals for consistency while traveling Because consistency = comfort… and comfort = everything for a senior dog ❤️ This is what makes Rhino Pet Plates different — we don’t just deliver meals… we step into your world and make sure your dog is cared for the right way, even when you’re not there. Veterinary-guided. Chef-driven. Family-first. 📍NYC in-home demonstrations available 📦 Fresh & frozen meals available for travel Book your in-home pet food demonstration and learn how to cook for your",
+            "source": "tiktok",
+            "source_quality": 0.58,
+            "title": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s ho",
+            "url": "https://www.tiktok.com/@rhinopetplates/video/7633535828349685023",
+            "why_relevant": "TikTok: Upper East Side energy meets next-level pet care 🏙️🐾 Today,"
+          }
+        ],
+        "source_quality": 0.58,
+        "sources": [
+          "tiktok"
+        ],
+        "subquery_labels": [
+          "primary",
+          "reaction"
+        ],
+        "title": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s ho",
+        "url": "https://www.tiktok.com/@rhinopetplates/video/7633535828349685023"
+      },
+      {
+        "candidate_id": "https://x.com/pastordw2/status/2050939167136211389",
+        "cluster_id": "cluster-20",
+        "engagement": 1,
+        "explanation": "fallback-local-score",
+        "final_score": 35.62296568627451,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 12,
+        "item_id": "X21",
+        "local_relevance": 0.13,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X21",
+              "native_rank": 10,
+              "source": "x",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "reaction:x": 10
+        },
+        "rerank_score": 35.900000000000006,
+        "rrf_score": 0.0015318627450980394,
+        "snippet": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and install a otodox parliament where the jew that bb and trump is beating up forcing to go kill their poor Palienstian neighbors out of office",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "PastorDW2",
+            "body": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and install a otodox parliament where the jew that bb and trump is beating up forcing to go kill their poor Palienstian neighbors out of office",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 0,
+              "reposts": 1
+            },
+            "engagement_score": 1,
+            "freshness": 100,
+            "item_id": "X21",
+            "local_rank_score": 0.3355,
+            "local_relevance": 0.13,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and install a otodox parliament where the jew that bb and trump is beating up forcing to go kill their poor Palienstian neighbors out of office",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and in",
+            "url": "https://x.com/PastorDW2/status/2050939167136211389",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction"
+        ],
+        "title": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and in",
+        "url": "https://x.com/PastorDW2/status/2050939167136211389"
+      },
+      {
+        "candidate_id": "https://x.com/oakley294524/status/2050970971922747726",
+        "cluster_id": "cluster-21",
+        "explanation": "fallback-local-score",
+        "final_score": 35.31757180336924,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 10,
+        "item_id": "X5",
+        "local_relevance": 0.13,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X5",
+              "native_rank": 11,
+              "source": "x",
+              "subquery_label": "reaction"
+            }
+          ]
+        },
+        "native_ranks": {
+          "reaction:x": 11
+        },
+        "rerank_score": 35.900000000000006,
+        "rrf_score": 0.0015102872134769402,
+        "snippet": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions! AOC + her group of dirty Democrats blocked Amazon from building a new business center in Brooklyn/NYC! They wanted kickbacks &amp; they told her to F-off! Amazon was bringing 5,000 jobs to NYC + tax money/billions!",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "Oakley294524",
+            "body": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from building a new business center in Brooklyn/NYC!\nThey wanted kickbacks &amp; they told her to F-off! Amazon was bringing 5,000 jobs to NYC +  tax money/billions!",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 0,
+              "reposts": 0
+            },
+            "freshness": 100,
+            "item_id": "X5",
+            "local_rank_score": 0.3345,
+            "local_relevance": 0.13,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.19,
+            "snippet": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions! AOC + her group of dirty Democrats blocked Amazon from building a new business center in Brooklyn/NYC! They wanted kickbacks &amp; they told her to F-off! Amazon was bringing 5,000 jobs to NYC + tax money/billions!",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from buildi",
+            "url": "https://x.com/Oakley294524/status/2050970971922747726",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "reaction"
+        ],
+        "title": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from buildi",
+        "url": "https://x.com/Oakley294524/status/2050970971922747726"
+      },
+      {
+        "candidate_id": "https://x.com/mendoncamelanie/status/2050974598506619172",
+        "cluster_id": "cluster-22",
+        "explanation": "fallback-local-score",
+        "final_score": 34.65502273373117,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 14.05,
+        "item_id": "X3",
+        "local_relevance": 0.11,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X3",
+              "native_rank": 9,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 9
+        },
+        "rerank_score": 34.5,
+        "rrf_score": 0.0022200909349246946,
+        "snippet": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "MendoncaMelanie",
+            "body": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 0,
+              "reposts": 0
+            },
+            "freshness": 100,
+            "item_id": "X3",
+            "local_rank_score": 0.3215,
+            "local_relevance": 0.11,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.25,
+            "snippet": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+            "url": "https://x.com/MendoncaMelanie/status/2050974598506619172",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "primary"
+        ],
+        "title": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+        "url": "https://x.com/MendoncaMelanie/status/2050974598506619172"
+      },
+      {
+        "candidate_id": "https://x.com/_elf_angel_film/status/2050954834090578407",
+        "cluster_id": "cluster-23",
+        "explanation": "fallback-local-score",
+        "final_score": 34.64709383753501,
+        "freshness": 100,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 14.65,
+        "item_id": "X16",
+        "local_relevance": 0.11,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "X16",
+              "native_rank": 10,
+              "source": "x",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:x": 10
+        },
+        "rerank_score": 34.5,
+        "rrf_score": 0.002188375350140056,
+        "snippet": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+        "source": "x",
+        "source_items": [
+          {
+            "author": "_elf_angel_film",
+            "body": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+            "date_confidence": "high",
+            "engagement": {
+              "likes": 0,
+              "replies": 0,
+              "reposts": 0
+            },
+            "freshness": 100,
+            "item_id": "X16",
+            "local_rank_score": 0.3215,
+            "local_relevance": 0.11,
+            "metadata": {},
+            "published_at": "2026-05-03",
+            "relevance_hint": 0.25,
+            "snippet": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+            "source": "x",
+            "source_quality": 0.68,
+            "title": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+            "url": "https://x.com/_elf_angel_film/status/2050954834090578407",
+            "why_relevant": ""
+          }
+        ],
+        "source_quality": 0.68,
+        "sources": [
+          "x"
+        ],
+        "subquery_labels": [
+          "primary"
+        ],
+        "title": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+        "url": "https://x.com/_elf_angel_film/status/2050954834090578407"
+      },
+      {
+        "candidate_id": "https://instagram.com/reel/dxoxpb_dlnd",
+        "cluster_id": "cluster-24",
+        "engagement": 50,
+        "explanation": "fallback-local-score",
+        "final_score": 29.231125040180004,
+        "freshness": 80,
+        "fun_explanation": "heuristic-fallback",
+        "fun_score": 40,
+        "item_id": "IG7",
+        "local_relevance": 0,
+        "metadata": {
+          "provenance": [
+            {
+              "item_id": "IG7",
+              "native_rank": 1,
+              "source": "instagram",
+              "subquery_label": "primary"
+            }
+          ]
+        },
+        "native_ranks": {
+          "primary:instagram": 1
+        },
+        "rerank_score": 21.8,
+        "rrf_score": 0.0010045001607200258,
+        "snippet": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! #goodmorning #amnewsers #mondaymotivation",
+        "source": "instagram",
+        "source_items": [
+          {
+            "author": "emilyputnamtv",
+            "body": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+            "date_confidence": "high",
+            "engagement": {
+              "comments": 2,
+              "likes": 58,
+              "views": 983
+            },
+            "engagement_score": 50,
+            "freshness": 80,
+            "item_id": "IG7",
+            "local_rank_score": 0.25,
+            "local_relevance": 0,
+            "metadata": {
+              "hashtags": [
+                "goodmorning",
+                "amnewsers",
+                "mondaymotivation"
+              ]
+            },
+            "published_at": "2026-04-27",
+            "relevance_hint": 0,
+            "snippet": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! #goodmorning #amnewsers #mondaymotivation",
+            "source": "instagram",
+            "source_quality": 0.58,
+            "title": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+            "url": "https://www.instagram.com/reel/DXoXpB_DlNd/",
+            "why_relevant": "Instagram: POV it’s Monday morning at @news10nbc 😊 Start the work week"
+          }
+        ],
+        "source_quality": 0.58,
+        "sources": [
+          "instagram"
+        ],
+        "subquery_labels": [
+          "primary"
+        ],
+        "title": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+        "url": "https://www.instagram.com/reel/DXoXpB_DlNd/"
+      }
+    ],
+    "topic": "Brooklyn NYC dog walking pet care Williamsburg",
+    "warnings": []
+  },
+  "normalized": [
+    {
+      "id": "https://tiktok.com/@petmarketnyc/video/7633485762666712350",
+      "origin": "last30days",
+      "platform": "tiktok",
+      "signalType": "content_opportunity",
+      "title": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie",
+      "body": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a \"No Vacancy\" sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea & Tick Spray: For those who like a little \"spritz and go\" action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online 🚀 Speedy Service: We deliver faster than",
+      "url": "https://www.tiktok.com/@petmarketnyc/video/7633485762666712350",
+      "author": "petmarketnyc",
+      "container": "",
+      "publishedAt": "2026-04-27",
+      "engagement": {
+        "relevanceScore": 29,
+        "likes": 16,
+        "comments": 1,
+        "views": 423
+      },
+      "finalScore": 42.844077285594295,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg",
+      "origin": "last30days",
+      "platform": "reddit",
+      "signalType": "participation_opportunity",
+      "title": "Latino picnic in Williamsburg",
+      "body": "Hey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we're wondering if there's enough interest to host one in Williamsburg? (for the WBurg & Brooklyn people)\n\nJust looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and",
+      "url": "https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/",
+      "author": "",
+      "container": "williamsburg",
+      "publishedAt": "2026-04-30",
+      "engagement": {
+        "relevanceScore": 34,
+        "upvotes": 55,
+        "comments": 34,
+        "points": 55
+      },
+      "finalScore": 42.45258297819392,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/bkbpreynoso/status/2050958073766846591",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.",
+      "body": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. To our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.",
+      "url": "https://x.com/BKBPReynoso/status/2050958073766846591",
+      "author": "BKBPReynoso",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 31,
+        "likes": 10,
+        "reposts": 4
+      },
+      "finalScore": 41.393399470899475,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/blondiepredicts/status/2050963225970086383",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i",
+      "body": "I’ll start: Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request? Same day. NYC high is just insane",
+      "url": "https://x.com/BlondiePredicts/status/2050963225970086383",
+      "author": "BlondiePredicts",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 18,
+        "likes": 7
+      },
+      "finalScore": 41.36160256410256,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://tiktok.com/@petheavenlux/video/7635007948825120022",
+      "origin": "last30days",
+      "platform": "tiktok",
+      "signalType": "content_opportunity",
+      "title": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+      "body": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+      "url": "https://www.tiktok.com/@petheavenlux/video/7635007948825120022",
+      "author": "petheavenlux",
+      "container": "",
+      "publishedAt": "2026-05-01",
+      "engagement": {
+        "relevanceScore": 68,
+        "likes": 136,
+        "comments": 1,
+        "views": 8769
+      },
+      "finalScore": 39.82286216443214,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://tiktok.com/@rolo1461/video/7635012187924237590",
+      "origin": "last30days",
+      "platform": "tiktok",
+      "signalType": "content_opportunity",
+      "title": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+      "body": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+      "url": "https://www.tiktok.com/@rolo1461/video/7635012187924237590",
+      "author": "rolo1461",
+      "container": "",
+      "publishedAt": "2026-05-01",
+      "engagement": {
+        "relevanceScore": 27,
+        "likes": 21,
+        "comments": 2,
+        "views": 256
+      },
+      "finalScore": 39.57020697167756,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/scootercasterny/status/2050936274177954198",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out",
+      "body": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC ICE dragged a man in custody out of the Wyckoff Hospital building after earlier detainement off site, as protesters massed outside. Agents rushed ran into the ambulance bay with pepper spray canisters pointed at anyone in their way. Later running out with a suspect dragging him into a car waiting outside. NYPD arrested several activists while trash and objects were thrown onto Stanhope",
+      "url": "https://x.com/ScooterCasterNY/status/2050936274177954198",
+      "author": "ScooterCasterNY",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 100,
+        "likes": 640,
+        "reposts": 256
+      },
+      "finalScore": 39.327281420765026,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/mrandyngo/status/2050967037866811569",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.",
+      "body": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody. https://t.co/NTILHyXqkd",
+      "url": "https://x.com/MrAndyNgo/status/2050967037866811569",
+      "author": "MrAndyNgo",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 87,
+        "likes": 340,
+        "reposts": 104
+      },
+      "finalScore": 39.31006720430108,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow",
+      "origin": "last30days",
+      "platform": "reddit",
+      "signalType": "participation_opportunity",
+      "title": "My girl is crossing the rainbow bridge tomorrow",
+      "body": "You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+      "url": "https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/",
+      "author": "",
+      "container": "olddogs",
+      "publishedAt": "2026-04-28",
+      "engagement": {
+        "relevanceScore": 87,
+        "upvotes": 6211,
+        "comments": 387,
+        "points": 6211
+      },
+      "finalScore": 38.83758759241402,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy",
+      "origin": "last30days",
+      "platform": "reddit",
+      "signalType": "participation_opportunity",
+      "title": "Regrets about naming my puppy",
+      "body": "So for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.\n\nA few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said somet",
+      "url": "https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/",
+      "author": "",
+      "container": "puppy101",
+      "publishedAt": "2026-04-28",
+      "engagement": {
+        "relevanceScore": 64,
+        "upvotes": 414,
+        "comments": 696,
+        "points": 414
+      },
+      "finalScore": 38.237790164452875,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/bkconservatives/status/2050964123744108998",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Part",
+      "body": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Party Exec Secretary Chung Dick on hand. Presented by Ray Huang, a Director of the Association. #Brooklyn #Conservative #chineseamerican #nyc https://t.co/IenxoXVKmh",
+      "url": "https://x.com/BKConservatives/status/2050964123744108998",
+      "author": "BKConservatives",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 9,
+        "likes": 2
+      },
+      "finalScore": 38.04617572786691,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/jsegarra86/status/2050969566772129826",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+      "body": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+      "url": "https://x.com/JSegarra86/status/2050969566772129826",
+      "author": "JSegarra86",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 0.16
+      },
+      "finalScore": 37.63725260416667,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/cameronheiese/status/2050954134384156761",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+      "body": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+      "url": "https://x.com/CameronHeiese/status/2050954134384156761",
+      "author": "CameronHeiese",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 8,
+        "likes": 1,
+        "reposts": 1
+      },
+      "finalScore": 37.01551258330129,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/mr_conniption/status/2050933953834385655",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will",
+      "body": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will fight against Deed Theft and for a Statewide Eviction Moratorium at 1pm.",
+      "url": "https://x.com/mr_conniption/status/2050933953834385655",
+      "author": "mr_conniption",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 10,
+        "likes": 1,
+        "reposts": 2
+      },
+      "finalScore": 36.79938829052748,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/zzpoofs007/status/2050973793896517781",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "Queens NYC is my soul, Brooklyn has my heart.",
+      "body": "Queens NYC is my soul, Brooklyn has my heart.",
+      "url": "https://x.com/zzpoofs007/status/2050973793896517781",
+      "author": "zzpoofs007",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 0.14
+      },
+      "finalScore": 36.76036444338025,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/mr_miss_jones/status/2050928504536015068",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "@mmpadellan Good morning from NYC Brooklyn",
+      "body": "@mmpadellan Good morning from NYC Brooklyn",
+      "url": "https://x.com/Mr_miss_jones/status/2050928504536015068",
+      "author": "Mr_miss_jones",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 0.14
+      },
+      "finalScore": 36.745819959458764,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/overitall69/status/2050968692939190435",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC.",
+      "body": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC. https://t.co/ZyIqrib1Op",
+      "url": "https://x.com/overitall69/status/2050968692939190435",
+      "author": "overitall69",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 9,
+        "likes": 2
+      },
+      "finalScore": 36.491896786492376,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://tiktok.com/@mrmartin.co/video/7633841413439917342",
+      "origin": "last30days",
+      "platform": "tiktok",
+      "signalType": "content_opportunity",
+      "title": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet sp",
+      "body": "🚨 NEW YORK 🚨 Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨ We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet spa in New York 🔥 🚐 We bring the FULL professional spa experience right to your door: ✔️ Bath & deep cleaning ✔️ Haircut & styling ✔️ Nail trimming ✔️ Ear cleaning ✔️ Oral hygiene No stress. No travel. No waiting. Your pet stays comfortable at home… and we handle EVERYTHING. 💎 Luxury grooming. Professional care. At your doorstep. 📲 Book now — spots fill fa #NYCPets #DogGroomingNYC #CatGrooming #MobileGrooming #PetSpa DogSpa NYCDogs PetCareNYC LuxuryPets DogLife CatLife PetLovers GroomingService ViralNYC NYCBusiness PetTransformation BeforeAfterDog PetReel",
+      "url": "https://www.tiktok.com/@mrmartin.co/video/7633841413439917342",
+      "author": "mrmartin.co",
+      "container": "",
+      "publishedAt": "2026-04-28",
+      "engagement": {
+        "relevanceScore": 0.26,
+        "likes": 3,
+        "views": 56
+      },
+      "finalScore": 35.97070030442732,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/visionary_vvm/status/2050926861153112146",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with IC",
+      "body": "I’m gutted by all of this ICE activity in our city. Brooklyn was a war zone yesterday! @NYCMayor what’s up with NYPD still working with ICE? #communitysafety #nyc",
+      "url": "https://x.com/Visionary_VVM/status/2050926861153112146",
+      "author": "Visionary_VVM",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 0.14
+      },
+      "finalScore": 35.74851591361182,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://tiktok.com/@rhinopetplates/video/7633535828349685023",
+      "origin": "last30days",
+      "platform": "tiktok",
+      "signalType": "content_opportunity",
+      "title": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s ho",
+      "body": "Trained their in-home cook & house manager 🥩 Built a customized meal plan just for Terry 🥦 Focused on senior support, digestion & clean energy ❄️ Provided frozen Rhino meals for consistency while traveling Because consistency = comfort… and comfort = everything for a senior dog ❤️ This is what makes Rhino Pet Plates different — we don’t just deliver meals… we step into your world and make sure your dog is cared for the right way, even when you’re not there. Veterinary-guided. Chef-driven. Family-first. 📍NYC in-home demonstrations available 📦 Fresh & frozen meals available for travel Book your in-home pet food demonstration and learn how to cook for your",
+      "url": "https://www.tiktok.com/@rhinopetplates/video/7633535828349685023",
+      "author": "rhinopetplates",
+      "container": "",
+      "publishedAt": "2026-04-27",
+      "engagement": {
+        "relevanceScore": 4,
+        "likes": 5,
+        "views": 74
+      },
+      "finalScore": 35.66432338800905,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/pastordw2/status/2050939167136211389",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and in",
+      "body": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and install a otodox parliament where the jew that bb and trump is beating up forcing to go kill their poor Palienstian neighbors out of office",
+      "url": "https://x.com/PastorDW2/status/2050939167136211389",
+      "author": "PastorDW2",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 1,
+        "reposts": 1
+      },
+      "finalScore": 35.62296568627451,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/oakley294524/status/2050970971922747726",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from buildi",
+      "body": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions! AOC + her group of dirty Democrats blocked Amazon from building a new business center in Brooklyn/NYC! They wanted kickbacks &amp; they told her to F-off! Amazon was bringing 5,000 jobs to NYC + tax money/billions!",
+      "url": "https://x.com/Oakley294524/status/2050970971922747726",
+      "author": "Oakley294524",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 0.13
+      },
+      "finalScore": 35.31757180336924,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/mendoncamelanie/status/2050974598506619172",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+      "body": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+      "url": "https://x.com/MendoncaMelanie/status/2050974598506619172",
+      "author": "MendoncaMelanie",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 0.11
+      },
+      "finalScore": 34.65502273373117,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://x.com/_elf_angel_film/status/2050954834090578407",
+      "origin": "last30days",
+      "platform": "x",
+      "signalType": "industry_trend",
+      "title": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+      "body": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+      "url": "https://x.com/_elf_angel_film/status/2050954834090578407",
+      "author": "_elf_angel_film",
+      "container": "",
+      "publishedAt": "2026-05-03",
+      "engagement": {
+        "relevanceScore": 0.11
+      },
+      "finalScore": 34.64709383753501,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    },
+    {
+      "id": "https://instagram.com/reel/dxoxpb_dlnd",
+      "origin": "last30days",
+      "platform": "instagram",
+      "signalType": "content_opportunity",
+      "title": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+      "body": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! #goodmorning #amnewsers #mondaymotivation",
+      "url": "https://www.instagram.com/reel/DXoXpB_DlNd/",
+      "author": "emilyputnamtv",
+      "container": "",
+      "publishedAt": "2026-04-27",
+      "engagement": {
+        "relevanceScore": 50,
+        "likes": 58,
+        "comments": 2,
+        "views": 983
+      },
+      "finalScore": 29.231125040180004,
+      "clientRelevance": "high",
+      "competitorMatchedName": null,
+      "hasBrandMention": false,
+      "sentiment": "neutral",
+      "fetchedAt": "2026-05-03T16:40:59.849Z",
+      "tags": []
+    }
+  ],
+  "mapped": {
+    "brandMentions": [],
+    "competitorIntel": [],
+    "redditSignals": [
+      {
+        "title": "Latino picnic in Williamsburg",
+        "subreddit": "williamsburg",
+        "signalType": "participation_opportunity",
+        "summary": "Hey guys! Our Peruvian co-founder has been hosting weekly events for Latinos in NYC to get together. The picnics are usually in Central Park, but we're wondering if there's enough interest to host one in Williamsburg? (for the WBurg & Brooklyn people)\n\nJust looking to create an opportunity for the community to come together IRL, meet other Latinos who are new to the city (or long-term locals) and",
+        "actionableTakeaway": "Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.",
+        "url": "https://www.reddit.com/r/williamsburg/comments/1t08o9i/latino_picnic_in_williamsburg/",
+        "origin": "last30days",
+        "platform": "reddit"
+      },
+      {
+        "title": "My girl is crossing the rainbow bridge tomorrow",
+        "subreddit": "olddogs",
+        "signalType": "participation_opportunity",
+        "summary": "You have given this dog an amazing life, be very proud. All of us (including myself) wish that our dogs could be with us forever. 😔Lacey we will miss and always love you😢 https://preview.redd.it/lprqvygupyxg1.jpeg?width=3213&format=pjpg&auto=webp&s=09654dda2accd29e5fe206c94ee7008e2547f90f\n\nGeorge went over the rainbow bridge on January 16th, at age 17, so he’ll meet La",
+        "actionableTakeaway": "Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.",
+        "url": "https://www.reddit.com/r/olddogs/comments/1sy4zs9/my_girl_is_crossing_the_rainbow_bridge_tomorrow/",
+        "origin": "last30days",
+        "platform": "reddit"
+      },
+      {
+        "title": "Regrets about naming my puppy",
+        "subreddit": "puppy101",
+        "signalType": "participation_opportunity",
+        "summary": "So for context, I got a puppy 3 months ago and he is 5 months old now. I named my puppy Toppy, and I took this name from an old japanese comic book character who is a dog that just looks like him.\n\nA few days ago when I took him for a walk, two young ladies came up to us to pet my dog. Naturally they asked for his name and I told them its Toppy. Out of no where they started giggling and said somet",
+        "actionableTakeaway": "Neighborhood or community thread surfaced by last30days — potential content hook or participation opportunity.",
+        "url": "https://www.reddit.com/r/puppy101/comments/1sxrooh/regrets_about_naming_my_puppy/",
+        "origin": "last30days",
+        "platform": "reddit"
+      }
+    ],
+    "contentOpportunities": [
+      {
+        "topic": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry frie",
+        "whyNow": "It’s flea and tick season—or as your pet calls it, \"The Great Itch-pocalypse.\" 🐾🚫 Don’t let those tiny uninvited guests turn your furry friend into a walking scratching post! Our staff is sharing their top picks to keep the bugs away and the zoomies coming: * Seresto Collars: Set it and forget it for 8 whole months. It’s like a \"No Vacancy\" sign for pests. * Frontline Plus: The OG monthly defense. Reliable, classic, and effective. * Flea & Tick Spray: For those who like a little \"spritz and go\" action. Keep your pets happy, healthy, and—most importantly—not itchy. 🐶🐱 🛍️ Shop Online 🚀 Speedy Service: We deliver faster than",
+        "format": "short-form video",
+        "priority": "high",
+        "source": "tiktok",
+        "url": "https://www.tiktok.com/@petmarketnyc/video/7633485762666712350",
+        "origin": "last30days",
+        "platform": "tiktok",
+        "signalType": "content_opportunity"
+      },
+      {
+        "topic": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720.",
+        "whyNow": "ICE’s presence in Bushwick is deeply alarming. If you see ICE in your neighborhood, call or text the Hands Off NYC hotline: 229-304-8720. To our neighbors who quickly mobilized last night, thank you for making it loud and clear that ICE is not welcome in Brooklyn.",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/BKBPReynoso/status/2050958073766846591",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "I’ll start:\n\nRun into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite i",
+        "whyNow": "I’ll start: Run into friends, hop on a random ferry to Brooklyn, have ice cream while walking with views to kill for, then… Yankees suite invite + WSJ interview request? Same day. NYC high is just insane",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/BlondiePredicts/status/2050963225970086383",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+        "whyNow": "Dog owners NEED this. #dog #dogsoftiktok #PetsOfTikTok #doglover #petcare",
+        "format": "short-form video",
+        "priority": "high",
+        "source": "tiktok",
+        "url": "https://www.tiktok.com/@petheavenlux/video/7635007948825120022",
+        "origin": "last30days",
+        "platform": "tiktok",
+        "signalType": "content_opportunity"
+      },
+      {
+        "topic": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+        "whyNow": "#walkoftheday #dogwalking #puppydog #puppywalk #cavapoo",
+        "format": "short-form video",
+        "priority": "high",
+        "source": "tiktok",
+        "url": "https://www.tiktok.com/@rolo1461/video/7635012187924237590",
+        "origin": "last30days",
+        "platform": "tiktok",
+        "signalType": "content_opportunity"
+      },
+      {
+        "topic": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC\n\nICE dragged a man in custody out",
+        "whyNow": "CHAOS OVERNIGHT as ICE Agents rush a detainee out from hospital during protester stand off in Brooklyn NYC ICE dragged a man in custody out of the Wyckoff Hospital building after earlier detainement off site, as protesters massed outside. Agents rushed ran into the ambulance bay with pepper spray canisters pointed at anyone in their way. Later running out with a suspect dragging him into a car waiting outside. NYPD arrested several activists while trash and objects were thrown onto Stanhope",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/ScooterCasterNY/status/2050936274177954198",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody.",
+        "whyNow": "NYC (May 2) — Violent leftist rioters gathered at Wyckoff Hospital in Brooklyn to try to stop DHS agents from taking a suspect into custody. https://t.co/NTILHyXqkd",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/MrAndyNgo/status/2050967037866811569",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Part",
+        "whyNow": "Chairwoman Frances Vella-Marrone honored by American New York Chinese Association at 9th Annual Gala May 2, 2026. Brooklyn Conservative Party Exec Secretary Chung Dick on hand. Presented by Ray Huang, a Director of the Association. #Brooklyn #Conservative #chineseamerican #nyc https://t.co/IenxoXVKmh",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/BKConservatives/status/2050964123744108998",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+        "whyNow": "@Skeemin13 Buddy won’t last in NYC. Coming to Brooklyn is a one way trip",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/JSegarra86/status/2050969566772129826",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+        "whyNow": "Uma das melhores vistas que já tive Brooklyn Bridge (NYC) 🇺🇸 https://t.co/R1Bt5ktj3P",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/CameronHeiese/status/2050954134384156761",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will",
+        "whyNow": "If you live in NYC you can join the Deed Theft Rally today at Noon at 212 Jefferson St, Brooklyn and help us canvas for candidates who will fight against Deed Theft and for a Statewide Eviction Moratorium at 1pm.",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/mr_conniption/status/2050933953834385655",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "Queens NYC is my soul, Brooklyn has my heart.",
+        "whyNow": "Queens NYC is my soul, Brooklyn has my heart.",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/zzpoofs007/status/2050973793896517781",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "@mmpadellan Good morning from NYC Brooklyn",
+        "whyNow": "@mmpadellan Good morning from NYC Brooklyn",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/Mr_miss_jones/status/2050928504536015068",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC.",
+        "whyNow": "Violent democrat rioters attacked at Wyckoff Hospital in Brooklyn to try to stop DHS ICE agents from taking an illegal into custody in NYC. https://t.co/ZyIqrib1Op",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/overitall69/status/2050968692939190435",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "🚨 NEW YORK 🚨  Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨  We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet sp",
+        "whyNow": "🚨 NEW YORK 🚨 Stop taking your pet anywhere… WE COME TO YOU 🐶🐱✨ We are Martin Pets Grooming — the MOST viral, fastest-growing mobile pet spa in New York 🔥 🚐 We bring the FULL professional spa experience right to your door: ✔️ Bath & deep cleaning ✔️ Haircut & styling ✔️ Nail trimming ✔️ Ear cleaning ✔️ Oral hygiene No stress. No travel. No waiting. Your pet stays comfortable at home… and we handle EVERYTHING. 💎 Luxury grooming. Professional care. At your doorstep. 📲 Book now — spots fill fa #NYCPets #DogGroomingNYC #CatGrooming #MobileGrooming #PetSpa DogSpa NYCDogs PetCareNYC LuxuryPets DogLife CatLife PetLovers GroomingService ViralNYC NYCBusiness PetTransformation BeforeAfterDog PetReel",
+        "format": "short-form video",
+        "priority": "high",
+        "source": "tiktok",
+        "url": "https://www.tiktok.com/@mrmartin.co/video/7633841413439917342",
+        "origin": "last30days",
+        "platform": "tiktok",
+        "signalType": "content_opportunity"
+      },
+      {
+        "topic": "I’m gutted by all of this ICE activity in our city.\n\nBrooklyn was a war zone yesterday!\n\n@NYCMayor what’s up with NYPD still working with IC",
+        "whyNow": "I’m gutted by all of this ICE activity in our city. Brooklyn was a war zone yesterday! @NYCMayor what’s up with NYPD still working with ICE? #communitysafety #nyc",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/Visionary_VVM/status/2050926861153112146",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "Upper East Side energy meets next-level pet care 🏙️🐾 Today, Frankie “Bam Bam” Bloise — founder of Rhino Pet Plates — stepped into Terry’s ho",
+        "whyNow": "Trained their in-home cook & house manager 🥩 Built a customized meal plan just for Terry 🥦 Focused on senior support, digestion & clean energy ❄️ Provided frozen Rhino meals for consistency while traveling Because consistency = comfort… and comfort = everything for a senior dog ❤️ This is what makes Rhino Pet Plates different — we don’t just deliver meals… we step into your world and make sure your dog is cared for the right way, even when you’re not there. Veterinary-guided. Chef-driven. Family-first. 📍NYC in-home demonstrations available 📦 Fresh & frozen meals available for travel Book your in-home pet food demonstration and learn how to cook for your",
+        "format": "short-form video",
+        "priority": "high",
+        "source": "tiktok",
+        "url": "https://www.tiktok.com/@rhinopetplates/video/7633535828349685023",
+        "origin": "last30days",
+        "platform": "tiktok",
+        "signalType": "content_opportunity"
+      },
+      {
+        "topic": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and in",
+        "whyNow": "Nyc Brooklyn iligal immigrants pastor clip join all the good citizens of isreal that are not Zionist vote them out this year election and install a otodox parliament where the jew that bb and trump is beating up forcing to go kill their poor Palienstian neighbors out of office",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/PastorDW2/status/2050939167136211389",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions!\nAOC + her group of dirty Democrats blocked Amazon from buildi",
+        "whyNow": "@its_The_Dr Thats what Democrats do if they didn’t get kickback contributions! AOC + her group of dirty Democrats blocked Amazon from building a new business center in Brooklyn/NYC! They wanted kickbacks &amp; they told her to F-off! Amazon was bringing 5,000 jobs to NYC + tax money/billions!",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/Oakley294524/status/2050970971922747726",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+        "whyNow": "Check out \"NYC BROOKLYN Community Baby Shower\" https://t.co/RIxeRBry9R @eventbritehelp",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/MendoncaMelanie/status/2050974598506619172",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+        "whyNow": "@_Zeets it’s insanely deranged like do those ppl even live in brooklyn?? or nyc ????",
+        "format": "post",
+        "priority": "high",
+        "source": "x",
+        "url": "https://x.com/_elf_angel_film/status/2050954834090578407",
+        "origin": "last30days",
+        "platform": "x",
+        "signalType": "industry_trend"
+      },
+      {
+        "topic": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! \n\n#goodmorning \n#amnewsers \n#mondaymotivation",
+        "whyNow": "POV it’s Monday morning at @news10nbc 😊 Start the work week with us now-7am! #goodmorning #amnewsers #mondaymotivation",
+        "format": "reel or story",
+        "priority": "high",
+        "source": "instagram",
+        "url": "https://www.instagram.com/reel/DXoXpB_DlNd/",
+        "origin": "last30days",
+        "platform": "instagram",
+        "signalType": "content_opportunity"
+      }
+    ],
+    "localDemandSignals": [],
+    "partnershipOpportunities": []
+  }
+}
