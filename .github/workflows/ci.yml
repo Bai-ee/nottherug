@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+      - run: npm run lint:pipeline
+
+      # Route types are generated during the build, so typecheck runs after it
+      # rather than against whatever .next/types a previous run left behind.
+      - run: npm run build
+        env:
+          # Build-time only. No real credential is needed to compile, and no
+          # network call is made with these.
+          PUBLIC_BASE_URL: https://example.test
+
+      - run: npm run typecheck
+      - run: npm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run build
+        env:
+          PUBLIC_BASE_URL: https://example.test
+
+      # playwright.config.ts starts `npm run start` itself and tears it down.
+      - run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
