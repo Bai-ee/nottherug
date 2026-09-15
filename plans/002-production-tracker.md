@@ -70,7 +70,7 @@ Dependencies are minimum requirements. Each worker must start from an integratio
 | Booking regression (reproduced) | The live form payload returns 400 `Missing: spayNeuter, dogSocial, strangerSocial`; JSON `null` and a numeric `notes` throw. Reproduced against the real handler with Firebase and Resend mocked — zero writes, zero sends. |
 | Baseline routes | `/`, `/?page={services,how-it-works,about,safety,reviews,book,contact}`, `/?hood=williamsburg`, `/book`, `/contact`, `/admin`, `/playground/service-cards` all 200. `/robots.txt` and `/sitemap.xml` 404. |
 | Baseline screenshots | Desktop 1440x900 and mobile 375x812 full-page captures of all 12 public/admin routes, retained in the session scratchpad (not committed — 41 MB). |
-| Unit / integration tests, final | **155 passed, 0 skipped** across 21 files. The 13 Firebase rules tests that previously skipped now run against a real emulator and pass. |
+| Unit / integration tests, final | **217 passed, 0 skipped** across 23 files. Includes 15 emulator-backed rules tests (previously skipped entirely), 10 booking tests against a real Firestore rather than mocks, 11 real-Sharp rendering tests, and 50 admin route-hardening tests. |
 | Clean-install reproducibility | `rm -rf node_modules && npm ci` reproduces a passing tree. Note: `npm uninstall` drops optional native bindings (npm optional-dependency bug) and breaks vitest's rolldown binary — edit `package.json` and reinstall instead. |
 | External side effects during execution | None. No emails sent, no production data or rules touched, no paid generation invoked. |
 
@@ -81,7 +81,7 @@ Review-time logs under `/tmp/ntr-review-*` were diagnostic conveniences, not acc
 | Field | Value |
 | --- | --- |
 | Integration baseline commit | `711fbe1` |
-| Release candidate commit | `1737c48` |
+| Release candidate commit | `e629768` |
 | Preview deployment | **None.** No deployment of any kind was made. |
 | Runtime and framework versions | Node 24.7.0 (`engines: 24.x`, which overrides the Vercel project setting), Next 16.3.5, React 19.3.0, sharp 0.35.4, firebase-admin 14.4.0 |
 | Clean install | `rm -rf node_modules .next && npm ci` → reproducible |
@@ -89,7 +89,7 @@ Review-time logs under `/tmp/ntr-review-*` were diagnostic conveniences, not acc
 | Application lint | `npm run lint` → **0 errors**, 23 warnings, from 57 errors. No suppressions added |
 | Pipeline lint | `npm run lint:pipeline` → 0 errors, 0 warnings, from 1 error and 5 warnings |
 | Type check | `npm run typecheck` → clean |
-| Unit / integration tests | `npm test` → **155 passed, 0 skipped** (21 files) |
+| Unit / integration tests | `npm test` → **217 passed, 0 skipped** (23 files), including 15 emulator-backed rules tests and 10 booking tests against a real Firestore |
 | Production build | `npm run build` → succeeds, 40 routes |
 | Browser tests | `npx playwright test` → **132 passed, 4 skipped, 0 failed** across desktop 1440x900 and mobile iPhone 13 |
 | Route verification | All 9 public routes, `/admin`, `/robots.txt`, `/sitemap.xml` → 200. `/playground/service-cards` → 404 in production. All 8 legacy `?page=`/`?hood=` URLs → 307 to the correct new path |
@@ -186,6 +186,41 @@ working focus trap, Escape handling and pre-reset submission snapshot; escaped e
 templates; CSV quoting that resists field breakout; delete handlers that only remove a row
 inside the success branch; both iframes sandboxed without `allow-scripts`. No
 authorization bypass, no XSS vector, and no unprompted feature found in either slice.
+
+## Second independent review, September 15
+
+Two reviewers re-examined the critical paths **against the acceptance criteria in the
+plan**, not against what the commits claimed. Both found real defects that the first
+round of review had missed.
+
+### Booking, retry and idempotency
+
+| Severity | Finding | State |
+| --- | --- | --- |
+| Moderate | The lead route was the only email-sending route with no duration budget, while running two 8-second-bounded sends in series. A cut-off mid-flight would save the lead but lose the status write and the response, showing the customer an error for an inquiry that saved. | Fixed in `e629768`: sends run concurrently, `maxDuration = 20`. |
+| Moderate | The previous-bucket lookback closes the idempotency boundary for a sequential retry, but two genuinely simultaneous requests either side of the hour boundary can each finish their lookback before the other's create commits. | Documented as a known limitation rather than putting a transaction on every booking. The plan's "concurrent retries create one lead" was broader than what the code guarantees. |
+| Low | The rate limit is keyed on `x-forwarded-for`, which is only safe because Vercel's edge overwrites it. True, but written down nowhere. | Documented at the point the IP is derived. |
+
+Confirmed holding: the option lists are structurally single-sourced, so the R01 drift
+cannot recur; `fsCreateDoc`'s 409-only handling matches Firestore's error model; the body
+cap enforces on bytes received regardless of headers; CSV neutralisation survives a
+combined formula-and-quote payload without breaking out of its field; notification status
+is never upgraded to `sent` unless the provider returned no error.
+
+### Authorization and storage
+
+| Severity | Finding | State |
+| --- | --- | --- |
+| **High** | Eleven of sixteen admin routes still collapsed every `verifyAdmin` failure into a hardcoded 401 **and returned the internal detail to the client**. The property P1B was supposed to establish — a dependency outage is a 500, not "unauthorized" — held for five routes out of sixteen. | Fixed in `877ac9d`. All sixteen use the typed boundary; every route is now tested for 401/403/500 and for not leaking detail. |
+| Moderate | The photo render route passed client-supplied `sourceStoragePath` and `logoStoragePath` straight to `storageDownload`, which uses Admin credentials and bypasses `storage.rules`. Any admin request could read any object in the bucket, including the `private/` prefix. | Fixed in `877ac9d`: both paths asserted under their expected prefixes before any read, validated paths persisted, renderer internals no longer echoed. |
+| Low | Cron bearer secrets compared with `===`, which short-circuits at the first differing byte. | Fixed in `877ac9d` with a constant-time comparison. Unset secret was already fail-closed. |
+| Low | No test proved the rules catch-all denies an *unlisted* Firestore collection — `notTheRugBriefLeases` and `leadRateLimits` rely on it entirely. | Fixed in `e629768`. |
+
+Confirmed holding: every route handler is gated; `verifyAdmin` itself is correct and
+tested; delete derives paths from the stored record and rejects a prefix sibling; the
+private-upload failure path deletes the object and does not leak the token; upload cleans
+up on metadata failure and reports whether cleanup worked; no code path logs a download
+token, a full email address, or a credential.
 
 ## Deferred proposals
 
