@@ -19,7 +19,6 @@ const SHARED_TRACE_EXCLUDES = [
   './optimize_video.py',
   './download_video.py',
   './tsconfig.tsbuildinfo',
-  './lib/media/renderers/ffmpeg.ts',
 ];
 
 // Full transitive dep tree of firebase-admin (resolved via npm). Next 16 +
@@ -122,7 +121,6 @@ const FIREBASE_ADMIN_INCLUDES = [
   './node_modules/tr46/**/*',
   './node_modules/undici-types/**/*',
   './node_modules/util-deprecate/**/*',
-  './node_modules/uuid/**/*',
   './node_modules/webidl-conversions/**/*',
   './node_modules/whatwg-url/**/*',
   './node_modules/wrappy/**/*',
@@ -143,6 +141,11 @@ const GENERATOR_TRACE_EXCLUDES = [
   './not-the-rug-brief/**/*',
 ];
 
+// SHARED_TRACE_EXCLUDES drops all of app-assets, but renderGeneratorImage falls
+// back to these logo files when both Storage and the public path miss. Every
+// route that can render an image has to add them back.
+const GENERATOR_ASSET_INCLUDES = ['./app-assets/generator-logos/**/*'];
+
 // Text/email routes: shared repo assets + the sharp binaries.
 const BRIEF_TRACE_EXCLUDES = [
   ...SHARED_TRACE_EXCLUDES,
@@ -158,64 +161,60 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     '/api/admin/generator/render':              GENERATOR_TRACE_EXCLUDES,
     '/api/admin/photos/render':                 GENERATOR_TRACE_EXCLUDES,
-    '/admin/not-the-rug/run-brief':             BRIEF_TRACE_EXCLUDES,
+    '/admin/not-the-rug/run-brief':             GENERATOR_TRACE_EXCLUDES,
     '/admin/not-the-rug/latest-brief':          BRIEF_TRACE_EXCLUDES,
     '/admin/not-the-rug/latest-brief/html':     BRIEF_TRACE_EXCLUDES,
     '/admin/not-the-rug/history':               BRIEF_TRACE_EXCLUDES,
     '/admin/not-the-rug/history/[id]/html':     BRIEF_TRACE_EXCLUDES,
-    '/api/cron/not-the-rug-brief':              BRIEF_TRACE_EXCLUDES,
+    '/api/cron/not-the-rug-brief':              GENERATOR_TRACE_EXCLUDES,
     '/api/cron/founder-brief':                  BRIEF_TRACE_EXCLUDES,
     '/api/cron/leads-digest':                   BRIEF_TRACE_EXCLUDES,
     '/api/leads/meetgreet':                     BRIEF_TRACE_EXCLUDES,
     '/admin/preview/founder-brief':             BRIEF_TRACE_EXCLUDES,
-    '/admin/founder-brief/run-and-send':        BRIEF_TRACE_EXCLUDES,
+    '/admin/founder-brief/run-and-send':        GENERATOR_TRACE_EXCLUDES,
     '/admin/leads':                             BRIEF_TRACE_EXCLUDES,
   },
 
   outputFileTracingIncludes: {
     '/admin/not-the-rug/run-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
+      ...GENERATOR_ASSET_INCLUDES,
     ],
     '/admin/not-the-rug/latest-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/latest-brief/html': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/history': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/history/[id]/html': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
     ],
     '/api/cron/not-the-rug-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
+      ...GENERATOR_ASSET_INCLUDES,
       ...FIREBASE_ADMIN_INCLUDES,
     ],
-    // New routes that import lib/not-the-rug-brief/server.ts also need the
-    // brief sources + Anthropic SDK traced in even though we excluded the
-    // shared heavy dirs above.
+    // Routes importing lib/not-the-rug-brief/read.ts or run.ts still need the
+    // CommonJS pipeline sources traced in, since the shared heavy directories
+    // are excluded above.
     '/api/cron/founder-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
       ...FIREBASE_ADMIN_INCLUDES,
     ],
     '/admin/preview/founder-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
       ...FIREBASE_ADMIN_INCLUDES,
     ],
     '/admin/founder-brief/run-and-send': [
       './not-the-rug-brief/**/*',
-      './node_modules/uuid/**/*',
+      ...GENERATOR_ASSET_INCLUDES,
       ...FIREBASE_ADMIN_INCLUDES,
     ],
+    '/api/admin/generator/render': GENERATOR_ASSET_INCLUDES,
+    '/api/admin/photos/render': GENERATOR_ASSET_INCLUDES,
     // Other routes that import firebase-admin via verifyAdmin or fsQueryCollection
     '/api/leads/meetgreet': FIREBASE_ADMIN_INCLUDES,
     '/admin/leads': FIREBASE_ADMIN_INCLUDES,
