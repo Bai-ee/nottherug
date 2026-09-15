@@ -4,9 +4,13 @@ import { fsCreateDoc, fsGetDoc, fsIncrementField, fsSetDoc } from '@/lib/server/
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
 import { parseLeadSubmission } from '@/lib/leads/validation';
-import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput } from '@/lib/leads/contract';
+import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput, type NotificationOutcome } from '@/lib/leads/contract';
 
 export const runtime = 'nodejs';
+// Every other email-sending route here declares a budget; this one is the fast
+// path a customer waits on, so it gets a tighter one. Worst case is two bounded
+// sends (now concurrent) plus a few Firestore round trips.
+export const maxDuration = 20;
 
 // Well under Vercel's 4.5MB request limit — this route only ever carries short
 // form fields, never a file.
@@ -60,6 +64,14 @@ async function readCappedBody(req: Request, maxBytes: number): Promise<{ ok: tru
   return { ok: true, text: Buffer.concat(chunks.map((c) => Buffer.from(c))).toString('utf8') };
 }
 
+/**
+ * Trusts the first `x-forwarded-for` entry. That is only safe because Vercel's
+ * edge overwrites this header rather than appending to a client-supplied one.
+ * If this ever runs behind a different proxy, or a verified-proxy config is
+ * added, re-check this first — the rate limit is keyed entirely on it, and the
+ * rate limit plus the honeypot are what stop this form being used to send
+ * confirmation mail to arbitrary addresses.
+ */
 function clientIp(req: Request): string {
   const forwardedFor = req.headers.get('x-forwarded-for');
   const first = forwardedFor?.split(',')[0]?.trim();
@@ -157,30 +169,36 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
 
   const sandbox = from.endsWith('@resend.dev');
 
-  try {
-    const founderMail = founderMeetGreetEmail(lead);
-    const result = await withTimeout(
-      resend.emails.send({
-        from,
-        to: founderEmail,
-        replyTo: lead.email,
-        subject: founderMail.subject,
-        html: founderMail.html,
-        text: founderMail.text,
-      }),
-      EMAIL_TIMEOUT_MS,
-      'founder email'
-    );
-    notifications.founder = result.error ? 'failed' : 'sent';
-    if (result.error) console.error('[lead:meetgreet] founder email failed', redactProviderError(result.error.message));
-  } catch (err) {
-    notifications.founder = 'failed';
-    console.error('[lead:meetgreet] founder email error', err instanceof Error ? redactProviderError(err.message) : 'unknown');
-  }
+  const sendFounder = async (): Promise<NotificationOutcome> => {
+    try {
+      const founderMail = founderMeetGreetEmail(lead);
+      const result = await withTimeout(
+        resend.emails.send({
+          from,
+          to: founderEmail,
+          replyTo: lead.email,
+          subject: founderMail.subject,
+          html: founderMail.html,
+          text: founderMail.text,
+        }),
+        EMAIL_TIMEOUT_MS,
+        'founder email'
+      );
+      if (result.error) {
+        console.error('[lead:meetgreet] founder email failed', redactProviderError(result.error.message));
+        return 'failed';
+      }
+      return 'sent';
+    } catch (err) {
+      console.error('[lead:meetgreet] founder email error', err instanceof Error ? redactProviderError(err.message) : 'unknown');
+      return 'failed';
+    }
+  };
 
-  if (sandbox) {
-    notifications.customer = 'skipped';
-  } else {
+  const sendCustomer = async (): Promise<NotificationOutcome> => {
+    // A @resend.dev sender only delivers to the account's own verified address,
+    // so a customer confirmation would bounce rather than arrive.
+    if (sandbox) return 'skipped';
     try {
       const customerMail = customerMeetGreetEmail(lead);
       const result = await withTimeout(
@@ -194,13 +212,22 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
         EMAIL_TIMEOUT_MS,
         'customer email'
       );
-      notifications.customer = result.error ? 'failed' : 'sent';
-      if (result.error) console.error('[lead:meetgreet] customer email failed', redactProviderError(result.error.message));
+      if (result.error) {
+        console.error('[lead:meetgreet] customer email failed', redactProviderError(result.error.message));
+        return 'failed';
+      }
+      return 'sent';
     } catch (err) {
-      notifications.customer = 'failed';
       console.error('[lead:meetgreet] customer email error', err instanceof Error ? redactProviderError(err.message) : 'unknown');
+      return 'failed';
     }
-  }
+  };
+
+  // Concurrent, not sequential: two 8s timeouts in series put the worst case at
+  // 16s of email on a route a customer is waiting on.
+  const [founder, customer] = await Promise.all([sendFounder(), sendCustomer()]);
+  notifications.founder = founder;
+  notifications.customer = customer;
 
   return notifications;
 }
@@ -235,6 +262,14 @@ export async function POST(req: Request) {
   const lead = buildLeadRecord(id, submittedAt, validation.data);
 
   // Bucket-boundary lookback: an identical retry that straddles the current
+  // Known limitation, deliberately not fixed with a transaction: this closes the
+  // boundary for a *sequential* retry, which is the real-world case (client times
+  // out, person taps submit again). Two genuinely simultaneous requests landing on
+  // opposite sides of the hour boundary can each complete their lookback before
+  // the other's create commits, and both would be saved. That needs
+  // millisecond-scale double submission at the exact top of an hour; the cost of a
+  // read-write transaction on every booking is not worth closing it.
+
   // bucket's start hashes to a different id than the original, so a plain
   // fsCreateDoc race on `id` alone would miss it. Check the previous bucket's
   // id first — if that document exists, this is the same submission.

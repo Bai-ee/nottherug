@@ -78,4 +78,23 @@ describe('firestore.rules', () => {
     const unauth = testEnv.unauthenticatedContext();
     await assertFails(unauth.firestore().collection('leads').doc('lead-1').set({ ownerName: 'x' }));
   });
+
+  it('denies an unlisted collection, so the catch-all is proven and not just assumed', async (ctx) => {
+    if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
+    const db = testEnv.unauthenticatedContext().firestore();
+    // notTheRugBriefLeases and leadRateLimits have no match block of their own —
+    // they are protected only by the trailing wildcard, which nothing proved.
+    await assertFails(db.collection('notTheRugBriefLeases').doc('some-run-id').get());
+    await assertFails(db.collection('notTheRugBriefLeases').doc('some-run-id').set({ mine: true }));
+    await assertFails(db.collection('leadRateLimits').doc('abc_123').get());
+    await assertFails(db.collection('somethingNobodyDeclared').doc('x').get());
+    await assertFails(db.collection('somethingNobodyDeclared').doc('x').set({ mine: true }));
+  });
+
+  it('denies a subcollection nested under a denied document', async (ctx) => {
+    if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
+    const db = testEnv.unauthenticatedContext().firestore();
+    await assertFails(db.collection('leads').doc('some-lead').collection('notes').doc('n1').get());
+    await assertFails(db.collection('leads').doc('some-lead').collection('notes').doc('n1').set({ mine: true }));
+  });
 });
