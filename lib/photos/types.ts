@@ -26,6 +26,8 @@ export interface PhotoUpload {
   storagePath: string;      // e.g. photos/originals/abc123.jpg
   downloadURL: string;
   thumbnailURL?: string;    // ~300px wide JPEG for grid display
+  thumbnailStatus: 'ok' | 'failed';
+  thumbnailError?: string;  // failure reason when thumbnailStatus is 'failed'
   fileName: string;
   contentType: string;
   width: number;

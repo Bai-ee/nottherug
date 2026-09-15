@@ -1,5 +1,6 @@
 import { initializeApp, getApps, cert, type App } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
+import { getFirebaseAdminConfig, readOptionalEnv } from '@/lib/server/env';
 
 function parsePrivateKey(raw: string): string {
   return raw
@@ -10,13 +11,14 @@ function parsePrivateKey(raw: string): string {
 function initAdmin(): App {
   if (getApps().length > 0) return getApps()[0]!;
 
-  const projectId   = (process.env.FIREBASE_ADMIN_PROJECT_ID ?? '').trim();
-  const clientEmail = (process.env.FIREBASE_ADMIN_CLIENT_EMAIL ?? '').trim();
-  const privateKey  = parsePrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY ?? '');
+  const { projectId, clientEmail, privateKey } = getFirebaseAdminConfig();
 
   return initializeApp({
-    credential: cert({ projectId, clientEmail, privateKey }),
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    credential: cert({ projectId, clientEmail, privateKey: parsePrivateKey(privateKey) }),
+    // Optional here: the Admin SDK's storage client is unused (see
+    // lib/server/firebaseStorage.ts), so a missing bucket must not block
+    // routes — like admin auth — that never touch Storage.
+    storageBucket: readOptionalEnv('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET'),
   });
 }
 

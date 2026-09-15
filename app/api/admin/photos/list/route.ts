@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
+import { errorResponse } from '@/lib/server/errors';
 import { fsQueryCollection } from '@/lib/server/firestoreRest';
 import { COLLECTIONS } from '@/lib/photos/types';
 import type { PhotoUpload, PhotoRender } from '@/lib/photos/types';
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     await verifyAdmin(req);
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Unauthorized' }, { status: 401 });
+    return errorResponse(err);
   }
 
   const type = req.nextUrl.searchParams.get('type') ?? 'originals';

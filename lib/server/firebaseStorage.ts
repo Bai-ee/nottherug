@@ -8,9 +8,13 @@
  */
 
 import { adminApp } from '@/lib/firebase-admin';
+import { getStorageBucket } from '@/lib/server/env';
 
-const BUCKET = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!;
+const BUCKET = getStorageBucket();
 const FS_BASE = `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(BUCKET)}/o`;
+
+/** Internal-artifact prefix: objects here are never given a public download token. */
+export const PRIVATE_STORAGE_PREFIX = 'private';
 
 async function getAccessToken(): Promise<string> {
   const token = await adminApp.options.credential!.getAccessToken();
@@ -20,28 +24,24 @@ async function getAccessToken(): Promise<string> {
 /**
  * Upload a buffer to Firebase Storage.
  * Returns a permanent public download URL with an embedded token.
+ * Intended only for content meant to be shareable (e.g. marketing images) —
+ * use storageUploadPrivate for internal artifacts.
  */
 export async function storageUpload(
   storagePath: string,
   buffer: Buffer,
   contentType: string,
 ): Promise<string> {
-  console.log('[storage] bucket:', BUCKET);
-  console.log('[storage] FS_BASE:', FS_BASE);
-
   let accessToken: string;
   try {
     accessToken = await getAccessToken();
-    console.log('[storage] access token obtained, length:', accessToken.length);
   } catch (err) {
-    console.error('[storage] failed to get access token:', err);
+    console.error('[storage] failed to get access token for upload, path:', storagePath);
     throw err;
   }
 
   const nameParam = encodeURIComponent(storagePath);
   const uploadURL = `${FS_BASE}?name=${nameParam}&uploadType=media`;
-  console.log('[storage] upload URL:', uploadURL);
-  console.log('[storage] buffer size:', buffer.length, 'contentType:', contentType);
 
   const uploadRes = await fetch(uploadURL, {
     method: 'POST',
@@ -52,16 +52,12 @@ export async function storageUpload(
     body: new Uint8Array(buffer),
   });
 
-  console.log('[storage] upload response status:', uploadRes.status);
-
   if (!uploadRes.ok) {
-    const err = await uploadRes.text();
-    console.error('[storage] upload error body:', err);
-    throw new Error(`Storage upload failed (${uploadRes.status}): ${err}`);
+    console.error('[storage] upload failed, status:', uploadRes.status, 'path:', storagePath);
+    throw new Error(`Storage upload failed (${uploadRes.status})`);
   }
 
   const uploadData = await uploadRes.json();
-  console.log('[storage] upload response:', JSON.stringify(uploadData, null, 2));
 
   // Firebase auto-generates a download token on upload — use it directly
   const downloadToken = uploadData.downloadTokens as string;
@@ -69,9 +65,55 @@ export async function storageUpload(
     throw new Error('Storage upload succeeded but no downloadTokens in response');
   }
 
-  const downloadURL = `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${nameParam}?alt=media&token=${downloadToken}`;
-  console.log('[storage] final download URL:', downloadURL);
-  return downloadURL;
+  return `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${nameParam}?alt=media&token=${downloadToken}`;
+}
+
+/**
+ * Upload a buffer as an internal artifact: the object is stored, then its
+ * auto-issued download token is immediately cleared so it is reachable only
+ * through an authenticated storageDownload() call, never a permanent public
+ * token URL. Does not revoke any token already issued by storageUpload().
+ */
+export async function storageUploadPrivate(
+  storagePath: string,
+  buffer: Buffer,
+  contentType: string,
+): Promise<void> {
+  let accessToken: string;
+  try {
+    accessToken = await getAccessToken();
+  } catch (err) {
+    console.error('[storage] failed to get access token for private upload, path:', storagePath);
+    throw err;
+  }
+
+  const nameParam = encodeURIComponent(storagePath);
+  const uploadURL = `${FS_BASE}?name=${nameParam}&uploadType=media`;
+
+  const uploadRes = await fetch(uploadURL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': contentType,
+    },
+    body: new Uint8Array(buffer),
+  });
+
+  if (!uploadRes.ok) {
+    console.error('[storage] private upload failed, status:', uploadRes.status, 'path:', storagePath);
+    throw new Error(`Private storage upload failed (${uploadRes.status})`);
+  }
+
+  const clearRes = await fetch(`${FS_BASE}/${nameParam}`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ metadata: { firebaseStorageDownloadTokens: '' } }),
+  });
+
+  if (!clearRes.ok) {
+    console.error('[storage] failed to clear public token, status:', clearRes.status, 'path:', storagePath);
+    throw new Error(`Failed to secure private upload (${clearRes.status})`);
+  }
 }
 
 /**

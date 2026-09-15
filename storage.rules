@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// All uploads/deletes happen server-side through the Admin SDK/REST API
+// (lib/server/firebaseStorage.ts), which bypasses these rules entirely.
+// These rules only constrain a direct client request against the bucket.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Internal artifacts (e.g. brief reports) are read exclusively by the
+    // server via storageDownload() with Admin credentials, which bypasses
+    // these rules. No client — admin or public — reads or writes here, and
+    // objects under this prefix are never issued a public download token
+    // (see storageUploadPrivate in lib/server/firebaseStorage.ts).
+    match /private/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // Marketing photo sharing happens exclusively through Firebase's
+    // token-bearing download URLs (?alt=media&token=...), which the Storage
+    // service authorizes itself and does NOT evaluate against these rules —
+    // an already-shared link keeps working no matter what this rule says.
+    // No rule-based public read is needed, and granting one here would do
+    // real harm: photos/originals/ holds raw admin uploads, not just
+    // curated exports, so `allow read: if true` would let anyone who knows
+    // or guesses a path read it directly (via the client SDK or the REST
+    // object endpoint with no token at all), which is strictly worse than
+    // today's token-only exposure.
+    match /photos/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

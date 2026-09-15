@@ -1,11 +1,17 @@
+import { randomUUID } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
+import sharp from 'sharp';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
+import { errorResponse } from '@/lib/server/errors';
 import { fsSetDoc } from '@/lib/server/firestoreRest';
-import { storageUpload } from '@/lib/server/firebaseStorage';
+import { storageDelete, storageUpload } from '@/lib/server/firebaseStorage';
 import { STORAGE_PATHS, COLLECTIONS } from '@/lib/photos/types';
 import type { PhotoUpload } from '@/lib/photos/types';
-import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
+import {
+  decodeAndValidateImage,
+  ImageTooLargeError,
+  UnsupportedImageFormatError,
+} from '@/lib/photos/validate';
 
 export const runtime = 'nodejs';
 
@@ -14,7 +20,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     adminEmail = await verifyAdmin(req);
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Unauthorized' }, { status: 401 });
+    return errorResponse(err);
   }
 
   let formData: FormData;
@@ -29,45 +35,48 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 });
   }
 
-  const contentType = file.type || 'image/jpeg';
-  if (!contentType.startsWith('image/')) {
-    return NextResponse.json({ error: 'File must be an image' }, { status: 400 });
-  }
-
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  let width = 0;
-  let height = 0;
+  let decoded;
   try {
-    const meta = await sharp(buffer).rotate().metadata();
-    width = meta.width ?? 0;
-    height = meta.height ?? 0;
-  } catch {
-    return NextResponse.json({ error: 'Could not read image metadata' }, { status: 400 });
+    decoded = await decodeAndValidateImage(buffer);
+  } catch (err) {
+    if (err instanceof ImageTooLargeError) {
+      return NextResponse.json({ error: err.message }, { status: 413 });
+    }
+    if (err instanceof UnsupportedImageFormatError) {
+      return NextResponse.json({ error: err.message }, { status: 415 });
+    }
+    return NextResponse.json({ error: 'Could not decode image' }, { status: 400 });
   }
 
-  const id = uuidv4();
-  const ext = contentType.split('/')[1]?.replace('jpeg', 'jpg') ?? 'jpg';
-  const originalName = (file as File).name ?? `upload.${ext}`;
-  const storagePath = `${STORAGE_PATHS.originals}/${id}.${ext}`;
-  const thumbPath   = `${STORAGE_PATHS.thumbnails}/${id}.jpg`;
+  const contentType = `image/${decoded.format}`;
+  const id = randomUUID();
+  const originalName = (file as File).name ?? `upload.${decoded.extension}`;
+  const storagePath = `${STORAGE_PATHS.originals}/${id}.${decoded.extension}`;
+  const thumbPath = `${STORAGE_PATHS.thumbnails}/${id}.jpg`;
 
   let downloadURL: string;
-  let thumbnailURL: string | undefined;
   try {
-    [downloadURL, thumbnailURL] = await Promise.all([
-      storageUpload(storagePath, buffer, contentType),
-      sharp(buffer)
-        .rotate()
-        .resize({ width: 300, withoutEnlargement: true })
-        .jpeg({ quality: 70 })
-        .toBuffer()
-        .then((thumb) => storageUpload(thumbPath, thumb, 'image/jpeg'))
-        .catch(() => undefined),
-    ]);
+    downloadURL = await storageUpload(storagePath, buffer, contentType);
   } catch (err) {
-    console.error('Storage upload failed:', err);
+    console.error('Storage upload failed:', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Storage upload failed' }, { status: 500 });
+  }
+
+  let thumbnailURL: string | undefined;
+  let thumbnailError: string | undefined;
+  try {
+    // Dimensions are already confirmed within MAX_PIXELS by decodeAndValidateImage.
+    const thumbBuffer = await sharp(buffer)
+      .rotate()
+      .resize({ width: 300, withoutEnlargement: true })
+      .jpeg({ quality: 70 })
+      .toBuffer();
+    thumbnailURL = await storageUpload(thumbPath, thumbBuffer, 'image/jpeg');
+  } catch (err) {
+    thumbnailError = err instanceof Error ? err.message : 'Unknown thumbnail error';
+    console.error('Thumbnail generation/upload failed:', thumbnailError);
   }
 
   const record: PhotoUpload = {
@@ -75,10 +84,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     storagePath,
     downloadURL,
     ...(thumbnailURL ? { thumbnailURL } : {}),
+    thumbnailStatus: thumbnailURL ? 'ok' : 'failed',
+    ...(thumbnailError ? { thumbnailError } : {}),
     fileName: originalName,
     contentType,
-    width,
-    height,
+    width: decoded.width,
+    height: decoded.height,
     uploadedBy: adminEmail,
     uploadedAt: new Date().toISOString(),
     status: 'complete',
@@ -87,8 +98,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     await fsSetDoc(`${COLLECTIONS.photoUploads}/${id}`, record as unknown as Record<string, unknown>);
   } catch (err) {
-    console.error('Firestore write failed:', err);
-    return NextResponse.json({ error: 'Metadata write failed' }, { status: 500 });
+    console.error('Firestore write failed:', err instanceof Error ? err.message : err);
+
+    const cleanupPaths = thumbnailURL ? [storagePath, thumbPath] : [storagePath];
+    const cleanupResults = await Promise.allSettled(cleanupPaths.map((p) => storageDelete(p)));
+    const cleanupFailed = cleanupResults.some((r) => r.status === 'rejected');
+    if (cleanupFailed) {
+      console.error('Cleanup after failed metadata write did not fully succeed for', storagePath);
+    }
+
+    return NextResponse.json(
+      { error: 'Metadata write failed', cleanup: cleanupFailed ? 'failed' : 'ok' },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ upload: record }, { status: 200 });

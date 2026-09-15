@@ -1,12 +1,13 @@
+import { randomUUID } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
+import { errorResponse } from '@/lib/server/errors';
 import { fsSetDoc } from '@/lib/server/firestoreRest';
 import { storageDownload, storageUpload } from '@/lib/server/firebaseStorage';
 import { STORAGE_PATHS, COLLECTIONS } from '@/lib/photos/types';
 import type { PhotoRender } from '@/lib/photos/types';
 import { createRenderer } from '@/lib/media/createRenderer';
 import type { LogoPlacement } from '@/lib/media/types';
-import { v4 as uuidv4 } from 'uuid';
 
 export const runtime = 'nodejs';
 
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     adminEmail = await verifyAdmin(req);
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Unauthorized' }, { status: 401 });
+    return errorResponse(err);
   }
 
   let body: RenderRequestBody;
@@ -63,14 +64,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Render failed' }, { status: 500 });
   }
 
-  const id = uuidv4();
+  const id = randomUUID();
   const renderStoragePath = `${STORAGE_PATHS.rendered}/${id}.jpg`;
 
   let renderDownloadURL: string;
   try {
     renderDownloadURL = await storageUpload(renderStoragePath, renderOutput.buffer, renderOutput.contentType);
   } catch (err) {
-    console.error('Render storage upload failed:', err);
+    console.error('Render storage upload failed:', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to save rendered image' }, { status: 500 });
   }
 

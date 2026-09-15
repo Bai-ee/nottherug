@@ -1,0 +1,52 @@
+rules_version = '2';
+
+// Every read/write in this app's server routes goes through the Admin
+// SDK/REST API with a service-account token, which bypasses these rules
+// entirely. These rules govern only direct client-SDK access — today that is
+// exactly one read: app/admin/page.tsx checking its own admins/{email} doc
+// to gate the dashboard UI. Everything else is denied by default.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+
+    // No self-enrollment: admin membership is managed out-of-band (Console
+    // or a trusted server process), never by a client write.
+    match /admins/{email} {
+      allow read: if isSignedIn() && request.auth.token.email == email;
+      allow write: if false;
+    }
+
+    // Lead submissions contain customer PII; the public form and the admin
+    // dashboard reach this collection only through server routes.
+    match /leads/{leadId} {
+      allow read, write: if false;
+    }
+
+    match /photoUploads/{id} {
+      allow read, write: if false;
+    }
+
+    match /photoRenders/{id} {
+      allow read, write: if false;
+    }
+
+    match /generatorRenders/{id} {
+      allow read, write: if false;
+    }
+
+    match /notTheRugBriefRuns/{id} {
+      allow read, write: if false;
+    }
+
+    match /notTheRugBriefState/{id} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
