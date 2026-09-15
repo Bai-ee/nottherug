@@ -153,7 +153,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
-  serverExternalPackages: ['sharp', 'firebase-admin', '@anthropic-ai/sdk'],
+  serverExternalPackages: ['sharp', 'firebase-admin'],
 
   outputFileTracingExcludes: {
     '/api/admin/generator/render':              GENERATOR_TRACE_EXCLUDES,
@@ -175,32 +175,26 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/admin/not-the-rug/run-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/latest-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/latest-brief/html': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/history': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
     ],
     '/admin/not-the-rug/history/[id]/html': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
     ],
     '/api/cron/not-the-rug-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
       ...FIREBASE_ADMIN_INCLUDES,
     ],
@@ -209,19 +203,16 @@ const nextConfig: NextConfig = {
     // shared heavy dirs above.
     '/api/cron/founder-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
       ...FIREBASE_ADMIN_INCLUDES,
     ],
     '/admin/preview/founder-brief': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
       ...FIREBASE_ADMIN_INCLUDES,
     ],
     '/admin/founder-brief/run-and-send': [
       './not-the-rug-brief/**/*',
-      './node_modules/@anthropic-ai/sdk/**/*',
       './node_modules/uuid/**/*',
       ...FIREBASE_ADMIN_INCLUDES,
     ],
