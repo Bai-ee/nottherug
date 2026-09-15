@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 
 // Card "execution" ported from the /playground/service-cards sandbox, with a
@@ -184,6 +185,50 @@ const DEFAULT_SETTINGS: Settings = {
     resetDuration: 0.65, resetBouncy: true,
   },
 };
+
+// Reads localStorage into the same shape as DEFAULT_SETTINGS, falling back to
+// it wherever a field is missing or malformed. Used as the useSyncExternalStore
+// snapshot below rather than an effect: this keeps the first client render
+// (hydration) matching the server's — both use getServerSettingsSnapshot — and
+// React itself schedules the swap to the real stored value right after, with
+// no setState-in-effect involved.
+function readStoredSettings(): Settings {
+  if (typeof window === "undefined") return DEFAULT_SETTINGS;
+  try {
+    const raw = window.localStorage.getItem(TUNING_STORAGE_KEY);
+    if (!raw) return DEFAULT_SETTINGS;
+    const parsed = JSON.parse(raw);
+    return {
+      globalIntensity: typeof parsed.globalIntensity === "number" ? parsed.globalIntensity : DEFAULT_SETTINGS.globalIntensity,
+      card: { ...DEFAULT_SETTINGS.card, ...parsed.card },
+      cardBg: { ...DEFAULT_SETTINGS.cardBg, ...parsed.cardBg },
+      cardStyle: { ...DEFAULT_SETTINGS.cardStyle, ...parsed.cardStyle },
+      paws: { ...DEFAULT_SETTINGS.paws, ...parsed.paws },
+      top: { ...DEFAULT_SETTINGS.top, ...parsed.top },
+      bottom: { ...DEFAULT_SETTINGS.bottom, ...parsed.bottom },
+    };
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
+}
+
+// Computed at most once per page load (localStorage doesn't change under us —
+// the only writer is this same component's "Save as Default" button, which
+// also updates React state directly) so the snapshot reference stays stable
+// across repeated getSnapshot() calls, as useSyncExternalStore requires.
+let cachedStoredSettings: Settings | null = null;
+function getStoredSettingsSnapshot(): Settings {
+  if (cachedStoredSettings === null) cachedStoredSettings = readStoredSettings();
+  return cachedStoredSettings;
+}
+function getServerSettingsSnapshot(): Settings {
+  return DEFAULT_SETTINGS;
+}
+// Neither snapshot ever changes after being read, so there's nothing to
+// subscribe to — a stable no-op avoids resubscribing on every render.
+function subscribeNever() {
+  return () => {};
+}
 
 type IllustratedProductCard = {
   variant?: undefined;
@@ -432,14 +477,6 @@ function PawPrint({ style, ref }: { style: React.CSSProperties; ref?: React.Ref<
   );
 }
 
-// This component only ever mounts behind the disabled
-// `{false && <AnimatedServiceCards />}` gate in
-// components/marketing/DisabledHomeSections.tsx, so this never runs on the
-// live site — kept as a plain navigation instead of the removed SPA
-// `window.showPage` global (R13) in case the carousel is re-enabled later.
-function goToServices() {
-  window.location.href = "/services";
-}
 
 function ToggleField({ id, label, checked, onChange }: {
   id: string; label: string; checked: boolean; onChange: (v: boolean) => void;
@@ -679,16 +716,38 @@ function stopIndexAt(st: CareScrollTrigger, scrollY: number): number {
 }
 
 export default function AnimatedServiceCards() {
+  // Seeded from localStorage via useSyncExternalStore (see
+  // getStoredSettingsSnapshot/getServerSettingsSnapshot above): the server
+  // and first client render both use DEFAULT_SETTINGS, then React itself
+  // schedules the swap to the real stored value once hydration is done. The
+  // "adjust state during render" check below (React's documented pattern for
+  // resetting state when an external value changes, not an effect) seeds the
+  // locally-editable `settings` state from it exactly once, the first time it
+  // differs from the default — later slider edits are untouched by it.
+  const storedSettings = useSyncExternalStore(subscribeNever, getStoredSettingsSnapshot, getServerSettingsSnapshot);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [appliedStoredSettings, setAppliedStoredSettings] = useState(storedSettings);
+  if (storedSettings !== appliedStoredSettings) {
+    setAppliedStoredSettings(storedSettings);
+    setSettings(storedSettings);
+  }
   const [showTuning, setShowTuning] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   // Gates the dev-overlay portal below. `typeof document !== "undefined"` is
   // true on the very first client render too (hydration), which doesn't
   // match the server's null render for that branch and causes a hydration
-  // mismatch; mounted only flips true in an effect, one render after
-  // hydration, so the first client render matches the server.
-  const [mounted, setMounted] = useState(false);
+  // mismatch. useSyncExternalStore's server/client snapshot split is exactly
+  // this case: false during SSR and the first client (hydration) render,
+  // true from the next render on — no effect, no extra committed render.
+  const mounted = useSyncExternalStore(subscribeNever, () => true, () => false);
+  const router = useRouter();
+  // This component only ever mounts behind the disabled
+  // `{false && <AnimatedServiceCards />}` gate in
+  // components/marketing/DisabledHomeSections.tsx, so this never runs on the
+  // live site — kept as a real Next.js navigation instead of the removed SPA
+  // `window.showPage` global (R13) in case the carousel is re-enabled later.
+  const goToServices = () => router.push("/services");
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tapeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const priceRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -771,10 +830,6 @@ export default function AnimatedServiceCards() {
     }
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Keep the active dot in sync when the row is scrubbed by plain wheel/
   // trackpad scrolling rather than by the arrows and dots. Reads the same
   // window.scrollY the scrub itself reads, so the dots can never disagree
@@ -790,26 +845,6 @@ export default function AnimatedServiceCards() {
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(TUNING_STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setSettings({
-          globalIntensity: typeof parsed.globalIntensity === "number" ? parsed.globalIntensity : DEFAULT_SETTINGS.globalIntensity,
-          card: { ...DEFAULT_SETTINGS.card, ...parsed.card },
-          cardBg: { ...DEFAULT_SETTINGS.cardBg, ...parsed.cardBg },
-          cardStyle: { ...DEFAULT_SETTINGS.cardStyle, ...parsed.cardStyle },
-          paws: { ...DEFAULT_SETTINGS.paws, ...parsed.paws },
-          top: { ...DEFAULT_SETTINGS.top, ...parsed.top },
-          bottom: { ...DEFAULT_SETTINGS.bottom, ...parsed.bottom },
-        });
-      }
-    } catch {
-      /* ignore malformed saved settings */
-    }
   }, []);
 
   useEffect(() => {

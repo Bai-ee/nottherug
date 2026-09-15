@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { gsap } from "gsap";
 import "../../globals.css";
 
@@ -188,6 +188,50 @@ const DEFAULT_SETTINGS: Settings = {
     resetDuration: 1.2, resetBouncy: false,
   },
 };
+
+// Reads localStorage into the same shape as DEFAULT_SETTINGS, falling back to
+// it wherever a field is missing or malformed. Used as the useSyncExternalStore
+// snapshot below rather than an effect: this keeps the first client render
+// (hydration) matching the server's — both use getServerSettingsSnapshot — and
+// React itself schedules the swap to the real stored value right after, with
+// no setState-in-effect involved.
+function readStoredSettings(): Settings {
+  if (typeof window === "undefined") return DEFAULT_SETTINGS;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return DEFAULT_SETTINGS;
+    const parsed = JSON.parse(raw);
+    return {
+      globalIntensity: typeof parsed.globalIntensity === "number" ? parsed.globalIntensity : DEFAULT_SETTINGS.globalIntensity,
+      card: { ...DEFAULT_SETTINGS.card, ...parsed.card },
+      cardBg: { ...DEFAULT_SETTINGS.cardBg, ...parsed.cardBg },
+      cardStyle: { ...DEFAULT_SETTINGS.cardStyle, ...parsed.cardStyle },
+      pageBg: { ...DEFAULT_SETTINGS.pageBg, ...parsed.pageBg },
+      paws: { ...DEFAULT_SETTINGS.paws, ...parsed.paws },
+      top: { ...DEFAULT_SETTINGS.top, ...parsed.top },
+      bottom: { ...DEFAULT_SETTINGS.bottom, ...parsed.bottom },
+    };
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
+}
+
+// Computed at most once per page load (localStorage doesn't change under us —
+// the only writer is this same component's "Save as Default" button, which
+// also updates React state directly) so the snapshot reference stays stable
+// across repeated getSnapshot() calls, as useSyncExternalStore requires.
+let cachedStoredSettings: Settings | null = null;
+function getStoredSettingsSnapshot(): Settings {
+  if (cachedStoredSettings === null) cachedStoredSettings = readStoredSettings();
+  return cachedStoredSettings;
+}
+function getServerSettingsSnapshot(): Settings {
+  return DEFAULT_SETTINGS;
+}
+// Nothing to subscribe to — a stable no-op avoids resubscribing every render.
+function subscribeNever() {
+  return () => {};
+}
 
 const BOTTOM_LAYER_RATIO = 203 / 547;
 const STANDARD_TOP_RATIO = 238 / 499;
@@ -641,7 +685,20 @@ function LayerFeelGroup({ layerKey, label, feel, onUpdate }: {
 }
 
 export default function ServiceCardsPlayground() {
+  // Seeded from localStorage via useSyncExternalStore (see
+  // getStoredSettingsSnapshot/getServerSettingsSnapshot above): server and
+  // first client render both use DEFAULT_SETTINGS, then React schedules the
+  // swap to the real stored value once hydration is done. The "adjust state
+  // during render" check below (React's documented pattern for resetting
+  // state when an external value changes, not an effect) seeds the
+  // locally-editable `settings` state from it exactly once.
+  const storedSettings = useSyncExternalStore(subscribeNever, getStoredSettingsSnapshot, getServerSettingsSnapshot);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [appliedStoredSettings, setAppliedStoredSettings] = useState(storedSettings);
+  if (storedSettings !== appliedStoredSettings) {
+    setAppliedStoredSettings(storedSettings);
+    setSettings(storedSettings);
+  }
   const [showControls, setShowControls] = useState(true);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -651,27 +708,6 @@ export default function ServiceCardsPlayground() {
   const topRefs = useRef<(HTMLImageElement | null)[]>([]);
   const bottomRefs = useRef<(HTMLImageElement | null)[]>([]);
   const pawRefs = useRef<(HTMLDivElement | null)[][]>([]);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setSettings({
-          globalIntensity: typeof parsed.globalIntensity === "number" ? parsed.globalIntensity : DEFAULT_SETTINGS.globalIntensity,
-          card: { ...DEFAULT_SETTINGS.card, ...parsed.card },
-          cardBg: { ...DEFAULT_SETTINGS.cardBg, ...parsed.cardBg },
-          cardStyle: { ...DEFAULT_SETTINGS.cardStyle, ...parsed.cardStyle },
-          pageBg: { ...DEFAULT_SETTINGS.pageBg, ...parsed.pageBg },
-          paws: { ...DEFAULT_SETTINGS.paws, ...parsed.paws },
-          top: { ...DEFAULT_SETTINGS.top, ...parsed.top },
-          bottom: { ...DEFAULT_SETTINGS.bottom, ...parsed.bottom },
-        });
-      }
-    } catch {
-      /* ignore malformed saved settings */
-    }
-  }, []);
 
   useEffect(() => {
     tapeRefs.current.forEach((el, i) => el && gsap.set(el, {

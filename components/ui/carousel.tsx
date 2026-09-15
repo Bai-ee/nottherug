@@ -46,14 +46,33 @@ export const Carousel = React.forwardRef<
       { ...opts, axis: orientation === "horizontal" ? "x" : "y" },
       plugins
     );
-    const [canScrollPrev, setCanScrollPrev] = React.useState(false);
-    const [canScrollNext, setCanScrollNext] = React.useState(false);
 
-    const onSelect = React.useCallback((api: CarouselApi) => {
-      if (!api) return;
-      setCanScrollPrev(api.canScrollPrev());
-      setCanScrollNext(api.canScrollNext());
-    }, []);
+    // canScrollPrev/canScrollNext read embla's own position state, not
+    // React's — useSyncExternalStore is the correct primitive for that (no
+    // effect, no extra render, and it's SSR-safe via the false server
+    // snapshot), unlike the previous setState-in-an-effect subscription.
+    const subscribe = React.useCallback(
+      (onStoreChange: () => void) => {
+        if (!api) return () => {};
+        api.on("select", onStoreChange);
+        api.on("reInit", onStoreChange);
+        return () => {
+          api.off("select", onStoreChange);
+          api.off("reInit", onStoreChange);
+        };
+      },
+      [api]
+    );
+    const canScrollPrev = React.useSyncExternalStore(
+      subscribe,
+      () => api?.canScrollPrev() ?? false,
+      () => false
+    );
+    const canScrollNext = React.useSyncExternalStore(
+      subscribe,
+      () => api?.canScrollNext() ?? false,
+      () => false
+    );
 
     const scrollPrev = React.useCallback(() => api?.scrollPrev(), [api]);
     const scrollNext = React.useCallback(() => api?.scrollNext(), [api]);
@@ -70,14 +89,6 @@ export const Carousel = React.forwardRef<
       if (!api || !setApi) return;
       setApi(api);
     }, [api, setApi]);
-
-    React.useEffect(() => {
-      if (!api) return;
-      onSelect(api);
-      api.on("reInit", onSelect);
-      api.on("select", onSelect);
-      return () => { api.off("select", onSelect); };
-    }, [api, onSelect]);
 
     return (
       <CarouselContext.Provider
