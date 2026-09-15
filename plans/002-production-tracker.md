@@ -14,10 +14,10 @@ The coordinator is the only writer of this file. Workers report their task ID, c
 | P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | DONE | `55f51e7`. R01/R04 reproduced first, then fixed. tsc clean, vitest 80/13 skipped, eslint clean on owned paths, build passes, both booking branches pass in Playwright with the API intercepted. |
 | P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | DONE | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
 | P1C | Dependency/runtime update and CI | Coordinator | P0 | DONE | `b5a81a1`. Advisories rechecked at execution time; user's tracing fixes retained. |
-| P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | IN_PROGRESS | Started in parallel against the frozen `MeetGreetForm` prop contract. |
-| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | IN_PROGRESS | Consuming the landed error, lead-display and CSV contracts. |
-| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | IN_PROGRESS | Must measure pipeline duration before any schedule is enabled. |
-| P3C | Packaged function verification | Coordinator | P3B, P1C | TODO | Record per-function dependencies, assets, and sizes. |
+| P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | REVIEW | `023b8be` + `092be7b`. Coordinator review found a `/contact` heading overlap; the worker traced it further to a grid-item min-content overflow (`document.body.scrollWidth` 1884px at a 1440px viewport) and fixed both. 4 lint errors remain in owned files, assigned back. `app/globals.css` split deferred with recorded rationale. |
+| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | REVIEW | `fa0cc3b`. Coordinator review found the admin UI still offered a renderer choice that silently ran sharp; assigned back. |
+| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | DONE | `3aac7ec`. Duration deliberately **not** measured — a real run would invoke a paid model without authorization. The run record now self-reports `durationMs`, so the first authorized run measures itself. |
+| P3C | Packaged function verification | Coordinator | P3B, P1C | IN_PROGRESS | Trace config corrected in `7b9f5af`; per-function bundle inspection pending a clean build. |
 | P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | TODO | Owner facts table below; coordinator owns `proxy.ts`, `app/layout.tsx`, `vercel.json`. |
 | P5A | Integrated review and preview acceptance | Coordinator + reviewer | All above | TODO | Test the same clean candidate commit. |
 | P5B | Authorized release and production verification | Coordinator | P5A, go-live instruction | TODO | Not authorized. Prepare rollback before deployment. |
@@ -104,6 +104,16 @@ Reviewer and outcome:
 | `leadRateLimits/*` documents accumulate with no expiry. A native Firestore TTL needs `windowStart` stored as a Timestamp, which requires a `Date` branch in the coordinator-owned `toValue()`. | P1A | Coordinator | Documented in code. Low urgency — the collection is write-only and safe to clear at any time. |
 | `LeadStats.totals.allTime` survives as a deprecated alias so two unmigrated readers still compile. | P1A | P3A + P3B | Both readers are being migrated to `recentCount` now; the alias is deleted once they land. |
 | `npm install`/`npm uninstall` silently prune optional native bindings (npm/cli#4828), which breaks vitest's rolldown binary and corrupts the lockfile. It bit P1B once. | P1B | Coordinator | Change dependencies by editing `package.json` then reinstalling, and verify `@rolldown/binding-*` entries survive in the lockfile. Verified clean at `56af17f`. |
+
+### Phase 3 findings the review did not anticipate
+
+| Finding | Where | Resolution |
+| --- | --- | --- |
+| Hero video `<source>` paths were relative (`logos/...`). They resolved only because everything was served from `/`; on any real route they would have 404'd. | `app/page.tsx` | Fixed during extraction. The e2e suite now fails on any response >= 400, which catches the whole class. |
+| `/contact` had horizontal overflow at every viewport — `document.body.scrollWidth` was 1884px at 1440px and 720px at 375px — because the booking form's step carousel reported its full unclipped width as the grid item's min-content size. | `app/globals.css`, `/contact` | Fixed with `min-width: 0` on the grid item, scoped by id. `/book`, `/services` and the homepage are untouched. |
+| Three brief routes that can render an image were traced with the sharp binaries excluded, and the generator's local logo fallback read from `app-assets`, which the shared exclude list dropped with nothing adding it back. Either would fail only at runtime in a deployed function. | `next.config.ts` | Fixed in `7b9f5af`. |
+| `rendererUsed` recorded `'ffmpeg'` whenever ffmpeg was requested, although sharp always ran. The admin UI also still offered the choice. | photo render route, generator controls | Record fixed in `05bc2a6`/`bcbeff6`; the UI control is assigned back to P3A. |
+| `public/logos` held 223 MB of untracked source video that `.vercelignore` did not exclude, and the hero `.webm` was gitignored while being served first. | deploy config | Fixed in `15c897e`. |
 
 ## Decision and blocker log
 
