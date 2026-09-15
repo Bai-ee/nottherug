@@ -1,131 +1,259 @@
 import { NextResponse } from 'next/server';
-import { randomUUID } from 'node:crypto';
-import { fsSetDoc } from '@/lib/server/firestoreRest';
+import { createHash } from 'node:crypto';
+import { fsCreateDoc, fsGetDoc, fsIncrementField, fsSetDoc } from '@/lib/server/firestoreRest';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
+import { parseLeadSubmission } from '@/lib/leads/validation';
+import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput } from '@/lib/leads/contract';
 
 export const runtime = 'nodejs';
 
-type MeetGreetPayload = {
-  ownerName: string;
-  phone: string;
-  email: string;
-  neighborhood: string;
-  dogName: string;
-  breedAge: string;
-  serviceInterest: string;
-  spayNeuter: string;
-  vaccinations: string;
-  dogSocial: string;
-  strangerSocial: string;
-  walkFrequency: string;
-  notes: string;
-  source?: string;
-};
+// Well under Vercel's 4.5MB request limit — this route only ever carries short
+// form fields, never a file.
+const MAX_BODY_BYTES = 20_000;
 
-function isNonEmptyString(v: unknown): v is string {
-  return typeof v === 'string' && v.trim().length > 0;
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const RATE_LIMIT_MAX_PER_WINDOW = 5;
+
+// The idempotency guard only needs to cover a client retrying after a timeout,
+// not a genuine second inquiry weeks later — so the hash includes a coarse
+// time bucket. Same payload inside the same 1-hour bucket -> one lead. Same
+// payload in the next bucket -> a new lead (see lead-intake.test.ts).
+const SUBMISSION_DEDUPE_WINDOW_MS = 60 * 60 * 1000;
+
+const EMAIL_TIMEOUT_MS = 8_000;
+
+type ErrorBody = { ok: false; error: string; details?: unknown };
+
+function errorResponse(status: number, error: string, details?: unknown) {
+  const body: ErrorBody = details ? { ok: false, error, details } : { ok: false, error };
+  return NextResponse.json(body, { status });
 }
 
-function isEmail(v: unknown): v is string {
-  return typeof v === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+async function readCappedBody(req: Request, maxBytes: number): Promise<{ ok: true; text: string } | { ok: false }> {
+  if (!req.body) {
+    const text = await req.text();
+    return Buffer.byteLength(text, 'utf8') > maxBytes ? { ok: false } : { ok: true, text };
+  }
+
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (value) {
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel();
+        return { ok: false };
+      }
+      chunks.push(value);
+    }
+  }
+  return { ok: true, text: Buffer.concat(chunks.map((c) => Buffer.from(c))).toString('utf8') };
+}
+
+function clientIp(req: Request): string {
+  const forwardedFor = req.headers.get('x-forwarded-for');
+  const first = forwardedFor?.split(',')[0]?.trim();
+  if (first) return first;
+  const realIp = req.headers.get('x-real-ip');
+  return realIp?.trim() || 'unknown';
+}
+
+/**
+ * Durable, per-instance-safe rate limit backed by Firestore (an in-memory Map
+ * resets on every serverless cold start). Fails open (allows the request) on
+ * a Firestore hiccup — a rate-limiter outage should not take down booking
+ * availability. Deliberate tradeoff: an attacker who can force Firestore
+ * errors could bypass the limit; that is judged less bad than blocking real
+ * customers during a Firestore incident.
+ *
+ * Operational note: `leadRateLimits/*` documents accumulate — one per IP per
+ * RATE_LIMIT_WINDOW_MS window — and are never deleted. Each carries a
+ * `windowStart` field, but it is a plain epoch-ms integer, not a Firestore
+ * Timestamp, so a native TTL policy cannot target it as-is without a change
+ * to firestoreRest.ts's value serialization (not owned by this task). No
+ * cleanup job is included; this is a flagged follow-up, not a bug.
+ */
+async function checkRateLimit(ip: string): Promise<boolean> {
+  try {
+    const windowStart = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
+    const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 24);
+    const path = `leadRateLimits/${ipHash}_${windowStart}`;
+    const count = await fsIncrementField(path, 'count', 1, { windowStart });
+    return count <= RATE_LIMIT_MAX_PER_WINDOW;
+  } catch (err) {
+    console.error('[lead:meetgreet] rate limit check failed', err instanceof Error ? err.message : 'unknown');
+    return true;
+  }
+}
+
+/** Stable per-content id so a client retry after a timeout cannot create a second lead. */
+function computeSubmissionKey(data: LeadSubmissionInput, dedupeWindowStart: number): string {
+  const normalized = JSON.stringify({
+    ownerName: data.ownerName.toLowerCase(),
+    phone: data.phone,
+    email: data.email,
+    neighborhood: data.neighborhood,
+    dogName: data.dogName.toLowerCase(),
+    breedAge: data.breedAge.toLowerCase(),
+    serviceInterest: data.serviceInterest,
+    vaccinations: data.vaccinations,
+    walkFrequency: data.walkFrequency,
+    notes: data.notes,
+    reactivity: data.reactivity,
+    allergies: data.allergies,
+    phoneConsult: data.phoneConsult,
+    source: data.source,
+    dedupeWindowStart,
+  });
+  return createHash('sha256').update(normalized).digest('hex');
+}
+
+async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    clearTimeout(timer!);
+  }
+}
+
+async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotifications> {
+  const notifications: LeadNotifications = { founder: 'skipped', customer: 'skipped' };
+
+  let resend: ReturnType<typeof getResend>;
+  let from: string;
+  let founderEmail: string;
+  try {
+    resend = getResend();
+    from = getFromAddress();
+    founderEmail = getFounderEmail();
+  } catch (err) {
+    console.error('[lead:meetgreet] email config missing', err instanceof Error ? err.message : 'unknown');
+    return notifications;
+  }
+
+  const sandbox = from.endsWith('@resend.dev');
+
+  try {
+    const founderMail = founderMeetGreetEmail(lead);
+    const result = await withTimeout(
+      resend.emails.send({
+        from,
+        to: founderEmail,
+        replyTo: lead.email,
+        subject: founderMail.subject,
+        html: founderMail.html,
+        text: founderMail.text,
+      }),
+      EMAIL_TIMEOUT_MS,
+      'founder email'
+    );
+    notifications.founder = result.error ? 'failed' : 'sent';
+    if (result.error) console.error('[lead:meetgreet] founder email failed', result.error.message);
+  } catch (err) {
+    notifications.founder = 'failed';
+    console.error('[lead:meetgreet] founder email error', err instanceof Error ? err.message : 'unknown');
+  }
+
+  if (sandbox) {
+    notifications.customer = 'skipped';
+  } else {
+    try {
+      const customerMail = customerMeetGreetEmail(lead);
+      const result = await withTimeout(
+        resend.emails.send({
+          from,
+          to: lead.email,
+          subject: customerMail.subject,
+          html: customerMail.html,
+          text: customerMail.text,
+        }),
+        EMAIL_TIMEOUT_MS,
+        'customer email'
+      );
+      notifications.customer = result.error ? 'failed' : 'sent';
+      if (result.error) console.error('[lead:meetgreet] customer email failed', result.error.message);
+    } catch (err) {
+      notifications.customer = 'failed';
+      console.error('[lead:meetgreet] customer email error', err instanceof Error ? err.message : 'unknown');
+    }
+  }
+
+  return notifications;
 }
 
 export async function POST(req: Request) {
-  let body: Partial<MeetGreetPayload>;
+  const declaredLength = req.headers.get('content-length');
+  if (declaredLength && Number(declaredLength) > MAX_BODY_BYTES) {
+    return errorResponse(413, 'Request body too large');
+  }
+
+  const bodyResult = await readCappedBody(req, MAX_BODY_BYTES);
+  if (!bodyResult.ok) return errorResponse(413, 'Request body too large');
+
+  const allowed = await checkRateLimit(clientIp(req));
+  if (!allowed) return errorResponse(429, 'Too many requests. Please try again later.');
+
+  let parsed: unknown;
   try {
-    body = await req.json();
+    parsed = bodyResult.text.length ? JSON.parse(bodyResult.text) : undefined;
   } catch {
-    return NextResponse.json({ ok: false, error: 'Invalid JSON' }, { status: 400 });
+    return errorResponse(400, 'Invalid JSON');
   }
 
-  const required: Array<keyof MeetGreetPayload> = [
-    'ownerName', 'phone', 'email', 'neighborhood',
-    'dogName', 'breedAge', 'serviceInterest',
-    'spayNeuter', 'vaccinations', 'dogSocial', 'strangerSocial', 'walkFrequency',
-  ];
-
-  const missing = required.filter(k => !isNonEmptyString(body[k]));
-  if (missing.length) {
-    return NextResponse.json({ ok: false, error: `Missing: ${missing.join(', ')}` }, { status: 400 });
-  }
-  if (!isEmail(body.email)) {
-    return NextResponse.json({ ok: false, error: 'Invalid email' }, { status: 400 });
+  const validation = parseLeadSubmission(parsed);
+  if (!validation.ok) {
+    return errorResponse(400, validation.errors[0]?.message ?? 'Invalid submission', validation.errors);
   }
 
-  const id = randomUUID();
+  const dedupeWindowStart = Math.floor(Date.now() / SUBMISSION_DEDUPE_WINDOW_MS) * SUBMISSION_DEDUPE_WINDOW_MS;
+  const id = computeSubmissionKey(validation.data, dedupeWindowStart);
   const submittedAt = new Date().toISOString();
-  const lead = {
-    id,
-    type: 'meetgreet' as const,
-    submittedAt,
-    ownerName: body.ownerName!.trim(),
-    phone: body.phone!.trim(),
-    email: body.email!.trim().toLowerCase(),
-    neighborhood: body.neighborhood!.trim(),
-    dogName: body.dogName!.trim(),
-    breedAge: body.breedAge!.trim(),
-    serviceInterest: body.serviceInterest!.trim(),
-    spayNeuter: body.spayNeuter!.trim(),
-    vaccinations: body.vaccinations!.trim(),
-    dogSocial: body.dogSocial!.trim(),
-    strangerSocial: body.strangerSocial!.trim(),
-    walkFrequency: body.walkFrequency!.trim(),
-    notes: (body.notes ?? '').trim(),
-    source: (body.source ?? 'unknown').trim(),
-  };
+  const lead = buildLeadRecord(id, submittedAt, validation.data);
 
+  let created: boolean;
   try {
-    await fsSetDoc(`leads/${id}`, lead);
+    const result = await fsCreateDoc(`leads/${id}`, lead as unknown as Record<string, unknown>);
+    created = result.created;
   } catch (err) {
-    console.error('[lead:meetgreet] firestore write failed', err);
-    return NextResponse.json({ ok: false, error: 'Could not save lead. Please try again.' }, { status: 500 });
+    console.error('[lead:meetgreet] firestore create failed', err instanceof Error ? err.message : 'unknown');
+    return errorResponse(500, 'Could not save lead. Please try again.');
+  }
+
+  if (!created) {
+    // Same content hashed to an id that already exists — a retry of a request
+    // whose response the client never saw. Return the same success shape
+    // without sending another round of notifications.
+    let existingNotifications: LeadNotifications = { founder: 'skipped', customer: 'skipped' };
+    try {
+      const existing = await fsGetDoc(`leads/${id}`);
+      if (existing.exists && existing.data && existing.data.notifications) {
+        existingNotifications = existing.data.notifications as LeadNotifications;
+      }
+    } catch (err) {
+      console.error('[lead:meetgreet] duplicate lookup failed', err instanceof Error ? err.message : 'unknown');
+    }
+    return NextResponse.json({ ok: true, id, duplicate: true, notifications: existingNotifications });
   }
 
   console.log('[lead:meetgreet] saved', id);
 
-  // Fire-and-log emails. Failures don't block the success response — the lead is already saved.
+  const notifications = await sendLeadNotifications(lead);
+  lead.notifications = notifications;
+
   try {
-    const resend = getResend();
-    const from = getFromAddress();
-    const founder = getFounderEmail();
-    const sandbox = from.endsWith('@resend.dev');
-
-    const founderMail = founderMeetGreetEmail(lead);
-    const founderResult = await resend.emails.send({
-      from,
-      to: founder,
-      replyTo: lead.email,
-      subject: founderMail.subject,
-      html: founderMail.html,
-      text: founderMail.text,
-    });
-    if (founderResult.error) {
-      console.error('[lead:meetgreet] founder email failed', founderResult.error);
-    } else {
-      console.log('[lead:meetgreet] founder email sent', founderResult.data?.id);
-    }
-
-    if (sandbox) {
-      console.log('[lead:meetgreet] customer confirmation skipped (sandbox sender — only delivers to verified address)');
-    } else {
-      const customerMail = customerMeetGreetEmail(lead);
-      const customerResult = await resend.emails.send({
-        from,
-        to: lead.email,
-        subject: customerMail.subject,
-        html: customerMail.html,
-        text: customerMail.text,
-      });
-      if (customerResult.error) {
-        console.error('[lead:meetgreet] customer email failed', customerResult.error);
-      } else {
-        console.log('[lead:meetgreet] customer email sent', customerResult.data?.id);
-      }
-    }
+    await fsSetDoc(`leads/${id}`, lead as unknown as Record<string, unknown>);
   } catch (err) {
-    console.error('[lead:meetgreet] email pipeline error', err);
+    // The lead itself is already saved; only the notification-status write failed.
+    console.error('[lead:meetgreet] notification status persist failed', err instanceof Error ? err.message : 'unknown');
   }
 
-  return NextResponse.json({ ok: true, id });
+  return NextResponse.json({ ok: true, id, notifications });
 }

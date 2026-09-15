@@ -1,37 +1,38 @@
 import { fsQueryCollection } from '@/lib/server/firestoreRest';
+import type { LeadRecord } from './contract';
 
-export type LeadDoc = {
-  id: string;
-  type: string;
-  submittedAt: string;
-  ownerName: string;
-  email: string;
-  phone: string;
-  neighborhood: string;
-  dogName: string;
-  breedAge: string;
-  serviceInterest: string;
-  spayNeuter: string;
-  vaccinations: string;
-  dogSocial: string;
-  strangerSocial: string;
-  walkFrequency: string;
-  notes: string;
-  source: string;
-  [key: string]: unknown;
-};
+/** @deprecated use LeadRecord from '@/lib/leads/contract' — kept as an alias for existing imports. */
+export type LeadDoc = LeadRecord;
 
 export type LeadStats = {
   rangeDays: number;
   timezone: string;
   today: { dateLabel: string; count: number; leads: LeadDoc[] };
   yesterday: { dateLabel: string; count: number; leads: LeadDoc[] };
-  totals: { allTime: number; last7Days: number; last30Days: number };
+  totals: {
+    recentCount: number;
+    recentCountCap: number;
+    last7Days: number;
+    last30Days: number;
+    /**
+     * @deprecated Same value as recentCount, kept only because
+     * lib/email/founder-brief-template.ts (not owned by this task) reads
+     * `.allTime` directly. It was never a true all-time count — the query is
+     * capped at recentCountCap. Migrate that reader to recentCount and drop
+     * this field.
+     */
+    allTime: number;
+  };
   byDay: Array<{ date: string; count: number }>;
   bySource: Record<string, number>;
 };
 
 const TZ = 'America/New_York';
+
+// fsQueryCollection has no cursor support; this bounds a single read. When
+// recentCount === RECENT_QUERY_LIMIT, the true total may be higher — see
+// totals.recentCountCap, which callers can use to detect a truncated count.
+const RECENT_QUERY_LIMIT = 1000;
 
 function isoDateInTZ(date: Date, timeZone: string): string {
   const fmt = new Intl.DateTimeFormat('en-CA', {
@@ -50,7 +51,12 @@ function shiftDays(date: Date, days: number): Date {
 }
 
 export async function getLeadStats(rangeDays = 30): Promise<LeadStats> {
-  const all = (await fsQueryCollection('leads', 'submittedAt', 'DESCENDING', 1000)) as unknown as LeadDoc[];
+  const all = (await fsQueryCollection(
+    'leads',
+    'submittedAt',
+    'DESCENDING',
+    RECENT_QUERY_LIMIT
+  )) as unknown as LeadDoc[];
 
   const now = new Date();
   const todayLabel = isoDateInTZ(now, TZ);
@@ -104,7 +110,13 @@ export async function getLeadStats(rangeDays = 30): Promise<LeadStats> {
       count: yesterdayLeads.length,
       leads: yesterdayLeads,
     },
-    totals: { allTime: all.length, last7Days: last7, last30Days: last30 },
+    totals: {
+      recentCount: all.length,
+      recentCountCap: RECENT_QUERY_LIMIT,
+      last7Days: last7,
+      last30Days: last30,
+      allTime: all.length,
+    },
     byDay: byDayArr,
     bySource,
   };
