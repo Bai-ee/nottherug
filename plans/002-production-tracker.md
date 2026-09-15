@@ -2,25 +2,41 @@
 
 Source: [review and execution plan](002-production-readiness.md).
 
-Last updated: September 14, 2026. Implementation is in progress on `main`. No production deployment has been made and no production data, rules, or credentials have been touched.
+Last updated: September 15, 2026. Implementation is complete on `main` and locally verified. **Nothing has been deployed anywhere** — no preview, no production — and no production data, rules, or credentials have been touched.
 
-The coordinator is the only writer of this file. Workers report their task ID, changed paths, commit, checks, and blockers. Use `TODO`, `IN_PROGRESS`, `REVIEW`, `BLOCKED`, or `DONE`. A task becomes `DONE` only after its acceptance checks pass and review evidence is recorded. `BLOCKED` must name the missing input and leave independent tasks runnable.
+The coordinator is the only writer of this file. Workers report their task ID, changed paths, commit, checks, and blockers.
+
+**Completion is tracked in four separate stages, because they are not the same claim.**
+
+| Stage | What it means |
+| --- | --- |
+| **Impl** | The code is written, reviewed by someone who did not author it, and merged. |
+| **Local** | Its acceptance checks pass on this machine: unit, integration, emulator, browser. |
+| **Preview** | Verified on a deployed preview against real services with test credentials. |
+| **Prod** | Released and verified in production. |
+
+A task is only `DONE` when **every** acceptance check in its plan section has passed at the
+stage that check requires. A check that can only be satisfied against real infrastructure
+cannot be closed by a local run, and a skipped test is not a pass. Anything short of that is
+`IMPL DONE` — code complete, verification outstanding — with the outstanding item named.
 
 ## Task board
 
-| ID | Phase / task | Owner | Depends on | Status | Evidence / next action |
-| --- | --- | --- | --- | --- | --- |
-| P0 | Baseline, ownership, contracts, test setup | Coordinator | — | DONE | Baseline `711fbe1`; primitives + screenshots `9f7cae8`. Working tree preserved, not reset. |
-| P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | DONE | `55f51e7` + `a36fec5`. Review found the idempotency key broke at its own hour boundary; fixed with a previous-bucket lookback and a boundary-straddling test. |
-| P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | DONE | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
-| P1C | Dependency/runtime update and CI | Coordinator | P0 | DONE | `b5a81a1`. Advisories rechecked at execution time; user's tracing fixes retained. |
-| P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | DONE | `023b8be` + `092be7b`. Coordinator review found a `/contact` heading overlap; the worker traced it further to a grid-item min-content overflow (`document.body.scrollWidth` 1884px at a 1440px viewport) and fixed both. 4 lint errors remain in owned files, assigned back. `app/globals.css` split deferred with recorded rationale. |
-| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | DONE | `fa0cc3b`, `14aa455`, `a36fec5`, `ceb18f9`. Both stranded admin pages migrated; the false-success on a skipped send fixed. |
-| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | DONE | `3aac7ec`. Duration deliberately **not** measured — a real run would invoke a paid model without authorization. The run record now self-reports `durationMs`, so the first authorized run measures itself. |
-| P3C | Packaged function verification | Coordinator | P3B, P1C | DONE | `7b9f5af`, `0e01f0a`. Per-function sizes and contents recorded in [docs/function-packaging.md](../docs/function-packaging.md). |
-| P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | DONE | `052b355`, `273c827`, `73fba67`, `41bdf95`, `9f4db8c`. Review found the analytics sanitizer weaker than its stated claim; fixed. |
-| P5A | Integrated review and preview acceptance | Coordinator + reviewer | All above | DONE (local) | `9f4db8c`. All checks re-run on one clean candidate; see the release record. Preview-deployment acceptance remains outstanding — no deployment was made. |
-| P5B | Authorized release and production verification | Coordinator | P5A, go-live instruction | BLOCKED | Waiting on an explicit go-live instruction. Nothing has been deployed. Checklist and rollback are in [docs/release-checklist.md](../docs/release-checklist.md). |
+| ID | Phase / task | Impl | Local | Preview | Status | Outstanding |
+| --- | --- | --- | --- | --- | --- | --- |
+| P0 | Baseline, ownership, contracts, test setup | ✅ | ✅ | n/a | **DONE** | — |
+| P1A | Intake contract, validation, delivery, accessible form | ✅ | ✅ | ❌ | **IMPL DONE** | No lead has ever been written and no notification sent, in any environment. Needs one synthetic lead through persistence → admin → CSV → delivery on a preview. |
+| P1B | Auth, Firebase rules, storage lifecycle/privacy | ✅ | ✅ | ❌ | **IMPL DONE** | Rules now pass against a real emulator (13/13). The **deployed** rules have still never been audited or diffed. No real upload, render or delete has run against Storage. |
+| P1C | Dependency/runtime update and CI | ✅ | ✅ | ❌ | **IMPL DONE** | CI workflow has never executed — no push has triggered it. |
+| P2A | Public routes, components, motion, copy tooling | ✅ | ✅ | ❌ | **IMPL DONE** | Verified against a local production server only. |
+| P3A | Admin shell, feature components, stats/export | ✅ | ✅ | ❌ | **IMPL DONE** | Only the signed-out path is exercised. No authenticated admin session has been driven end to end. |
+| P3B | Brief/generator services and job reliability | ✅ | ⚠️ | ❌ | **IMPL DONE** | The pipeline has never run. Duration unmeasured, so the 60-second limit is unverified; scheduled generation is disabled because of it. Private brief read-back untested against real Storage. |
+| P3C | Packaged function verification | ✅ | ✅ | ❌ | **IMPL DONE** | Trace manifests inspected from a local build. Whether the traced files are enough at runtime is only provable on a deployment. |
+| P4 | Launch strategy, SEO, performance, docs | ✅ | ✅ | ❌ | **IMPL DONE** | `PUBLIC_BASE_URL` points at a host not attached to this project, so canonicals, the sitemap and OG URLs cannot be confirmed until that is settled. |
+| P5A | Integrated review and preview acceptance | ✅ | ✅ | ❌ | **IN_PROGRESS** | Local half complete on `1737c48`. Preview acceptance not started — no deployment exists. |
+| P5B | Authorized release and production verification | — | — | — | **BLOCKED** | No go-live instruction. Nothing deployed. Checklist and rollback in [docs/release-checklist.md](../docs/release-checklist.md). |
+
+Legend: ✅ passed · ⚠️ partial, see Outstanding · ❌ not done · n/a not applicable.
 
 ### Execution model
 
@@ -44,8 +60,8 @@ Dependencies are minimum requirements. Each worker must start from an integratio
 | Integration baseline | `711fbe1` — the user's uncommitted `next.config.ts` trace fixes, `.vercelignore`, `docs/copy/`, and `scripts/` committed as-is. Nothing reset or discarded. |
 | Whole-repo lint (before) | 57 errors / 165 warnings |
 | Scoped application lint (before) | 57 errors / 30 warnings |
-| Application lint after scoping config | 57 errors / 36 warnings. 54 errors are in `app/page.tsx` and belong to P2A. No suppressions added. |
-| Pipeline lint (new command) | 2 errors / 5 warnings in `not-the-rug-brief/` and `scripts/copy/`, assigned to their owning tasks |
+| Application lint, final | **0 errors**, 23 warnings (all `<img>`-vs-`<Image>` advisories). Down from 57 errors. No suppressions, no `any`, no `ts-nocheck` added. |
+| Pipeline lint, final | **0 errors, 0 warnings.** Down from 2 errors / 5 warnings. |
 | Type check | `npx tsc --noEmit` passed at `b5a81a1` |
 | Build (before) | Review environment failed fetching Google Fonts |
 | Build (after) | `npm run build` succeeded at `b5a81a1` on Next 16.3.5 / Node 24.7.0; 32 routes generated. The earlier font failure was environmental, not a code defect. |
@@ -54,6 +70,7 @@ Dependencies are minimum requirements. Each worker must start from an integratio
 | Booking regression (reproduced) | The live form payload returns 400 `Missing: spayNeuter, dogSocial, strangerSocial`; JSON `null` and a numeric `notes` throw. Reproduced against the real handler with Firebase and Resend mocked — zero writes, zero sends. |
 | Baseline routes | `/`, `/?page={services,how-it-works,about,safety,reviews,book,contact}`, `/?hood=williamsburg`, `/book`, `/contact`, `/admin`, `/playground/service-cards` all 200. `/robots.txt` and `/sitemap.xml` 404. |
 | Baseline screenshots | Desktop 1440x900 and mobile 375x812 full-page captures of all 12 public/admin routes, retained in the session scratchpad (not committed — 41 MB). |
+| Unit / integration tests, final | **155 passed, 0 skipped** across 21 files. The 13 Firebase rules tests that previously skipped now run against a real emulator and pass. |
 | Clean-install reproducibility | `rm -rf node_modules && npm ci` reproduces a passing tree. Note: `npm uninstall` drops optional native bindings (npm optional-dependency bug) and breaks vitest's rolldown binary — edit `package.json` and reinstall instead. |
 | External side effects during execution | None. No emails sent, no production data or rules touched, no paid generation invoked. |
 
@@ -64,7 +81,7 @@ Review-time logs under `/tmp/ntr-review-*` were diagnostic conveniences, not acc
 | Field | Value |
 | --- | --- |
 | Integration baseline commit | `711fbe1` |
-| Release candidate commit | `9f4db8c` — 38 commits on `main`; 234 files changed against the review base `114dd85` |
+| Release candidate commit | `1737c48` |
 | Preview deployment | **None.** No deployment of any kind was made. |
 | Runtime and framework versions | Node 24.7.0 (`engines: 24.x`, which overrides the Vercel project setting), Next 16.3.5, React 19.3.0, sharp 0.35.4, firebase-admin 14.4.0 |
 | Clean install | `rm -rf node_modules .next && npm ci` → reproducible |
@@ -72,16 +89,18 @@ Review-time logs under `/tmp/ntr-review-*` were diagnostic conveniences, not acc
 | Application lint | `npm run lint` → **0 errors**, 23 warnings, from 57 errors. No suppressions added |
 | Pipeline lint | `npm run lint:pipeline` → 0 errors, 0 warnings, from 1 error and 5 warnings |
 | Type check | `npm run typecheck` → clean |
-| Unit / integration tests | `npm test` → **131 passed, 13 skipped** (20 files). The 13 skips are the Firebase rules suites, which skip explicitly because no Java runtime is present |
+| Unit / integration tests | `npm test` → **155 passed, 0 skipped** (21 files) |
 | Production build | `npm run build` → succeeds, 40 routes |
 | Browser tests | `npx playwright test` → **132 passed, 4 skipped, 0 failed** across desktop 1440x900 and mobile iPhone 13 |
 | Route verification | All 9 public routes, `/admin`, `/robots.txt`, `/sitemap.xml` → 200. `/playground/service-cards` → 404 in production. All 8 legacy `?page=`/`?hood=` URLs → 307 to the correct new path |
 | Unauthenticated access | `/admin/leads`, `/api/admin/photos/list`, `/api/cron/founder-brief` → 401 |
 | Indexing headers | Non-production responses carry `X-Robots-Tag: noindex, nofollow`; robots.txt disallows `/admin`, `/playground`, `/api`; sitemap lists 8 routes and correctly omits the noindexed `/contact` |
 | Screenshots | Desktop and mobile full-page captures before and after, retained in the session scratchpad. Design preserved; the only intended visual changes are the removed Tune Paws control, the restored `/contact` Instagram badge, and the new contact sentence on `/services` |
-| Firebase rules and private-data checks | **Not verified.** Rules are versioned and their tests are written, but both suites skip — the Firestore emulator needs a Java runtime this machine lacks. Deployed rules have never been audited |
-| Test lead ID and notification status | **Not performed.** No lead was written and no email was sent, in any environment |
-| Media rendering evidence | Unit-tested with sharp mocked; no real upload or render was performed against Storage |
+| Firebase rules, emulator | **Verified locally.** 13/13 pass against Firestore and Storage emulators on OpenJDK 21. Covers: public denied on leads, photo and brief collections; no client write to `admins/**`; a signed-in user reads only their own admin doc; the private storage prefix closed to both anonymous and authenticated clients; no tokenless read under `photos/` |
+| Firebase rules, deployed | **Not verified.** The rules actually live on the Firebase project have never been read or diffed against these files |
+| Test lead ID and notification status | **Not performed.** No lead has been written and no email sent, in any environment. This is the single biggest untested path |
+| Media rendering, local | **Verified with real bytes.** libvips 8.18.6 / sharp 0.35.4 on darwin arm64. Composites real fixtures, decodes the output back, confirms pixels change under the logo and not outside it, confirms opacity is applied, renders JPEG/PNG/WebP, and proves the re-encode strips bytes appended past the end-of-image marker. No mocks |
+| Media operations, real Storage | **Not verified.** No upload, render or delete has run against a real bucket |
 | Timed brief run / schedule / email evidence | **Not measured.** A real run invokes a paid model, which was not authorized. The run record now persists `durationMs`, so the first authorized run measures itself |
 | Approved business facts | **Pending.** See [docs/launch-facts-review.md](../docs/launch-facts-review.md) |
 | Go-live instruction | **Not given.** Nothing deployed |
@@ -109,11 +128,11 @@ Reviewer and outcome:
 
 | Item | Raised by | Owner | State |
 | --- | --- | --- | --- |
-| Firebase rules have never been exercised against an emulator. `firestore.rules`/`storage.rules` are versioned and their tests are written and wired, but the Firestore emulator needs a Java runtime this machine does not have, so both suites skip with an explicit reason (13 skipped, visible in every run). | P1B | Coordinator / CI | **Pending gate.** Run `firebase emulators:start --only firestore,storage --project demo-not-the-rug` then `npx vitest run tests/unit/rules-*.test.ts` on a Java-capable machine. |
+| Firebase rules had never been exercised against an emulator — both suites skipped for want of a Java runtime. | P1B | Coordinator | **Closed.** OpenJDK 21 installed, emulator run, **13/13 pass**. Running them surfaced a real defect: both suites upload rules to the same emulator and one opens a `withSecurityRulesDisabled` window, so run together they clobbered each other and one failed. Files now run serially (`1737c48`, `6b85c7d`). `npm run emulators` and `npm run test:rules` added. |
 | Deployed Firebase rules have not been audited or diffed against the new files. | P1B | Coordinator | **Pending gate**, separate from the emulator run. First deploy goes through `firebase deploy --only firestore:rules,storage:rules`, not blind. |
 | Already-issued public download tokens for existing storage objects were not revoked. | P1B | Owner | **Open decision.** Revoking breaks any link already shared. Nothing was changed. |
 | `leadRateLimits/*` documents accumulate with no expiry. A native Firestore TTL needs `windowStart` stored as a Timestamp, which requires a `Date` branch in the coordinator-owned `toValue()`. | P1A | Coordinator | Documented in code. Low urgency — the collection is write-only and safe to clear at any time. |
-| `LeadStats.totals.allTime` survives as a deprecated alias so two unmigrated readers still compile. | P1A | P3A + P3B | Both readers are being migrated to `recentCount` now; the alias is deleted once they land. |
+| `LeadStats.totals.allTime` survived as a deprecated alias for two unmigrated readers. | P1A | Coordinator | **Closed.** Both readers migrated; the alias is deleted. |
 | `npm install`/`npm uninstall` silently prune optional native bindings (npm/cli#4828), which breaks vitest's rolldown binary and corrupts the lockfile. It bit P1B once. | P1B | Coordinator | Change dependencies by editing `package.json` then reinstalling, and verify `@rolldown/binding-*` entries survive in the lockfile. Verified clean at `56af17f`. |
 
 ### Phase 3 findings the review did not anticipate
