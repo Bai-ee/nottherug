@@ -48,6 +48,26 @@ test.describe('booking form', () => {
     await expect(page.locator('#calendly-modal')).toHaveCount(0);
   });
 
+  test('a progress dot cannot skip ahead of a step that has not validated', async ({ page }) => {
+    await page.goto('/book');
+
+    // Jump straight from step 1 to step 5 without filling anything required.
+    await page.getByRole('button', { name: /Go to step 5/ }).click();
+
+    // Blocked: still on step 1, with the required-field error visible.
+    await expect(page.getByText(/^Step 1 of/)).toBeVisible();
+    await expect(page.getByText(/Please enter your name/i)).toBeVisible();
+
+    // Filling step 1 and stepping forward normally still works.
+    await page.fill(`#${PANE_ID}-owner-name`, 'E2E Test Owner');
+    await page.fill(`#${PANE_ID}-phone`, '(347) 555-0100');
+    await page.fill(`#${PANE_ID}-email`, 'e2e@example.test');
+
+    // Now a dot click can only reach step 2 (the next unvalidated step), not step 5.
+    await page.getByRole('button', { name: /Go to step 5/ }).click();
+    await expect(page.getByText(/^Step 2 of/)).toBeVisible();
+  });
+
   test('phone consultation unchecked: success offers scheduling, not a completed appointment', async ({ page }) => {
     await fillThroughWrapUpStep(page);
 

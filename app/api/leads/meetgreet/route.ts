@@ -15,10 +15,16 @@ const MAX_BODY_BYTES = 20_000;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_PER_WINDOW = 5;
 
-// The idempotency guard only needs to cover a client retrying after a timeout,
-// not a genuine second inquiry weeks later — so the hash includes a coarse
-// time bucket. Same payload inside the same 1-hour bucket -> one lead. Same
-// payload in the next bucket -> a new lead (see lead-intake.test.ts).
+// The idempotency guard only needs to cover a client retrying after a
+// timeout, not a genuine second inquiry weeks later — so the hash includes a
+// coarse time bucket. A fixed bucket alone has a boundary problem: an
+// identical retry a few seconds apart can land in different buckets (e.g.
+// 12:59:58 then 13:00:02) and would otherwise be treated as a new lead. To
+// close that, every submission is also checked against the immediately
+// preceding bucket (see the lookback below) before creating — so a retry
+// anywhere within roughly this window of the original is treated as one
+// lead, while the same payload roughly two windows later creates a new one
+// (see lead-intake.test.ts).
 const SUBMISSION_DEDUPE_WINDOW_MS = 60 * 60 * 1000;
 
 const EMAIL_TIMEOUT_MS = 8_000;
@@ -124,6 +130,16 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): P
   }
 }
 
+/**
+ * A provider (Resend) error message can embed the recipient's address (e.g.
+ * "Invalid `to` field: name@example.com") — that must not land verbatim in
+ * server logs. Scrubs anything email-shaped and caps length.
+ */
+function redactProviderError(message: string): string {
+  const scrubbed = message.replace(/[^\s@]+@[^\s@]+\.[^\s@]+/g, '[redacted-email]');
+  return scrubbed.length > 200 ? `${scrubbed.slice(0, 200)}…` : scrubbed;
+}
+
 async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotifications> {
   const notifications: LeadNotifications = { founder: 'skipped', customer: 'skipped' };
 
@@ -156,10 +172,10 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
       'founder email'
     );
     notifications.founder = result.error ? 'failed' : 'sent';
-    if (result.error) console.error('[lead:meetgreet] founder email failed', result.error.message);
+    if (result.error) console.error('[lead:meetgreet] founder email failed', redactProviderError(result.error.message));
   } catch (err) {
     notifications.founder = 'failed';
-    console.error('[lead:meetgreet] founder email error', err instanceof Error ? err.message : 'unknown');
+    console.error('[lead:meetgreet] founder email error', err instanceof Error ? redactProviderError(err.message) : 'unknown');
   }
 
   if (sandbox) {
@@ -179,10 +195,10 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
         'customer email'
       );
       notifications.customer = result.error ? 'failed' : 'sent';
-      if (result.error) console.error('[lead:meetgreet] customer email failed', result.error.message);
+      if (result.error) console.error('[lead:meetgreet] customer email failed', redactProviderError(result.error.message));
     } catch (err) {
       notifications.customer = 'failed';
-      console.error('[lead:meetgreet] customer email error', err instanceof Error ? err.message : 'unknown');
+      console.error('[lead:meetgreet] customer email error', err instanceof Error ? redactProviderError(err.message) : 'unknown');
     }
   }
 
@@ -217,6 +233,23 @@ export async function POST(req: Request) {
   const id = computeSubmissionKey(validation.data, dedupeWindowStart);
   const submittedAt = new Date().toISOString();
   const lead = buildLeadRecord(id, submittedAt, validation.data);
+
+  // Bucket-boundary lookback: an identical retry that straddles the current
+  // bucket's start hashes to a different id than the original, so a plain
+  // fsCreateDoc race on `id` alone would miss it. Check the previous bucket's
+  // id first — if that document exists, this is the same submission.
+  const previousWindowId = computeSubmissionKey(validation.data, dedupeWindowStart - SUBMISSION_DEDUPE_WINDOW_MS);
+  try {
+    const previous = await fsGetDoc(`leads/${previousWindowId}`);
+    if (previous.exists && previous.data) {
+      const existingNotifications = (previous.data.notifications as LeadNotifications | undefined)
+        ?? { founder: 'skipped', customer: 'skipped' };
+      return NextResponse.json({ ok: true, id: previousWindowId, duplicate: true, notifications: existingNotifications });
+    }
+  } catch (err) {
+    console.error('[lead:meetgreet] previous-window duplicate lookup failed', err instanceof Error ? err.message : 'unknown');
+    // Fall through — a lookback failure should not block a legitimate submission.
+  }
 
   let created: boolean;
   try {

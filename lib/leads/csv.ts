@@ -3,9 +3,12 @@ import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadDisplayField, type 
 /**
  * Leading characters that spreadsheet software (Excel, Sheets, LibreOffice)
  * treats as the start of a formula. Prefixing the cell with a single quote
- * neutralizes execution while leaving the visible text unchanged — Excel
- * hides a leading apostrophe used as a text-format marker, so "+1 347…"
- * still reads as "+1 347…", it just can no longer run as a formula.
+ * neutralizes execution while keeping the value readable as text — the value
+ * itself is unchanged apart from that marker. Whether the apostrophe itself
+ * stays visible depends on the import path: Excel's direct file-open hides
+ * it, but a paste or a "Data > From Text/CSV" import, or another spreadsheet
+ * app, may show it. Either way "+1 347…" reads as a phone number, not a
+ * formula, everywhere this has been checked.
  */
 const FORMULA_TRIGGER_CHARS = new Set(['=', '+', '-', '@', '\t', '\r']);
 

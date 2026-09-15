@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { HONEYPOT_FIELD_NAME, LEAD_FIELD_LIMITS } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
+import { track } from '@/lib/analytics/track';
 import { BOOKING_STEPS, StepAboutYou, StepCare, StepQuirks, StepWrapUp, StepYourDog } from './BookingSteps';
 import SchedulingDialog from './SchedulingDialog';
 import type { BookingFieldErrors, BookingFormValues, BookingSubmittedSummary, RegisterField } from './types';
@@ -12,6 +13,32 @@ type Props = {
   source: string;
   hidden?: boolean;
 };
+
+type SubmitLeadResult = { ok: true; data: { id?: string; notifications?: unknown } } | { ok: false; error: string };
+
+/**
+ * Posts a meet & greet submission and, only once the API confirms a genuine
+ * save, records lead_saved — never on a failed or network-errored attempt.
+ * Exported (and kept free of component state/DOM) so this decision can be
+ * unit-tested without a rendering harness; see tests/unit/booking-form-analytics.test.ts.
+ */
+export async function submitMeetGreetLead(body: Record<string, unknown>, source: string): Promise<SubmitLeadResult> {
+  try {
+    const res = await fetch('/api/leads/meetgreet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      return { ok: false, error: data.error || 'Something went wrong. Please try again.' };
+    }
+    track('lead_saved', { source });
+    return { ok: true, data };
+  } catch {
+    return { ok: false, error: 'Network error. Please try again.' };
+  }
+}
 
 const initial: BookingFormValues = {
   ownerName: '',
@@ -42,6 +69,7 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
   const lastStep = step === BOOKING_STEPS.length - 1;
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
+  const hasTrackedFormStart = useRef(false);
   const [trackH, setTrackH] = useState<number | undefined>(undefined);
 
   const alertId = `${paneId}-step-alert`;
@@ -69,15 +97,39 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
 
   const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
 
-  const update = <K extends keyof BookingFormValues>(key: K, value: string) =>
+  // Fires once per mount, on the first genuine field interaction — not on
+  // mount itself, so a visitor who never touches the form is not counted as
+  // having started it. Only `source` (a category, not a customer value)
+  // leaves the browser; see lib/analytics/track.ts.
+  function markFormStarted() {
+    if (hasTrackedFormStart.current) return;
+    hasTrackedFormStart.current = true;
+    track('booking_form_start', { source });
+  }
+
+  const update = <K extends keyof BookingFormValues>(key: K, value: string) => {
+    markFormStarted();
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   function toggleReactivity(option: string) {
+    markFormStarted();
     setReactivity((prev) => (prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]));
   }
 
   function toggleAllergy(option: string) {
+    markFormStarted();
     setAllergies((prev) => (prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]));
+  }
+
+  function handleAllergyOtherChange(value: string) {
+    markFormStarted();
+    setAllergyOther(value);
+  }
+
+  function handlePhoneConsultChange(value: boolean) {
+    markFormStarted();
+    setPhoneConsult(value);
   }
 
   function validateStep(index: number): BookingFieldErrors {
@@ -107,6 +159,26 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
   }
 
   function goToStep(index: number) {
+    if (index <= step) {
+      // Going back to review or re-edit earlier input is always allowed.
+      setStep(index);
+      setFieldErrors({});
+      return;
+    }
+    // Going forward: a dot click can otherwise jump straight past steps
+    // whose required fields were never filled (e.g. step 1 to step 5),
+    // something a plain "Next" click could never do. Validate every step
+    // between the current one and the target before allowing the jump, and
+    // stop at the first one that fails.
+    for (let i = step; i < index; i++) {
+      const errors = validateStep(i);
+      if (Object.keys(errors).length > 0) {
+        setStep(i);
+        setFieldErrors(errors);
+        focusFirstError(errors);
+        return;
+      }
+    }
     setStep(index);
     setFieldErrors({});
   }
@@ -121,46 +193,42 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
     setErrorMsg('');
     const wantsPhoneConsult = phoneConsult;
     const submittedDogName = form.dogName;
-    try {
-      const allergyList = allergies.includes('Other') && allergyOther
-        ? [...allergies.filter((a) => a !== 'Other'), `Other: ${allergyOther}`]
-        : allergies;
 
-      const res = await fetch('/api/leads/meetgreet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          source,
-          reactivity: reactivity.join(', ') || 'None noted',
-          allergies: allergyList.join(', ') || 'None',
-          phoneConsult,
-          [HONEYPOT_FIELD_NAME]: honeypot,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        setStatus('error');
-        setErrorMsg(data.error || 'Something went wrong. Please try again.');
-        return;
-      }
-      // Snapshot what was actually sent before the draft resets (R15): the
-      // success UI and the scheduling branch below read this, never `form`/`phoneConsult`.
-      setSubmittedSummary({ dogName: submittedDogName, phoneConsult: wantsPhoneConsult });
-      setStatus('success');
-      setForm(initial);
-      setReactivity([]);
-      setAllergies([]);
-      setAllergyOther('');
-      setPhoneConsult(false);
-      setHoneypot('');
-      setStep(0);
-      setFieldErrors({});
-      if (calendlyUrl && !wantsPhoneConsult) setShowCalendly(true);
-    } catch {
+    const allergyList = allergies.includes('Other') && allergyOther
+      ? [...allergies.filter((a) => a !== 'Other'), `Other: ${allergyOther}`]
+      : allergies;
+
+    const result = await submitMeetGreetLead(
+      {
+        ...form,
+        source,
+        reactivity: reactivity.join(', ') || 'None noted',
+        allergies: allergyList.join(', ') || 'None',
+        phoneConsult,
+        [HONEYPOT_FIELD_NAME]: honeypot,
+      },
+      source,
+    );
+
+    if (!result.ok) {
       setStatus('error');
-      setErrorMsg('Network error. Please try again.');
+      setErrorMsg(result.error);
+      return;
     }
+
+    // Snapshot what was actually sent before the draft resets (R15): the
+    // success UI and the scheduling branch below read this, never `form`/`phoneConsult`.
+    setSubmittedSummary({ dogName: submittedDogName, phoneConsult: wantsPhoneConsult });
+    setStatus('success');
+    setForm(initial);
+    setReactivity([]);
+    setAllergies([]);
+    setAllergyOther('');
+    setPhoneConsult(false);
+    setHoneypot('');
+    setStep(0);
+    setFieldErrors({});
+    if (calendlyUrl && !wantsPhoneConsult) setShowCalendly(true);
   }
 
   function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
@@ -268,7 +336,7 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
                 allergies={allergies}
                 toggleAllergy={toggleAllergy}
                 allergyOther={allergyOther}
-                setAllergyOther={setAllergyOther}
+                setAllergyOther={handleAllergyOtherChange}
                 errors={fieldErrors}
                 alertId={alertId}
                 registerField={registerField}
@@ -281,7 +349,7 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
                 notes={form.notes}
                 onNotesChange={(v) => update('notes', v)}
                 phoneConsult={phoneConsult}
-                onPhoneConsultChange={setPhoneConsult}
+                onPhoneConsultChange={handlePhoneConsultChange}
                 errors={fieldErrors}
                 alertId={alertId}
                 registerField={registerField}
@@ -352,7 +420,7 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
         </button>
       )}
 
-      <SchedulingDialog open={showCalendly} onClose={() => setShowCalendly(false)} calendlyUrl={calendlyUrl} />
+      <SchedulingDialog open={showCalendly} onClose={() => setShowCalendly(false)} calendlyUrl={calendlyUrl} source={source} />
     </div>
   );
 }

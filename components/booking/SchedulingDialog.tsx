@@ -2,20 +2,30 @@
 
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { track } from '@/lib/analytics/track';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   calendlyUrl: string;
+  source: string;
 };
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
 
-export default function SchedulingDialog({ open, onClose, calendlyUrl }: Props) {
+export default function SchedulingDialog({ open, onClose, calendlyUrl, source }: Props) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+
+  // Opening the scheduler is not a booked appointment — this only records
+  // that the dialog was shown. A real completion would need a verified
+  // Calendly postMessage event (see lib/analytics/verifiedOrigin.ts); no such
+  // listener exists here, so no completion event is ever inferred from this.
+  useEffect(() => {
+    if (open) track('scheduling_dialog_opened', { source });
+  }, [open, source]);
 
   // Lock body scroll while open, restore it (and the page's scroll position) on close.
   useEffect(() => {

@@ -3,11 +3,10 @@
 export const dynamic = 'force-dynamic';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { onAuthStateChanged, signOut, User, getIdToken } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
 import { BriefHtmlPreview } from '@/components/admin/brief/BriefHtmlPreview';
+import { AdminSessionProvider } from '@/components/admin/AdminSession';
+import { AdminGuard } from '@/components/admin/AdminGuard';
+import { adminFetch, useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
 
 interface BriefSummary {
   latestRunAt: string | null;
@@ -158,10 +157,15 @@ function formatDate(value: string | null): string {
   }).format(date);
 }
 
-export default function AdminBriefPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
+function AdminBriefPageContent({
+  email,
+  getToken,
+  signOut,
+}: {
+  email: string;
+  getToken: GetIdToken;
+  signOut: () => Promise<void>;
+}) {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState('');
@@ -170,95 +174,77 @@ export default function AdminBriefPage() {
   const [history, setHistory] = useState<BriefHistoryItem[]>([]);
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
 
-  const fetchLatest = useCallback(async (firebaseUser: User) => {
-    setLoading(true);
-    setError('');
+  const abortSignal = useAbortSignal();
 
+  // Named, reusable version for runBrief below (an event-driven callback, not
+  // an effect, so it may set state directly).
+  const fetchLatest = useCallback(async () => {
     try {
-      const token = await getIdToken(firebaseUser, true);
-      const headers = { Authorization: `Bearer ${token}` };
-      const [dataRes, htmlRes, historyRes] = await Promise.all([
-        fetch('/admin/not-the-rug/latest-brief', { headers, cache: 'no-store' }),
-        fetch('/admin/not-the-rug/latest-brief/html', { headers, cache: 'no-store' }),
-        fetch('/admin/not-the-rug/history?limit=14', { headers, cache: 'no-store' }),
+      const token = await getToken();
+      const [latest, historyData, htmlRes] = await Promise.all([
+        adminFetch<LatestBriefResponse>('/admin/not-the-rug/latest-brief', getToken, { cache: 'no-store', signal: abortSignal }),
+        adminFetch<{ runs?: BriefHistoryItem[] }>('/admin/not-the-rug/history?limit=14', getToken, { cache: 'no-store', signal: abortSignal })
+          .catch(() => ({ runs: [] })),
+        // Raw HTML, not JSON — adminFetch always parses JSON, so this route is
+        // fetched directly and its ok/failure tolerated like the original.
+        fetch('/admin/not-the-rug/latest-brief/html', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store', signal: abortSignal }),
       ]);
-
-      if (!dataRes.ok) {
-        const body = await dataRes.json().catch(() => ({}));
-        throw new Error(body.error ?? `Brief load failed (${dataRes.status})`);
-      }
-
-      const latest = (await dataRes.json()) as LatestBriefResponse;
       setData(latest);
-      if (historyRes.ok) {
-        const historyData = (await historyRes.json()) as { runs?: BriefHistoryItem[] };
-        setHistory(historyData.runs ?? []);
-      } else {
-        setHistory([]);
-      }
-
-      if (htmlRes.ok) {
-        setHtml(await htmlRes.text());
-      } else {
-        setHtml('');
-      }
+      setHistory(historyData.runs ?? []);
+      setHtml(htmlRes.ok ? await htmlRes.text() : '');
     } catch (err) {
+      if (isAbortError(err)) return;
       setError(err instanceof Error ? err.message : 'Could not load the latest brief.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [getToken, abortSignal]);
 
+  // Inlined rather than calling fetchLatest() by name: an effect that
+  // directly calls a separately-defined function which sets state triggers
+  // React's set-state-in-effect check (see the other admin pages for the
+  // same pattern).
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser?.email) {
-        router.push('/admin');
-        return;
+    (async () => {
+      try {
+        const token = await getToken();
+        const [latest, historyData, htmlRes] = await Promise.all([
+          adminFetch<LatestBriefResponse>('/admin/not-the-rug/latest-brief', getToken, { cache: 'no-store', signal: abortSignal }),
+          adminFetch<{ runs?: BriefHistoryItem[] }>('/admin/not-the-rug/history?limit=14', getToken, { cache: 'no-store', signal: abortSignal })
+            .catch(() => ({ runs: [] })),
+          fetch('/admin/not-the-rug/latest-brief/html', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store', signal: abortSignal }),
+        ]);
+        setData(latest);
+        setHistory(historyData.runs ?? []);
+        setHtml(htmlRes.ok ? await htmlRes.text() : '');
+      } catch (err) {
+        if (isAbortError(err)) return;
+        setError(err instanceof Error ? err.message : 'Could not load the latest brief.');
+      } finally {
+        setLoading(false);
       }
-
-      const snap = await getDoc(doc(db, 'admins', firebaseUser.email));
-      if (!snap.exists()) {
-        router.push('/admin');
-        return;
-      }
-
-      setUser(firebaseUser);
-      setAuthChecked(true);
-      await fetchLatest(firebaseUser);
-    });
-
-    return () => unsub();
-  }, [fetchLatest, router]);
+    })();
+  }, [getToken, abortSignal]);
 
   const runBrief = useCallback(async (fresh: boolean) => {
-    if (!user) return;
-
     setRunning(true);
     setError('');
 
     try {
-      const token = await getIdToken(user, true);
-      const res = await fetch('/admin/not-the-rug/run-brief', {
+      await adminFetch('/admin/not-the-rug/run-brief', getToken, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fresh }),
+        signal: abortSignal,
       });
-
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(body.error ?? `Brief run failed (${res.status})`);
-      }
-
-      await fetchLatest(user);
+      await fetchLatest();
     } catch (err) {
+      if (isAbortError(err)) return;
       setError(err instanceof Error ? err.message : 'Brief run failed.');
     } finally {
       setRunning(false);
     }
-  }, [fetchLatest, user]);
+  }, [fetchLatest, getToken, abortSignal]);
 
   const readinessChip = useMemo(() => {
     const ready = data?.summary.readyToPublish;
@@ -272,19 +258,10 @@ export default function AdminBriefPage() {
     [history, selectedHistoryId],
   );
 
-  async function handleSignOut() {
-    await signOut(auth);
-    router.push('/admin');
-  }
-
-  if (!authChecked) {
-    return <div style={{ background: '#1F2318', minHeight: '100vh' }} />;
-  }
-
   return (
     <>
       <style>{css}</style>
-      <div className="nb">
+      <div className="nb" id="admin-brief-shell">
         <div className="nb-top">
           <div className="nb-top-l">
             <span className="nb-brand">NTR</span>
@@ -292,8 +269,8 @@ export default function AdminBriefPage() {
             <span className="nb-title">Admin</span>
           </div>
           <div className="nb-top-r">
-            <span className="nb-email">{user?.email}</span>
-            <button className="nb-signout" onClick={handleSignOut}>Sign Out</button>
+            <span className="nb-email">{email}</span>
+            <button className="nb-signout" onClick={() => void signOut()}>Sign Out</button>
           </div>
         </div>
 
@@ -319,7 +296,7 @@ export default function AdminBriefPage() {
               <button className="nb-btn" disabled={running} onClick={() => runBrief(true)}>
                 {running ? 'Refreshing…' : 'Run Fresh'}
               </button>
-              <button className="nb-btn" disabled={loading || running || !user} onClick={() => user && fetchLatest(user)}>
+              <button className="nb-btn" disabled={loading || running} onClick={() => void fetchLatest()}>
                 Refresh Latest
               </button>
             </div>
@@ -505,5 +482,13 @@ export default function AdminBriefPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function AdminBriefPage() {
+  return (
+    <AdminSessionProvider>
+      <AdminGuard>{(session) => <AdminBriefPageContent email={session.email} getToken={session.getToken} signOut={session.signOut} />}</AdminGuard>
+    </AdminSessionProvider>
   );
 }
