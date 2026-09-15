@@ -1,6 +1,6 @@
 # Not The Rug — Website Copy Review
 
-Generated 2026-09-15 from the live site code · **378 pieces of copy**
+Generated 2026-09-15 from the live site code · **379 pieces of copy**
 
 This file lists **every word currently on the Not The Rug website**, organised page by page.
 It exists so you can read the site as a document, confirm that everything it says is accurate,
@@ -34,7 +34,7 @@ Those carry the pricing, the claims and the contact details — the things most 
 7. **Williamsburg** — 29 items
 8. **Reviews** — 24 items
 9. **Book a Walk** — 6 items
-10. **Contact** — 21 items
+10. **Contact** — 22 items
 11. **Meet & Greet form** — 29 items
 
 ---
@@ -2559,7 +2559,7 @@ _The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge
 
 ## 10. Contact
 
-_21 items_
+_22 items_
 
 ### /contact — hero
 
@@ -2584,6 +2584,12 @@ No chatbots, no ticket queues. Text us, call us, or fill out the form.
 ```
 
 _The same wording is used elsewhere: `contact.contact-meta.no-chatbots-no-ticket-queues`. Those are separate slots — change them too if they should stay consistent._
+
+**`contact.contactpage-hero.archie-archie-bklyn`** — Link
+
+```text
+Archie · @archie_bklyn
+```
 
 **`contact.contactpage-hero.send-a-message`** — Small label
 

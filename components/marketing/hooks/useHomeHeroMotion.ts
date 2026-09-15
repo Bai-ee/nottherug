@@ -9,6 +9,17 @@ const STAT_TARGETS = [5, 5, 79, 15];
 const STAT_SUFFIXES = ['★', '★', '', '+'];
 
 function splitIntoWords(el: HTMLElement) {
+  // Idempotency guard: gsap.context().revert() undoes the inline styles this
+  // hook sets, but it does not undo splitIntoWords' own DOM rewrite — it's
+  // plain innerHTML mutation, not a GSAP-tracked change. Without this check,
+  // a second invocation (React StrictMode's dev-only double effect
+  // invocation is the one that reaches this in practice; production runs
+  // effects once) would re-split the already-split `.word-wrap`/`.word-inner`
+  // markup, doubly nesting it and breaking the reveal. If it's already split,
+  // there's nothing left to do — the existing spans are exactly what the
+  // caller wants to animate.
+  if (el.querySelector('.word-wrap')) return;
+
   const nodes = Array.from(el.childNodes);
   el.innerHTML = '';
   nodes.forEach((node) => {

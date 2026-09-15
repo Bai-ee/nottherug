@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-09-15",
   "generator": "scripts/copy/extract-copy.mjs",
-  "totalEntries": 378,
+  "totalEntries": 379,
   "pageOrder": [
     "global",
     "home",
@@ -4061,7 +4061,7 @@
       "sectionNote": "Field labels, helper text, buttons and confirmation messages.",
       "field": "text",
       "file": "components/booking/BookingForm.tsx",
-      "line": 203,
+      "line": 271,
       "anchorId": "",
       "current": "Website",
       "match": "Website",
@@ -4071,7 +4071,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        203
+        271
       ]
     },
     {
@@ -4082,7 +4082,7 @@
       "sectionNote": "Field labels, helper text, buttons and confirmation messages.",
       "field": "text",
       "file": "components/booking/BookingForm.tsx",
-      "line": 219,
+      "line": 287,
       "anchorId": "",
       "current": "Step",
       "match": "Step",
@@ -4092,7 +4092,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        219
+        287
       ]
     },
     {
@@ -4103,7 +4103,7 @@
       "sectionNote": "Field labels, helper text, buttons and confirmation messages.",
       "field": "text",
       "file": "components/booking/BookingForm.tsx",
-      "line": 219,
+      "line": 287,
       "anchorId": "",
       "current": "of",
       "match": "of",
@@ -4113,7 +4113,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        219
+        287
       ]
     },
     {
@@ -4124,7 +4124,7 @@
       "sectionNote": "Field labels, helper text, buttons and confirmation messages.",
       "field": "image-alt",
       "file": "components/booking/BookingForm.tsx",
-      "line": 221,
+      "line": 289,
       "anchorId": "",
       "current": "Form steps",
       "match": "aria-label=\"Form steps\"",
@@ -4134,7 +4134,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        221
+        289
       ]
     },
     {
@@ -4584,7 +4584,7 @@
       "sectionNote": "Shown after the form is submitted, to book a Calendly time.",
       "field": "text",
       "file": "components/booking/SchedulingDialog.tsx",
-      "line": 163,
+      "line": 173,
       "anchorId": "calendly-modal-header",
       "current": "Step 2 of 2",
       "match": "Step 2 of 2",
@@ -4594,7 +4594,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        163
+        173
       ]
     },
     {
@@ -4605,7 +4605,7 @@
       "sectionNote": "Shown after the form is submitted, to book a Calendly time.",
       "field": "text",
       "file": "components/booking/SchedulingDialog.tsx",
-      "line": 175,
+      "line": 185,
       "anchorId": "calendly-modal-title",
       "current": "Schedule your Meet &amp; Greet",
       "match": "Schedule your Meet &amp; Greet",
@@ -4615,7 +4615,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        175
+        185
       ]
     },
     {
@@ -4626,7 +4626,7 @@
       "sectionNote": "Shown after the form is submitted, to book a Calendly time.",
       "field": "image-alt",
       "file": "components/booking/SchedulingDialog.tsx",
-      "line": 181,
+      "line": 191,
       "anchorId": "calendly-modal-header",
       "current": "Close",
       "match": "aria-label=\"Close\"",
@@ -4636,7 +4636,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        181
+        191
       ]
     },
     {
@@ -4647,7 +4647,7 @@
       "sectionNote": "Shown after the form is submitted, to book a Calendly time.",
       "field": "button",
       "file": "components/booking/SchedulingDialog.tsx",
-      "line": 198,
+      "line": 208,
       "anchorId": "calendly-modal-header",
       "current": "Close ×",
       "match": "Close ×",
@@ -4657,7 +4657,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        198
+        208
       ]
     },
     {
@@ -4668,7 +4668,7 @@
       "sectionNote": "Shown after the form is submitted, to book a Calendly time.",
       "field": "image-alt",
       "file": "components/booking/SchedulingDialog.tsx",
-      "line": 203,
+      "line": 213,
       "anchorId": "calendly-modal-iframe",
       "current": "Calendly scheduling",
       "match": "title=\"Calendly scheduling\"",
@@ -4678,7 +4678,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        203
+        213
       ]
     },
     {
@@ -4839,6 +4839,27 @@
       ]
     },
     {
+      "key": "contact.contactpage-hero.archie-archie-bklyn",
+      "page": "contact",
+      "section": "contactpage-hero",
+      "sectionTitle": "/contact — hero",
+      "sectionNote": "",
+      "field": "link",
+      "file": "app/(marketing)/contact/page.tsx",
+      "line": 35,
+      "anchorId": "page-hero-label-contact",
+      "current": "Archie · @archie_bklyn",
+      "match": "Archie · @archie_bklyn",
+      "matchKind": "jsx-text",
+      "attrName": null,
+      "note": "",
+      "occurrences": 1,
+      "duplicateOf": null,
+      "lines": [
+        35
+      ]
+    },
+    {
       "key": "contact.contactpage-hero.send-a-message",
       "page": "contact",
       "section": "contactpage-hero",
@@ -4846,7 +4867,7 @@
       "sectionNote": "",
       "field": "label",
       "file": "app/(marketing)/contact/page.tsx",
-      "line": 42,
+      "line": 43,
       "anchorId": "contact-form-column",
       "current": "Send a Message",
       "match": "Send a Message",
@@ -4856,7 +4877,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        42
+        43
       ]
     },
     {
@@ -4867,7 +4888,7 @@
       "sectionNote": "",
       "field": "heading",
       "file": "app/(marketing)/contact/page.tsx",
-      "line": 43,
+      "line": 44,
       "anchorId": "contact-form-column",
       "current": "Tell us about your dog",
       "match": "Tell us about your dog",
@@ -4877,7 +4898,7 @@
       "occurrences": 1,
       "duplicateOf": null,
       "lines": [
-        43
+        44
       ]
     },
     {
