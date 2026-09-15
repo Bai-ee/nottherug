@@ -67,6 +67,17 @@ function FounderBriefPreviewPageContent({
         setSendStatus(`Error: ${data.error || data.sendError || `HTTP ${res.status}`}`);
         return;
       }
+      // A skip is the per-day send guard working correctly, not a failure —
+      // but it is also not a send, so it must never fall through to the
+      // "Sent to ..." success message below (both fields would be undefined).
+      if (data.skipped) {
+        setSendStatus(
+          data.reason
+            ? `${data.reason}${data.day ? ` (${data.day})` : ''}`
+            : `Already sent today${data.day ? ` (${data.day})` : ''} — no email sent just now.`,
+        );
+        return;
+      }
       setSendStatus(`Sent to ${data.sentTo} · email id ${data.emailId}`);
       // Refresh preview after a successful run
       if (opts.runFirst) {
