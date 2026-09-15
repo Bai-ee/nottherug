@@ -55,9 +55,14 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 // semantics make this atomic across concurrent invocations.
 
 const LEASE_PATH = `${NOT_THE_RUG_BRIEF_COLLECTIONS.leases}/active`;
-// Long enough to cover a real run; short enough that a crashed run (killed
-// without releasing the lease) doesn't block generation indefinitely.
-const LEASE_STALE_MS = 10 * 60 * 1000;
+// Every route that calls runNotTheRugBrief caps at maxDuration = 60 (see
+// app/admin/not-the-rug/run-brief, app/api/cron/not-the-rug-brief,
+// app/admin/founder-brief/run-and-send), so a run still alive past that is
+// already being killed by the host. 3x that cap is a deliberate margin for
+// platform overhead around the hard timeout, not an arbitrary round number —
+// it must not be so large that a genuinely crashed run blocks generation for
+// most of an hour.
+const LEASE_STALE_MS = 3 * 60 * 1000;
 
 async function acquireLease(runId: string): Promise<{ acquired: boolean; reason?: string }> {
   const seed = { runId, startedAt: new Date().toISOString(), pid: process.pid };

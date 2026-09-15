@@ -39,7 +39,7 @@ const MAX_TOKENS_PER_SEARCH = 800;
  * 
  * @param {string} searchQuery - The original search query
  * @param {string} rawResults  - Raw text from web_search tool result
- * @param {string} clientName  - For context (e.g. "Critters Quest")
+ * @param {string} clientName  - For context (e.g. "Not The Rug")
  * @returns {string} Clean, trimmed signal summary
  */
 async function trimSearchResults(searchQuery, rawResults, clientName) {

@@ -1,5 +1,5 @@
 import 'server-only';
-import { fsCreateDoc, fsSetDoc } from '@/lib/server/firestoreRest';
+import { fsCreateDoc, fsSetDoc, fsGetDoc, fsDeleteDoc } from '@/lib/server/firestoreRest';
 
 /**
  * Per-day, per-recipient send idempotency for the email cron routes.
@@ -12,6 +12,14 @@ import { fsCreateDoc, fsSetDoc } from '@/lib/server/firestoreRest';
 
 const SEND_LOG_COLLECTION = 'emailSendLog';
 const TZ = 'America/New_York';
+
+// A claim stuck in 'pending' (the process was killed between the atomic
+// claim and recordSendOutcome — a route maxDuration timeout, a Resend hang)
+// must not permanently skip that day's send with no error recorded. Mirrors
+// lib/not-the-rug-brief/run.ts's lease-staleness pattern: short enough that a
+// genuinely crashed claim is reclaimed the same day, long enough to cover a
+// real in-flight send (both cron routes cap at maxDuration = 30).
+const PENDING_CLAIM_STALE_MS = 2 * 60 * 1000;
 
 /** Calendar-day key in the business's own timezone, matching lib/leads/stats.ts. */
 export function todayKeyET(date: Date = new Date()): string {
@@ -31,14 +39,30 @@ function docId(kind: string, day: string, recipient: string): string {
  * concurrent invocations, the same guarantee lead-intake idempotency relies on.
  */
 export async function claimDailySend(kind: string, recipient: string, day: string = todayKeyET()): Promise<boolean> {
-  const { created } = await fsCreateDoc(`${SEND_LOG_COLLECTION}/${docId(kind, day, recipient)}`, {
-    kind,
-    recipient,
-    day,
-    claimedAt: new Date().toISOString(),
-    outcome: 'pending',
-  });
-  return created;
+  const path = `${SEND_LOG_COLLECTION}/${docId(kind, day, recipient)}`;
+  const seed = { kind, recipient, day, claimedAt: new Date().toISOString(), outcome: 'pending' };
+
+  const first = await fsCreateDoc(path, seed);
+  if (first.created) return true;
+
+  // Something already holds this slot. Only reclaim a *pending* claim that
+  // has gone stale — a resolved claim ('sent' or 'failed') must never be
+  // reclaimed, since that resolution is the actual duplicate-send guard.
+  const existing = await fsGetDoc(path).catch(() => null);
+  const data = existing?.data as { outcome?: string; claimedAt?: string } | undefined;
+  if (data?.outcome !== 'pending') return false;
+
+  const claimedAtMs = data.claimedAt ? new Date(data.claimedAt).getTime() : NaN;
+  const ageMs = Number.isFinite(claimedAtMs) ? Date.now() - claimedAtMs : Number.POSITIVE_INFINITY;
+  if (ageMs <= PENDING_CLAIM_STALE_MS) return false;
+
+  // Stale pending claim from a crashed attempt — reclaim it. Not perfectly
+  // atomic (delete then create is two operations), the same tradeoff the
+  // brief run lease makes: this path only matters for crash recovery, not
+  // normal traffic, which fsCreateDoc alone already serializes.
+  await fsDeleteDoc(path).catch(() => {});
+  const retry = await fsCreateDoc(path, seed);
+  return retry.created;
 }
 
 /**

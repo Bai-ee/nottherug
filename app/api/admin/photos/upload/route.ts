@@ -58,7 +58,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   let downloadURL: string;
   try {
-    downloadURL = await storageUpload(storagePath, buffer, contentType);
+    // decoded.buffer, not the raw upload — re-encoded from decoded pixel
+    // data by decodeAndValidateImage, so what's stored is provably only the
+    // image sharp actually decoded, not whatever else the original bytes
+    // may have carried after the end-of-image marker.
+    downloadURL = await storageUpload(storagePath, decoded.buffer, contentType);
   } catch (err) {
     console.error('Storage upload failed:', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Storage upload failed' }, { status: 500 });
@@ -67,9 +71,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   let thumbnailURL: string | undefined;
   let thumbnailError: string | undefined;
   try {
-    // Dimensions are already confirmed within MAX_PIXELS by decodeAndValidateImage.
-    const thumbBuffer = await sharp(buffer)
-      .rotate()
+    // From decoded.buffer (already re-encoded and orientation-normalized),
+    // not the raw upload — dimensions are already confirmed within
+    // MAX_PIXELS by decodeAndValidateImage, and this avoids parsing the
+    // original, unvalidated bytes a second time.
+    const thumbBuffer = await sharp(decoded.buffer)
       .resize({ width: 300, withoutEnlargement: true })
       .jpeg({ quality: 70 })
       .toBuffer();

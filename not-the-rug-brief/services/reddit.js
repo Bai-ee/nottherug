@@ -11,8 +11,11 @@ function getEnv(name) {
   return name ? process.env[name] || '' : '';
 }
 
+// Matches not-the-rug-brief/.env.example's documented REDDIT_USER_AGENT value —
+// identifies this project to Reddit's API, not an unrelated one, when the env
+// var itself isn't set.
 function getUserAgent(reddit = {}) {
-  return getEnv(reddit.userAgentEnv) || 'ScoutCrittersQuest/1.0';
+  return getEnv(reddit.userAgentEnv) || 'NotTheRugScout/1.0 (+https://nottherug.com)';
 }
 
 function escapeRegex(value) {
