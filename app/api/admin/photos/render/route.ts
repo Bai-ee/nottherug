@@ -83,7 +83,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     renderStoragePath,
     renderDownloadURL,
     placement,
-    rendererUsed: renderer === 'ffmpeg' ? 'ffmpeg' : 'sharp',
+    // What actually ran, not what was asked for: createRenderer always resolves
+    // to sharp since the FFmpeg renderer was removed.
+    rendererUsed: rendererInstance.name,
     createdBy: adminEmail,
     createdAt: new Date().toISOString(),
     status: 'complete',
