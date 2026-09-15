@@ -5,8 +5,10 @@ node_modules/
 .env*.local
 *.mp4
 *.webm
-# Keep only the short web-optimised clip
+# Keep only the short web-optimised hero clip, in both formats the
+# <video> element offers.
 !public/logos/Not_The_Rug_2023_clipped_web.mp4
+!public/logos/Not_The_Rug_2023_clipped_web.webm
 .vercel
 tsconfig.tsbuildinfo
 

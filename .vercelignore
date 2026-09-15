@@ -5,3 +5,21 @@ docs/
 *.docx
 .next/
 node_modules/
+
+# 223 MB of raw source video lives untracked in public/logos and would otherwise
+# be uploaded on a CLI deploy. Only the web-optimised hero clip is served.
+public/logos/Not_The_Rug_2023.mp4
+public/logos/Not_The_Rug_2023_clipped.mp4
+public/logos/Not The Rug 2023.webm
+public/logos/Screenshot*
+
+# Local agent/editor tooling and test output.
+.agents/
+.claude/
+.impeccable/
+AGENTS.md
+CLAUDE.md
+skills-lock.json
+tests/
+playwright-report/
+test-results/
