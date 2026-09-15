@@ -77,6 +77,21 @@ explaining what is actually collected or how long it is kept.
 | Remove the door/access-code invitation from the public form? | Recommended: yes — collect access details after the meet & greet, not in a public web form |
 | Publish a short plain-language note on what is collected and who sees it? | Recommended: yes |
 
+
+## Copy changes made during the route extraction (need sign-off)
+
+These are the only two places where visible copy changed while the site was being
+split into real routes. Everything else was moved verbatim.
+
+| Page | What changed | Why | Owner decision |
+| --- | --- | --- | --- |
+| `/contact` hero | Was "Book your free Meet & Greet" (a duplicate of `/book`'s hero). Now "We're real people with a real number / No chatbots, no ticket queues…" | That second headline was already live on the old `?page=contact` view. The standalone `/contact` route had the wrong hero pasted in. The two views are now one page and could not keep both. | Approve / restore the old hero |
+| `/services` | New sentence where the fake "Book a Service" / "Ask a Question" tabs used to be: "Already a client, or have a quick question first? Call or text (347) 610-9676, email luis@nottherug.com, or visit our contact page." | The removed tabs were mock forms that alerted a fake success. Something had to tell an existing client where to go. The phone and email are the ones already published in the footer — nothing new was invented. | Approve / reword |
+
+`/contact` also gained the real contact card (phone, email, address, hours, Instagram).
+That block was already written and live on `?page=contact`; the standalone route just
+never showed it.
+
 ## How these get closed
 
 Answer in place, or reply with corrections. Unanswered rows stay open on the launch
