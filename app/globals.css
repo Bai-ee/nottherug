@@ -496,7 +496,7 @@ footer {
    PAGE: HOME
    ============================================================ */
 
-/* Section background photos — rotate bg_section_1/2 + bg_section_graphic_1/2
+/* Section background photos — rotate bg_section_1/2 + bg_section_graphic_2
    behind homepage sections in DOM order, same cream-veil technique as .hero
    so each image reads at the same faint (~20%) opacity. Personalized-care
    keeps its own slot in the rotation but renders the standalone product-card

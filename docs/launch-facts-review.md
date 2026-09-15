@@ -92,6 +92,38 @@ split into real routes. Everything else was moved verbatim.
 That block was already written and live on `?page=contact`; the standalone route just
 never showed it.
 
+
+## Unreferenced image assets (owner decision)
+
+These six files ship in `public/img` and are loaded by nothing — no component, no
+stylesheet, no script. Verified by searching the whole source tree; the two that looked
+referenced were not (`footer_image.png` matched only `footer_image2.png`, a different
+file, and `bg_section_graphic_1.png` appeared only inside a stale CSS comment, now
+corrected).
+
+| File | Size |
+| --- | --- |
+| `footer_image.png` | 2.6 MB |
+| `bg_section_graphic_1.png` | 2.2 MB |
+| `visits_card.png` | 2.0 MB |
+| `3dog.png` | 1.9 MB |
+| `1dog.png` | 1.9 MB |
+| `multi_dog_walk.png` | 1.7 MB |
+
+About 12.3 MB total. They cost nothing in page weight, since no page requests them, but
+they are uploaded on every deploy.
+
+**They have not been deleted.** A file under `public/` is reachable by URL, so one could
+be linked from an old email, a social post or an external page, and deleting it would
+break that silently. Two further files, `card_bg.png` and `product_background.png`, are
+referenced only by the disabled carousel and the dev playground — real references, just
+not on any live page.
+
+| Question | Owner decision |
+| --- | --- |
+| Delete the six unreferenced files? | Yes / No / keep but exclude from deploys |
+| Are any of them linked from somewhere outside this site? | |
+
 ## How these get closed
 
 Answer in place, or reply with corrections. Unanswered rows stay open on the launch
