@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
+import { errorResponse } from '@/lib/server/errors';
 import { renderGeneratorImage } from '@/lib/generator/server';
 import {
   clampPlacement,
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     adminEmail = await verifyAdmin(req);
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Unauthorized' }, { status: 401 });
+    return errorResponse(err);
   }
 
   // 2. Parse + validate body

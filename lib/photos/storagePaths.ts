@@ -20,7 +20,7 @@ export class InvalidStoragePathError extends Error {}
  * still fail closed rather than let a delete/read reach outside the
  * expected storage prefix.
  */
-function assertUnderPrefix(path: unknown, prefix: string): string {
+export function assertUnderPrefix(path: unknown, prefix: string): string {
   if (typeof path !== 'string' || !path) {
     throw new InvalidStoragePathError(`Storage path is missing or not a string (expected under "${prefix}")`);
   }

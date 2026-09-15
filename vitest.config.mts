@@ -1,7 +1,14 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  resolve: { tsconfigPaths: true },
+  resolve: {
+    tsconfigPaths: true,
+    alias: {
+      // Build-time marker with no runtime module; stubbed so server modules can
+      // be imported directly in tests.
+      'server-only': new URL('./tests/stubs/server-only.ts', import.meta.url).pathname,
+    },
+  },
   test: {
     environment: 'node',
     include: ['tests/unit/**/*.test.ts'],

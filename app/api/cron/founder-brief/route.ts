@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEquals } from '@/lib/server/errors';
 import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/read';
 import { founderDailyBriefEmail } from '@/lib/email/founder-brief-template';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
@@ -16,7 +17,7 @@ function isAuthorized(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
   if (!secret) return false;
   const authHeader = req.headers.get('authorization');
-  return authHeader === `Bearer ${secret}`;
+  return authHeader !== null && timingSafeEquals(authHeader, `Bearer ${secret}`);
 }
 
 async function handle(req: NextRequest): Promise<NextResponse> {

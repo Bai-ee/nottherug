@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
+import { errorResponse } from '@/lib/server/errors';
 import { runNotTheRugBrief } from '@/lib/not-the-rug-brief/run';
 import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/read';
 import { founderDailyBriefEmail } from '@/lib/email/founder-brief-template';
@@ -18,10 +19,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     await verifyAdmin(req);
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unauthorized' },
-      { status: 401 },
-    );
+    return errorResponse(error);
   }
 
   // Allow caller to skip the brief regeneration via ?skipRun=1

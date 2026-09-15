@@ -7,7 +7,6 @@
  * which works with both old and new bucket types.
  */
 
-import { adminApp } from '@/lib/firebase-admin';
 import { getStorageBucket } from '@/lib/server/env';
 
 const BUCKET = getStorageBucket();
@@ -17,6 +16,11 @@ const FS_BASE = `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponen
 export const PRIVATE_STORAGE_PREFIX = 'private';
 
 async function getAccessToken(): Promise<string> {
+  // Imported lazily: lib/firebase-admin.ts initialises at module scope and throws
+  // on a malformed key, so a static import would make merely loading this module
+  // require valid service-account credentials — including in tests that never
+  // reach Storage at all.
+  const { adminApp } = await import('@/lib/firebase-admin');
   const token = await adminApp.options.credential!.getAccessToken();
   return token.access_token;
 }
