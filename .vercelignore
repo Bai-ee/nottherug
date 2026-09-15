@@ -1,0 +1,7 @@
+ignore/
+updated_images/
+plans/
+docs/
+*.docx
+.next/
+node_modules/

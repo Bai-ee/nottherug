@@ -1,13 +1,15 @@
-# Animation plans
+# Project plans
 
 | # | Title | Severity | Status |
 | --- | --- | --- | --- |
 | [001](001-reversible-section-reveals.md) | Make section reveal animations reverse on scroll-up (play in, play out) | MEDIUM | DONE |
+| [002](002-production-readiness.md) | Production readiness, code cleanup, and Claude execution plan | HIGH | PLANNED |
 
 ## Execution order
 
-Just 001 for now — single self-contained change to `initSectionReveals()` in
-`app/page.tsx`. No dependencies on other plans.
+001 is complete. For production cleanup, follow the phases in 002 and update
+[its tracker](002-production-tracker.md). Use [the Claude handoff](002-claude-handoff.md)
+to coordinate Sonnet workers with separate file ownership.
 
 ## Notes
 

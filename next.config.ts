@@ -10,6 +10,10 @@ const SHARED_TRACE_EXCLUDES = [
   './style-guide/**/*',
   './misc/**/*',
   './data/**/*',
+  './ignore/**/*',
+  './updated_images/**/*',
+  './app-assets/**/*',
+  './plans/**/*',
   './README.md',
   './index.html',
   './optimize_video.py',
@@ -23,7 +27,18 @@ const SHARED_TRACE_EXCLUDES = [
 // Listing them explicitly is more reliable than chasing each runtime error.
 const FIREBASE_ADMIN_INCLUDES = [
   './node_modules/firebase-admin/**/*',
-  './node_modules/@firebase/**/*',
+  // Only the @firebase packages firebase-admin actually pulls in (via
+  // @firebase/database-compat). The broad '@firebase/**/*' glob also dragged in
+  // the *client* SDK (firestore 52MB, auth 15MB, ai 2.5MB), which server code
+  // never loads and which pushed the function past Vercel's 250MB limit.
+  './node_modules/@firebase/database-compat/**/*',
+  './node_modules/@firebase/database/**/*',
+  './node_modules/@firebase/database-types/**/*',
+  './node_modules/@firebase/component/**/*',
+  './node_modules/@firebase/logger/**/*',
+  './node_modules/@firebase/util/**/*',
+  './node_modules/@firebase/app-check-interop-types/**/*',
+  './node_modules/@firebase/auth-interop-types/**/*',
   './node_modules/@google-cloud/**/*',
   './node_modules/@grpc/**/*',
   './node_modules/@opentelemetry/**/*',
@@ -116,9 +131,22 @@ const FIREBASE_ADMIN_INCLUDES = [
   './node_modules/yargs-parser/**/*',
 ];
 
+// Routes that only compose text/email have no image pipeline; keep the multi-
+// hundred-MB libvips binaries out of them.
+const SHARP_TRACE_EXCLUDES = [
+  './node_modules/sharp/**/*',
+  './node_modules/@img/**/*',
+];
+
 const GENERATOR_TRACE_EXCLUDES = [
   ...SHARED_TRACE_EXCLUDES,
   './not-the-rug-brief/**/*',
+];
+
+// Text/email routes: shared repo assets + the sharp binaries.
+const BRIEF_TRACE_EXCLUDES = [
+  ...SHARED_TRACE_EXCLUDES,
+  ...SHARP_TRACE_EXCLUDES,
 ];
 
 const nextConfig: NextConfig = {
@@ -130,18 +158,18 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     '/api/admin/generator/render':              GENERATOR_TRACE_EXCLUDES,
     '/api/admin/photos/render':                 GENERATOR_TRACE_EXCLUDES,
-    '/admin/not-the-rug/run-brief':             SHARED_TRACE_EXCLUDES,
-    '/admin/not-the-rug/latest-brief':          SHARED_TRACE_EXCLUDES,
-    '/admin/not-the-rug/latest-brief/html':     SHARED_TRACE_EXCLUDES,
-    '/admin/not-the-rug/history':               SHARED_TRACE_EXCLUDES,
-    '/admin/not-the-rug/history/[id]/html':     SHARED_TRACE_EXCLUDES,
-    '/api/cron/not-the-rug-brief':              SHARED_TRACE_EXCLUDES,
-    '/api/cron/founder-brief':                  SHARED_TRACE_EXCLUDES,
-    '/api/cron/leads-digest':                   SHARED_TRACE_EXCLUDES,
-    '/api/leads/meetgreet':                     SHARED_TRACE_EXCLUDES,
-    '/admin/preview/founder-brief':             SHARED_TRACE_EXCLUDES,
-    '/admin/founder-brief/run-and-send':        SHARED_TRACE_EXCLUDES,
-    '/admin/leads':                             SHARED_TRACE_EXCLUDES,
+    '/admin/not-the-rug/run-brief':             BRIEF_TRACE_EXCLUDES,
+    '/admin/not-the-rug/latest-brief':          BRIEF_TRACE_EXCLUDES,
+    '/admin/not-the-rug/latest-brief/html':     BRIEF_TRACE_EXCLUDES,
+    '/admin/not-the-rug/history':               BRIEF_TRACE_EXCLUDES,
+    '/admin/not-the-rug/history/[id]/html':     BRIEF_TRACE_EXCLUDES,
+    '/api/cron/not-the-rug-brief':              BRIEF_TRACE_EXCLUDES,
+    '/api/cron/founder-brief':                  BRIEF_TRACE_EXCLUDES,
+    '/api/cron/leads-digest':                   BRIEF_TRACE_EXCLUDES,
+    '/api/leads/meetgreet':                     BRIEF_TRACE_EXCLUDES,
+    '/admin/preview/founder-brief':             BRIEF_TRACE_EXCLUDES,
+    '/admin/founder-brief/run-and-send':        BRIEF_TRACE_EXCLUDES,
+    '/admin/leads':                             BRIEF_TRACE_EXCLUDES,
   },
 
   outputFileTracingIncludes: {
