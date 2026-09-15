@@ -11,11 +11,11 @@ The coordinator is the only writer of this file. Workers report their task ID, c
 | ID | Phase / task | Owner | Depends on | Status | Evidence / next action |
 | --- | --- | --- | --- | --- | --- |
 | P0 | Baseline, ownership, contracts, test setup | Coordinator | — | DONE | Baseline `711fbe1`; primitives + screenshots `9f7cae8`. Working tree preserved, not reset. |
-| P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | DONE | `55f51e7`. R01/R04 reproduced first, then fixed. tsc clean, vitest 80/13 skipped, eslint clean on owned paths, build passes, both booking branches pass in Playwright with the API intercepted. |
+| P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | REVIEW | `55f51e7`. Independent review found the idempotency key breaks at its own hour boundary — an identical retry straddling `:00` creates a second lead and duplicate emails. Returned to the author. |
 | P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | DONE | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
 | P1C | Dependency/runtime update and CI | Coordinator | P0 | DONE | `b5a81a1`. Advisories rechecked at execution time; user's tracing fixes retained. |
 | P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | REVIEW | `023b8be` + `092be7b`. Coordinator review found a `/contact` heading overlap; the worker traced it further to a grid-item min-content overflow (`document.body.scrollWidth` 1884px at a 1440px viewport) and fixed both. 4 lint errors remain in owned files, assigned back. `app/globals.css` split deferred with recorded rationale. |
-| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | REVIEW | `fa0cc3b`. Coordinator review found the admin UI still offered a renderer choice that silently ran sharp; assigned back. |
+| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | REVIEW | `fa0cc3b` + `14aa455`. Independent review found two admin pages left outside the consolidation, one of which hangs on a network error. Returned to the author. |
 | P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | DONE | `3aac7ec`. Duration deliberately **not** measured — a real run would invoke a paid model without authorization. The run record now self-reports `durationMs`, so the first authorized run measures itself. |
 | P3C | Packaged function verification | Coordinator | P3B, P1C | IN_PROGRESS | Trace config corrected in `7b9f5af`; per-function bundle inspection pending a clean build. |
 | P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | TODO | Owner facts table below; coordinator owns `proxy.ts`, `app/layout.tsx`, `vercel.json`. |
@@ -114,6 +114,28 @@ Reviewer and outcome:
 | Three brief routes that can render an image were traced with the sharp binaries excluded, and the generator's local logo fallback read from `app-assets`, which the shared exclude list dropped with nothing adding it back. Either would fail only at runtime in a deployed function. | `next.config.ts` | Fixed in `7b9f5af`. |
 | `rendererUsed` recorded `'ffmpeg'` whenever ffmpeg was requested, although sharp always ran. The admin UI also still offered the choice. | photo render route, generator controls | Record fixed in `05bc2a6`/`bcbeff6`; the UI control is assigned back to P3A. |
 | `public/logos` held 223 MB of untracked source video that `.vercelignore` did not exclude, and the hero `.webm` was gitignored while being served first. | deploy config | Fixed in `15c897e`. |
+
+## Independent review results
+
+Each slice was reviewed by a worker that did not author it, against the plan.
+
+### P1A and P3A — reviewed by Worker B. Verdict: accept with fixes.
+
+| Severity | Finding | State |
+| --- | --- | --- |
+| High | The lead idempotency key uses a clock-aligned hour bucket, not a rolling window. An identical retry four seconds later that straddles `:00` creates a second lead and a second round of founder and customer emails. The code comment and the commit message both overstated the guarantee, and no test covered a boundary-straddling retry. | Returned to the author. |
+| Moderate | `app/admin/dashboard/brief/page.tsx` and `.../preview/founder-brief/page.tsx` were left out of the R14 session consolidation and still silently bounce a non-admin to `/admin`. Their `getDoc` calls are not wrapped, so a network error leaves the page on its loading state forever — worse than the pages the finding was written about. Neither route is in the e2e admin list either. Server authorization is unaffected; `verifyAdmin` still runs. | Returned to the author. |
+| Moderate | `readCappedBody`'s non-streaming branch buffers the whole body before checking the cap, so the "checked again while reading" claim does not hold on that path. Not demonstrated reachable. | Returned to the author. |
+| Moderate | The step progress dots let a user jump to the final step without passing earlier validation, and the submit handler ignores the `details` field-error array the route already returns, so the "focus the first invalid field" behavior never fires on that path. Server-side validation still rejects the payload. | Returned to the author. |
+| Low | Resend provider error strings are logged verbatim and could embed a recipient address. | Returned to the author. |
+| Low | The CSV comment overclaims how every spreadsheet renders a leading apostrophe. The mitigation itself is correct. | Returned to the author. |
+
+Confirmed holding under review: one genuine shared lead contract; select option lists that
+cannot drift; a real atomic rate limiter with its fail-open tradeoff honestly documented;
+working focus trap, Escape handling and pre-reset submission snapshot; escaped email
+templates; CSV quoting that resists field breakout; delete handlers that only remove a row
+inside the success branch; both iframes sandboxed without `allow-scripts`. No
+authorization bypass, no XSS vector, and no unprompted feature found in either slice.
 
 ## Deferred proposals
 
