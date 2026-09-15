@@ -6,12 +6,12 @@ const { runXScout } = require('./xscout');
 const { runScribe } = require('./scribe');
 const { generateReport } = require('./reporter');
 const { requireClientConfig } = require('./clients');
-const { DATA_DIR, getLatestBrief, getLatestContent } = require('./store');
+const { getDataDir, getLatestBrief, getLatestContent } = require('./store');
 
 const CLIENT_ID = 'not-the-rug';
 
 async function maybeDeleteLatestBrief() {
-  const latestPath = path.join(DATA_DIR, 'briefs', CLIENT_ID, 'latest.json');
+  const latestPath = path.join(getDataDir(), 'briefs', CLIENT_ID, 'latest.json');
   try {
     await fs.unlink(latestPath);
   } catch (err) {
@@ -20,11 +20,12 @@ async function maybeDeleteLatestBrief() {
 }
 
 function buildArtifactPaths() {
+  const dataDir = getDataDir();
   return {
-    latestBriefJsonPath: path.join(DATA_DIR, 'briefs', CLIENT_ID, 'latest.json'),
-    latestContentJsonPath: path.join(DATA_DIR, 'content', CLIENT_ID, 'latest-content.json'),
-    latestMarkdownPath: path.join(DATA_DIR, 'briefs', CLIENT_ID, 'latest-brief.md'),
-    latestHtmlPath: path.join(DATA_DIR, 'briefs', CLIENT_ID, 'latest-brief.html'),
+    latestBriefJsonPath: path.join(dataDir, 'briefs', CLIENT_ID, 'latest.json'),
+    latestContentJsonPath: path.join(dataDir, 'content', CLIENT_ID, 'latest-content.json'),
+    latestMarkdownPath: path.join(dataDir, 'briefs', CLIENT_ID, 'latest-brief.md'),
+    latestHtmlPath: path.join(dataDir, 'briefs', CLIENT_ID, 'latest-brief.html'),
   };
 }
 

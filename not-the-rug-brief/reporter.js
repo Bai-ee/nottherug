@@ -10,10 +10,9 @@
 
 const fs   = require('fs').promises;
 const path = require('path');
-const { DATA_DIR, ensureDir, generateFilename, getLatestBrief, getLatestInstagram } = require('./store');
+const { getDataDir, ensureDir, generateFilename, getLatestBrief, getLatestInstagram } = require('./store');
 const { requireClientConfig } = require('./clients');
 const { getIntelligenceConfig, normalizeIntelligence } = require('./intelligence');
-const { loadBrandVoice } = require('./knowledge');
 const { getContentSchema } = require('./content-schema');
 const { buildInstagramReviewInsight } = require('./services/instagram');
 
@@ -47,22 +46,6 @@ function buildDatedReportFilename(prefix, date, extension) {
   return `${prefix}-${mon}-${dd}-${yyyy}-${hours}:${mins}${ampm}.${extension}`;
 }
 
-function getDailyBriefVoice(config) {
-  return loadBrandVoice(config.clientId)?.daily_brief_voice || null;
-}
-
-function buildBriefRoleNote(config) {
-  const dailyBriefVoice = getDailyBriefVoice(config);
-  if (!dailyBriefVoice?.role) return null;
-  return `_${dailyBriefVoice.role}_`;
-}
-
-function buildSectionToneNote(config, sectionKey) {
-  const dailyBriefVoice = getDailyBriefVoice(config);
-  const note = dailyBriefVoice?.sections_tone?.[sectionKey];
-  return note ? `_${note}_` : null;
-}
-
 // --- Section builders ---
 
 /**
@@ -90,7 +73,7 @@ function buildOperationalContext(normalized, config) {
       .slice(0, 5)
       .map((c) => {
         const finding = (c.finding || '').replace(/^\[(LIVE|BACKGROUND)\]\s*/i, '');
-        const label = c.url ? `[${c.competitor}](${c.url})` : c.competitor;
+        const label = isSafeUrl(c.url) ? `[${c.competitor}](${c.url})` : c.competitor;
         return `  - **${label}** — ${finding}`;
       })
       .join('\n');
@@ -105,7 +88,7 @@ function buildOperationalContext(normalized, config) {
   } else {
     relationshipLines = activeSignals
       .map((signal) => {
-        const label = signal.url ? `[${signal.name}](${signal.url})` : signal.name;
+        const label = isSafeUrl(signal.url) ? `[${signal.name}](${signal.url})` : signal.name;
         return `  - **${label}** — ${signal.summary.slice(0, 120).trimEnd()}${signal.summary.length > 120 ? '...' : ''}`;
       })
       .join('\n');
@@ -124,7 +107,7 @@ function buildOperationalContext(normalized, config) {
   const redditLines = redditSignals.length === 0
     ? (intelligence.redditSignalsFallback || 'No Reddit signals surfaced this cycle.')
     : redditSignals.slice(0, 5).map((signal) => {
-        const label = signal.url ? `[${signal.title}](${signal.url})` : signal.title;
+        const label = isSafeUrl(signal.url) ? `[${signal.title}](${signal.url})` : signal.title;
         const subreddit = signal.subreddit ? ` (${signal.subreddit})` : '';
         const summary = signal.summary ? ` — ${signal.summary}` : '';
         const takeaway = signal.actionableTakeaway ? ` Takeaway: ${signal.actionableTakeaway}` : '';
@@ -142,7 +125,7 @@ function buildOperationalContext(normalized, config) {
     ? (intelligence.contentOpportunitiesFallback || 'No content opportunities identified this cycle.')
     : opportunities.map((opp) => {
         const name = opp.title || 'Opportunity';
-        const label = opp.url ? `[${name}](${opp.url})` : name;
+        const label = isSafeUrl(opp.url) ? `[${name}](${opp.url})` : name;
         const angle = opp.summary ? ` — ${opp.summary}` : '';
         const window = opp.windowHours ? ` (${opp.windowHours}h window)` : '';
         return `- **${label}**${window}${angle}`;
@@ -176,7 +159,7 @@ function buildOurWorld(normalized, config) {
   const weather = normalized.weatherImpact;
   const reviewInsights = normalized.reviewInsights || [];
   const weatherLine = weather
-    ? `${weather.summary}${weather.operationalTakeaway ? ` ${weather.operationalTakeaway}` : ''}${weather.url ? ` [Source](${weather.url})` : ''}`
+    ? `${weather.summary}${weather.operationalTakeaway ? ` ${weather.operationalTakeaway}` : ''}${isSafeUrl(weather.url) ? ` [Source](${weather.url})` : ''}`
     : (intelligence.weatherFallback || 'No weather impact surfaced this cycle.');
 
   let reviewLines;
@@ -186,7 +169,7 @@ function buildOurWorld(normalized, config) {
     reviewLines = reviewInsights
       .slice(0, 5)
       .map((review) => {
-        const label = review.url ? `[${review.source}](${review.url})` : review.source;
+        const label = isSafeUrl(review.url) ? `[${review.source}](${review.url})` : review.source;
         const takeaway = review.actionableTakeaway ? ` Takeaway: ${review.actionableTakeaway}` : '';
         return `  - **${label}** — ${review.insight.slice(0, 120).trimEnd()}${review.insight.length > 120 ? '...' : ''}${takeaway}`;
       })
@@ -261,7 +244,7 @@ function collectReportSources(normalized, contentOpportunities, config) {
   const seen = new Set();
 
   function pushSource(url, label, section) {
-    if (!url || seen.has(url)) return;
+    if (!isSafeUrl(url) || seen.has(url)) return;
     seen.add(url);
     sources.push({ url, label, section });
   }
@@ -305,6 +288,19 @@ function buildSourcesSection(sources) {
   return `## 5. Sources\n${lines.join('\n')}`;
 }
 
+// Only http(s) links are ever emitted — a javascript:/data: URL from an
+// upstream source (search results, review sites, Reddit, etc.) must never
+// reach an <a href> or a markdown link.
+const SAFE_URL_SCHEMES = new Set(['http:', 'https:']);
+function isSafeUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return false;
+  try {
+    return SAFE_URL_SCHEMES.has(new URL(value).protocol);
+  } catch {
+    return false;
+  }
+}
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -320,10 +316,6 @@ function renderTextBlock(text) {
     .split(/\n{2,}/)
     .map((paragraph) => `<p>${paragraph.replace(/\n/g, '<br>')}</p>`)
     .join('\n');
-}
-
-function renderToneNote(note) {
-  return note ? `<p class="tone-note">${escapeHtml(note.replace(/^_+|_+$/g, ''))}</p>` : '';
 }
 
 function renderQualityHeadline(guardianFlags) {
@@ -637,7 +629,7 @@ function buildHtmlReport({ runDate, config, normalized, content, contentOpportun
     <div class="sub-head">${escapeHtml(intelligence.weatherLabel || 'Weather Impact')}</div>
     <div class="weather-box">
       ${weather
-        ? `${escapeHtml(weather.summary)}${weather.operationalTakeaway ? ` ${escapeHtml(weather.operationalTakeaway)}` : ''}${weather.url ? ` <a href="${escapeHtml(weather.url)}" target="_blank" rel="noreferrer">Source \u2192</a>` : ''}`
+        ? `${escapeHtml(weather.summary)}${weather.operationalTakeaway ? ` ${escapeHtml(weather.operationalTakeaway)}` : ''}${isSafeUrl(weather.url) ? ` <a href="${escapeHtml(weather.url)}" target="_blank" rel="noreferrer">Source \u2192</a>` : ''}`
         : `<span class="fallback">${escapeHtml(intelligence.weatherFallback || 'No weather impact surfaced this cycle.')}</span>`
       }
     </div>
@@ -648,7 +640,7 @@ function buildHtmlReport({ runDate, config, normalized, content, contentOpportun
       : `<ul class="item-list">
           ${reviewInsights.slice(0, 5).map((review) => `
             <li class="item-row">
-              <div class="item-title">${review.url ? `<a href="${escapeHtml(review.url)}" target="_blank" rel="noreferrer">${escapeHtml(review.source)}</a>` : escapeHtml(review.source)}</div>
+              <div class="item-title">${isSafeUrl(review.url) ? `<a href="${escapeHtml(review.url)}" target="_blank" rel="noreferrer">${escapeHtml(review.source)}</a>` : escapeHtml(review.source)}</div>
               <div class="item-body">${escapeHtml(review.insight)}</div>
               ${review.actionableTakeaway ? `<div class="item-takeaway">Takeaway: ${escapeHtml(review.actionableTakeaway)}</div>` : ''}
             </li>`).join('')}
@@ -684,7 +676,7 @@ function buildHtmlReport({ runDate, config, normalized, content, contentOpportun
             .slice(0, 5)
             .map((c) => `
               <li class="item-row">
-                <div class="item-title">${c.url ? `<a href="${escapeHtml(c.url)}" target="_blank" rel="noreferrer">${escapeHtml(c.competitor)}</a>` : escapeHtml(c.competitor)}</div>
+                <div class="item-title">${isSafeUrl(c.url) ? `<a href="${escapeHtml(c.url)}" target="_blank" rel="noreferrer">${escapeHtml(c.competitor)}</a>` : escapeHtml(c.competitor)}</div>
                 <div class="item-body">${escapeHtml((c.finding || '').replace(/^\[(LIVE|BACKGROUND)\]\s*/i, ''))}</div>
               </li>`).join('')}
         </ul>`}
@@ -695,7 +687,7 @@ function buildHtmlReport({ runDate, config, normalized, content, contentOpportun
       : `<ul class="item-list">
           ${relationshipItems.map((signal) => `
             <li class="item-row">
-              <div class="item-title">${signal.url ? `<a href="${escapeHtml(signal.url)}" target="_blank" rel="noreferrer">${escapeHtml(signal.name)}</a>` : escapeHtml(signal.name)}</div>
+              <div class="item-title">${isSafeUrl(signal.url) ? `<a href="${escapeHtml(signal.url)}" target="_blank" rel="noreferrer">${escapeHtml(signal.name)}</a>` : escapeHtml(signal.name)}</div>
               <div class="item-body">${escapeHtml(signal.summary)}</div>
             </li>`).join('')}
         </ul>`}
@@ -719,7 +711,7 @@ function buildHtmlReport({ runDate, config, normalized, content, contentOpportun
       : `<ul class="item-list">
           ${redditSignals.slice(0, 5).map((signal) => `
             <li class="item-row">
-              <div class="item-title">${signal.url ? `<a href="${escapeHtml(signal.url)}" target="_blank" rel="noreferrer">${escapeHtml(signal.title)}</a>` : escapeHtml(signal.title)}</div>
+              <div class="item-title">${isSafeUrl(signal.url) ? `<a href="${escapeHtml(signal.url)}" target="_blank" rel="noreferrer">${escapeHtml(signal.title)}</a>` : escapeHtml(signal.title)}</div>
               ${signal.subreddit ? `<div class="item-meta">${escapeHtml(signal.subreddit)}</div>` : ''}
               ${signal.summary ? `<div class="item-body">${escapeHtml(signal.summary)}</div>` : ''}
               ${signal.actionableTakeaway ? `<div class="item-takeaway">Takeaway: ${escapeHtml(signal.actionableTakeaway)}</div>` : ''}
@@ -743,7 +735,7 @@ function buildHtmlReport({ runDate, config, normalized, content, contentOpportun
       : `<ul class="item-list">
           ${opportunities.map((opp) => `
             <li class="item-row">
-              <div class="item-title">${opp.url ? `<a href="${escapeHtml(opp.url)}" target="_blank" rel="noreferrer">${escapeHtml(opp.title || 'Opportunity')}</a>` : escapeHtml(opp.title || 'Opportunity')}</div>
+              <div class="item-title">${isSafeUrl(opp.url) ? `<a href="${escapeHtml(opp.url)}" target="_blank" rel="noreferrer">${escapeHtml(opp.title || 'Opportunity')}</a>` : escapeHtml(opp.title || 'Opportunity')}</div>
               ${opp.windowHours ? `<div class="item-meta">${escapeHtml(String(opp.windowHours))}h window</div>` : ''}
               ${opp.summary ? `<div class="item-body">${escapeHtml(opp.summary)}</div>` : ''}
             </li>`).join('')}
@@ -780,7 +772,7 @@ function buildHtmlReport({ runDate, config, normalized, content, contentOpportun
           ${sources.map((source) => `
             <li class="item-row">
               <div class="item-title">${escapeHtml(source.section)}: ${escapeHtml(source.label)}</div>
-              <div class="item-body"><a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(source.url)}</a></div>
+              <div class="item-body">${isSafeUrl(source.url) ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(source.url)}</a>` : escapeHtml(source.url)}</div>
             </li>`).join('')}
         </ul>`}
   </div>
@@ -845,7 +837,7 @@ async function generateReport(scribeOutput, clientId) {
     });
 
     // --- Write files ---
-    const dir = path.join(DATA_DIR, 'briefs', clientId);
+    const dir = path.join(getDataDir(), 'briefs', clientId);
     await ensureDir(dir);
 
     const archiveName = generateFilename('brief').replace(/\.json$/, '.md');

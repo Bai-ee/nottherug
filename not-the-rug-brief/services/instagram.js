@@ -1,6 +1,7 @@
 // services/instagram.js — optional Instagram activity sourcing via Meta Graph API
 
 require('../load-env');
+const { fetchWithTimeout } = require('../http');
 
 function getInstagramConfig(config = {}) {
   return config.instagram || null;
@@ -11,9 +12,11 @@ function getEnv(name) {
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url, {
-    headers: { Accept: 'application/json' },
-  });
+  const response = await fetchWithTimeout(
+    url,
+    { headers: { Accept: 'application/json' } },
+    { timeoutMs: 10_000, retries: 1, label: 'Instagram API' },
+  );
 
   const text = await response.text();
   if (!response.ok) {

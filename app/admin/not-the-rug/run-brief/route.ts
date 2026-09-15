@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
-import { runNotTheRugBrief } from '@/lib/not-the-rug-brief/server';
+import { runNotTheRugBrief } from '@/lib/not-the-rug-brief/run';
 
 export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {

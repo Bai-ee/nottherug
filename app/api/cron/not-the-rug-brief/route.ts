@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { runNotTheRugBrief } from '@/lib/not-the-rug-brief/server';
+import { runNotTheRugBrief } from '@/lib/not-the-rug-brief/run';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;

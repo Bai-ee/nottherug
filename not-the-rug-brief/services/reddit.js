@@ -1,6 +1,7 @@
 // services/reddit.js — optional Reddit sourcing via official OAuth Data API
 
 require('../load-env');
+const { fetchWithTimeout } = require('../http');
 
 function getRedditConfig(config = {}) {
   return config.reddit || null;
@@ -35,16 +36,20 @@ async function fetchAccessToken(reddit = {}) {
 
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
   const body = new URLSearchParams({ grant_type: 'client_credentials' });
-  const response = await fetch('https://www.reddit.com/api/v1/access_token', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'User-Agent': getUserAgent(reddit),
+  const response = await fetchWithTimeout(
+    'https://www.reddit.com/api/v1/access_token',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': getUserAgent(reddit),
+      },
+      body: body.toString(),
     },
-    body: body.toString(),
-  });
+    { timeoutMs: 10_000, retries: 1, label: 'Reddit token' },
+  );
 
   const text = await response.text();
   if (!response.ok) {
@@ -61,13 +66,17 @@ async function fetchListing(path, params, accessToken, reddit = {}) {
     if (value != null && value !== '') url.searchParams.set(key, String(value));
   });
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      Accept: 'application/json',
-      Authorization: `bearer ${accessToken}`,
-      'User-Agent': getUserAgent(reddit),
+  const response = await fetchWithTimeout(
+    url.toString(),
+    {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `bearer ${accessToken}`,
+        'User-Agent': getUserAgent(reddit),
+      },
     },
-  });
+    { timeoutMs: 10_000, retries: 1, label: 'Reddit API' },
+  );
 
   const text = await response.text();
   if (!response.ok) {

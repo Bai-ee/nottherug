@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
-import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/server';
+import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/read';
 import { founderDailyBriefEmail } from '@/lib/email/founder-brief-template';
+import { briefHtmlHeaders } from '@/lib/not-the-rug-brief/security';
 
 export const runtime = 'nodejs';
 
@@ -45,10 +46,7 @@ export async function GET(req: NextRequest): Promise<NextResponse | Response> {
       return NextResponse.json({ subject: mail.subject, html: mail.html, text: mail.text });
     }
 
-    return new Response(mail.html, {
-      status: 200,
-      headers: { 'content-type': 'text/html; charset=utf-8' },
-    });
+    return new Response(mail.html, { status: 200, headers: briefHtmlHeaders() });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Preview failed' },

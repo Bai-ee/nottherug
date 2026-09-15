@@ -143,6 +143,22 @@ export const GENERATOR_COLLECTIONS = {
   generatorRenders: 'generatorRenders',
 } as const;
 
+// ─── Render summary (safe for read-only callers) ──────────────────────────────
+
+/**
+ * Lives here (not lib/generator/server.ts) so read-only/email code can import
+ * this type without pulling in the sharp-based renderer implementation.
+ */
+export interface GeneratorImageSummary {
+  renderId: string;
+  renderDownloadURL: string;
+  renderStoragePath: string;
+  canvasPreset: CanvasPresetKey;
+  logoAsset: LogoAssetKey;
+  sourcePhotoId: string;
+  sourceStoragePath: string;
+}
+
 // ─── Placement math helpers ───────────────────────────────────────────────────
 
 /**

@@ -1,4 +1,4 @@
-import type { LatestNotTheRugBrief } from '@/lib/not-the-rug-brief/server';
+import type { LatestNotTheRugBrief } from '@/lib/not-the-rug-brief/types';
 
 const TZ = 'America/New_York';
 
@@ -28,6 +28,18 @@ function escape(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// Signal URLs (Reddit, research sources, etc.) come from upstream scraping —
+// only ever emit them as a link when they're http(s).
+function isSafeUrl(value: string | null | undefined): value is string {
+  if (!value) return false;
+  try {
+    const protocol = new URL(value).protocol;
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function stripEmoji(s: string): string {
   return s
     .replace(/[\p{Extended_Pictographic}\p{Emoji_Presentation}\p{Emoji_Modifier}\p{Emoji_Component}]/gu, '')
@@ -52,10 +64,6 @@ function label(text: string, color = C.inkSoft): string {
 
 function sectionTitle(text: string, color = C.ink): string {
   return `<div style="font-family:${FONT_DISPLAY};font-size:20px;line-height:1.15;color:${color};margin-top:6px;letter-spacing:-0.005em;">${escape(text)}</div>`;
-}
-
-function rule(color = C.rule): string {
-  return `<div style="height:1px;background:${color};line-height:1px;font-size:1px;">&nbsp;</div>`;
 }
 
 function kpiCell(value: string | number, lbl: string, opts: { dark?: boolean } = {}): string {
@@ -276,10 +284,10 @@ export function founderDailyBriefEmail(input: FounderBriefInputs): { subject: st
   const reddit = (summary.redditSignals ?? []).slice(0, 3);
   const redditBlock = reddit.length
     ? reddit.map(r => {
-        const titleHtml = r.url
+        const titleHtml = isSafeUrl(r.url)
           ? `<a href="${escape(r.url)}" style="color:${C.ink};text-decoration:underline;text-underline-offset:2px;">${escape(stripEmoji(r.title))}</a>`
           : escape(stripEmoji(r.title));
-        const linkTag = r.url
+        const linkTag = isSafeUrl(r.url)
           ? ` <a href="${escape(r.url)}" style="font-family:${FONT_MONO};font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:${C.sage};text-decoration:none;margin-left:8px;">OPEN →</a>`
           : '';
         return listItem(`
@@ -431,7 +439,7 @@ export function founderDailyBriefEmail(input: FounderBriefInputs): { subject: st
     `${fmtDate(generatedAt)} ${TZ}`,
     ``,
     `LEADS TODAY: ${todayCount}  (${todayLabel})`,
-    `7d:${lead?.totals.last7Days ?? 0}  30d:${lead?.totals.last30Days ?? 0}  all:${lead?.totals.allTime ?? 0}`,
+    `7d:${lead?.totals.last7Days ?? 0}  30d:${lead?.totals.last30Days ?? 0}  recent:${lead?.totals.recentCount ?? 0}`,
     ``,
     `WEATHER:  ${summary.weatherImpact || '—'}`,
     ``,

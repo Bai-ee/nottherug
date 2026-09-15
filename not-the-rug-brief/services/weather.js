@@ -1,5 +1,7 @@
 // services/weather.js — live weather sourcing for client operating windows
 
+const { fetchWithTimeout } = require('../http');
+
 const DEFAULT_HEADERS = {
   Accept: 'application/geo+json',
 };
@@ -85,7 +87,7 @@ function buildRequestHeaders() {
 async function fetchJson(url) {
   let response;
   try {
-    response = await fetch(url, { headers: buildRequestHeaders() });
+    response = await fetchWithTimeout(url, { headers: buildRequestHeaders() }, { timeoutMs: 10_000, retries: 1, label: 'NWS' });
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
     throw new Error(`NWS fetch failed for ${url}: ${detail}`);

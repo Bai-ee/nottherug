@@ -152,15 +152,6 @@ function buildFactualRulesBlock(glossary, gameKnowledge) {
     rules.push(...gameKnowledge.guardian_rules);
   } else if (Array.isArray(gameKnowledge?.factual_rules)) {
     rules.push(...gameKnowledge.factual_rules);
-  } else if (gameKnowledge) {
-    // Legacy Critters Quest supplement format
-    rules.push(`[Master Editions] Total supply: 3,500. Closed forever. OG = #1–2500, Standard = #2501–3500. Masters are indestructible.`);
-    rules.push(`[$QUEST types] Locked Quest = on-critter, CANNOT be transferred. Town Bank Quest = can deposit/withdraw. These are DIFFERENT.`);
-    rules.push(`[Lucky Pick] ME holders earn 1% BPS share of every round. Reward tied to NFT, not wallet. Genesis Quest Opt-In CLOSED Feb 2026.`);
-    rules.push(`[Critters TCG] $QUEST integration is TBD only. NEVER say it is confirmed.`);
-    rules.push(`[Genesis Quest] Opt-In is CLOSED since Feb 2026. Never imply it is open.`);
-    rules.push(`[Mainnet] Target ~May 2026. Lucky Pick live April 15, 2026. Do not state exact dates unless confirmed.`);
-    rules.push(`[Clones] Can be lost in combat. Masters cannot. Clones are NOT the same as Masters.`);
   }
 
   return rules.join('\n');
@@ -278,7 +269,7 @@ If no flags for a category, return empty array. Score 90+ if clean.`;
  * Main Guardian entry point.
  *
  * @param {object} contentOutput - Full Scribe output object (has .content, .guardianFlags, etc.)
- * @param {string} clientId      - e.g. 'critters-quest'
+ * @param {string} clientId      - e.g. 'not-the-rug'
  * @returns {object} Verdict object — replaces GUARDIAN_PLACEHOLDER on contentOutput
  */
 async function runGuardian(contentOutput, clientId) {

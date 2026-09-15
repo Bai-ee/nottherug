@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
+import { randomUUID } from 'node:crypto';
 import { basename, join } from 'path';
 import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
 import { fsGetDoc, fsQueryCollection, fsSetDoc } from '@/lib/server/firestoreRest';
 import { storageDownload, storageList, storageUpload } from '@/lib/server/firebaseStorage';
 import { COLLECTIONS, STORAGE_PATHS } from '@/lib/photos/types';
@@ -16,12 +16,15 @@ import {
   clampPlacement,
   placementToPixels,
   type CanvasPresetKey,
+  type GeneratorImageSummary,
   type GeneratorRender,
   type GeneratorRenderRequest,
   type LogoAssetKey,
   type NormalizedLogoPlacement,
 } from '@/lib/generator/types';
 import { getSharpCoverOptions } from '@/lib/generator/fitUtils';
+
+export type { GeneratorImageSummary } from '@/lib/generator/types';
 
 export interface RenderGeneratorImageOptions {
   adminEmail: string;
@@ -31,16 +34,6 @@ export interface RenderGeneratorImageOptions {
   placement?: NormalizedLogoPlacement;
   renderer?: GeneratorRenderRequest['renderer'];
   origin?: string | null;
-}
-
-export interface GeneratorImageSummary {
-  renderId: string;
-  renderDownloadURL: string;
-  renderStoragePath: string;
-  canvasPreset: CanvasPresetKey;
-  logoAsset: LogoAssetKey;
-  sourcePhotoId: string;
-  sourceStoragePath: string;
 }
 
 function normalizeLogoName(value: string): string {
@@ -60,8 +53,8 @@ async function loadGeneratorLogoFromOrigin(
       const buffer = await storageDownload(match.storagePath);
       return { buffer, source: match.storagePath };
     }
-  } catch {
-    // Storage lookup is best-effort; fall back to the public/local asset below.
+  } catch (err) {
+    console.warn(`[generator] logo storage lookup failed for "${logoAsset}", falling back:`, err instanceof Error ? err.message : err);
   }
 
   if (origin) {
@@ -74,8 +67,9 @@ async function loadGeneratorLogoFromOrigin(
           source: publicUrl,
         };
       }
-    } catch {
-      // Public asset fetch is best-effort.
+      console.warn(`[generator] logo public asset fetch for "${logoAsset}" returned ${res.status}, falling back to local file.`);
+    } catch (err) {
+      console.warn(`[generator] logo public asset fetch failed for "${logoAsset}", falling back to local file:`, err instanceof Error ? err.message : err);
     }
   }
 
@@ -85,8 +79,21 @@ async function loadGeneratorLogoFromOrigin(
   };
 
   const logoFilePath = localPaths[logoAsset];
-  const buffer = readFileSync(logoFilePath);
-  return { buffer, source: logoFilePath };
+  try {
+    const buffer = readFileSync(logoFilePath);
+    return { buffer, source: logoFilePath };
+  } catch (err) {
+    // Every fallback layer (Storage, public asset, local file) failed. Surface
+    // this clearly rather than letting a generic ENOENT bubble up — it usually
+    // means app-assets/generator-logos was excluded from this deployment's
+    // function bundle and no copy was uploaded to Storage either.
+    throw new Error(
+      `Logo asset "${logoAsset}" is not reachable: not found in Storage (${STORAGE_PATHS.logos}/), ` +
+      `not fetchable from the public site, and not present at the local fallback path ${logoFilePath}. ` +
+      `Upload it to Storage or verify it is included in the deployed bundle.`,
+      { cause: err },
+    );
+  }
 }
 
 async function makeCircularLogo(logoBuffer: Buffer, size: number): Promise<Buffer> {
@@ -117,6 +124,10 @@ export async function renderGeneratorImage(
     renderer = 'sharp',
     origin = null,
   } = options;
+
+  if (renderer === 'ffmpeg') {
+    console.warn('[generator] "ffmpeg" renderer was requested but is not available; rendering with sharp instead.');
+  }
 
   const normalizedPlacement = clampPlacement(placement);
 
@@ -163,7 +174,7 @@ export async function renderGeneratorImage(
     .jpeg({ quality: 92 })
     .toBuffer();
 
-  const id = uuidv4();
+  const id = randomUUID();
   const renderStoragePath = `${GENERATOR_STORAGE_PATHS.rendered}/${id}.jpg`;
   const renderDownloadURL = await storageUpload(renderStoragePath, finalBuffer, 'image/jpeg');
 
@@ -176,7 +187,10 @@ export async function renderGeneratorImage(
     canvasHeight: canvasCfg.height,
     logoAsset,
     placement: normalizedPlacement,
-    rendererUsed: renderer === 'ffmpeg' ? 'ffmpeg' : 'sharp',
+    // Always sharp: this function composites directly with sharp above and
+    // never actually dispatches to lib/media/createRenderer. Recording the
+    // requested-but-unused 'ffmpeg' value here would misreport what ran.
+    rendererUsed: 'sharp',
     renderStoragePath,
     renderDownloadURL,
     createdBy: adminEmail,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
-import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/server';
+import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/read';
 
 export const runtime = 'nodejs';
 

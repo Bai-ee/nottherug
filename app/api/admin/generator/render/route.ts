@@ -21,7 +21,10 @@ function isValidRequest(b: unknown): b is GeneratorRenderRequest {
   if (!VALID_PRESETS.has(r.canvasPreset)) return false;
   if (!VALID_LOGO_KEYS.has(r.logoAsset)) return false;
   const p = r.placement;
-  if (!p || typeof p.xRatio !== 'number' || typeof p.yRatio !== 'number' || typeof p.diameterRatio !== 'number') return false;
+  if (!p || !Number.isFinite(p.xRatio) || !Number.isFinite(p.yRatio) || !Number.isFinite(p.diameterRatio)) return false;
+  if (p.diameterRatio <= 0 || p.diameterRatio > 1) return false;
+  if (r.sourcePhotoId !== undefined && typeof r.sourcePhotoId !== 'string') return false;
+  if (r.renderer !== undefined && r.renderer !== 'sharp' && r.renderer !== 'ffmpeg') return false;
   return true;
 }
 

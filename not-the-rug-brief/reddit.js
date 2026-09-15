@@ -33,7 +33,9 @@ async function main() {
     console.error(`[REDDIT] failed for ${clientId}: ${err.message}`);
     try {
       await logError(err, { module: 'reddit', clientId });
-    } catch {}
+    } catch (logErr) {
+      console.error(`[REDDIT] also failed to write error log: ${logErr.message}`);
+    }
     process.exitCode = 1;
   }
 }

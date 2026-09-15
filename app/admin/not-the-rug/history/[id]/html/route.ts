@@ -1,7 +1,8 @@
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
-import { getNotTheRugBriefRunHtml } from '@/lib/not-the-rug-brief/server';
+import { getNotTheRugBriefRunHtml } from '@/lib/not-the-rug-brief/read';
+import { briefHtmlHeaders } from '@/lib/not-the-rug-brief/security';
 
 export const runtime = 'nodejs';
 
@@ -22,11 +23,7 @@ export async function GET(
 
     return new NextResponse(html, {
       status: 200,
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-store',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
-      },
+      headers: briefHtmlHeaders({ 'Content-Disposition': `attachment; filename="${fileName}"` }),
     });
   } catch (error) {
     return new NextResponse(error instanceof Error ? error.message : 'HTML brief not found', { status: 404 });

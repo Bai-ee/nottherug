@@ -21,117 +21,6 @@ function withComputedEvents(config) {
   return { ...config, upcomingEvents };
 }
 
-const crittersQuest = withComputedEvents({
-  clientId: 'critters-quest',
-  clientName: 'Critters Quest',
-  clientDescriptor: 'a Solana gaming and NFT ecosystem',
-  primaryHandle: '@crittersquest',
-  brandKeywords: ['"Critters Quest"', '@CrittersQuest', '$QUEST'],
-  competitors: ['@onchainheroes', '@ChimpersHQ', '@lastwarsurvival', '@pudgypenguins', '@moonbirds', '@OREprotocol'],
-  categoryTerms: ['web3 gaming', 'NFT game 2026', 'blockchain gaming', 'play and earn 2026', 'NFT staking rewards', '4X Strategy Game', 'TGE launch 2026', 'Solana gaming'],
-  kols: ['@solanagaming', '@OREsupply'],
-  upcomingEvents: [
-    { event: 'Lucky Pick (Goes Live)', date: '2026-04-15' },
-    { event: 'Mainnet (Goes Live)', date: '2026-05-01' },
-  ],
-  scout: {
-    freshnessDays: 1,
-    sourceFocus: 'Focus on X/Twitter conversations and current web coverage tied to web3 gaming, Solana, and adjacent NFT communities.',
-    kolSearchSuffix: 'web3 gaming',
-    analysisInstructions: 'Prioritize live community momentum, launches, sentiment shifts, and moments where the brand can credibly enter the conversation.',
-    searchPlan: [
-      {
-        label: 'BRAND',
-        query: '"Critters Quest" OR @CrittersQuest OR $QUEST',
-        goal: 'Find direct brand mentions, official updates, and community discussion from the last 24 hours.',
-      },
-      {
-        label: 'COMPETITORS',
-        query: '@onchainheroes OR @ChimpersHQ OR @lastwarsurvival OR @pudgypenguins OR @moonbirds OR @OREprotocol',
-        goal: 'Find competitor launches, sentiment shifts, and adjacent attention pockets.',
-      },
-      {
-        label: 'CATEGORY',
-        query: 'web3 gaming OR NFT game 2026 OR blockchain gaming OR play and earn 2026',
-        goal: 'Capture broader category movement and external narratives the brand can react to.',
-      },
-      {
-        label: 'KOLS',
-        query: '@solanagaming OR @OREsupply web3 gaming',
-        goal: 'Find creator, analyst, or KOL commentary that can move sentiment or create a reply window.',
-      },
-      {
-        label: 'VIRAL WINDOWS',
-        query: 'best web3 games to play OR web3 games that are actually fun OR NFT projects with real utility OR Solana projects worth watching',
-        goal: 'Find live conversations where the brand can contribute credibly.',
-      },
-    ],
-    agentDataTemplate: `{
-  "brandMentions": [{"source":"...","author":"...","content":"...","sentiment":"positive|neutral|negative","reach":"high|medium|low","url":"..."}],
-  "competitorIntel": [{"competitor":"...","finding":"...","impact":"high|medium|low","url":"..."}],
-  "categoryTrends": [{"trend":"...","relevance":"high|medium|low","detail":"..."}],
-  "kolActivity": [{"name":"...","platform":"x","content":"...","followers":"...","sentiment":"...","url":"..."}],
-  "escalations": [{"level":"CRITICAL|IMPORTANT|QUIET","status":"NEW|CHANGED|ESCALATED|RESOLVED","summary":"..."}],
-  "viralOpportunities": {
-    "found": true,
-    "opportunities": [{"conversation":"...","url":"...","injectionAngle":"...","authenticity":"high|medium|low","windowHours":0,"suggestedReply":"..."}],
-    "searchedFor": ["trigger 1","trigger 2"]
-  }
-}`,
-  },
-  intelligence: {
-    primarySignalsKey: 'categoryTrends',
-    primarySignalsLabel: "What's Happening in the Ecosystem",
-    promptPrimarySignalLabel: 'Category Context',
-    primarySignalsFallback: 'No category trends available.',
-    reviewInsightsKey: 'reviewInsights',
-    reviewInsightsLabel: 'Review Insights',
-    promptReviewInsightsLabel: 'Review Insights',
-    relationshipSignalsKey: 'kolActivity',
-    relationshipSignalsLabel: 'KOLs',
-    promptRelationshipSignalsLabel: 'KOL Activity',
-    relationshipSignalsFallback: 'No KOL activity detected this cycle.',
-    contentOpportunitiesKey: 'viralOpportunities',
-    contentOpportunitiesLabel: 'Viral Opportunities',
-    promptContentOpportunitiesLabel: 'Viral Opportunities',
-    contentOpportunitiesFallback: 'Scout found NO viral opportunities this cycle.',
-    brandMentionsLabel: 'Brand Mentions',
-  },
-  viralTargets: {
-    hashtags: ['#web3gaming', '#NFTgaming', '#Solana', '#PlayToEarn', '#NFTs', '#GameFi', '#SolanaNFT', '#CryptoGaming'],
-    injectableTopics: ['creature collecting games', 'NFT pet games', 'Solana gaming projects', 'web3 casual games', 'NFT staking utility', 'indie web3 games 2026', 'mobile first web3 games', 'original tokenomic models', '4x strategy', 'build, explore, battle, trade'],
-    viralTriggers: ['best web3 games to play', 'web3 games that are actually fun', 'NFT projects with real utility', 'Solana projects worth watching', 'web3 gaming hidden gems', 'games launching 2026', 'NFT staking projects', 'play and earn that works'],
-    exclusions: ['politics', 'rug pull', 'scam', 'lawsuit', 'hack', 'exploit', 'RavenQuest'],
-  },
-  scribe: {
-    role: 'content writer',
-    fallbackTone: 'Tone: insider, warm, excited but not desperate.\nNever use: "revolutionary", "game-changing", "don\'t miss out", generic hype language.',
-    pillarHints: {
-      CRITICAL: 'transparency_update or urgency — the community needs the real story, fast.',
-      IMPORTANT: 'feature_drop or milestone_update — lead with facts, end with momentum.',
-      QUIET: 'community_hype, feature_drop, or reveal — create signal, don\'t wait for it.',
-    },
-    hardConstraints: [
-      'Every piece connects to Scout\'s priority action',
-      'Zero live signal = create signal, not react to it',
-      'Never fabricate competitor activity',
-      'Never make claims Scout didn\'t surface',
-      '$QUEST always formatted with $ prefix',
-      'One emoji max per post',
-      'All-caps only for earned impact moments',
-      'Each output complete and ready to copy-paste',
-      'NEVER mention "Standard Master refund" or "2.5 SOL" refund — internal only',
-      'NEVER state "Critters TCG $QUEST integration confirmed" — it is TBD only',
-      'NEVER imply Genesis Quest Opt-In is open — it closed February 2026',
-    ],
-  },
-  guardian: {
-    reviewerContext: 'a Solana NFT game',
-    competitorNames: ['RavenQuest', 'Axie Infinity', 'Pudgy Penguins', 'Moonbirds', 'Chimpers', 'Last War', 'play.fun', 'playfun'],
-    restrictedPatterns: ['2.5 SOL', '2.5SOL'],
-  },
-});
-
 const notTheRug = withComputedEvents({
   clientId: 'not-the-rug',
   clientName: 'Not The Rug',
@@ -353,7 +242,6 @@ const notTheRug = withComputedEvents({
 });
 
 const CLIENTS = {
-  [crittersQuest.clientId]: crittersQuest,
   [notTheRug.clientId]: notTheRug,
 };
 
@@ -362,7 +250,7 @@ function getClientConfig(clientId) {
 }
 
 function getDefaultClientConfig() {
-  return crittersQuest;
+  return notTheRug;
 }
 
 function listClientConfigs() {

@@ -5,9 +5,18 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const DATA_DIR = process.env.NOT_THE_RUG_BRIEF_DATA_DIR
-  ? path.resolve(process.env.NOT_THE_RUG_BRIEF_DATA_DIR)
-  : path.join(process.cwd(), 'data', 'not-the-rug-brief');
+/**
+ * Resolved fresh on every call (not cached at require time) so the orchestrator
+ * can point a single run at a per-run temp directory — by setting
+ * NOT_THE_RUG_BRIEF_DATA_DIR just before invoking the pipeline and restoring it
+ * afterward — without two sequential runs in the same warm process sharing
+ * (and overwriting) one another's "latest" files.
+ */
+function getDataDir() {
+  return process.env.NOT_THE_RUG_BRIEF_DATA_DIR
+    ? path.resolve(process.env.NOT_THE_RUG_BRIEF_DATA_DIR)
+    : path.join(process.cwd(), 'data', 'not-the-rug-brief');
+}
 
 /**
  * Ensure a directory exists, creating it recursively if needed.
@@ -69,7 +78,7 @@ function generateFilename(agentName) {
 // --- Brief-specific helpers ---
 
 function briefDir(clientId) {
-  return path.join(DATA_DIR, 'briefs', clientId);
+  return path.join(getDataDir(), 'briefs', clientId);
 }
 
 async function saveLatestBrief(clientId, brief) {
@@ -126,7 +135,7 @@ async function getBriefHistory(clientId, limit = 20) {
 // --- Content-specific helpers ---
 
 function contentDir(clientId) {
-  return path.join(DATA_DIR, 'content', clientId);
+  return path.join(getDataDir(), 'content', clientId);
 }
 
 async function saveLatestContent(clientId, contentOutput) {
@@ -145,7 +154,7 @@ async function getLatestContent(clientId) {
 // --- Weather-specific helpers ---
 
 function weatherDir(clientId) {
-  return path.join(DATA_DIR, 'weather', clientId);
+  return path.join(getDataDir(), 'weather', clientId);
 }
 
 async function saveLatestWeather(clientId, weatherOutput) {
@@ -164,7 +173,7 @@ async function getLatestWeather(clientId) {
 // --- Review-specific helpers ---
 
 function reviewsDir(clientId) {
-  return path.join(DATA_DIR, 'reviews', clientId);
+  return path.join(getDataDir(), 'reviews', clientId);
 }
 
 async function saveLatestReviews(clientId, reviewOutput) {
@@ -183,7 +192,7 @@ async function getLatestReviews(clientId) {
 // --- Instagram-specific helpers ---
 
 function instagramDir(clientId) {
-  return path.join(DATA_DIR, 'instagram', clientId);
+  return path.join(getDataDir(), 'instagram', clientId);
 }
 
 async function saveLatestInstagram(clientId, instagramOutput) {
@@ -202,7 +211,7 @@ async function getLatestInstagram(clientId) {
 // --- Reddit-specific helpers ---
 
 function redditDir(clientId) {
-  return path.join(DATA_DIR, 'reddit', clientId);
+  return path.join(getDataDir(), 'reddit', clientId);
 }
 
 async function saveLatestReddit(clientId, redditOutput) {
@@ -233,7 +242,7 @@ async function getLatestReddit(clientId) {
 // }
 
 function last30daysDir(clientId) {
-  return path.join(DATA_DIR, 'last30days', clientId);
+  return path.join(getDataDir(), 'last30days', clientId);
 }
 
 async function saveLatestLast30Days(clientId, artifact) {
@@ -258,7 +267,7 @@ async function logError(error, context = {}) {
     stack: error.stack || null,
     ...context,
   };
-  const errFile = path.join(DATA_DIR, 'errors.json');
+  const errFile = path.join(getDataDir(), 'errors.json');
   await appendToJSONArray(errFile, entry).catch((writeErr) => {
     // Last resort: if we can't write the error file, log to console
     console.error(`[${new Date().toISOString()}] STORE: failed to write error log`, writeErr);
@@ -266,7 +275,7 @@ async function logError(error, context = {}) {
 }
 
 module.exports = {
-  DATA_DIR,
+  getDataDir,
   ensureDir,
   readJSON,
   writeJSON,

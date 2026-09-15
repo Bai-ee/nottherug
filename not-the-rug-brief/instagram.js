@@ -22,7 +22,7 @@ async function runInstagramMonitor(clientId) {
 
 if (require.main === module) {
   const clientArgIndex = process.argv.indexOf('--client');
-  const clientId = clientArgIndex >= 0 ? process.argv[clientArgIndex + 1] : process.env.DEFAULT_CLIENT_ID || 'critters-quest';
+  const clientId = clientArgIndex >= 0 ? process.argv[clientArgIndex + 1] : process.env.DEFAULT_CLIENT_ID || 'not-the-rug';
 
   runInstagramMonitor(clientId)
     .catch(async (err) => {

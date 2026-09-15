@@ -142,7 +142,7 @@ function scoreClientRelevance(finalScore, signalType) {
 // last30days SourceItem.engagement is a plain dict — keys vary by platform.
 // We normalize to a common shape for dashboard use.
 
-function extractEngagement(sourceItems = [], platformHint = '') {
+function extractEngagement(sourceItems = [], _platformHint = '') {
   // Aggregate engagement across source_items (candidates can be multi-source)
   const totals = { relevanceScore: 0, likes: 0, upvotes: 0, comments: 0, views: 0, reposts: 0, points: 0 };
   let count = 0;
@@ -334,7 +334,7 @@ function normalizeSignals(serviceResult, clientConfig = {}) {
  * Returns: { brandMentions, competitorIntel, redditSignals,
  *            contentOpportunities, localDemandSignals, partnershipOpportunities }
  */
-function mapToScoutFields(normalizedSignals, clientConfig = {}) {
+function mapToScoutFields(normalizedSignals, _clientConfig = {}) {
   const mapped = {
     brandMentions: [],
     competitorIntel: [],
