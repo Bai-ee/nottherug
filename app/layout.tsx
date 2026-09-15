@@ -1,25 +1,12 @@
 import type { Metadata } from "next";
 import {
-  Geist,
-  Geist_Mono,
   Fraunces,
   Outfit,
-  Playfair_Display,
   Oswald,
   Bebas_Neue,
   Courier_Prime,
 } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -31,12 +18,6 @@ const fraunces = Fraunces({
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
 });
 
 const oswald = Oswald({
@@ -59,26 +40,32 @@ const courierPrime = Courier_Prime({
 const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
 const OG_IMAGE = `${SITE_URL}/img/og_meta_img_contact.png`;
 
-const PAGE_TITLE = 'Book a Walk — Free Meet & Greet · Not The Rug';
-const PAGE_DESCRIPTION = 'No commitment, no charge. We come to you, meet your dog, and answer every question.';
+const SITE_NAME = 'Not The Rug';
+const SITE_DESCRIPTION =
+  'Williamsburg dog walking since 2011. Small groups, the same walker every time, insured and background-checked.';
 
+// Site-level defaults only. Every page sets its own title, description and
+// canonical; these apply where one does not. The `template` keeps the brand on
+// the end of each page title without every page repeating it.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: PAGE_TITLE,
-  description: PAGE_DESCRIPTION,
-  alternates: { canonical: '/' },
+  title: {
+    default: `${SITE_NAME} — Williamsburg Dog Walking Since 2011`,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
   openGraph: {
     type: 'website',
-    siteName: 'Not The Rug',
+    siteName: SITE_NAME,
     url: SITE_URL,
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: PAGE_DESCRIPTION }],
+    title: `${SITE_NAME} — Williamsburg Dog Walking Since 2011`,
+    description: SITE_DESCRIPTION,
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_DESCRIPTION }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
+    title: `${SITE_NAME} — Williamsburg Dog Walking Since 2011`,
+    description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
   },
 };
@@ -91,7 +78,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${outfit.variable} ${playfair.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable}`}
+      className={`${fraunces.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable}`}
     >
       <body>
         {children}
