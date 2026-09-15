@@ -1,6 +1,6 @@
 # Not The Rug — Website Copy Review
 
-Generated 2026-09-15 from the live site code · **355 pieces of copy**
+Generated 2026-09-15 from the live site code · **380 pieces of copy**
 
 This file lists **every word currently on the Not The Rug website**, organised page by page.
 It exists so you can read the site as a document, confirm that everything it says is accurate,
@@ -35,7 +35,7 @@ Those carry the pricing, the claims and the contact details — the things most 
 8. **Reviews** — 24 items
 9. **Book a Walk** — 6 items
 10. **Contact** — 21 items
-11. **Meet & Greet form** — 4 items
+11. **Meet & Greet form** — 29 items
 12. **Search engine + social previews (site-wide fallback)** — 2 items
 
 ---
@@ -2698,7 +2698,7 @@ _The same wording is used elsewhere: `contact.contactpage-hero.no-chatbots-no-ti
 
 ## 11. Meet & Greet form
 
-_4 items_
+_29 items_
 
 ### Meet & Greet form
 
@@ -2726,6 +2726,170 @@ of
 
 ```text
 Form steps
+```
+
+**`MeetGreetForm.form.your-name`** — Text
+
+```text
+Your Name
+```
+
+**`MeetGreetForm.form.first-last-name`** — Image description (not visible — read by screen readers and Google)
+
+```text
+First & last name
+```
+
+**`MeetGreetForm.form.phone-number`** — Text
+
+```text
+Phone Number
+```
+
+**`MeetGreetForm.form.email-address`** — Text
+
+```text
+Email Address
+```
+
+**`MeetGreetForm.form.you-email-com`** — Image description (not visible — read by screen readers and Google)
+
+```text
+you@email.com
+```
+
+**`MeetGreetForm.form.neighborhood`** — Text
+
+```text
+Neighborhood
+```
+
+**`MeetGreetForm.form.dog-s-name`** — Text
+
+```text
+Dog&apos;s Name
+```
+
+Reads as: Dog's Name
+
+**`MeetGreetForm.form.what-s-their-name`** — Image description (not visible — read by screen readers and Google)
+
+```text
+What's their name?
+```
+
+**`MeetGreetForm.form.breed-age`** — Text
+
+```text
+Breed &amp; Age
+```
+
+Reads as: Breed & Age
+
+**`MeetGreetForm.form.e-g-golden-3-years`** — Image description (not visible — read by screen readers and Google)
+
+```text
+e.g. Golden, 3 years
+```
+
+**`MeetGreetForm.form.is-your-dog-up-to`** — Text
+
+```text
+Is your dog up to date on vaccinations?
+```
+
+**`MeetGreetForm.form.service-interested-in`** — Text
+
+```text
+Service Interested In
+```
+
+**`MeetGreetForm.form.preferred-walk-frequency`** — Text
+
+```text
+Preferred walk frequency
+```
+
+**`MeetGreetForm.form.is-your-dog-fearful-or`** — Text
+
+```text
+Is your dog fearful or reactive around any of the following?
+```
+
+**`MeetGreetForm.form.select-all-that-apply`** — Paragraph
+
+```text
+Select all that apply
+```
+
+_Written 2 times in this section by design (the strip loops). One edit updates all of them._
+
+**`MeetGreetForm.form.is-your-dog-allergic-to`** — Text
+
+```text
+Is your dog allergic to anything?
+```
+
+**`MeetGreetForm.form.anything-we-should-know`** — Text
+
+```text
+Anything we should know?
+```
+
+**`MeetGreetForm.form.quirks-anxieties-medication-needs-building`** — Image description (not visible — read by screen readers and Google)
+
+```text
+Quirks, anxieties, medication needs, building access info — anything helpful
+```
+
+**`MeetGreetForm.form.request-a-phone-consultation-instead`** — Text
+
+```text
+Request a phone consultation instead
+```
+
+**`MeetGreetForm.form.prefer-to-talk-first-we`** — Text
+
+```text
+Prefer to talk first? We&apos;ll call you to answer questions before scheduling.
+```
+
+Reads as: Prefer to talk first? We'll call you to answer questions before scheduling.
+
+### Meet & Greet form — scheduling dialog
+
+> Shown after the form is submitted, to book a Calendly time.
+
+**`MeetGreetForm.form-scheduling.step-2-of-2`** — Text
+
+```text
+Step 2 of 2
+```
+
+**`MeetGreetForm.form-scheduling.schedule-your-meet-greet`** — Text
+
+```text
+Schedule your Meet &amp; Greet
+```
+
+Reads as: Schedule your Meet & Greet
+
+**`MeetGreetForm.form-scheduling.close`** — Image description (not visible — read by screen readers and Google)
+
+```text
+Close
+```
+
+**`MeetGreetForm.form-scheduling.close-2`** — Button
+
+```text
+Close ×
+```
+
+**`MeetGreetForm.form-scheduling.calendly-scheduling`** — Image description (not visible — read by screen readers and Google)
+
+```text
+Calendly scheduling
 ```
 
 ---

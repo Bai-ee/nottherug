@@ -90,6 +90,17 @@ const JSX_SOURCES = [
   // own JSX; BookingSteps.tsx and SchedulingDialog.tsx are not yet mapped and
   // should be added once that rewrite lands.
   { file: 'components/booking/BookingForm.tsx', page: 'MeetGreetForm', jsxRange: [185, 358], skipRanges: [] },
+  // BookingSteps.tsx exports five separate step components, each with its
+  // own `return (` — five disjoint ranges, not one [42, 999] range, for the
+  // same reason as ServicesPreview.tsx above: the next step's own
+  // `function StepX(...) {` would introduce an unmatched `{` that swallows
+  // the rest of the file.
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [42, 107], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [110, 159], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [162, 195], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [222, 298], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [321, 361], skipRanges: [] },
+  { file: 'components/booking/SchedulingDialog.tsx', page: 'MeetGreetForm', jsxRange: [83, 211], skipRanges: [] },
   { file: 'app/(marketing)/book/page.tsx', page: 'book', jsxRange: [13, 999], skipRanges: [] },
   { file: 'app/(marketing)/contact/page.tsx', page: 'contact', jsxRange: [21, 999], skipRanges: [] },
   { file: 'components/marketing/ContactInfoCard.tsx', page: 'contact', jsxRange: [19, 999], skipRanges: [] },

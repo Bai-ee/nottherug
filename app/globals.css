@@ -535,6 +535,25 @@ footer {
   max-width: none;
   margin: 0;
 }
+/* /contact's form sits in a .grid-2 column under a "Send a Message" label and
+   an <h3>, not directly under a hero like /book — the shared rule's -40px top
+   margin (meant to pull the card up over /book's hero image) drags it up over
+   that heading instead. Reset for this column context only; /book, /services,
+   and the homepage keep the shared .booking-form-wrap behavior. */
+#contact-form-wrap-shell {
+  margin: 0;
+}
+/* Grid items default to min-width:auto (content-based), not 0 — without this,
+   the booking form's step carousel (all steps laid out side by side in one
+   track, clipped to one at a time) reports its full unclipped width as this
+   column's min content size, which grows the whole `.grid-2` row past the
+   viewport at any width narrower than that (both the 375px mobile column and
+   the ~560px desktop column). Resetting it here is what lets `max-width:700px`
+   on #contact-form-wrap-shell (inherited from .booking-form-wrap) actually cap
+   the rendered width instead of being overruled by the track's auto sizing. */
+#contact-form-column {
+  min-width: 0;
+}
 /* The homepage form card's paper-sheet treatment (previously a taped card
    here) now lives with the rest of the zine poster rules — see
    "ZINE POSTER TREATMENT" at the bottom of this file. */

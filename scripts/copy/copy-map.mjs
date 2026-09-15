@@ -122,10 +122,15 @@ export const SECTIONS = {
   ],
 
   // components/MeetGreetForm.tsx is now a re-export shim; the real form
-  // moved to components/booking/** (Worker A, in progress concurrently with
-  // this extraction). Only BookingForm.tsx's own JSX is mapped so far.
+  // moved to components/booking/** (Worker A's rewrite, landed at 55f51e7).
   'components/booking/BookingForm.tsx': [
     [1, 9999, 'form', 'Meet & Greet form', 'Field labels, helper text, buttons and confirmation messages.'],
+  ],
+  'components/booking/BookingSteps.tsx': [
+    [1, 9999, 'form', 'Meet & Greet form', 'Field labels, helper text, buttons and confirmation messages.'],
+  ],
+  'components/booking/SchedulingDialog.tsx': [
+    [1, 9999, 'form-scheduling', 'Meet & Greet form — scheduling dialog', 'Shown after the form is submitted, to book a Calendly time.'],
   ],
 
   'lib/content/services.ts': [
@@ -177,6 +182,11 @@ export const IGNORE_TEXT = new Set([
   // comment) — the scanner reads that literal text before it reaches the
   // first JSX tag, so it always shows up as one throwaway "text" run.
   'return (',
+  // Same idea for SchedulingDialog.tsx, whose JSX return is
+  // `return createPortal(<div>...</div>, document.body)` rather than a
+  // plain `return (`.
+  'return createPortal(',
+  ', document.body ); }',
 ]);
 
 export const IGNORE_PATTERNS = [

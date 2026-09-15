@@ -38,10 +38,10 @@ export default function ContactPage() {
         <div className="container">
           <div className="grid-2" style={{ gap: '56px', alignItems: 'flex-start' }}>
             <ContactInfoCard />
-            <div>
+            <div id="contact-form-column">
               <div className="label">Send a Message</div>
               <h3 style={{ marginBottom: '24px' }}>Tell us about your dog</h3>
-              <div className="booking-form-wrap">
+              <div id="contact-form-wrap-shell" className="booking-form-wrap">
                 <div className="booking-form">
                   <div id="contact-form-body" className="booking-form-body">
                     <MeetGreetForm paneId="contact-tab-meetgreet" source="contact" />
