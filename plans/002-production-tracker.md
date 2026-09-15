@@ -11,14 +11,14 @@ The coordinator is the only writer of this file. Workers report their task ID, c
 | ID | Phase / task | Owner | Depends on | Status | Evidence / next action |
 | --- | --- | --- | --- | --- | --- |
 | P0 | Baseline, ownership, contracts, test setup | Coordinator | — | DONE | Baseline `711fbe1`; primitives + screenshots `9f7cae8`. Working tree preserved, not reset. |
-| P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | REVIEW | `55f51e7`. Independent review found the idempotency key breaks at its own hour boundary — an identical retry straddling `:00` creates a second lead and duplicate emails. Returned to the author. |
-| P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | DONE | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
+| P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | DONE | `55f51e7` + `a36fec5`. Review found the idempotency key broke at its own hour boundary; fixed with a previous-bucket lookback and a boundary-straddling test. |
+| P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | REVIEW | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
 | P1C | Dependency/runtime update and CI | Coordinator | P0 | DONE | `b5a81a1`. Advisories rechecked at execution time; user's tracing fixes retained. |
 | P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | REVIEW | `023b8be` + `092be7b`. Coordinator review found a `/contact` heading overlap; the worker traced it further to a grid-item min-content overflow (`document.body.scrollWidth` 1884px at a 1440px viewport) and fixed both. 4 lint errors remain in owned files, assigned back. `app/globals.css` split deferred with recorded rationale. |
-| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | REVIEW | `fa0cc3b` + `14aa455`. Independent review found two admin pages left outside the consolidation, one of which hangs on a network error. Returned to the author. |
-| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | DONE | `3aac7ec`. Duration deliberately **not** measured — a real run would invoke a paid model without authorization. The run record now self-reports `durationMs`, so the first authorized run measures itself. |
-| P3C | Packaged function verification | Coordinator | P3B, P1C | IN_PROGRESS | Trace config corrected in `7b9f5af`; per-function bundle inspection pending a clean build. |
-| P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | TODO | Owner facts table below; coordinator owns `proxy.ts`, `app/layout.tsx`, `vercel.json`. |
+| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | DONE | `fa0cc3b`, `14aa455`, `a36fec5`, `ceb18f9`. Both stranded admin pages migrated; the false-success on a skipped send fixed. |
+| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | REVIEW | `3aac7ec`. Duration deliberately **not** measured — a real run would invoke a paid model without authorization. The run record now self-reports `durationMs`, so the first authorized run measures itself. |
+| P3C | Packaged function verification | Coordinator | P3B, P1C | DONE | `7b9f5af`, `0e01f0a`. Per-function sizes and contents recorded in [docs/function-packaging.md](../docs/function-packaging.md). |
+| P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | REVIEW | `052b355`, `273c827`, `73fba67`, `41bdf95`. Under independent review. |
 | P5A | Integrated review and preview acceptance | Coordinator + reviewer | All above | TODO | Test the same clean candidate commit. |
 | P5B | Authorized release and production verification | Coordinator | P5A, go-live instruction | TODO | Not authorized. Prepare rollback before deployment. |
 
@@ -118,6 +118,26 @@ Reviewer and outcome:
 ## Independent review results
 
 Each slice was reviewed by a worker that did not author it, against the plan.
+
+### P1B and P3B — reviewed by Worker A. Verdict: accept with fixes.
+
+| Severity | Finding | State |
+| --- | --- | --- |
+| High, live | `not-the-rug-brief/services/reddit.js:15` and `weather.js:80` still fall back to a `ScoutCrittersQuest/1.0` user agent. `REDDIT_USER_AGENT` is set nowhere, so a real run identifies itself to Reddit's API under an unrelated project's name — from a file edited in the commit whose message said that inherited content was removed. Coordinator verified independently. | Returned to the author. |
+| Moderate | A `pending` send claim has no expiry. A hard kill between the atomic claim and its catch block leaves it pending with no error recorded and no retry, permanently skipping that day's send, with nothing surfacing it. | Returned to the author. |
+| Moderate | `storageUploadPrivate` throws correctly if the token-clearing PATCH fails, but leaves the uploaded object in place with its auto-issued download token live. Not an active leak — the function discloses nothing — but there is no remediation. | Returned to the author. |
+| Moderate | `LEASE_STALE_MS` is ten minutes while every caller caps at sixty seconds. The guarantee holds only because of those caps, not because the lease self-verifies. | Returned to the author. |
+| Moderate | Image validation accepts a buffer whose header decodes cleanly but which may carry appended bytes, and stores it verbatim. | Returned to the author. |
+| Moderate | The founder-brief preview rendered "Sent to undefined · email id undefined" when a send was correctly skipped — a success message for a request that sent nothing, and the only signal a human would have had for a stuck claim. | Fixed in `ceb18f9`. |
+| Low | A record missing `storagePath` throws a raw TypeError that the delete route's typed catch does not match, producing an unhandled 500 instead of the structured error. Still fails closed. | Returned to the author. |
+
+Confirmed holding under review: the `..` prefix-escape concern is not exploitable, since
+Storage object names are a flat namespace and the trailing-slash prefix check rejects a
+sibling prefix; the Firebase rules are correct including the reasoning for not granting a
+rules-based public read on photos; `isSafeUrl` resists protocol-relative URLs, uppercase
+schemes, embedded tabs and newlines, and unicode in the scheme position; the run lease,
+per-day send claims, CSP, the 904-line module split and the FFmpeg removal all hold. No
+scope drift found.
 
 ### P1A and P3A — reviewed by Worker B. Verdict: accept with fixes.
 
