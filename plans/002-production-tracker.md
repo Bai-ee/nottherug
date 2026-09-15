@@ -11,12 +11,12 @@ The coordinator is the only writer of this file. Workers report their task ID, c
 | ID | Phase / task | Owner | Depends on | Status | Evidence / next action |
 | --- | --- | --- | --- | --- | --- |
 | P0 | Baseline, ownership, contracts, test setup | Coordinator | — | DONE | Baseline `711fbe1`; primitives + screenshots `9f7cae8`. Working tree preserved, not reset. |
-| P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | IN_PROGRESS | R01/R04 reproduced in `tests/unit/lead-intake-baseline.test.ts` before any change. |
-| P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | IN_PROGRESS | Deployed-rules audit stays a separate release gate. |
+| P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | DONE | `55f51e7`. R01/R04 reproduced first, then fixed. tsc clean, vitest 80/13 skipped, eslint clean on owned paths, build passes, both booking branches pass in Playwright with the API intercepted. |
+| P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | DONE | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
 | P1C | Dependency/runtime update and CI | Coordinator | P0 | DONE | `b5a81a1`. Advisories rechecked at execution time; user's tracing fixes retained. |
 | P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | IN_PROGRESS | Started in parallel against the frozen `MeetGreetForm` prop contract. |
-| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | TODO | Dispatch after P1A and P1B integrate. |
-| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | TODO | Split read path from generation first. |
+| P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | IN_PROGRESS | Consuming the landed error, lead-display and CSV contracts. |
+| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | IN_PROGRESS | Must measure pipeline duration before any schedule is enabled. |
 | P3C | Packaged function verification | Coordinator | P3B, P1C | TODO | Record per-function dependencies, assets, and sizes. |
 | P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | TODO | Owner facts table below; coordinator owns `proxy.ts`, `app/layout.tsx`, `vercel.json`. |
 | P5A | Integrated review and preview acceptance | Coordinator + reviewer | All above | TODO | Test the same clean candidate commit. |
@@ -93,6 +93,17 @@ Shared-file changes requested:
 Data/rollback considerations:
 Reviewer and outcome:
 ```
+
+## Open items carried out of Phase 1
+
+| Item | Raised by | Owner | State |
+| --- | --- | --- | --- |
+| Firebase rules have never been exercised against an emulator. `firestore.rules`/`storage.rules` are versioned and their tests are written and wired, but the Firestore emulator needs a Java runtime this machine does not have, so both suites skip with an explicit reason (13 skipped, visible in every run). | P1B | Coordinator / CI | **Pending gate.** Run `firebase emulators:start --only firestore,storage --project demo-not-the-rug` then `npx vitest run tests/unit/rules-*.test.ts` on a Java-capable machine. |
+| Deployed Firebase rules have not been audited or diffed against the new files. | P1B | Coordinator | **Pending gate**, separate from the emulator run. First deploy goes through `firebase deploy --only firestore:rules,storage:rules`, not blind. |
+| Already-issued public download tokens for existing storage objects were not revoked. | P1B | Owner | **Open decision.** Revoking breaks any link already shared. Nothing was changed. |
+| `leadRateLimits/*` documents accumulate with no expiry. A native Firestore TTL needs `windowStart` stored as a Timestamp, which requires a `Date` branch in the coordinator-owned `toValue()`. | P1A | Coordinator | Documented in code. Low urgency — the collection is write-only and safe to clear at any time. |
+| `LeadStats.totals.allTime` survives as a deprecated alias so two unmigrated readers still compile. | P1A | P3A + P3B | Both readers are being migrated to `recentCount` now; the alias is deleted once they land. |
+| `npm install`/`npm uninstall` silently prune optional native bindings (npm/cli#4828), which breaks vitest's rolldown binary and corrupts the lockfile. It bit P1B once. | P1B | Coordinator | Change dependencies by editing `package.json` then reinstalling, and verify `@rolldown/binding-*` entries survive in the lockfile. Verified clean at `56af17f`. |
 
 ## Decision and blocker log
 
