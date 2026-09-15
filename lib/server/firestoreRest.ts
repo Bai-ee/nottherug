@@ -83,6 +83,76 @@ export async function fsSetDoc(path: string, data: Record<string, unknown>): Pro
   if (!res.ok) throw new Error(`Firestore SET ${path}: ${res.status} ${await res.text()}`);
 }
 
+/**
+ * Create a document only if it does not already exist.
+ *
+ * Firestore's createDocument endpoint rejects a duplicate id with 409, which is
+ * what makes this usable as an idempotency guard: two concurrent retries of the
+ * same submission race here, and exactly one wins.
+ *
+ * `path` is a full document path, e.g. `leads/<id>`.
+ */
+export async function fsCreateDoc(
+  path: string,
+  data: Record<string, unknown>
+): Promise<{ created: boolean }> {
+  const segments = path.split('/');
+  const documentId = segments.pop();
+  if (!documentId) throw new Error(`fsCreateDoc: no document id in "${path}"`);
+  const parent = segments.join('/');
+
+  const token = await getToken();
+  const url = `${FS_BASE}${parent ? `/${parent}` : ''}?documentId=${encodeURIComponent(documentId)}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fields: toFields(data) }),
+  });
+
+  if (res.status === 409) return { created: false };
+  if (!res.ok) throw new Error(`Firestore CREATE ${path}: ${res.status} ${await res.text()}`);
+  return { created: true };
+}
+
+/**
+ * Atomically add `amount` to a numeric field, creating the document if needed,
+ * and return the resulting value. `seed` fields are written alongside on the
+ * same commit (patch semantics), so a first hit can record its window bounds.
+ *
+ * Used for counters that must survive across serverless instances, where an
+ * in-process map would reset on every cold start.
+ */
+export async function fsIncrementField(
+  path: string,
+  field: string,
+  amount: number,
+  seed: Record<string, unknown> = {}
+): Promise<number> {
+  const token = await getToken();
+  const name = `projects/${encodeURIComponent(PROJECT)}/databases/(default)/documents/${path}`;
+
+  const res = await fetch(`${FS_BASE}:commit`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      writes: [
+        {
+          update: { name, fields: toFields(seed) },
+          updateMask: { fieldPaths: Object.keys(seed) },
+          updateTransforms: [{ fieldPath: field, increment: { integerValue: String(amount) } }],
+        },
+      ],
+    }),
+  });
+
+  if (!res.ok) throw new Error(`Firestore INCREMENT ${path}.${field}: ${res.status} ${await res.text()}`);
+  const body = (await res.json()) as {
+    writeResults?: Array<{ transformResults?: FsValue[] }>;
+  };
+  const result = body.writeResults?.[0]?.transformResults?.[0];
+  return result ? Number(fromValue(result)) : NaN;
+}
+
 export async function fsDeleteDoc(path: string): Promise<void> {
   const token = await getToken();
   const res = await fetch(`${FS_BASE}/${path}`, {
