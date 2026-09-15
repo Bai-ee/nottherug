@@ -1,18 +1,23 @@
 # Scheduled jobs: what runs, what does not, and why
 
-Three cron-style handlers exist. **One is scheduled.** This file is the record of that
+Three cron-style handlers exist. **None is scheduled.** This file is the record of that
 decision, because the review found the repository implied otherwise.
 
-## What is scheduled
+## Nothing is scheduled right now
 
-`vercel.json` schedules exactly one job:
+`vercel.json` has an empty `crons` array. Scheduled brief generation is **off**, and
+stays off until its runtime and delivery behaviour are verified — see the open gate
+below. Before this cleanup, `/api/cron/not-the-rug-brief` ran daily at `0 12 * * *`
+without anyone having measured whether it fits its own 60-second limit.
 
-| Path | Schedule | What it does |
-| --- | --- | --- |
-| `/api/cron/not-the-rug-brief` | `0 12 * * *` | Generates the daily brief. **It does not send any email.** |
+To turn it back on, restore:
 
-That distinction matters: a generation-only job is not a daily email system, and
-nothing in this repository should describe it as one.
+```json
+"crons": [{ "path": "/api/cron/not-the-rug-brief", "schedule": "0 12 * * *" }]
+```
+
+That job only generates a brief. **It sends no email.** A generation-only job is not a
+daily email system, and nothing in this repository should describe it as one.
 
 ## What is not scheduled, deliberately
 
