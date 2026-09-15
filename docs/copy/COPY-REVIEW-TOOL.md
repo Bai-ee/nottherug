@@ -1,6 +1,6 @@
 # Not The Rug — Website Copy Review
 
-Generated 2026-09-14 from the live site code · **528 pieces of copy**
+Generated 2026-09-15 from the live site code · **355 pieces of copy**
 
 This file lists **every word currently on the Not The Rug website**, organised page by page.
 It exists so you can read the site as a document, confirm that everything it says is accurate,
@@ -25,19 +25,18 @@ Those carry the pricing, the claims and the contact details — the things most 
 
 ### What is in here
 
-1. **Site-wide (navigation + footer)** — 44 items
-2. **Home** — 98 items
-3. **Services & Rates** — 74 items
-4. **How It Works** — 28 items
-5. **About Us** — 52 items
-6. **Safety & Trust** — 32 items
-7. **Williamsburg** — 15 items
-8. **Reviews** — 26 items
-9. **Book a Walk** — 66 items
-10. **Contact** — 34 items
-11. **Navigation (standalone pages)** — 9 items
-12. **Meet & Greet form** — 48 items
-13. **Search engine + social previews** — 2 items
+1. **Site-wide (navigation + footer)** — 30 items
+2. **Home** — 96 items
+3. **Services & Rates** — 41 items
+4. **How It Works** — 20 items
+5. **About Us** — 48 items
+6. **Safety & Trust** — 34 items
+7. **Williamsburg** — 29 items
+8. **Reviews** — 24 items
+9. **Book a Walk** — 6 items
+10. **Contact** — 21 items
+11. **Meet & Greet form** — 4 items
+12. **Search engine + social previews (site-wide fallback)** — 2 items
 
 ---
 
@@ -134,7 +133,7 @@ a `## Founder notes` section. Nothing else after those.
 {
   "reviewedBy": "Luis",
   "reviewedOn": "YYYY-MM-DD",
-  "sourceGeneratedAt": "2026-09-14",
+  "sourceGeneratedAt": "2026-09-15",
   "changes": [
     {
       "id": "services.services-grid.price-33",
@@ -181,165 +180,41 @@ the exact text in the code, and how it reads on the page.
 
 ## 1. Site-wide (navigation + footer)
 
-_44 items_
+_30 items_
 
-### Desktop navigation
+### Navigation (all pages)
 
-> Shown on every page. Keep labels short — long labels wrap badly.
+> Shown on every marketing page — desktop links and the mobile menu both live here now.
 
-**`global.nav-desktop.not-the-rug`** — Image description (not visible — read by screen readers and Google)
+**`global.nav-standalone.not-the-rug`** — Image description (not visible — read by screen readers and Google)
 
 ```text
 Not The Rug
 ```
 
-_The same wording is used elsewhere: `global.footer.not-the-rug`, `SiteNav.nav-standalone.not-the-rug`, `book.book-meta.not-the-rug`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `global.footer.not-the-rug`, `book.bookpage-hero.not-the-rug`. Those are separate slots — change them too if they should stay consistent._
 
-**`global.nav-desktop.services-rates`** — Link
-
-```text
-Services &amp; Rates
-```
-
-Reads as: Services & Rates
-
-_The same wording is used elsewhere: `global.nav-mobile.services-rates`, `services.services-hero.services-rates`, `SiteNav.nav-standalone.services-rates`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-desktop.how-it-works`** — Link
-
-```text
-How It Works
-```
-
-_The same wording is used elsewhere: `global.nav-mobile.how-it-works`, `global.footer.how-it-works`, `SiteNav.nav-standalone.how-it-works`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-desktop.about-us`** — Link
-
-```text
-About Us
-```
-
-_The same wording is used elsewhere: `global.nav-mobile.about-us`, `global.footer.about-us`, `SiteNav.nav-standalone.about-us`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-desktop.safety-trust`** — Link
-
-```text
-Safety &amp; Trust
-```
-
-Reads as: Safety & Trust
-
-_The same wording is used elsewhere: `global.nav-mobile.safety-trust`, `safety.safety-hero.safety-trust`, `global.footer.safety-trust`, `SiteNav.nav-standalone.safety-trust`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-desktop.williamsburg`** — Link
-
-```text
-Williamsburg
-```
-
-_The same wording is used elsewhere: `global.nav-mobile.williamsburg`, `neighborhoods.hoods-williamsburg.williamsburg`, `contact.contactpage-body.williamsburg`, `global.footer.williamsburg`, `SiteNav.nav-standalone.williamsburg`, `neighborhoods.hoods-data.williamsburg`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-desktop.reviews`** — Link
-
-```text
-Reviews
-```
-
-_The same wording is used elsewhere: `global.nav-mobile.reviews`, `global.footer.reviews`, `SiteNav.nav-standalone.reviews`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-desktop.book-a-walk`** — Button
+**`global.nav-standalone.book-a-walk`** — Button
 
 ```text
 Book a Walk
 ```
 
-_The same wording is used elsewhere: `global.nav-mobile.book-a-walk`, `global.footer.book-a-walk`, `SiteNav.nav-standalone.book-a-walk`. Those are separate slots — change them too if they should stay consistent._
+_Written 2 times in this section by design (the strip loops). One edit updates all of them._
 
-### Mobile menu
+_The same wording is used elsewhere: `global.footer.book-a-walk`. Those are separate slots — change them too if they should stay consistent._
 
-> Same links as desktop plus Contact.
-
-**`global.nav-mobile.services-rates`** — Link
-
-```text
-Services &amp; Rates
-```
-
-Reads as: Services & Rates
-
-_The same wording is used elsewhere: `global.nav-desktop.services-rates`, `services.services-hero.services-rates`, `SiteNav.nav-standalone.services-rates`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-mobile.how-it-works`** — Link
-
-```text
-How It Works
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.how-it-works`, `global.footer.how-it-works`, `SiteNav.nav-standalone.how-it-works`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-mobile.about-us`** — Link
-
-```text
-About Us
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.about-us`, `global.footer.about-us`, `SiteNav.nav-standalone.about-us`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-mobile.safety-trust`** — Link
-
-```text
-Safety &amp; Trust
-```
-
-Reads as: Safety & Trust
-
-_The same wording is used elsewhere: `global.nav-desktop.safety-trust`, `safety.safety-hero.safety-trust`, `global.footer.safety-trust`, `SiteNav.nav-standalone.safety-trust`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-mobile.williamsburg`** — Link
-
-```text
-Williamsburg
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.williamsburg`, `neighborhoods.hoods-williamsburg.williamsburg`, `contact.contactpage-body.williamsburg`, `global.footer.williamsburg`, `SiteNav.nav-standalone.williamsburg`, `neighborhoods.hoods-data.williamsburg`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-mobile.reviews`** — Link
-
-```text
-Reviews
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.reviews`, `global.footer.reviews`, `SiteNav.nav-standalone.reviews`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-mobile.contact`** — Link
+**`global.nav-standalone.contact`** — Text
 
 ```text
 Contact
 ```
 
-_The same wording is used elsewhere: `global.footer.contact`, `SiteNav.nav-standalone.contact`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.nav-mobile.book-a-walk`** — Button
-
-```text
-Book a Walk
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.book-a-walk`, `global.footer.book-a-walk`, `SiteNav.nav-standalone.book-a-walk`. Those are separate slots — change them too if they should stay consistent._
-
-### Floating brand badge
-
-> Not visible text — the description screen readers and Google read for the logo badge.
-
-**`global.brand-badge.not-the-rug-nyc-dog`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Not The Rug NYC dog walking
-```
+_The same wording is used elsewhere: `global.footer.contact`. Those are separate slots — change them too if they should stay consistent._
 
 ### Footer
 
-> Appears on every page.
+> Appears on every page except /book and /contact.
 
 **`global.footer.not-the-rug`** — Text
 
@@ -347,7 +222,7 @@ Not The Rug NYC dog walking
 Not The Rug
 ```
 
-_The same wording is used elsewhere: `global.nav-desktop.not-the-rug`, `SiteNav.nav-standalone.not-the-rug`, `book.book-meta.not-the-rug`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `global.nav-standalone.not-the-rug`, `book.bookpage-hero.not-the-rug`. Those are separate slots — change them too if they should stay consistent._
 
 **`global.footer.brooklyn-s-most-trusted-neighborhood`** — Paragraph
 
@@ -381,35 +256,33 @@ Google
 Services
 ```
 
-**`global.footer.group-walks`** — Link
+**`global.footer.group-walks`** — Text
 
 ```text
 Group Walks
 ```
 
-**`global.footer.walk-training`** — Link
+**`global.footer.walk-training`** — Text
 
 ```text
 Walk + Training
 ```
 
-**`global.footer.puppy-visits`** — Link
+**`global.footer.puppy-visits`** — Text
 
 ```text
 Puppy Visits
 ```
 
-_The same wording is used elsewhere: `services.services-grid.puppy-visits`, `MeetGreetForm.form.puppy-visits`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `services.services-data.puppy-visits`. Those are separate slots — change them too if they should stay consistent._
 
-**`global.footer.senior-dog-care`** — Link
+**`global.footer.senior-dog-care`** — Text
 
 ```text
 Senior Dog Care
 ```
 
-_The same wording is used elsewhere: `MeetGreetForm.form.senior-dog-care`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.footer.boarding`** — Link
+**`global.footer.boarding`** — Text
 
 ```text
 Boarding
@@ -423,13 +296,13 @@ Service Area
 
 _The same wording is used elsewhere: `contact.contactpage-body.service-area`. Those are separate slots — change them too if they should stay consistent._
 
-**`global.footer.williamsburg`** — Link
+**`global.footer.williamsburg`** — Text
 
 ```text
 Williamsburg
 ```
 
-_The same wording is used elsewhere: `global.nav-desktop.williamsburg`, `global.nav-mobile.williamsburg`, `neighborhoods.hoods-williamsburg.williamsburg`, `contact.contactpage-body.williamsburg`, `SiteNav.nav-standalone.williamsburg`, `neighborhoods.hoods-data.williamsburg`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `neighborhoods.hoods-williamsburg.williamsburg`. Those are separate slots — change them too if they should stay consistent._
 
 **`global.footer.company`** — Heading
 
@@ -437,23 +310,19 @@ _The same wording is used elsewhere: `global.nav-desktop.williamsburg`, `global.
 Company
 ```
 
-**`global.footer.about-us`** — Link
+**`global.footer.about-us`** — Text
 
 ```text
 About Us
 ```
 
-_The same wording is used elsewhere: `global.nav-desktop.about-us`, `global.nav-mobile.about-us`, `SiteNav.nav-standalone.about-us`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.footer.how-it-works`** — Link
+**`global.footer.how-it-works`** — Text
 
 ```text
 How It Works
 ```
 
-_The same wording is used elsewhere: `global.nav-desktop.how-it-works`, `global.nav-mobile.how-it-works`, `SiteNav.nav-standalone.how-it-works`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.footer.safety-trust`** — Link
+**`global.footer.safety-trust`** — Text
 
 ```text
 Safety &amp; Trust
@@ -461,31 +330,29 @@ Safety &amp; Trust
 
 Reads as: Safety & Trust
 
-_The same wording is used elsewhere: `global.nav-desktop.safety-trust`, `global.nav-mobile.safety-trust`, `safety.safety-hero.safety-trust`, `SiteNav.nav-standalone.safety-trust`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `safety.safety-hero.safety-trust`. Those are separate slots — change them too if they should stay consistent._
 
-**`global.footer.reviews`** — Link
+**`global.footer.reviews`** — Text
 
 ```text
 Reviews
 ```
 
-_The same wording is used elsewhere: `global.nav-desktop.reviews`, `global.nav-mobile.reviews`, `SiteNav.nav-standalone.reviews`. Those are separate slots — change them too if they should stay consistent._
-
-**`global.footer.contact`** — Link
+**`global.footer.contact`** — Text
 
 ```text
 Contact
 ```
 
-_The same wording is used elsewhere: `global.nav-mobile.contact`, `SiteNav.nav-standalone.contact`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `global.nav-standalone.contact`. Those are separate slots — change them too if they should stay consistent._
 
-**`global.footer.book-a-walk`** — Link
+**`global.footer.book-a-walk`** — Text
 
 ```text
 Book a Walk
 ```
 
-_The same wording is used elsewhere: `global.nav-desktop.book-a-walk`, `global.nav-mobile.book-a-walk`, `SiteNav.nav-standalone.book-a-walk`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `global.nav-standalone.book-a-walk`. Those are separate slots — change them too if they should stay consistent._
 
 **`global.footer.ready-to-get-started`** — Heading
 
@@ -543,7 +410,7 @@ Terms
 
 ## 2. Home
 
-_98 items_
+_96 items_
 
 ### Homepage hero
 
@@ -609,7 +476,7 @@ View Services
 
 _Written 2 times in this section by design (the strip loops). One edit updates all of them._
 
-_The same wording is used elsewhere: `home.featured-reviews.text-5`, `about.about-origin.text-5`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.featured-reviews.text-5`, `about.about-hero.text-5`. Those are separate slots — change them too if they should stay consistent._
 
 **`home.hero.yelp-rating`** — Small label
 
@@ -657,99 +524,27 @@ Years in<br />Williamsburg
 
 Reads as: Years in ⏎ Williamsburg
 
-### Scrolling review strip
-
-> Each quote appears twice in the code so the strip can loop seamlessly. Editing one updates both.
-
-**`home.proof-marquee.luis-s-professionalism-puts-even`** — Text
-
-```text
-&quot;Luis&apos;s professionalism puts even the most nervous pet parent at ease&quot;
-```
-
-Reads as: "Luis's professionalism puts even the most nervous pet parent at ease"
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.proof-marquee.jessica-y-williamsburg`** — Text
-
-```text
-— Jessica Y., Williamsburg
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.proof-marquee.seriously-hire-not-the-rug`** — Text
-
-```text
-&quot;Seriously — hire Not The Rug. They won&apos;t disappoint.&quot;
-```
-
-Reads as: "Seriously — hire Not The Rug. They won't disappoint."
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.proof-marquee.jayne-a-williamsburg`** — Text
-
-```text
-— Jayne A., Williamsburg
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.proof-marquee.trust-luis-to-take-care`** — Text
-
-```text
-&quot;Trust Luis to take care of your dog as if it was his own&quot;
-```
-
-Reads as: "Trust Luis to take care of your dog as if it was his own"
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.proof-marquee.kassie-t-williamsburg`** — Text
-
-```text
-— Kassie T., Williamsburg
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.proof-marquee.daily-updates-cute-photos-and`** — Text
-
-```text
-&quot;Daily updates, cute photos, and my dog LOVES her walker&quot;
-```
-
-Reads as: "Daily updates, cute photos, and my dog LOVES her walker"
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.proof-marquee.hayley-m-williamsburg`** — Text
-
-```text
-— Hayley M., Williamsburg
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
 ### How it works (homepage strip)
 
 **`home.how-it-works-strip.from-the-first-hello-to`** — Heading
 
 ```text
-From the first hello to your dog&apos;s <em style={{fontStyle:'normal'}}>daily routine</em>
+From the first hello to your dog&apos;s <em style={{ fontStyle: 'normal' }}>daily routine</em>
 ```
 
 Reads as: From the first hello to your dog's daily routine
 
+**`home.how-it-works-strip.learn-more-about-our-process`** — Button
+
+```text
+Learn More About Our Process
+```
+
 **`home.how-it-works-strip.phone-call-meet-greet`** — Heading
 
 ```text
-Phone Call &amp; Meet &amp; Greet
+Phone Call & Meet & Greet
 ```
-
-Reads as: Phone Call & Meet & Greet
 
 **`home.how-it-works-strip.a-free-in-home-consultation`** — Paragraph
 
@@ -775,8 +570,6 @@ Choose your walking frequency, preferred times, and any special instructions.
 First Walk
 ```
 
-_The same wording is used elsewhere: `how-it-works.hiw-steps.first-walk`. Those are separate slots — change them too if they should stay consistent._
-
 **`home.how-it-works-strip.gps-tracked-45-minute-adventure`** — Paragraph
 
 ```text
@@ -793,12 +586,6 @@ Ongoing Care
 
 ```text
 Same walker, same routine. Your dog knows the drill and so do we.
-```
-
-**`home.how-it-works-strip.learn-more-about-our-process`** — Button
-
-```text
-Learn More About Our Process
 ```
 
 ### Trust bar
@@ -819,7 +606,7 @@ Fully Insured &amp; Bonded
 
 Reads as: Fully Insured & Bonded
 
-_The same wording is used elsewhere: `home.closing-trust.fully-insured-bonded`, `safety.safety-standards.fully-insured-bonded`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.closing-trust.fully-insured-bonded`. Those are separate slots — change them too if they should stay consistent._
 
 **`home.trust-bar.gps-tracked-every-walk`** — Text
 
@@ -843,9 +630,15 @@ Max 3 Dogs Per Walk
 
 _The same wording is used elsewhere: `safety.safety-standards.max-3-dogs-per-walk`. Those are separate slots — change them too if they should stay consistent._
 
-### Services preview + rates
+### Services preview + rates (homepage)
 
 > Prices here must match the Services page.
+
+**`home.services-preview.sales-tax`** — Price
+
+```text
++ sales tax
+```
 
 **`home.services-preview.our-home-neighborhood`** — Small label
 
@@ -856,168 +649,10 @@ Our Home Neighborhood
 **`home.services-preview.a-williamsburg-service-not-a`** — Heading
 
 ```text
-A Williamsburg <em style={{fontStyle:'normal', color:'var(--sage-dark)'}}>service</em>, not a platform
+A Williamsburg <em style={{ fontStyle: 'normal', color: 'var(--sage-dark)' }}>service</em>, not a platform
 ```
 
 Reads as: A Williamsburg service, not a platform
-
-**`home.services-preview.solo-walk`** — Heading
-
-```text
-Solo Walk
-```
-
-**`home.services-preview.a-private-60-minute-walk`** — Paragraph
-
-```text
-A private 60-minute walk.
-```
-
-**`home.services-preview.price-60`** — Price
-
-```text
-$60
-```
-
-_The same wording is used elsewhere: `services.services-grid.price-60`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.per-walk`** — Text
-
-```text
-per walk
-```
-
-_Written 3 times in this section by design (the strip loops). One edit updates all of them._
-
-**`home.services-preview.sales-tax`** — Price
-
-```text
-+ sales tax
-```
-
-_Written 6 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `services.services-grid.sales-tax`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.group-walk`** — Heading
-
-```text
-Group Walk
-```
-
-**`home.services-preview.45-minute-walk-with-up`** — Paragraph
-
-```text
-45-minute walk with up to three dogs max.
-```
-
-**`home.services-preview.price-33`** — Price
-
-```text
-$33
-```
-
-_The same wording is used elsewhere: `services.services-grid.price-33`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.senior-dog-visits`** — Heading
-
-```text
-Senior Dog Visits
-```
-
-_The same wording is used elsewhere: `services.services-grid.senior-dog-visits`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.gentle-20-minute-one-on`** — Paragraph
-
-```text
-Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs.
-```
-
-**`home.services-preview.price-35`** — Price
-
-```text
-$35
-```
-
-_Written 3 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `services.services-grid.price-35`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.visit`** — Text
-
-```text
-/visit
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `services.services-grid.visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.puppy-walk`** — Heading
-
-```text
-Puppy Walk
-```
-
-**`home.services-preview.designed-for-puppies-still-learning`** — Paragraph
-
-```text
-Designed for puppies still learning.
-```
-
-**`home.services-preview.boarding-overnight-sitting`** — Heading
-
-```text
-Boarding &amp; Overnight Sitting
-```
-
-Reads as: Boarding & Overnight Sitting
-
-_The same wording is used elsewhere: `services.services-grid.boarding-overnight-sitting`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.loving-overnight-care-in-your`** — Paragraph
-
-```text
-Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.
-```
-
-Reads as: Loving overnight care in your dog's own home, where they can stick to their routine and sleep in familiar surroundings while you're away.
-
-_The same wording is used elsewhere: `services.services-grid.loving-overnight-care-in-your`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.price-100`** — Price
-
-```text
-$100
-```
-
-_The same wording is used elsewhere: `services.services-grid.price-100`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.night`** — Text
-
-```text
-/night
-```
-
-_The same wording is used elsewhere: `services.services-grid.night`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.cat-visits`** — Heading
-
-```text
-Cat Visits
-```
-
-_The same wording is used elsewhere: `services.services-grid.cat-visits`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.services-preview.fresh-food-clean-water-litter`** — Paragraph
-
-```text
-Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We&apos;ll also water plants, bring in the mail, and keep an eye on your home while you&apos;re away.
-```
-
-Reads as: Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We'll also water plants, bring in the mail, and keep an eye on your home while you're away.
-
-_The same wording is used elsewhere: `services.services-grid.fresh-food-clean-water-litter`. Those are separate slots — change them too if they should stay consistent._
 
 **`home.services-preview.no-contracts-no-hidden-fees`** — Paragraph
 
@@ -1036,7 +671,7 @@ Why Williamsburg Trusts Us
 **`home.closing-trust.insured-background-checked-and-local`** — Heading
 
 ```text
-Insured, background-checked, and <em style={{fontStyle:'normal', color:'var(--sage-light)'}}>local since 2011</em>
+Insured, background-checked, and <em style={{ fontStyle: 'normal', color: 'var(--sage-light)' }}>local since 2011</em>
 ```
 
 Reads as: Insured, background-checked, and local since 2011
@@ -1049,7 +684,7 @@ Fully Insured &amp; Bonded
 
 Reads as: Fully Insured & Bonded
 
-_The same wording is used elsewhere: `home.trust-bar.fully-insured-bonded`, `safety.safety-standards.fully-insured-bonded`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.trust-bar.fully-insured-bonded`. Those are separate slots — change them too if they should stay consistent._
 
 **`home.closing-trust.comprehensive-pet-care-liability-insurance`** — Paragraph
 
@@ -1129,38 +764,6 @@ Book a Walk in Williamsburg
 Ask About Williamsburg Coverage
 ```
 
-**`home.closing-trust.napps-member`** — Small label
-
-```text
-NAPPS Member
-```
-
-_The same wording is used elsewhere: `safety.safety-certs.napps-member`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.closing-trust.background-checked`** — Small label
-
-```text
-Background Checked
-```
-
-_The same wording is used elsewhere: `safety.safety-certs.background-checked`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.closing-trust.fully-insured`** — Small label
-
-```text
-Fully Insured
-```
-
-_The same wording is used elsewhere: `safety.safety-certs.fully-insured`. Those are separate slots — change them too if they should stay consistent._
-
-**`home.closing-trust.bonded`** — Small label
-
-```text
-Bonded
-```
-
-_The same wording is used elsewhere: `safety.safety-certs.bonded`. Those are separate slots — change them too if they should stay consistent._
-
 ### Featured reviews
 
 > Real customer quotes — only edit if the quote is inaccurate or the customer asked.
@@ -1174,7 +777,7 @@ File 01 · Voices
 **`home.featured-reviews.what-our-clients-say`** — Heading
 
 ```text
-What our <em style={{fontStyle:'normal', color:'var(--sage-dark)'}}>clients</em> say
+What our <em style={{ fontStyle: 'normal', color: 'var(--sage-dark)' }}>clients</em> say
 ```
 
 Reads as: What our clients say
@@ -1263,7 +866,7 @@ Rev. 03 · Williamsburg · Yelp
 
 _Written 2 times in this section by design (the strip loops). One edit updates all of them._
 
-_The same wording is used elsewhere: `home.hero.text-5`, `about.about-origin.text-5`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.hero.text-5`, `about.about-hero.text-5`. Those are separate slots — change them too if they should stay consistent._
 
 **`home.featured-reviews.yelp-rating`** — Small label
 
@@ -1291,7 +894,13 @@ _The same wording is used elsewhere: `home.hero.text-79`. Those are separate slo
 Verified reviews
 ```
 
-### Booking call-to-action
+### Booking call-to-action (homepage form heading)
+
+**`home.booking-cta.not-the-rug-nyc-dog`** — Image description (not visible — read by screen readers and Google)
+
+```text
+Not The Rug NYC dog walking
+```
 
 **`home.booking-cta.form-02-meet-greet`** — Small label
 
@@ -1309,11 +918,217 @@ What We&apos;d Like to Know....
 
 Reads as: What We'd Like to Know....
 
+### Service names, copy and prices (typed data)
+
+> Feeds both the homepage rates preview and the /services grid. The two use different names/copy for the same services on purpose — see the file comment.
+
+**`home.services-data.solo-walk`** — Heading
+
+```text
+Solo Walk
+```
+
+**`home.services-data.a-private-60-minute-walk`** — Paragraph
+
+```text
+A private 60-minute walk.
+```
+
+**`home.services-data.price-60`** — Price
+
+```text
+$60
+```
+
+_The same wording is used elsewhere: `services.services-data.price-60`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.per-walk`** — Price unit
+
+```text
+per walk
+```
+
+_Written 3 times in this section by design (the strip loops). One edit updates all of them._
+
+**`home.services-data.group-walk`** — Heading
+
+```text
+Group Walk
+```
+
+**`home.services-data.45-minute-walk-with-up`** — Paragraph
+
+```text
+45-minute walk with up to three dogs max.
+```
+
+**`home.services-data.price-33`** — Price
+
+```text
+$33
+```
+
+_The same wording is used elsewhere: `services.services-data.price-33`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.senior-dog-visits`** — Heading
+
+```text
+Senior Dog Visits
+```
+
+_The same wording is used elsewhere: `services.services-data.senior-dog-visits`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.gentle-20-minute-one-on`** — Paragraph
+
+```text
+Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs.
+```
+
+**`home.services-data.price-35`** — Price
+
+```text
+$35
+```
+
+_Written 3 times in this section by design (the strip loops). One edit updates all of them._
+
+_The same wording is used elsewhere: `services.services-data.price-35`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.visit`** — Price unit
+
+```text
+/visit
+```
+
+_Written 2 times in this section by design (the strip loops). One edit updates all of them._
+
+_The same wording is used elsewhere: `services.services-data.visit`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.puppy-walk`** — Heading
+
+```text
+Puppy Walk
+```
+
+**`home.services-data.designed-for-puppies-still-learning`** — Paragraph
+
+```text
+Designed for puppies still learning.
+```
+
+**`home.services-data.boarding-overnight-sitting`** — Heading
+
+```text
+Boarding & Overnight Sitting
+```
+
+_The same wording is used elsewhere: `services.services-data.boarding-overnight-sitting`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.loving-overnight-care-in-your`** — Paragraph
+
+```text
+Loving overnight care in your dog's own home, where they can stick to their routine and sleep in familiar surroundings while you're away.
+```
+
+_The same wording is used elsewhere: `services.services-data.loving-overnight-care-in-your`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.price-100`** — Price
+
+```text
+$100
+```
+
+_The same wording is used elsewhere: `services.services-data.price-100`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.night`** — Price unit
+
+```text
+/night
+```
+
+_The same wording is used elsewhere: `services.services-data.night`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.cat-visits`** — Heading
+
+```text
+Cat Visits
+```
+
+_The same wording is used elsewhere: `services.services-data.cat-visits`. Those are separate slots — change them too if they should stay consistent._
+
+**`home.services-data.fresh-food-clean-water-litter`** — Paragraph
+
+```text
+Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We'll also water plants, bring in the mail, and keep an eye on your home while you're away.
+```
+
+_The same wording is used elsewhere: `services.services-data.fresh-food-clean-water-litter`. Those are separate slots — change them too if they should stay consistent._
+
+### Scrolling review strip
+
+> Each quote appears twice in the code so the strip can loop seamlessly. Editing one updates both.
+
+**`home.proof-marquee.luis-s-professionalism-puts-even`** — Paragraph
+
+```text
+Luis's professionalism puts even the most nervous pet parent at ease
+```
+
+**`home.proof-marquee.jessica-y-williamsburg`** — Small label
+
+```text
+Jessica Y., Williamsburg
+```
+
+**`home.proof-marquee.seriously-hire-not-the-rug`** — Paragraph
+
+```text
+Seriously — hire Not The Rug. They won't disappoint.
+```
+
+**`home.proof-marquee.jayne-a-williamsburg`** — Small label
+
+```text
+Jayne A., Williamsburg
+```
+
+**`home.proof-marquee.trust-luis-to-take-care`** — Paragraph
+
+```text
+Trust Luis to take care of your dog as if it was his own
+```
+
+**`home.proof-marquee.kassie-t-williamsburg`** — Small label
+
+```text
+Kassie T., Williamsburg
+```
+
+**`home.proof-marquee.daily-updates-cute-photos-and`** — Paragraph
+
+```text
+Daily updates, cute photos, and my dog LOVES her walker
+```
+
+**`home.proof-marquee.hayley-m-williamsburg`** — Small label
+
+```text
+Hayley M., Williamsburg
+```
+
+### Home — search engine + link preview
+
+**`home.home-meta.not-the-rug-williamsburg-dog`** — Heading
+
+```text
+Not The Rug — Williamsburg Dog Walking Since 2011
+```
+
 ---
 
 ## 3. Services & Rates
 
-_74 items_
+_41 items_
 
 ### Services page hero
 
@@ -1324,8 +1139,6 @@ Services &amp; Rates
 ```
 
 Reads as: Services & Rates
-
-_The same wording is used elsewhere: `global.nav-desktop.services-rates`, `global.nav-mobile.services-rates`, `SiteNav.nav-standalone.services-rates`. Those are separate slots — change them too if they should stay consistent._
 
 **`services.services-hero.transparent-pricing-no-surprises`** — Heading
 
@@ -1347,31 +1160,71 @@ Every service includes a free consultation, GPS tracking, and post-walk photo up
 Biscuit · @biscuit_bklyn
 ```
 
-### Services + pricing grid
+**`services.services-hero.always-included`** — Small label
 
-> Prices must match the homepage rates.
+```text
+Always Included
+```
 
-**`services.services-grid.small-group-visit`** — Heading
+**`services.services-hero.every-walk-every-time`** — Heading
+
+```text
+Every walk, every time
+```
+
+### Services page booking form
+
+> Form labels and the fallback contact note (replaces the old fake "Book a Service" / "Ask a Question" tabs).
+
+**`services.services-forms.already-a-client-or-have`** — Paragraph
+
+```text
+Already a client, or have a quick question first? Call or text
+```
+
+**`services.services-forms.email`** — Paragraph
+
+```text
+, email
+```
+
+**`services.services-forms.or`** — Paragraph
+
+```text
+, or
+```
+
+**`services.services-forms.visit-our-contact-page`** — Text
+
+```text
+visit our contact page
+```
+
+### Service names, copy and prices (typed data)
+
+> Feeds both the homepage rates preview and the /services grid. The two use different names/copy for the same services on purpose — see the file comment.
+
+**`services.services-data.small-group-visit`** — Heading
 
 ```text
 Small Group Visit
 ```
 
-**`services.services-grid.45-minute-visit-with-up`** — Paragraph
+**`services.services-data.45-minute-visit-with-up`** — Paragraph
 
 ```text
 45-minute visit with up to three dogs max. GPS tracked, personalized report card included, and paws cleaned before returning home.
 ```
 
-**`services.services-grid.price-33`** — Price
+**`services.services-data.price-33`** — Price
 
 ```text
 $33
 ```
 
-_The same wording is used elsewhere: `home.services-preview.price-33`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.price-33`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.visit`** — Text
+**`services.services-data.visit`** — Price unit
 
 ```text
 /visit
@@ -1379,65 +1232,55 @@ _The same wording is used elsewhere: `home.services-preview.price-33`. Those are
 
 _Written 5 times in this section by design (the strip loops). One edit updates all of them._
 
-_The same wording is used elsewhere: `home.services-preview.visit`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.visit`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.sales-tax`** — Price
-
-```text
-+ sales tax
-```
-
-_Written 6 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `home.services-preview.sales-tax`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-grid.most-popular`** — Text
+**`services.services-data.most-popular`** — Small label
 
 ```text
 Most Popular
 ```
 
-**`services.services-grid.solo-visit`** — Heading
+**`services.services-data.solo-visit`** — Heading
 
 ```text
 Solo Visit
 ```
 
-**`services.services-grid.a-private-60-minute-visit`** — Paragraph
+**`services.services-data.a-private-60-minute-visit`** — Paragraph
 
 ```text
 A private 60-minute visit for nervous, anxious, or reactive dogs, or pups who simply do better with one-on-one attention. Built around patience, consistency, and positive reinforcement.
 ```
 
-**`services.services-grid.price-60`** — Price
+**`services.services-data.price-60`** — Price
 
 ```text
 $60
 ```
 
-_The same wording is used elsewhere: `home.services-preview.price-60`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.price-60`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.premium`** — Text
+**`services.services-data.premium`** — Small label
 
 ```text
 Premium
 ```
 
-**`services.services-grid.puppy-visits`** — Heading
+**`services.services-data.puppy-visits`** — Heading
 
 ```text
 Puppy Visits
 ```
 
-_The same wording is used elsewhere: `global.footer.puppy-visits`, `MeetGreetForm.form.puppy-visits`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `global.footer.puppy-visits`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.designed-for-puppies-still-learning`** — Paragraph
+**`services.services-data.designed-for-puppies-still-learning`** — Paragraph
 
 ```text
 Designed for puppies still learning the ropes. Visits focus on potty breaks, enrichment, socialization, and positive reinforcement. Discounts available for multiple daily visits.
 ```
 
-**`services.services-grid.price-35`** — Price
+**`services.services-data.price-35`** — Price
 
 ```text
 $35
@@ -1445,95 +1288,77 @@ $35
 
 _Written 3 times in this section by design (the strip loops). One edit updates all of them._
 
-_The same wording is used elsewhere: `home.services-preview.price-35`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.price-35`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.senior-dog-visits`** — Heading
+**`services.services-data.senior-dog-visits`** — Heading
 
 ```text
 Senior Dog Visits
 ```
 
-_The same wording is used elsewhere: `home.services-preview.senior-dog-visits`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.senior-dog-visits`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.gentle-20-minute-one-on`** — Paragraph
+**`services.services-data.gentle-20-minute-one-on`** — Paragraph
 
 ```text
 Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.
 ```
 
-**`services.services-grid.boarding-overnight-sitting`** — Heading
+**`services.services-data.boarding-overnight-sitting`** — Heading
 
 ```text
-Boarding &amp; Overnight Sitting
+Boarding & Overnight Sitting
 ```
 
-Reads as: Boarding & Overnight Sitting
+_The same wording is used elsewhere: `home.services-data.boarding-overnight-sitting`. Those are separate slots — change them too if they should stay consistent._
 
-_The same wording is used elsewhere: `home.services-preview.boarding-overnight-sitting`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-grid.loving-overnight-care-in-your`** — Paragraph
+**`services.services-data.loving-overnight-care-in-your`** — Paragraph
 
 ```text
-Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.
+Loving overnight care in your dog's own home, where they can stick to their routine and sleep in familiar surroundings while you're away.
 ```
 
-Reads as: Loving overnight care in your dog's own home, where they can stick to their routine and sleep in familiar surroundings while you're away.
+_The same wording is used elsewhere: `home.services-data.loving-overnight-care-in-your`. Those are separate slots — change them too if they should stay consistent._
 
-_The same wording is used elsewhere: `home.services-preview.loving-overnight-care-in-your`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-grid.price-100`** — Price
+**`services.services-data.price-100`** — Price
 
 ```text
 $100
 ```
 
-_The same wording is used elsewhere: `home.services-preview.price-100`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.price-100`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.night`** — Text
+**`services.services-data.night`** — Price unit
 
 ```text
 /night
 ```
 
-_The same wording is used elsewhere: `home.services-preview.night`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.night`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.7-day-discounts`** — Text
+**`services.services-data.7-day-discounts`** — Small label
 
 ```text
 7+ day discounts
 ```
 
-**`services.services-grid.cat-visits`** — Heading
+**`services.services-data.cat-visits`** — Heading
 
 ```text
 Cat Visits
 ```
 
-_The same wording is used elsewhere: `home.services-preview.cat-visits`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.cat-visits`. Those are separate slots — change them too if they should stay consistent._
 
-**`services.services-grid.fresh-food-clean-water-litter`** — Paragraph
+**`services.services-data.fresh-food-clean-water-litter`** — Paragraph
 
 ```text
-Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We&apos;ll also water plants, bring in the mail, and keep an eye on your home while you&apos;re away.
+Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We'll also water plants, bring in the mail, and keep an eye on your home while you're away.
 ```
 
-Reads as: Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We'll also water plants, bring in the mail, and keep an eye on your home while you're away.
-
-_The same wording is used elsewhere: `home.services-preview.fresh-food-clean-water-litter`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `home.services-data.fresh-food-clean-water-litter`. Those are separate slots — change them too if they should stay consistent._
 
 ### What's always included
-
-**`services.services-included.always-included`** — Small label
-
-```text
-Always Included
-```
-
-**`services.services-included.every-walk-every-time`** — Heading
-
-```text
-Every walk, every time
-```
 
 **`services.services-included.gps-tracking`** — Heading
 
@@ -1583,329 +1408,25 @@ Direct Communication
 Text or call your walker directly — no support tickets, no bots.
 ```
 
-### Services page booking forms
+### /services — search engine + link preview
 
-> Form labels and button text.
-
-**`services.services-forms.free-meet-greet`** — Text
+**`services.services-meta.services-rates-not-the-rug`** — Heading
 
 ```text
-Free Meet &amp; Greet
+Services & Rates — Not The Rug
 ```
 
-Reads as: Free Meet & Greet
-
-_The same wording is used elsewhere: `how-it-works.hiw-steps.free-meet-greet`, `book.bookpage-forms.free-meet-greet`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.book-a-service`** — Text
+**`services.services-meta.every-service-includes-a-free`** — Paragraph
 
 ```text
-Book a Service
+Every service includes a free consultation, GPS tracking, and post-walk photo updates. Transparent pricing, no surprises.
 ```
-
-_The same wording is used elsewhere: `book.bookpage-forms.book-a-service`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.ask-a-question`** — Text
-
-```text
-Ask a Question
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.ask-a-question`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.book-a-service-2`** — Heading
-
-```text
-Book a service
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.book-a-service-2`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.existing-clients-can-book-below`** — Paragraph
-
-```text
-Existing clients can book below. New clients — please start with a Meet &amp; Greet.
-```
-
-Reads as: Existing clients can book below. New clients — please start with a Meet & Greet.
-
-_The same wording is used elsewhere: `book.bookpage-forms.existing-clients-can-book-below`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.service-type`** — Text
-
-```text
-Service Type
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.service-type`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.small-group-visit-33-visit`** — Text
-
-```text
-Small Group Visit ($33/visit)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.small-group-visit-33-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.solo-visit-60-visit`** — Text
-
-```text
-Solo Visit ($60/visit)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.solo-visit-60-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.puppy-visit-35-visit`** — Text
-
-```text
-Puppy Visit ($35/visit)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.puppy-visit-35-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.senior-dog-visit-35-visit`** — Text
-
-```text
-Senior Dog Visit ($35/visit)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.senior-dog-visit-35-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.boarding-overnight-sitting-100-night`** — Text
-
-```text
-Boarding &amp; Overnight Sitting ($100/night)
-```
-
-Reads as: Boarding & Overnight Sitting ($100/night)
-
-_The same wording is used elsewhere: `book.bookpage-forms.boarding-overnight-sitting-100-night`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.cat-visit-35-visit`** — Text
-
-```text
-Cat Visit ($35/visit)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.cat-visit-35-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.preferred-date`** — Text
-
-```text
-Preferred Date
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.preferred-date`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.preferred-time`** — Text
-
-```text
-Preferred Time
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.preferred-time`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.morning-8-10-am`** — Text
-
-```text
-Morning (8–10 AM)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.morning-8-10-am`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.late-morning-10-am-12`** — Text
-
-```text
-Late Morning (10 AM–12 PM)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.late-morning-10-am-12`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.midday-12-2-pm`** — Text
-
-```text
-Midday (12–2 PM)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.midday-12-2-pm`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.afternoon-2-5-pm`** — Text
-
-```text
-Afternoon (2–5 PM)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.afternoon-2-5-pm`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.number-of-dogs`** — Text
-
-```text
-Number of Dogs
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.number-of-dogs`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.1-dog`** — Text
-
-```text
-1 dog
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.1-dog`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.2-dogs-same-household`** — Text
-
-```text
-2 dogs (same household)
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.2-dogs-same-household`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.your-email`** — Text
-
-```text
-Your Email
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.your-email`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.for-confirmation`** — Image description (not visible — read by screen readers and Google)
-
-```text
-For confirmation
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.for-confirmation`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.request-booking`** — Button
-
-```text
-Request Booking
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.request-booking`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.get-in-touch`** — Heading
-
-```text
-Get in touch
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.get-in-touch`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.have-a-specific-situation-or`** — Paragraph
-
-```text
-Have a specific situation or question? Send us a message and we&apos;ll reply personally.
-```
-
-Reads as: Have a specific situation or question? Send us a message and we'll reply personally.
-
-_The same wording is used elsewhere: `book.bookpage-forms.have-a-specific-situation-or`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.your-name`** — Text
-
-```text
-Your Name
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.your-name`, `contact.contactpage-body.your-name`, `MeetGreetForm.form.your-name`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.name`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Name
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.name`, `contact.contactpage-body.name`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.email`** — Text
-
-```text
-Email
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `book.bookpage-forms.email`, `contact.contactpage-body.email`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.subject`** — Text
-
-```text
-Subject
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.subject`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.general-inquiry`** — Text
-
-```text
-General inquiry
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.general-inquiry`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.pricing-question`** — Text
-
-```text
-Pricing question
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.pricing-question`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.my-dog-has-special-needs`** — Text
-
-```text
-My dog has special needs
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.my-dog-has-special-needs`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.coverage-area-question`** — Text
-
-```text
-Coverage area question
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.coverage-area-question`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.team-employment`** — Text
-
-```text
-Team / employment
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.team-employment`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.message`** — Text
-
-```text
-Message
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.message`, `contact.contactpage-body.message`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.tell-us-what-s-on`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Tell us what's on your mind...
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.tell-us-what-s-on`. Those are separate slots — change them too if they should stay consistent._
-
-**`services.services-forms.send-message`** — Button
-
-```text
-Send Message
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.send-message`, `contact.contactpage-body.send-message`. Those are separate slots — change them too if they should stay consistent._
 
 ---
 
 ## 4. How It Works
 
-_28 items_
+_20 items_
 
 ### How It Works page hero
 
@@ -1936,84 +1457,6 @@ Mochi · @mochi_wlmsbg
 ```
 
 ### How It Works steps + walk report
-
-**`how-it-works.hiw-steps.reach-out`** — Heading
-
-```text
-Reach Out
-```
-
-**`how-it-works.hiw-steps.fill-out-our-simple-intake`** — Paragraph
-
-```text
-Fill out our simple intake form or give us a call. Tell us where you&apos;re located in Williamsburg and a little about your dog, including breed, age, weight, personality, quirks, or allergies. We respond within 2 hours on weekdays.
-```
-
-Reads as: Fill out our simple intake form or give us a call. Tell us where you're located in Williamsburg and a little about your dog, including breed, age, weight, personality, quirks, or allergies. We respond within 2 hours on weekdays.
-
-**`how-it-works.hiw-steps.free-meet-greet`** — Heading
-
-```text
-Free Meet &amp; Greet
-```
-
-Reads as: Free Meet & Greet
-
-_The same wording is used elsewhere: `services.services-forms.free-meet-greet`, `book.bookpage-forms.free-meet-greet`. Those are separate slots — change them too if they should stay consistent._
-
-**`how-it-works.hiw-steps.we-come-to-your-home`** — Paragraph
-
-```text
-We come to your home so your dog can meet their future walker in their own space, on their own terms. We&apos;ll review your routine, key handling notes, and answer any questions. No charge, no commitment.
-```
-
-Reads as: We come to your home so your dog can meet their future walker in their own space, on their own terms. We'll review your routine, key handling notes, and answer any questions. No charge, no commitment.
-
-**`how-it-works.hiw-steps.set-up-your-profile`** — Heading
-
-```text
-Set Up Your Profile
-```
-
-**`how-it-works.hiw-steps.add-schedules-vet-contacts-and`** — Paragraph
-
-```text
-Add schedules, vet contacts and records, birthdays, emergency protocols, door codes, and behavioral notes. Your dog&apos;s profile travels with their walker on every visit.
-```
-
-Reads as: Add schedules, vet contacts and records, birthdays, emergency protocols, door codes, and behavioral notes. Your dog's profile travels with their walker on every visit.
-
-**`how-it-works.hiw-steps.first-walk`** — Heading
-
-```text
-First Walk
-```
-
-_The same wording is used elsewhere: `home.how-it-works-strip.first-walk`. Those are separate slots — change them too if they should stay consistent._
-
-**`how-it-works.hiw-steps.your-assigned-walker-arrives-within`** — Paragraph
-
-```text
-Your assigned walker arrives within a 15/30-minute window, starts GPS tracking, and gives your dog a walk. You&apos;ll receive a photo report once they&apos;re home safe.
-```
-
-Reads as: Your assigned walker arrives within a 15/30-minute window, starts GPS tracking, and gives your dog a walk. You'll receive a photo report once they're home safe.
-
-**`how-it-works.hiw-steps.ongoing-recurring`** — Heading
-
-```text
-Ongoing &amp; Recurring
-```
-
-Reads as: Ongoing & Recurring
-
-**`how-it-works.hiw-steps.same-walker-same-time-and`** — Paragraph
-
-```text
-Same walker, same time, and a familiar routine built around your dog&apos;s preferences. Monthly invoicing, a simple 24-hour cancellation policy, and an open line to us whenever you need it.
-```
-
-Reads as: Same walker, same time, and a familiar routine built around your dog's preferences. Monthly invoicing, a simple 24-hour cancellation policy, and an open line to us whenever you need it.
 
 **`how-it-works.hiw-steps.sample-walk-report`** — Small label
 
@@ -2103,13 +1546,27 @@ Reads as: Walker's Note
 
 Reads as: "Bruno was in great spirits today! He made a new friend at the park — a golden named Lucy. He was a bit tired on the way back so we took the shady route home. Paws cleaned, water bowl topped up. See you Thursday!"
 
+### /how-it-works — search engine + link preview
+
+**`how-it-works.hiw-meta.how-it-works-not-the`** — Heading
+
+```text
+How It Works — Not The Rug
+```
+
+**`how-it-works.hiw-meta.from-first-contact-to-daily`** — Paragraph
+
+```text
+From first contact to daily walks — here's exactly what to expect when you join Not The Rug.
+```
+
 ---
 
 ## 5. About Us
 
-_52 items_
+_48 items_
 
-### About page hero
+### About page (hero + origin story + section headings)
 
 **`about.about-hero.our-story`** — Small label
 
@@ -2139,33 +1596,31 @@ Reads as: Not The Rug was born in Williamsburg and has never left. Here's why th
 Scout · @scout_bklyn
 ```
 
-### Origin story
-
-**`about.about-origin.founded-2011`** — Small label
+**`about.about-hero.founded-2011`** — Small label
 
 ```text
 Founded 2011
 ```
 
-**`about.about-origin.a-neighborhood-service-not-a`** — Heading
+**`about.about-hero.a-neighborhood-service-not-a`** — Heading
 
 ```text
 A neighborhood service, not a platform
 ```
 
-**`about.about-origin.not-the-rug-was-founded`** — Paragraph
+**`about.about-hero.not-the-rug-was-founded`** — Paragraph
 
 ```text
 Not The Rug was founded in 2011 by Luis, a Williamsburg resident since 2006. Before dog walking, Luis spent years in broadcasting and music, including work as a Program Director at SiriusXM Radio and consulting for Red Bull on music strategy and cultural programming.
 ```
 
-**`about.about-origin.in-2008-the-pace-of`** — Paragraph
+**`about.about-hero.in-2008-the-pace-of`** — Paragraph
 
 ```text
 In 2008, the pace of that world pushed him to step away. He took a job walking dogs on the Upper West Side, and the work changed everything. It started with two dogs, Suzy and Oliver, and daily walks rooted in patience, observation, and trust. What began as a reset became a calling.
 ```
 
-**`about.about-origin.the-name-is-a-promise`** — Paragraph
+**`about.about-hero.the-name-is-a-promise`** — Paragraph
 
 ```text
 The name is a promise: your dog won&apos;t ruin your rug because they&apos;ll be properly walked, genuinely cared for, and returned home happy. It&apos;s also a nod to the neighborhood&apos;s sense of humor. We don&apos;t take ourselves too seriously, but we take your dog very seriously.
@@ -2173,7 +1628,7 @@ The name is a promise: your dog won&apos;t ruin your rug because they&apos;ll be
 
 Reads as: The name is a promise: your dog won't ruin your rug because they'll be properly walked, genuinely cared for, and returned home happy. It's also a nod to the neighborhood's sense of humor. We don't take ourselves too seriously, but we take your dog very seriously.
 
-**`about.about-origin.we-ve-never-expanded-beyond`** — Paragraph
+**`about.about-hero.we-ve-never-expanded-beyond`** — Paragraph
 
 ```text
 We&apos;ve never expanded beyond what we can do well. We don&apos;t dispatch strangers. Every walker on our team is trained, trusted, and familiar with the neighborhood. Most importantly, they know your dog by name.
@@ -2181,19 +1636,19 @@ We&apos;ve never expanded beyond what we can do well. We don&apos;t dispatch str
 
 Reads as: We've never expanded beyond what we can do well. We don't dispatch strangers. Every walker on our team is trained, trusted, and familiar with the neighborhood. Most importantly, they know your dog by name.
 
-**`about.about-origin.text-2011`** — Text
+**`about.about-hero.text-2011`** — Text
 
 ```text
 2011
 ```
 
-**`about.about-origin.founded-in-williamsburg`** — Text
+**`about.about-hero.founded-in-williamsburg`** — Text
 
 ```text
 Founded in Williamsburg
 ```
 
-**`about.about-origin.text-5`** — Text
+**`about.about-hero.text-5`** — Text
 
 ```text
 5★
@@ -2201,23 +1656,19 @@ Founded in Williamsburg
 
 _The same wording is used elsewhere: `home.hero.text-5`, `home.featured-reviews.text-5`. Those are separate slots — change them too if they should stay consistent._
 
-**`about.about-origin.avg-rating-across-platforms`** — Text
+**`about.about-hero.avg-rating-across-platforms`** — Text
 
 ```text
 Avg. rating across platforms
 ```
 
-### Team bios
-
-> Fixed at the current number of people. Adding or removing a team member is a code change, not a copy change.
-
-**`about.about-team.the-team`** — Small label
+**`about.about-hero.the-team`** — Small label
 
 ```text
 The Team
 ```
 
-**`about.about-team.meet-your-dog-s-people`** — Heading
+**`about.about-hero.meet-your-dog-s-people`** — Heading
 
 ```text
 Meet your dog&apos;s people
@@ -2225,151 +1676,25 @@ Meet your dog&apos;s people
 
 Reads as: Meet your dog's people
 
-**`about.about-team.luis-not-the-rug-dog`** — Image description (not visible — read by screen readers and Google)
+**`about.about-hero.how-we-work`** — Small label
 
 ```text
-Luis, Not The Rug dog walker
+How We Work
 ```
 
-**`about.about-team.luis`** — Text
+**`about.about-hero.the-principles-behind-every-walk`** — Heading
 
 ```text
-Luis
+The principles behind every walk
 ```
 
-**`about.about-team.founder-lead-walker`** — Text
+**`about.about-hero.our-walks-are-structured-consistent`** — Paragraph
 
 ```text
-Founder &amp; Lead Walker
+Our walks are structured, consistent, and responsive. From pickup to drop-off, we give each dog a familiar rhythm while staying present to their pace, mood, leash cues, and body language. That repetition builds trust, helping dogs move with more ease and settle calmly when they return home.
 ```
 
-Reads as: Founder & Lead Walker
-
-**`about.about-team.a-former-siriusxm-program-director`** — Paragraph
-
-```text
-A former SiriusXM Program Director and Red Bull music strategist, Luis traded the broadcast world for Brooklyn sidewalks. He founded Not The Rug in 2011 after discovering dog walking on the Upper West Side. A Williamsburg resident since 2006, he knows the blocks, the parks, and most of the dogs by name.
-```
-
-**`about.about-team.lincoln-not-the-rug-dog`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Lincoln, Not The Rug dog walker
-```
-
-**`about.about-team.lincoln`** — Text
-
-```text
-Lincoln
-```
-
-**`about.about-team.manager-senior-walker`** — Text
-
-```text
-Manager &amp; Senior Walker
-```
-
-Reads as: Manager & Senior Walker
-
-**`about.about-team.originally-from-south-louisiana-with`** — Paragraph
-
-```text
-Originally from South Louisiana, with roots in DownEast Maine, Lincoln grew up surrounded by animals, including dogs, miniature donkeys, and even emus. If it had four legs or feathers, she likely helped care for it. Four years ago, Lincoln moved to Brooklyn with her three Southern pups, bringing her deep respect for animals with her. Her understanding of animal behavior, along with her steady and generous approach, makes her a trusted presence on the team. Now a Williamsburg local, Lincoln feels lucky to do this work every day.
-```
-
-**`about.about-team.marcus-not-the-rug-dog`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Marcus, Not The Rug dog walker
-```
-
-**`about.about-team.marcus`** — Text
-
-```text
-Marcus
-```
-
-**`about.about-team.senior-walker`** — Text
-
-```text
-Senior Walker
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`about.about-team.marcus-has-spent-his-life`** — Paragraph
-
-```text
-Marcus has spent his life around animals, from growing up with pets to working as a dog trainer at Petco. He brings a thoughtful understanding of how dogs communicate, learn, and respond. A theater kid, video gamer, curious thinker, and devoted animal lover, Marcus sees every walk as a chance to build trust and connection. Say hello when you see him in the neighborhood — he&apos;s always happy to meet pups and their people.
-```
-
-Reads as: Marcus has spent his life around animals, from growing up with pets to working as a dog trainer at Petco. He brings a thoughtful understanding of how dogs communicate, learn, and respond. A theater kid, video gamer, curious thinker, and devoted animal lover, Marcus sees every walk as a chance to build trust and connection. Say hello when you see him in the neighborhood — he's always happy to meet pups and their people.
-
-**`about.about-team.christian-not-the-rug-dog`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Christian, Not The Rug dog walker
-```
-
-**`about.about-team.christian`** — Text
-
-```text
-Christian
-```
-
-**`about.about-team.christian-spent-more-than-six`** — Paragraph
-
-```text
-Christian spent more than six years working as a chef and kitchen manager, where he developed discipline, focus, and strong attention to detail. Over time, he realized he wanted work that felt more grounded and connected. With a lifelong love for animals, Christian chose a new path that brought more balance into his life. He brings patience, care, and a steady presence to every walk, treating each dog with the same respect he would give his own.
-```
-
-**`about.about-team.shawn-not-the-rug-dog`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Shawn, Not The Rug dog walker
-```
-
-**`about.about-team.shawn`** — Text
-
-```text
-Shawn
-```
-
-**`about.about-team.walker`** — Text
-
-```text
-Walker
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`about.about-team.shawn-brings-care-precision-and`** — Paragraph
-
-```text
-Shawn brings care, precision, and a calm presence to every walk. An artist, musician, and visual creator, he approaches dog care with patience and intention. Before joining Not The Rug, Shawn spent two years with another service and came to us wanting a more thoughtful approach to the work. He has been a strong addition to the team, and we&apos;re glad to have him.
-```
-
-Reads as: Shawn brings care, precision, and a calm presence to every walk. An artist, musician, and visual creator, he approaches dog care with patience and intention. Before joining Not The Rug, Shawn spent two years with another service and came to us wanting a more thoughtful approach to the work. He has been a strong addition to the team, and we're glad to have him.
-
-**`about.about-team.yenny-not-the-rug-dog`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Yenny, Not The Rug dog walker
-```
-
-**`about.about-team.yenny`** — Text
-
-```text
-Yenny
-```
-
-**`about.about-team.yenny-is-an-experienced-dog`** — Paragraph
-
-```text
-Yenny is an experienced dog walker and a returning member of the Not The Rug team. Before joining us, she spent three years managing a doggy daycare in Long Island City, working with dogs of all personalities and energy levels. After stepping away to have her baby, Yenny is back with us and already reconnecting with the neighborhood pups. We&apos;re excited to have her back.
-```
-
-Reads as: Yenny is an experienced dog walker and a returning member of the Not The Rug team. Before joining us, she spent three years managing a doggy daycare in Long Island City, working with dogs of all personalities and energy levels. After stepping away to have her baby, Yenny is back with us and already reconnecting with the neighborhood pups. We're excited to have her back.
+### Team section ("Join the team" card)
 
 **`about.about-team.join-the-team`** — Heading
 
@@ -2389,25 +1714,107 @@ We hire experienced, passionate walkers who want to build real relationships —
 Learn More
 ```
 
-### How we work
-
-**`about.about-how-we-work.how-we-work`** — Small label
+**`about.about-team.luis`** — Heading
 
 ```text
-How We Work
+Luis
 ```
 
-**`about.about-how-we-work.the-principles-behind-every-walk`** — Heading
+**`about.about-team.founder-lead-walker`** — Small label
 
 ```text
-The principles behind every walk
+Founder & Lead Walker
 ```
 
-**`about.about-how-we-work.our-walks-are-structured-consistent`** — Paragraph
+**`about.about-team.a-former-siriusxm-program-director`** — Paragraph
 
 ```text
-Our walks are structured, consistent, and responsive. From pickup to drop-off, we give each dog a familiar rhythm while staying present to their pace, mood, leash cues, and body language. That repetition builds trust, helping dogs move with more ease and settle calmly when they return home.
+A former SiriusXM Program Director and Red Bull music strategist, Luis traded the broadcast world for Brooklyn sidewalks. He founded Not The Rug in 2011 after discovering dog walking on the Upper West Side. A Williamsburg resident since 2006, he knows the blocks, the parks, and most of the dogs by name.
 ```
+
+**`about.about-team.lincoln`** — Heading
+
+```text
+Lincoln
+```
+
+**`about.about-team.manager-senior-walker`** — Small label
+
+```text
+Manager & Senior Walker
+```
+
+**`about.about-team.originally-from-south-louisiana-with`** — Paragraph
+
+```text
+Originally from South Louisiana, with roots in DownEast Maine, Lincoln grew up surrounded by animals, including dogs, miniature donkeys, and even emus. If it had four legs or feathers, she likely helped care for it. Four years ago, Lincoln moved to Brooklyn with her three Southern pups, bringing her deep respect for animals with her. Her understanding of animal behavior, along with her steady and generous approach, makes her a trusted presence on the team. Now a Williamsburg local, Lincoln feels lucky to do this work every day.
+```
+
+**`about.about-team.marcus`** — Heading
+
+```text
+Marcus
+```
+
+**`about.about-team.senior-walker`** — Small label
+
+```text
+Senior Walker
+```
+
+_Written 2 times in this section by design (the strip loops). One edit updates all of them._
+
+**`about.about-team.marcus-has-spent-his-life`** — Paragraph
+
+```text
+Marcus has spent his life around animals, from growing up with pets to working as a dog trainer at Petco. He brings a thoughtful understanding of how dogs communicate, learn, and respond. A theater kid, video gamer, curious thinker, and devoted animal lover, Marcus sees every walk as a chance to build trust and connection. Say hello when you see him in the neighborhood — he's always happy to meet pups and their people.
+```
+
+**`about.about-team.christian`** — Heading
+
+```text
+Christian
+```
+
+**`about.about-team.christian-spent-more-than-six`** — Paragraph
+
+```text
+Christian spent more than six years working as a chef and kitchen manager, where he developed discipline, focus, and strong attention to detail. Over time, he realized he wanted work that felt more grounded and connected. With a lifelong love for animals, Christian chose a new path that brought more balance into his life. He brings patience, care, and a steady presence to every walk, treating each dog with the same respect he would give his own.
+```
+
+**`about.about-team.shawn`** — Heading
+
+```text
+Shawn
+```
+
+**`about.about-team.walker`** — Small label
+
+```text
+Walker
+```
+
+_Written 2 times in this section by design (the strip loops). One edit updates all of them._
+
+**`about.about-team.shawn-brings-care-precision-and`** — Paragraph
+
+```text
+Shawn brings care, precision, and a calm presence to every walk. An artist, musician, and visual creator, he approaches dog care with patience and intention. Before joining Not The Rug, Shawn spent two years with another service and came to us wanting a more thoughtful approach to the work. He has been a strong addition to the team, and we're glad to have him.
+```
+
+**`about.about-team.yenny`** — Heading
+
+```text
+Yenny
+```
+
+**`about.about-team.yenny-is-an-experienced-dog`** — Paragraph
+
+```text
+Yenny is an experienced dog walker and a returning member of the Not The Rug team. Before joining us, she spent three years managing a doggy daycare in Long Island City, working with dogs of all personalities and energy levels. After stepping away to have her baby, Yenny is back with us and already reconnecting with the neighborhood pups. We're excited to have her back.
+```
+
+### How we work (values)
 
 **`about.about-how-we-work.consistency-over-convenience`** — Heading
 
@@ -2418,10 +1825,8 @@ Consistency Over Convenience
 **`about.about-how-we-work.we-don-t-take-on`** — Paragraph
 
 ```text
-We don&apos;t take on every client — not to be exclusive, but to protect the quality of care. We only accept new dogs when we can assign a consistent walker with the time and capacity to do the job well. Your dog deserves a familiar person, not a different face every week.
+We don't take on every client — not to be exclusive, but to protect the quality of care. We only accept new dogs when we can assign a consistent walker with the time and capacity to do the job well. Your dog deserves a familiar person, not a different face every week.
 ```
-
-Reads as: We don't take on every client — not to be exclusive, but to protect the quality of care. We only accept new dogs when we can assign a consistent walker with the time and capacity to do the job well. Your dog deserves a familiar person, not a different face every week.
 
 **`about.about-how-we-work.small-groups-real-attention`** — Heading
 
@@ -2432,10 +1837,8 @@ Small Groups, Real Attention
 **`about.about-how-we-work.three-dogs-maximum-per-walk`** — Paragraph
 
 ```text
-Three dogs maximum per walk. Always. It&apos;s not a marketing line. It&apos;s how we keep walks safe, calm, and attentive. Your dog gets real exercise and engagement, not crowd management.
+Three dogs maximum per walk. Always. It's not a marketing line. It's how we keep walks safe, calm, and attentive. Your dog gets real exercise and engagement, not crowd management.
 ```
-
-Reads as: Three dogs maximum per walk. Always. It's not a marketing line. It's how we keep walks safe, calm, and attentive. Your dog gets real exercise and engagement, not crowd management.
 
 **`about.about-how-we-work.neighborhood-expertise`** — Heading
 
@@ -2458,18 +1861,30 @@ Real People, Always Reachable
 **`about.about-how-we-work.luis-s-personal-number-is`** — Paragraph
 
 ```text
-Luis&apos;s personal number is on the website, and you can text or call your walker directly. No support tickets. No call centers. Just real people who know your dog and respond when you need them.
+Luis's personal number is on the website, and you can text or call your walker directly. No support tickets. No call centers. Just real people who know your dog and respond when you need them.
 ```
 
-Reads as: Luis's personal number is on the website, and you can text or call your walker directly. No support tickets. No call centers. Just real people who know your dog and respond when you need them.
+### /about — search engine + link preview
+
+**`about.about-meta.about-us-not-the-rug`** — Heading
+
+```text
+About Us — Not The Rug
+```
+
+**`about.about-meta.not-the-rug-was-born`** — Paragraph
+
+```text
+Not The Rug was born in Williamsburg and has never left. 15 years of walks, one neighborhood.
+```
 
 ---
 
 ## 6. Safety & Trust
 
-_32 items_
+_34 items_
 
-### Safety page hero
+### Safety page hero + certifications heading
 
 **`safety.safety-hero.safety-trust`** — Small label
 
@@ -2479,7 +1894,7 @@ Safety &amp; Trust
 
 Reads as: Safety & Trust
 
-_The same wording is used elsewhere: `global.nav-desktop.safety-trust`, `global.nav-mobile.safety-trust`, `global.footer.safety-trust`, `SiteNav.nav-standalone.safety-trust`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `global.footer.safety-trust`. Those are separate slots — change them too if they should stay consistent._
 
 **`safety.safety-hero.why-trust-matters-more-than`** — Heading
 
@@ -2495,10 +1910,128 @@ Reads as: Why trust matters ⏎ more than price
 Every trust and safety standard we hold ourselves to — and why we hold it.
 ```
 
+_The same wording is used elsewhere: `safety.safety-meta.every-trust-and-safety-standard`. Those are separate slots — change them too if they should stay consistent._
+
 **`safety.safety-hero.waffles-waffles-nyc`** — Link
 
 ```text
 Waffles · @waffles_nyc
+```
+
+**`safety.safety-hero.certifications-memberships`** — Small label
+
+```text
+Certifications &amp; Memberships
+```
+
+Reads as: Certifications & Memberships
+
+**`safety.safety-hero.professional-credentials`** — Heading
+
+```text
+Professional credentials
+```
+
+### Certifications strip (shared: homepage + Safety page)
+
+> Must be factually true. Editing this updates both places it appears.
+
+**`safety.safety-certs.napps-member`** — Small label
+
+```text
+NAPPS Member
+```
+
+**`safety.safety-certs.background-checked`** — Small label
+
+```text
+Background Checked
+```
+
+**`safety.safety-certs.fully-insured`** — Small label
+
+```text
+Fully Insured
+```
+
+**`safety.safety-certs.bonded`** — Small label
+
+```text
+Bonded
+```
+
+### Safety FAQ (heading)
+
+**`safety.safety-faq.common-questions`** — Small label
+
+```text
+Common Questions
+```
+
+**`safety.safety-faq.what-families-usually-ask`** — Heading
+
+```text
+What families usually ask
+```
+
+**`safety.safety-faq.what-happens-if-my-dog`** — Heading
+
+```text
+What happens if my dog gets injured on a walk?
+```
+
+**`safety.safety-faq.we-contact-you-immediately-provide`** — Paragraph
+
+```text
+We contact you immediately, provide basic first aid if needed, and take your dog to your designated vet or the nearest emergency clinic. We document everything clearly and stay with your dog until you can be there. Our insurance covers veterinary costs related to walker negligence.
+```
+
+**`safety.safety-faq.will-my-dog-always-have`** — Heading
+
+```text
+Will my dog always have the same walker?
+```
+
+**`safety.safety-faq.yes-in-the-vast-majority`** — Paragraph
+
+```text
+Yes, in the vast majority of cases. We assign a primary walker at onboarding and only introduce a backup walker (who you'll meet in advance) if your regular walker is unavailable. We never send an unknown person to your home.
+```
+
+**`safety.safety-faq.what-are-your-vaccination-requirements`** — Heading
+
+```text
+What are your vaccination requirements?
+```
+
+**`safety.safety-faq.all-dogs-must-be-current`** — Paragraph
+
+```text
+All dogs must be current on Rabies, DHPP (distemper/parvo), and Bordetella vaccines. We require documentation at onboarding. This protects your dog, our walkers, and other dogs in our care.
+```
+
+**`safety.safety-faq.what-s-your-cancellation-policy`** — Heading
+
+```text
+What's your cancellation policy?
+```
+
+**`safety.safety-faq.for-individual-walks-we-ask`** — Paragraph
+
+```text
+For individual walks, we ask for 24 hours' notice to avoid a charge. For boarding, we ask for 72 hours' notice. We understand life happens and handle special circumstances with flexibility.
+```
+
+**`safety.safety-faq.why-do-you-clean-dogs`** — Heading
+
+```text
+Why do you clean dogs' paws after every walk?
+```
+
+**`safety.safety-faq.we-clean-paws-after-every`** — Paragraph
+
+```text
+We clean paws after every walk to help remove dirt, debris, and anything harmful your dog may have stepped in outside. It's a simple step that supports your dog's health and helps keep your home clean.
 ```
 
 ### Safety standards
@@ -2508,20 +2041,14 @@ Waffles · @waffles_nyc
 **`safety.safety-standards.fully-insured-bonded`** — Heading
 
 ```text
-Fully Insured &amp; Bonded
+Fully Insured & Bonded
 ```
-
-Reads as: Fully Insured & Bonded
-
-_The same wording is used elsewhere: `home.trust-bar.fully-insured-bonded`, `home.closing-trust.fully-insured-bonded`. Those are separate slots — change them too if they should stay consistent._
 
 **`safety.safety-standards.not-the-rug-carries-comprehensive`** — Paragraph
 
 ```text
-Not The Rug carries comprehensive pet care liability insurance and is fully bonded. In the unlikely event of an accident or property issue, you&apos;re protected. We&apos;ll share proof of insurance on request.
+Not The Rug carries comprehensive pet care liability insurance and is fully bonded. In the unlikely event of an accident or property issue, you're protected. We'll share proof of insurance on request.
 ```
-
-Reads as: Not The Rug carries comprehensive pet care liability insurance and is fully bonded. In the unlikely event of an accident or property issue, you're protected. We'll share proof of insurance on request.
 
 **`safety.safety-standards.background-checked-team`** — Heading
 
@@ -2534,10 +2061,8 @@ _The same wording is used elsewhere: `home.trust-bar.background-checked-team`, `
 **`safety.safety-standards.every-member-of-our-team`** — Paragraph
 
 ```text
-Every member of our team undergoes a comprehensive background check before their first walk. We vet our walkers as carefully as you&apos;d vet someone with a key to your home — because that&apos;s exactly what they have.
+Every member of our team undergoes a comprehensive background check before their first walk. We vet our walkers as carefully as you'd vet someone with a key to your home — because that's exactly what they have.
 ```
-
-Reads as: Every member of our team undergoes a comprehensive background check before their first walk. We vet our walkers as carefully as you'd vet someone with a key to your home — because that's exactly what they have.
 
 **`safety.safety-standards.gps-tracking-on-every-walk`** — Heading
 
@@ -2578,152 +2103,30 @@ _The same wording is used elsewhere: `home.trust-bar.max-3-dogs-per-walk`. Those
 **`safety.safety-standards.we-cap-every-group-walk`** — Paragraph
 
 ```text
-We cap every group walk at three dogs. This is a safety standard and a quality standard. Your dog gets genuine attention — not a chaotic pack of strangers that can&apos;t be safely managed.
+We cap every group walk at three dogs. This is a safety standard and a quality standard. Your dog gets genuine attention — not a chaotic pack of strangers that can't be safely managed.
 ```
 
-Reads as: We cap every group walk at three dogs. This is a safety standard and a quality standard. Your dog gets genuine attention — not a chaotic pack of strangers that can't be safely managed.
+### /safety — search engine + link preview
 
-### Certifications strip
-
-> Must be factually true.
-
-**`safety.safety-certs.certifications-memberships`** — Small label
+**`safety.safety-meta.safety-trust-not-the-rug`** — Heading
 
 ```text
-Certifications &amp; Memberships
+Safety & Trust — Not The Rug
 ```
 
-Reads as: Certifications & Memberships
-
-**`safety.safety-certs.professional-credentials`** — Heading
+**`safety.safety-meta.every-trust-and-safety-standard`** — Paragraph
 
 ```text
-Professional credentials
+Every trust and safety standard we hold ourselves to — and why we hold it.
 ```
 
-**`safety.safety-certs.napps-member`** — Small label
-
-```text
-NAPPS Member
-```
-
-_The same wording is used elsewhere: `home.closing-trust.napps-member`. Those are separate slots — change them too if they should stay consistent._
-
-**`safety.safety-certs.background-checked`** — Small label
-
-```text
-Background Checked
-```
-
-_The same wording is used elsewhere: `home.closing-trust.background-checked`. Those are separate slots — change them too if they should stay consistent._
-
-**`safety.safety-certs.fully-insured`** — Small label
-
-```text
-Fully Insured
-```
-
-_The same wording is used elsewhere: `home.closing-trust.fully-insured`. Those are separate slots — change them too if they should stay consistent._
-
-**`safety.safety-certs.bonded`** — Small label
-
-```text
-Bonded
-```
-
-_The same wording is used elsewhere: `home.closing-trust.bonded`. Those are separate slots — change them too if they should stay consistent._
-
-### Safety FAQ
-
-> Each question keeps its answer. Do not add new questions here.
-
-**`safety.safety-faq.common-questions`** — Small label
-
-```text
-Common Questions
-```
-
-**`safety.safety-faq.what-families-usually-ask`** — Heading
-
-```text
-What families usually ask
-```
-
-**`safety.safety-faq.what-happens-if-my-dog`** — Text
-
-```text
-What happens if my dog gets injured on a walk?
-```
-
-**`safety.safety-faq.we-contact-you-immediately-provide`** — Paragraph
-
-```text
-We contact you immediately, provide basic first aid if needed, and take your dog to your designated vet or the nearest emergency clinic. We document everything clearly and stay with your dog until you can be there. Our insurance covers veterinary costs related to walker negligence.
-```
-
-**`safety.safety-faq.will-my-dog-always-have`** — Text
-
-```text
-Will my dog always have the same walker?
-```
-
-**`safety.safety-faq.yes-in-the-vast-majority`** — Paragraph
-
-```text
-Yes, in the vast majority of cases. We assign a primary walker at onboarding and only introduce a backup walker (who you&apos;ll meet in advance) if your regular walker is unavailable. We never send an unknown person to your home.
-```
-
-Reads as: Yes, in the vast majority of cases. We assign a primary walker at onboarding and only introduce a backup walker (who you'll meet in advance) if your regular walker is unavailable. We never send an unknown person to your home.
-
-**`safety.safety-faq.what-are-your-vaccination-requirements`** — Text
-
-```text
-What are your vaccination requirements?
-```
-
-**`safety.safety-faq.all-dogs-must-be-current`** — Paragraph
-
-```text
-All dogs must be current on Rabies, DHPP (distemper/parvo), and Bordetella vaccines. We require documentation at onboarding. This protects your dog, our walkers, and other dogs in our care.
-```
-
-**`safety.safety-faq.what-s-your-cancellation-policy`** — Text
-
-```text
-What&apos;s your cancellation policy?
-```
-
-Reads as: What's your cancellation policy?
-
-**`safety.safety-faq.for-individual-walks-we-ask`** — Paragraph
-
-```text
-For individual walks, we ask for 24 hours&apos; notice to avoid a charge. For boarding, we ask for 72 hours&apos; notice. We understand life happens and handle special circumstances with flexibility.
-```
-
-Reads as: For individual walks, we ask for 24 hours' notice to avoid a charge. For boarding, we ask for 72 hours' notice. We understand life happens and handle special circumstances with flexibility.
-
-**`safety.safety-faq.why-do-you-clean-dogs`** — Text
-
-```text
-Why do you clean dogs&apos; paws after every walk?
-```
-
-Reads as: Why do you clean dogs' paws after every walk?
-
-**`safety.safety-faq.we-clean-paws-after-every`** — Paragraph
-
-```text
-We clean paws after every walk to help remove dirt, debris, and anything harmful your dog may have stepped in outside. It&apos;s a simple step that supports your dog&apos;s health and helps keep your home clean.
-```
-
-Reads as: We clean paws after every walk to help remove dirt, debris, and anything harmful your dog may have stepped in outside. It's a simple step that supports your dog's health and helps keep your home clean.
+_The same wording is used elsewhere: `safety.safety-hero.every-trust-and-safety-standard`. Those are separate slots — change them too if they should stay consistent._
 
 ---
 
 ## 7. Williamsburg
 
-_15 items_
+_29 items_
 
 ### Neighborhoods page hero
 
@@ -2755,87 +2158,171 @@ Reads as: We're a Williamsburg service through and through — we know every par
 Pepper · @pepper_bklyn
 ```
 
-### Williamsburg
+### Williamsburg detail
 
 > Williamsburg is the only neighborhood page by design.
 
-**`neighborhoods.hoods-williamsburg.williamsburg`** — Text
+**`neighborhoods.hoods-williamsburg.dog-walking-in`** — Heading
+
+```text
+Dog Walking in<br />
+```
+
+Reads as: Dog Walking in ⏎
+
+**`neighborhoods.hoods-williamsburg.parks-we-walk`** — Text
+
+```text
+Parks We Walk
+```
+
+**`neighborhoods.hoods-williamsburg.book-a-walk-in`** — Button
+
+```text
+Book a Walk in
+```
+
+**`neighborhoods.hoods-williamsburg.ask-about`** — Button
+
+```text
+Ask About
+```
+
+**`neighborhoods.hoods-williamsburg.coverage`** — Button
+
+```text
+Coverage
+```
+
+**`neighborhoods.hoods-williamsburg.your-assigned-walker`** — Heading
+
+```text
+Your Assigned Walker
+```
+
+**`neighborhoods.hoods-williamsburg.we-match-you-with-a`** — Paragraph
+
+```text
+We match you with a walker who lives or regularly works in
+```
+
+**`neighborhoods.hoods-williamsburg.they-know-the-neighborhood-the`** — Paragraph
+
+```text
+— they know the neighborhood the way you know your apartment.
+```
+
+**`neighborhoods.hoods-williamsburg.local-park-routes`** — Heading
+
+```text
+Local Park Routes
+```
+
+**`neighborhoods.hoods-williamsburg.our-walkers-have-season-calibrated`** — Paragraph
+
+```text
+Our walkers have season-calibrated routes for
+```
+
+**`neighborhoods.hoods-williamsburg.shaded-summer-paths-dry-winter`** — Paragraph
+
+```text
+— shaded summer paths, dry winter routes, and parks with good off-leash hours.
+```
+
+**`neighborhoods.hoods-williamsburg.fast-availability`** — Heading
+
+```text
+Fast Availability
+```
+
+**`neighborhoods.hoods-williamsburg.we-typically-have-walker-availability`** — Paragraph
+
+```text
+We typically have walker availability in
+```
+
+**`neighborhoods.hoods-williamsburg.within-1-2-weeks-of`** — Paragraph
+
+```text
+within 1–2 weeks of inquiry. Contact us to check current capacity.
+```
+
+**`neighborhoods.hoods-williamsburg.williamsburg`** — Heading
 
 ```text
 Williamsburg
 ```
 
-_The same wording is used elsewhere: `global.nav-desktop.williamsburg`, `global.nav-mobile.williamsburg`, `contact.contactpage-body.williamsburg`, `global.footer.williamsburg`, `SiteNav.nav-standalone.williamsburg`, `neighborhoods.hoods-data.williamsburg`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `global.footer.williamsburg`. Those are separate slots — change them too if they should stay consistent._
 
-**`neighborhoods.hoods-williamsburg.our-home-since-2011`** — Text
-
-```text
-Our home since 2011
-```
-
-### Williamsburg page content
-
-**`neighborhoods.hoods-data.williamsburg`** — Heading
-
-```text
-Williamsburg
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.williamsburg`, `global.nav-mobile.williamsburg`, `neighborhoods.hoods-williamsburg.williamsburg`, `contact.contactpage-body.williamsburg`, `global.footer.williamsburg`, `SiteNav.nav-standalone.williamsburg`. Those are separate slots — change them too if they should stay consistent._
-
-**`neighborhoods.hoods-data.our-home-neighborhood-since-2011`** — Small label
+**`neighborhoods.hoods-williamsburg.our-home-neighborhood-since-2011`** — Small label
 
 ```text
 Our home neighborhood since 2011
 ```
 
-**`neighborhoods.hoods-data.williamsburg-is-where-not-the`** — Paragraph
+**`neighborhoods.hoods-williamsburg.williamsburg-is-where-not-the`** — Paragraph
 
 ```text
 Williamsburg is where Not The Rug was born, and it remains the heart of our operation. We know every building, every doorman, every park bench, and every dog on every block. When it comes to Williamsburg dog walking, nobody knows these streets better.
 ```
 
-**`neighborhoods.hoods-data.mccarren-park`** — List item
+**`neighborhoods.hoods-williamsburg.mccarren-park`** — List item
 
 ```text
 McCarren Park
 ```
 
-**`neighborhoods.hoods-data.east-river-state-park`** — List item
+**`neighborhoods.hoods-williamsburg.east-river-state-park`** — List item
 
 ```text
 East River State Park
 ```
 
-**`neighborhoods.hoods-data.domino-park`** — List item
+**`neighborhoods.hoods-williamsburg.domino-park`** — List item
 
 ```text
 Domino Park
 ```
 
-**`neighborhoods.hoods-data.n-5th-st-dog-run`** — List item
+**`neighborhoods.hoods-williamsburg.n-5th-st-dog-run`** — List item
 
 ```text
 N 5th St Dog Run
 ```
 
-**`neighborhoods.hoods-data.marcy-park`** — List item
+**`neighborhoods.hoods-williamsburg.marcy-park`** — List item
 
 ```text
 Marcy Park
 ```
 
-**`neighborhoods.hoods-data.dog-walker-williamsburg-brooklyn`** — Search phrase
+**`neighborhoods.hoods-williamsburg.dog-walker-williamsburg-brooklyn`** — Search phrase
 
 ```text
 Dog walker Williamsburg Brooklyn
+```
+
+### /neighborhoods/williamsburg — search engine + link preview
+
+**`neighborhoods.hoods-meta.dog-walking-in-williamsburg-brooklyn`** — Heading
+
+```text
+Dog Walking in Williamsburg, Brooklyn — Not The Rug
+```
+
+**`neighborhoods.hoods-meta.we-re-a-williamsburg-service`** — Paragraph
+
+```text
+We're a Williamsburg service through and through — we know every park, shortcut, and puddle to avoid.
 ```
 
 ---
 
 ## 8. Reviews
 
-_26 items_
+_24 items_
 
 ### Reviews page hero
 
@@ -2891,25 +2378,41 @@ Years of 5-star service
 Beans · @beans_wlmsbg
 ```
 
+**`reviews.reviews-hero.leave-a-review`** — Small label
+
+```text
+Leave a Review
+```
+
+**`reviews.reviews-hero.loved-working-with-us`** — Heading
+
+```text
+Loved working with us?
+```
+
+**`reviews.reviews-hero.your-review-helps-other-brooklyn`** — Paragraph
+
+```text
+Your review helps other Brooklyn dog owners find trustworthy care — and it means the world to our team.
+```
+
+**`reviews.reviews-hero.review-on-google`** — Button
+
+```text
+Review on Google
+```
+
+**`reviews.reviews-hero.review-on-yelp`** — Button
+
+```text
+Review on Yelp
+```
+
 ### Review cards
 
 > Real customer quotes — only edit if inaccurate.
 
-**`reviews.reviews-list.luis-and-team-are-truly`** — Paragraph
-
-```text
-Luis and team are truly the best of the best. It&apos;s not easy to trust just anyone with our beloved fur baby, but Luis&apos;s professionalism and kindness combined with the GPS tracking he provides puts even the most nervous pet parent (me!!!) at ease.
-```
-
-Reads as: Luis and team are truly the best of the best. It's not easy to trust just anyone with our beloved fur baby, but Luis's professionalism and kindness combined with the GPS tracking he provides puts even the most nervous pet parent (me!!!) at ease.
-
-**`reviews.reviews-list.jy`** — Text
-
-```text
-JY
-```
-
-**`reviews.reviews-list.jessica-y`** — Text
+**`reviews.reviews-list.jessica-y`** — Heading
 
 ```text
 Jessica Y.
@@ -2917,7 +2420,7 @@ Jessica Y.
 
 _The same wording is used elsewhere: `home.featured-reviews.jessica-y`. Those are separate slots — change them too if they should stay consistent._
 
-**`reviews.reviews-list.williamsburg-yelp`** — Text
+**`reviews.reviews-list.williamsburg-yelp`** — Small label
 
 ```text
 Williamsburg · Yelp
@@ -2925,21 +2428,13 @@ Williamsburg · Yelp
 
 _Written 4 times in this section by design (the strip loops). One edit updates all of them._
 
-**`reviews.reviews-list.luis-is-the-guy-you`** — Paragraph
+**`reviews.reviews-list.luis-and-team-are-truly`** — Small label
 
 ```text
-Luis is the guy you want your fur babies to be taken care of by. We have used him for over two years now and couldn&apos;t even begin to tell you how grateful we are to have him! He has saved us so many times with our busy work schedules. From their normal walk, we get text updates and pics every day. He&apos;s even helped us with the rehab of one of our dogs recovering from surgery — adjusting walks and carrying our guy outside to help him heal. Seriously — hire Not The Rug. They won&apos;t disappoint.
+Luis and team are truly the best of the best. It's not easy to trust just anyone with our beloved fur baby, but Luis's professionalism and kindness combined with the GPS tracking he provides puts even the most nervous pet parent (me!!!) at ease.
 ```
 
-Reads as: Luis is the guy you want your fur babies to be taken care of by. We have used him for over two years now and couldn't even begin to tell you how grateful we are to have him! He has saved us so many times with our busy work schedules. From their normal walk, we get text updates and pics every day. He's even helped us with the rehab of one of our dogs recovering from surgery — adjusting walks and carrying our guy outside to help him heal. Seriously — hire Not The Rug. They won't disappoint.
-
-**`reviews.reviews-list.ja`** — Text
-
-```text
-JA
-```
-
-**`reviews.reviews-list.jayne-a`** — Text
+**`reviews.reviews-list.jayne-a`** — Heading
 
 ```text
 Jayne A.
@@ -2947,19 +2442,13 @@ Jayne A.
 
 _The same wording is used elsewhere: `home.featured-reviews.jayne-a`. Those are separate slots — change them too if they should stay consistent._
 
-**`reviews.reviews-list.luis-and-his-amazing-team`** — Paragraph
+**`reviews.reviews-list.luis-is-the-guy-you`** — Small label
 
 ```text
-Luis and his amazing team are the best! Our two dogs adore him and Reana, our primary walker. You can trust Luis to take care of your dog as if it was his own. He is also flexible and accommodating with schedule changes. Your dogs will be in great hands!
+Luis is the guy you want your fur babies to be taken care of by. We have used him for over two years now and couldn't even begin to tell you how grateful we are to have him! He has saved us so many times with our busy work schedules. From their normal walk, we get text updates and pics every day. He's even helped us with the rehab of one of our dogs recovering from surgery — adjusting walks and carrying our guy outside to help him heal. Seriously — hire Not The Rug. They won't disappoint.
 ```
 
-**`reviews.reviews-list.kt`** — Text
-
-```text
-KT
-```
-
-**`reviews.reviews-list.kassie-t`** — Text
+**`reviews.reviews-list.kassie-t`** — Heading
 
 ```text
 Kassie T.
@@ -2967,69 +2456,59 @@ Kassie T.
 
 _The same wording is used elsewhere: `home.featured-reviews.kassie-t`. Those are separate slots — change them too if they should stay consistent._
 
-**`reviews.reviews-list.they-were-so-awesome-with`** — Paragraph
+**`reviews.reviews-list.luis-and-his-amazing-team`** — Small label
 
 ```text
-They were so awesome with my dog and super patient with me. Daily updates on how the walk went, cute photos, and the price is really nice for a longer walk duration. My dog LOVES Nuria!
+Luis and his amazing team are the best! Our two dogs adore him and Reana, our primary walker. You can trust Luis to take care of your dog as if it was his own. He is also flexible and accommodating with schedule changes. Your dogs will be in great hands!
 ```
 
-**`reviews.reviews-list.hm`** — Text
-
-```text
-HM
-```
-
-**`reviews.reviews-list.hayley-m`** — Text
+**`reviews.reviews-list.hayley-m`** — Heading
 
 ```text
 Hayley M.
 ```
 
-**`reviews.reviews-list.leave-a-review`** — Small label
+**`reviews.reviews-list.they-were-so-awesome-with`** — Small label
 
 ```text
-Leave a Review
+They were so awesome with my dog and super patient with me. Daily updates on how the walk went, cute photos, and the price is really nice for a longer walk duration. My dog LOVES Nuria!
 ```
 
-**`reviews.reviews-list.loved-working-with-us`** — Heading
+### /reviews — search engine + link preview
+
+**`reviews.reviews-meta.client-reviews-not-the-rug`** — Heading
 
 ```text
-Loved working with us?
+Client Reviews — Not The Rug
 ```
 
-**`reviews.reviews-list.your-review-helps-other-brooklyn`** — Paragraph
+**`reviews.reviews-meta.what-brooklyn-dog-owners-say`** — Paragraph
 
 ```text
-Your review helps other Brooklyn dog owners find trustworthy care — and it means the world to our team.
-```
-
-**`reviews.reviews-list.review-on-google`** — Button
-
-```text
-Review on Google
-```
-
-**`reviews.reviews-list.review-on-yelp`** — Button
-
-```text
-Review on Yelp
+What Brooklyn dog owners say about Not The Rug — 5-star ratings on Yelp and Google, 15 years of service.
 ```
 
 ---
 
 ## 9. Book a Walk
 
-_66 items_
+_6 items_
 
-### Book page hero (in-site)
+### /book — page content
+
+**`book.bookpage-hero.not-the-rug`** — Image description (not visible — read by screen readers and Google)
+
+```text
+Not The Rug
+```
+
+_The same wording is used elsewhere: `global.nav-standalone.not-the-rug`, `global.footer.not-the-rug`. Those are separate slots — change them too if they should stay consistent._
 
 **`book.bookpage-hero.get-started`** — Small label
 
 ```text
 Get Started
 ```
-
-_The same wording is used elsewhere: `book.book-page.get-started`, `contact.contact-page.get-started`. Those are separate slots — change them too if they should stay consistent._
 
 **`book.bookpage-hero.book-your-free-meet-greet`** — Heading
 
@@ -3039,475 +2518,19 @@ Book your free<br />Meet &amp; Greet
 
 Reads as: Book your free ⏎ Meet & Greet
 
-_The same wording is used elsewhere: `book.book-page.book-your-free-meet-greet`, `contact.contact-page.book-your-free-meet-greet`. Those are separate slots — change them too if they should stay consistent._
-
 **`book.bookpage-hero.no-commitment-no-charge-we`** — Paragraph
 
 ```text
 No commitment, no charge. We come to you, meet your dog, and answer every question.
 ```
 
-_The same wording is used elsewhere: `book.book-page.no-commitment-no-charge-we`, `contact.contact-page.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`, `book.book-meta.no-commitment-no-charge-we`, `contact.contact-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-hero.noodle-noodle-bklyn`** — Link
-
-```text
-Noodle · @noodle_bklyn
-```
-
-### Book page forms (in-site)
-
-**`book.bookpage-forms.free-meet-greet`** — Text
-
-```text
-Free Meet &amp; Greet
-```
-
-Reads as: Free Meet & Greet
-
-_The same wording is used elsewhere: `services.services-forms.free-meet-greet`, `how-it-works.hiw-steps.free-meet-greet`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.book-a-service`** — Text
-
-```text
-Book a Service
-```
-
-_The same wording is used elsewhere: `services.services-forms.book-a-service`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.ask-a-question`** — Text
-
-```text
-Ask a Question
-```
-
-_The same wording is used elsewhere: `services.services-forms.ask-a-question`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.book-a-service-2`** — Heading
-
-```text
-Book a service
-```
-
-_The same wording is used elsewhere: `services.services-forms.book-a-service-2`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.existing-clients-can-book-below`** — Paragraph
-
-```text
-Existing clients can book below. New clients — please start with a Meet &amp; Greet.
-```
-
-Reads as: Existing clients can book below. New clients — please start with a Meet & Greet.
-
-_The same wording is used elsewhere: `services.services-forms.existing-clients-can-book-below`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.service-type`** — Text
-
-```text
-Service Type
-```
-
-_The same wording is used elsewhere: `services.services-forms.service-type`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.small-group-visit-33-visit`** — Text
-
-```text
-Small Group Visit ($33/visit)
-```
-
-_The same wording is used elsewhere: `services.services-forms.small-group-visit-33-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.solo-visit-60-visit`** — Text
-
-```text
-Solo Visit ($60/visit)
-```
-
-_The same wording is used elsewhere: `services.services-forms.solo-visit-60-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.puppy-visit-35-visit`** — Text
-
-```text
-Puppy Visit ($35/visit)
-```
-
-_The same wording is used elsewhere: `services.services-forms.puppy-visit-35-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.senior-dog-visit-35-visit`** — Text
-
-```text
-Senior Dog Visit ($35/visit)
-```
-
-_The same wording is used elsewhere: `services.services-forms.senior-dog-visit-35-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.boarding-overnight-sitting-100-night`** — Text
-
-```text
-Boarding &amp; Overnight Sitting ($100/night)
-```
-
-Reads as: Boarding & Overnight Sitting ($100/night)
-
-_The same wording is used elsewhere: `services.services-forms.boarding-overnight-sitting-100-night`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.cat-visit-35-visit`** — Text
-
-```text
-Cat Visit ($35/visit)
-```
-
-_The same wording is used elsewhere: `services.services-forms.cat-visit-35-visit`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.preferred-date`** — Text
-
-```text
-Preferred Date
-```
-
-_The same wording is used elsewhere: `services.services-forms.preferred-date`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.preferred-time`** — Text
-
-```text
-Preferred Time
-```
-
-_The same wording is used elsewhere: `services.services-forms.preferred-time`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.morning-8-10-am`** — Text
-
-```text
-Morning (8–10 AM)
-```
-
-_The same wording is used elsewhere: `services.services-forms.morning-8-10-am`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.late-morning-10-am-12`** — Text
-
-```text
-Late Morning (10 AM–12 PM)
-```
-
-_The same wording is used elsewhere: `services.services-forms.late-morning-10-am-12`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.midday-12-2-pm`** — Text
-
-```text
-Midday (12–2 PM)
-```
-
-_The same wording is used elsewhere: `services.services-forms.midday-12-2-pm`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.afternoon-2-5-pm`** — Text
-
-```text
-Afternoon (2–5 PM)
-```
-
-_The same wording is used elsewhere: `services.services-forms.afternoon-2-5-pm`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.number-of-dogs`** — Text
-
-```text
-Number of Dogs
-```
-
-_The same wording is used elsewhere: `services.services-forms.number-of-dogs`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.1-dog`** — Text
-
-```text
-1 dog
-```
-
-_The same wording is used elsewhere: `services.services-forms.1-dog`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.2-dogs-same-household`** — Text
-
-```text
-2 dogs (same household)
-```
-
-_The same wording is used elsewhere: `services.services-forms.2-dogs-same-household`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.your-email`** — Text
-
-```text
-Your Email
-```
-
-_The same wording is used elsewhere: `services.services-forms.your-email`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.for-confirmation`** — Image description (not visible — read by screen readers and Google)
-
-```text
-For confirmation
-```
-
-_The same wording is used elsewhere: `services.services-forms.for-confirmation`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.request-booking`** — Button
-
-```text
-Request Booking
-```
-
-_The same wording is used elsewhere: `services.services-forms.request-booking`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.phase-1-roadmap`** — Text
-
-```text
-Phase 1 Roadmap
-```
-
-**`book.bookpage-forms.online-booking-integration`** — Heading
-
-```text
-Online Booking Integration
-```
-
-_The same wording is used elsewhere: `book.bookpage-roadmap.online-booking-integration`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.we-re-integrating-time-to`** — Paragraph
-
-```text
-We&apos;re integrating Time To Pet for real-time availability, instant confirmation, and automated reminders. Live within 30 days of site launch.
-```
-
-Reads as: We're integrating Time To Pet for real-time availability, instant confirmation, and automated reminders. Live within 30 days of site launch.
-
-**`book.bookpage-forms.get-in-touch`** — Heading
-
-```text
-Get in touch
-```
-
-_The same wording is used elsewhere: `services.services-forms.get-in-touch`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.have-a-specific-situation-or`** — Paragraph
-
-```text
-Have a specific situation or question? Send us a message and we&apos;ll reply personally.
-```
-
-Reads as: Have a specific situation or question? Send us a message and we'll reply personally.
-
-_The same wording is used elsewhere: `services.services-forms.have-a-specific-situation-or`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.your-name`** — Text
-
-```text
-Your Name
-```
-
-_The same wording is used elsewhere: `services.services-forms.your-name`, `contact.contactpage-body.your-name`, `MeetGreetForm.form.your-name`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.name`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Name
-```
-
-_The same wording is used elsewhere: `services.services-forms.name`, `contact.contactpage-body.name`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.email`** — Text
-
-```text
-Email
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `services.services-forms.email`, `contact.contactpage-body.email`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.subject`** — Text
-
-```text
-Subject
-```
-
-_The same wording is used elsewhere: `services.services-forms.subject`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.general-inquiry`** — Text
-
-```text
-General inquiry
-```
-
-_The same wording is used elsewhere: `services.services-forms.general-inquiry`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.pricing-question`** — Text
-
-```text
-Pricing question
-```
-
-_The same wording is used elsewhere: `services.services-forms.pricing-question`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.my-dog-has-special-needs`** — Text
-
-```text
-My dog has special needs
-```
-
-_The same wording is used elsewhere: `services.services-forms.my-dog-has-special-needs`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.coverage-area-question`** — Text
-
-```text
-Coverage area question
-```
-
-_The same wording is used elsewhere: `services.services-forms.coverage-area-question`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.team-employment`** — Text
-
-```text
-Team / employment
-```
-
-_The same wording is used elsewhere: `services.services-forms.team-employment`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.message`** — Text
-
-```text
-Message
-```
-
-_The same wording is used elsewhere: `services.services-forms.message`, `contact.contactpage-body.message`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.tell-us-what-s-on`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Tell us what's on your mind...
-```
-
-_The same wording is used elsewhere: `services.services-forms.tell-us-what-s-on`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-forms.send-message`** — Button
-
-```text
-Send Message
-```
-
-_The same wording is used elsewhere: `services.services-forms.send-message`, `contact.contactpage-body.send-message`. Those are separate slots — change them too if they should stay consistent._
-
-### Website roadmap
-
-> Public-facing roadmap. Check the phase timings are still true.
-
-**`book.bookpage-roadmap.website-roadmap`** — Small label
-
-```text
-Website Roadmap
-```
-
-**`book.bookpage-roadmap.what-s-coming-next`** — Heading
-
-```text
-What&apos;s coming next
-```
-
-Reads as: What's coming next
-
-**`book.bookpage-roadmap.we-re-building-this-site`** — Paragraph
-
-```text
-We&apos;re building this site in phases to launch fast and improve continuously.
-```
-
-Reads as: We're building this site in phases to launch fast and improve continuously.
-
-**`book.bookpage-roadmap.phase-1-now`** — Text
-
-```text
-Phase 1 · Now
-```
-
-**`book.bookpage-roadmap.new-website-launch`** — Text
-
-```text
-New Website Launch
-```
-
-**`book.bookpage-roadmap.brand-refresh-service-pages-neighborhood`** — Text
-
-```text
-Brand refresh, service pages, neighborhood SEO, contact forms, Yelp/Google review integration
-```
-
-**`book.bookpage-roadmap.phase-2-30-days`** — Text
-
-```text
-Phase 2 · 30 days
-```
-
-**`book.bookpage-roadmap.online-booking-integration`** — Text
-
-```text
-Online Booking Integration
-```
-
-_The same wording is used elsewhere: `book.bookpage-forms.online-booking-integration`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.bookpage-roadmap.time-to-pet-integration-real`** — Text
-
-```text
-Time To Pet integration: real-time availability, client portal, automated invoicing, walk reports
-```
-
-**`book.bookpage-roadmap.phase-3-90-days`** — Text
-
-```text
-Phase 3 · 90 days
-```
-
-**`book.bookpage-roadmap.client-mobile-app`** — Text
-
-```text
-Client Mobile App
-```
-
-**`book.bookpage-roadmap.live-gps-during-walks-push`** — Text
-
-```text
-Live GPS during walks, push notifications, in-app messaging, subscription management
-```
-
-**`book.bookpage-roadmap.phase-4-6-months`** — Text
-
-```text
-Phase 4 · 6 months
-```
-
-**`book.bookpage-roadmap.loyalty-referral-program`** — Text
-
-```text
-Loyalty &amp; Referral Program
-```
-
-Reads as: Loyalty & Referral Program
-
-**`book.bookpage-roadmap.walk-rewards-points-referral-credits`** — Text
-
-```text
-Walk rewards points, referral credits, subscription discounts, anniversary milestones
-```
+_The same wording is used elsewhere: `book.book-meta.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
 
 ### /book — search engine + link preview
 
 > Title shows in the browser tab and in Google results. Keep under ~60 characters.
 
-**`book.book-meta.not-the-rug`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Not The Rug
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.not-the-rug`, `global.footer.not-the-rug`, `SiteNav.nav-standalone.not-the-rug`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.book-meta.book-a-walk-free-meet`** — Browser tab + Google result title
+**`book.book-meta.book-a-walk-free-meet`** — Heading
 
 ```text
 Book a Walk — Free Meet & Greet · Not The Rug
@@ -3515,49 +2538,21 @@ Book a Walk — Free Meet & Greet · Not The Rug
 
 _The same wording is used elsewhere: `layout.site-meta.book-a-walk-free-meet`. Those are separate slots — change them too if they should stay consistent._
 
-**`book.book-meta.no-commitment-no-charge-we`** — Google result description
+**`book.book-meta.no-commitment-no-charge-we`** — Paragraph
 
 ```text
 No commitment, no charge. We come to you, meet your dog, and answer every question.
 ```
 
-_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `book.book-page.no-commitment-no-charge-we`, `contact.contact-page.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`, `contact.contact-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
-
-### /book — page content
-
-**`book.book-page.get-started`** — Small label
-
-```text
-Get Started
-```
-
-_The same wording is used elsewhere: `book.bookpage-hero.get-started`, `contact.contact-page.get-started`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.book-page.book-your-free-meet-greet`** — Heading
-
-```text
-Book your free<br />Meet &amp; Greet
-```
-
-Reads as: Book your free ⏎ Meet & Greet
-
-_The same wording is used elsewhere: `book.bookpage-hero.book-your-free-meet-greet`, `contact.contact-page.book-your-free-meet-greet`. Those are separate slots — change them too if they should stay consistent._
-
-**`book.book-page.no-commitment-no-charge-we`** — Paragraph
-
-```text
-No commitment, no charge. We come to you, meet your dog, and answer every question.
-```
-
-_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `contact.contact-page.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`, `book.book-meta.no-commitment-no-charge-we`, `contact.contact-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
 
 ---
 
 ## 10. Contact
 
-_34 items_
+_21 items_
 
-### Contact page hero (in-site)
+### /contact — hero
 
 **`contact.contactpage-hero.get-in-touch`** — Small label
 
@@ -3579,10 +2574,18 @@ Reads as: We're real people ⏎ with a real number
 No chatbots, no ticket queues. Text us, call us, or fill out the form.
 ```
 
-**`contact.contactpage-hero.archie-archie-bklyn`** — Link
+_The same wording is used elsewhere: `contact.contact-meta.no-chatbots-no-ticket-queues`. Those are separate slots — change them too if they should stay consistent._
+
+**`contact.contactpage-hero.send-a-message`** — Small label
 
 ```text
-Archie · @archie_bklyn
+Send a Message
+```
+
+**`contact.contactpage-hero.tell-us-about-your-dog`** — Heading
+
+```text
+Tell us about your dog
 ```
 
 ### Contact details
@@ -3601,32 +2604,16 @@ Call or Text
 The fastest way to reach us. Luis personally responds to all messages.
 ```
 
-**`contact.contactpage-body.link-347-610-9676`** — Link
-
-```text
-(347) 610-9676
-```
-
 **`contact.contactpage-body.email`** — Heading
 
 ```text
 Email
 ```
 
-_Written 3 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `services.services-forms.email`, `book.bookpage-forms.email`. Those are separate slots — change them too if they should stay consistent._
-
 **`contact.contactpage-body.for-new-client-intake-less`** — Paragraph
 
 ```text
 For new client intake, less urgent inquiries, or detailed questions.
-```
-
-**`contact.contactpage-body.luis-nottherug-com`** — Link
-
-```text
-luis@nottherug.com
 ```
 
 **`contact.contactpage-body.service-area`** — Heading
@@ -3637,38 +2624,10 @@ Service Area
 
 _The same wording is used elsewhere: `global.footer.service-area`. Those are separate slots — change them too if they should stay consistent._
 
-**`contact.contactpage-body.we-re-based-in-williamsburg`** — Paragraph
-
-```text
-We&apos;re based in Williamsburg and serve North Williamsburg and much of South Williamsburg. We do our best to cover as much of the neighborhood as possible, but some areas may depend on staff availability.
-```
-
-Reads as: We're based in Williamsburg and serve North Williamsburg and much of South Williamsburg. We do our best to cover as much of the neighborhood as possible, but some areas may depend on staff availability.
-
-**`contact.contactpage-body.281-n-7th-st-ste`** — Paragraph
-
-```text
-281 N 7th St, Ste 13, Brooklyn, NY 11211<br />b/t Havemeyer St &amp; Meeker Ave · Williamsburg North Side
-```
-
-Reads as: 281 N 7th St, Ste 13, Brooklyn, NY 11211 ⏎ b/t Havemeyer St & Meeker Ave · Williamsburg North Side
-
 **`contact.contactpage-body.response-hours`** — Heading
 
 ```text
 Response Hours
-```
-
-**`contact.contactpage-body.mon-fri-9-am-7`** — Paragraph
-
-```text
-Mon–Fri, 9 AM–7 PM · Sat–Sun, 10 AM–4 PM
-```
-
-**`contact.contactpage-body.typically-reply-within-2-hours`** — Paragraph
-
-```text
-Typically reply within 2 hours on weekdays
 ```
 
 **`contact.contactpage-body.follow-us-on-instagram`** — Heading
@@ -3683,241 +2642,73 @@ Follow us on Instagram
 Daily walk photos, dog spotlights, neighborhood content, and the occasional chaos.
 ```
 
-**`contact.contactpage-body.send-a-message`** — Small label
+**`contact.contactpage-body.luis-nottherug-com`** — Text
 
 ```text
-Send a Message
+luis@nottherug.com
 ```
 
-**`contact.contactpage-body.tell-us-about-your-dog`** — Heading
+**`contact.contactpage-body.281-n-7th-st-ste`** — Text
 
 ```text
-Tell us about your dog
+281 N 7th St, Ste 13, Brooklyn, NY 11211
 ```
 
-**`contact.contactpage-body.your-name`** — Text
+**`contact.contactpage-body.b-t-havemeyer-st-meeker`** — Text
 
 ```text
-Your Name
+b/t Havemeyer St & Meeker Ave · Williamsburg North Side
 ```
 
-_The same wording is used elsewhere: `services.services-forms.your-name`, `book.bookpage-forms.your-name`, `MeetGreetForm.form.your-name`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contactpage-body.name`** — Image description (not visible — read by screen readers and Google)
+**`contact.contactpage-body.mon-fri-9-am-7`** — Text
 
 ```text
-Name
+Mon–Fri, 9 AM–7 PM · Sat–Sun, 10 AM–4 PM
 ```
 
-_The same wording is used elsewhere: `services.services-forms.name`, `book.bookpage-forms.name`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contactpage-body.phone`** — Text
+**`contact.contactpage-body.typically-reply-within-2-hours`** — Text
 
 ```text
-Phone
+Typically reply within 2 hours on weekdays
 ```
 
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`contact.contactpage-body.neighborhood`** — Text
+**`contact.contactpage-body.we-re-based-in-williamsburg`** — Text
 
 ```text
-Neighborhood
+We're based in Williamsburg and serve North Williamsburg and much of South Williamsburg. We do our best to cover as much of the neighborhood as possible, but some areas may depend on staff availability.
 ```
-
-_The same wording is used elsewhere: `MeetGreetForm.form.neighborhood`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contactpage-body.williamsburg`** — Text
-
-```text
-Williamsburg
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.williamsburg`, `global.nav-mobile.williamsburg`, `neighborhoods.hoods-williamsburg.williamsburg`, `global.footer.williamsburg`, `SiteNav.nav-standalone.williamsburg`, `neighborhoods.hoods-data.williamsburg`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contactpage-body.other`** — Text
-
-```text
-Other
-```
-
-_The same wording is used elsewhere: `MeetGreetForm.form.other`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contactpage-body.message`** — Text
-
-```text
-Message
-```
-
-_The same wording is used elsewhere: `services.services-forms.message`, `book.bookpage-forms.message`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contactpage-body.tell-us-about-your-dog-2`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Tell us about your dog and what you're looking for...
-```
-
-**`contact.contactpage-body.send-message`** — Button
-
-```text
-Send Message
-```
-
-_The same wording is used elsewhere: `services.services-forms.send-message`, `book.bookpage-forms.send-message`. Those are separate slots — change them too if they should stay consistent._
-
-### /contact — page content
-
-**`contact.contact-page.get-started`** — Small label
-
-```text
-Get Started
-```
-
-_The same wording is used elsewhere: `book.bookpage-hero.get-started`, `book.book-page.get-started`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contact-page.book-your-free-meet-greet`** — Heading
-
-```text
-Book your free<br />Meet &amp; Greet
-```
-
-Reads as: Book your free ⏎ Meet & Greet
-
-_The same wording is used elsewhere: `book.bookpage-hero.book-your-free-meet-greet`, `book.book-page.book-your-free-meet-greet`. Those are separate slots — change them too if they should stay consistent._
-
-**`contact.contact-page.no-commitment-no-charge-we`** — Paragraph
-
-```text
-No commitment, no charge. We come to you, meet your dog, and answer every question.
-```
-
-_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `book.book-page.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`, `book.book-meta.no-commitment-no-charge-we`, `contact.contact-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
 
 ### /contact — search engine + link preview
 
-**`contact.contact-meta.book-your-free-meet-greet`** — Browser tab + Google result title
+**`contact.contact-meta.we-re-real-people-with`** — Heading
 
 ```text
-Book your free Meet & Greet — Not The Rug
+We're real people with a real number — Not The Rug
 ```
 
-**`contact.contact-meta.no-commitment-no-charge-we`** — Google result description
+**`contact.contact-meta.no-chatbots-no-ticket-queues`** — Paragraph
 
 ```text
-No commitment, no charge. We come to you, meet your dog, and answer every question.
+No chatbots, no ticket queues. Text us, call us, or fill out the form.
 ```
 
-_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `book.book-page.no-commitment-no-charge-we`, `contact.contact-page.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`, `book.book-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `contact.contactpage-hero.no-chatbots-no-ticket-queues`. Those are separate slots — change them too if they should stay consistent._
 
 ---
 
-## 11. Navigation (standalone pages)
+## 11. Meet & Greet form
 
-_9 items_
-
-### Navigation on /book and /contact
-
-> Must match the main navigation labels exactly.
-
-**`SiteNav.nav-standalone.not-the-rug`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Not The Rug
-```
-
-_The same wording is used elsewhere: `global.nav-desktop.not-the-rug`, `global.footer.not-the-rug`, `book.book-meta.not-the-rug`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.services-rates`** — Text
-
-```text
-Services &amp; Rates
-```
-
-Reads as: Services & Rates
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `global.nav-desktop.services-rates`, `global.nav-mobile.services-rates`, `services.services-hero.services-rates`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.how-it-works`** — Text
-
-```text
-How It Works
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `global.nav-desktop.how-it-works`, `global.nav-mobile.how-it-works`, `global.footer.how-it-works`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.about-us`** — Text
-
-```text
-About Us
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `global.nav-desktop.about-us`, `global.nav-mobile.about-us`, `global.footer.about-us`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.safety-trust`** — Text
-
-```text
-Safety &amp; Trust
-```
-
-Reads as: Safety & Trust
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `global.nav-desktop.safety-trust`, `global.nav-mobile.safety-trust`, `safety.safety-hero.safety-trust`, `global.footer.safety-trust`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.williamsburg`** — Text
-
-```text
-Williamsburg
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `global.nav-desktop.williamsburg`, `global.nav-mobile.williamsburg`, `neighborhoods.hoods-williamsburg.williamsburg`, `contact.contactpage-body.williamsburg`, `global.footer.williamsburg`, `neighborhoods.hoods-data.williamsburg`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.reviews`** — Text
-
-```text
-Reviews
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `global.nav-desktop.reviews`, `global.nav-mobile.reviews`, `global.footer.reviews`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.book-a-walk`** — Button
-
-```text
-Book a Walk
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-_The same wording is used elsewhere: `global.nav-desktop.book-a-walk`, `global.nav-mobile.book-a-walk`, `global.footer.book-a-walk`. Those are separate slots — change them too if they should stay consistent._
-
-**`SiteNav.nav-standalone.contact`** — Text
-
-```text
-Contact
-```
-
-_The same wording is used elsewhere: `global.nav-mobile.contact`, `global.footer.contact`. Those are separate slots — change them too if they should stay consistent._
-
----
-
-## 12. Meet & Greet form
-
-_48 items_
+_4 items_
 
 ### Meet & Greet form
 
 > Field labels, helper text, buttons and confirmation messages.
+
+**`MeetGreetForm.form.website`** — Text
+
+```text
+Website
+```
 
 **`MeetGreetForm.form.step`** — Text
 
@@ -3937,305 +2728,15 @@ of
 Form steps
 ```
 
-**`MeetGreetForm.form.your-name`** — Text
-
-```text
-Your Name
-```
-
-_The same wording is used elsewhere: `services.services-forms.your-name`, `book.bookpage-forms.your-name`, `contact.contactpage-body.your-name`. Those are separate slots — change them too if they should stay consistent._
-
-**`MeetGreetForm.form.first-last-name`** — Image description (not visible — read by screen readers and Google)
-
-```text
-First & last name
-```
-
-**`MeetGreetForm.form.phone-number`** — Text
-
-```text
-Phone Number
-```
-
-**`MeetGreetForm.form.email-address`** — Text
-
-```text
-Email Address
-```
-
-**`MeetGreetForm.form.you-email-com`** — Image description (not visible — read by screen readers and Google)
-
-```text
-you@email.com
-```
-
-**`MeetGreetForm.form.neighborhood`** — Text
-
-```text
-Neighborhood
-```
-
-_The same wording is used elsewhere: `contact.contactpage-body.neighborhood`. Those are separate slots — change them too if they should stay consistent._
-
-**`MeetGreetForm.form.north-williamsburg`** — Text
-
-```text
-North Williamsburg
-```
-
-**`MeetGreetForm.form.south-williamsburg`** — Text
-
-```text
-South Williamsburg
-```
-
-**`MeetGreetForm.form.west-williamsburg`** — Text
-
-```text
-West Williamsburg
-```
-
-**`MeetGreetForm.form.greenpoint`** — Text
-
-```text
-Greenpoint
-```
-
-**`MeetGreetForm.form.bushwick`** — Text
-
-```text
-Bushwick
-```
-
-**`MeetGreetForm.form.bed-stuy`** — Text
-
-```text
-Bed-Stuy
-```
-
-**`MeetGreetForm.form.park-slope`** — Text
-
-```text
-Park Slope
-```
-
-**`MeetGreetForm.form.east-williamsburg`** — Text
-
-```text
-East Williamsburg
-```
-
-**`MeetGreetForm.form.other`** — Text
-
-```text
-Other
-```
-
-_The same wording is used elsewhere: `contact.contactpage-body.other`. Those are separate slots — change them too if they should stay consistent._
-
-**`MeetGreetForm.form.dog-s-name`** — Text
-
-```text
-Dog&apos;s Name
-```
-
-Reads as: Dog's Name
-
-**`MeetGreetForm.form.what-s-their-name`** — Image description (not visible — read by screen readers and Google)
-
-```text
-What's their name?
-```
-
-**`MeetGreetForm.form.breed-age`** — Text
-
-```text
-Breed &amp; Age
-```
-
-Reads as: Breed & Age
-
-**`MeetGreetForm.form.e-g-golden-3-years`** — Image description (not visible — read by screen readers and Google)
-
-```text
-e.g. Golden, 3 years
-```
-
-**`MeetGreetForm.form.is-your-dog-up-to`** — Text
-
-```text
-Is your dog up to date on vaccinations?
-```
-
-**`MeetGreetForm.form.yes-fully-vaccinated`** — Text
-
-```text
-Yes — fully vaccinated
-```
-
-**`MeetGreetForm.form.mostly-a-few-pending`** — Text
-
-```text
-Mostly — a few pending
-```
-
-**`MeetGreetForm.form.no`** — Text
-
-```text
-No
-```
-
-**`MeetGreetForm.form.not-sure`** — Text
-
-```text
-Not sure
-```
-
-**`MeetGreetForm.form.service-interested-in`** — Text
-
-```text
-Service Interested In
-```
-
-**`MeetGreetForm.form.daily-group-walks`** — Text
-
-```text
-Daily Group Walks
-```
-
-**`MeetGreetForm.form.puppy-visits`** — Text
-
-```text
-Puppy Visits
-```
-
-_The same wording is used elsewhere: `services.services-grid.puppy-visits`, `global.footer.puppy-visits`. Those are separate slots — change them too if they should stay consistent._
-
-**`MeetGreetForm.form.senior-dog-care`** — Text
-
-```text
-Senior Dog Care
-```
-
-_The same wording is used elsewhere: `global.footer.senior-dog-care`. Those are separate slots — change them too if they should stay consistent._
-
-**`MeetGreetForm.form.solo-visits`** — Text
-
-```text
-Solo Visits
-```
-
-**`MeetGreetForm.form.boarding-sitting`** — Text
-
-```text
-Boarding / Sitting
-```
-
-**`MeetGreetForm.form.not-sure-yet`** — Text
-
-```text
-Not sure yet
-```
-
-**`MeetGreetForm.form.walk-talk-sessions`** — Text
-
-```text
-Walk &amp; Talk Sessions
-```
-
-Reads as: Walk & Talk Sessions
-
-**`MeetGreetForm.form.preferred-walk-frequency`** — Text
-
-```text
-Preferred walk frequency
-```
-
-**`MeetGreetForm.form.once-a-week`** — Text
-
-```text
-Once a week
-```
-
-**`MeetGreetForm.form.2-3-times-a-week`** — Text
-
-```text
-2–3 times a week
-```
-
-**`MeetGreetForm.form.daily-mon-fri`** — Text
-
-```text
-Daily (Mon–Fri)
-```
-
-**`MeetGreetForm.form.daily-including-weekends`** — Text
-
-```text
-Daily including weekends
-```
-
-**`MeetGreetForm.form.as-needed-occasional`** — Text
-
-```text
-As-needed / occasional
-```
-
-**`MeetGreetForm.form.is-your-dog-fearful-or`** — Text
-
-```text
-Is your dog fearful or reactive around any of the following?
-```
-
-**`MeetGreetForm.form.select-all-that-apply`** — Paragraph
-
-```text
-Select all that apply
-```
-
-_Written 2 times in this section by design (the strip loops). One edit updates all of them._
-
-**`MeetGreetForm.form.is-your-dog-allergic-to`** — Text
-
-```text
-Is your dog allergic to anything?
-```
-
-**`MeetGreetForm.form.anything-we-should-know`** — Text
-
-```text
-Anything we should know?
-```
-
-**`MeetGreetForm.form.quirks-anxieties-medication-needs-building`** — Image description (not visible — read by screen readers and Google)
-
-```text
-Quirks, anxieties, medication needs, building access info — anything helpful
-```
-
-**`MeetGreetForm.form.request-a-phone-consultation-instead`** — Text
-
-```text
-Request a phone consultation instead
-```
-
-**`MeetGreetForm.form.prefer-to-talk-first-we`** — Text
-
-```text
-Prefer to talk first? We&apos;ll call you to answer questions before scheduling.
-```
-
-Reads as: Prefer to talk first? We'll call you to answer questions before scheduling.
-
 ---
 
-## 13. Search engine + social previews
+## 12. Search engine + social previews (site-wide fallback)
 
 _2 items_
 
-### Site-wide search engine + link preview
+### Site-wide search engine + link preview (root fallback)
 
-> This is the homepage title in Google and the preview text when someone shares the link. Keep the title under ~60 characters and the description under ~155.
+> Every page now sets its own title/description; this is only the fallback if one is ever missing.
 
 **`layout.site-meta.book-a-walk-free-meet`** — Browser tab + Google result title
 
@@ -4251,7 +2752,7 @@ _The same wording is used elsewhere: `book.book-meta.book-a-walk-free-meet`. Tho
 No commitment, no charge. We come to you, meet your dog, and answer every question.
 ```
 
-_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `book.book-page.no-commitment-no-charge-we`, `contact.contact-page.no-commitment-no-charge-we`, `book.book-meta.no-commitment-no-charge-we`, `contact.contact-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `book.book-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
 
 ---
 
@@ -4267,4 +2768,4 @@ These are real requests — they just are not copy edits, so they go in the
 
 ---
 
-_Generated by `scripts/copy/extract-copy.mjs` on 2026-09-14. If the website code changes, regenerate this file rather than editing it by hand._
+_Generated by `scripts/copy/extract-copy.mjs` on 2026-09-15. If the website code changes, regenerate this file rather than editing it by hand._

@@ -1,35 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import MeetGreetForm from '@/components/MeetGreetForm';
+import { buildPageMetadata } from '@/lib/content/site';
 
-const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
-const PAGE_PATH = '/book';
-const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
-const OG_IMAGE = `${SITE_URL}/img/og_meta_img_contact.png`;
-
-const PAGE_TITLE = 'Book a Walk — Free Meet & Greet · Not The Rug';
-const PAGE_DESCRIPTION = 'No commitment, no charge. We come to you, meet your dog, and answer every question.';
-
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: PAGE_TITLE,
-  description: PAGE_DESCRIPTION,
-  alternates: { canonical: PAGE_PATH },
-  openGraph: {
-    type: 'website',
-    siteName: 'Not The Rug',
-    url: PAGE_URL,
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: PAGE_DESCRIPTION }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    images: [OG_IMAGE],
-  },
-};
+export const metadata: Metadata = buildPageMetadata({
+  path: '/book',
+  title: 'Book a Walk — Free Meet & Greet · Not The Rug',
+  description: 'No commitment, no charge. We come to you, meet your dog, and answer every question.',
+});
 
 export default function BookPage() {
   return (

@@ -432,8 +432,13 @@ function PawPrint({ style, ref }: { style: React.CSSProperties; ref?: React.Ref<
   );
 }
 
+// This component only ever mounts behind the disabled
+// `{false && <AnimatedServiceCards />}` gate in
+// components/marketing/DisabledHomeSections.tsx, so this never runs on the
+// live site — kept as a plain navigation instead of the removed SPA
+// `window.showPage` global (R13) in case the carousel is re-enabled later.
 function goToServices() {
-  (window as unknown as { showPage?: (page: string) => void }).showPage?.("services");
+  window.location.href = "/services";
 }
 
 function ToggleField({ id, label, checked, onChange }: {

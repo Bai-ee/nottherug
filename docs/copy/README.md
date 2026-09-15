@@ -66,11 +66,18 @@ it in a separate `## Requests that need a developer` block. That is a code chang
 
 ## What is deliberately excluded
 
-- Anything inside a `{false && (...)}` block. `app/page.tsx` currently gates five
-  homepage sections and the whole `AnimatedServiceCards` carousel that way, so none of
-  that copy is on the live site and none of it is in the tool. Re-enable a block in the
-  code and it reappears on the next run.
-- The dev tuning overlays (`#hiw-paw-tuning-panel`, `#hc-card-tuning-panel`).
+- Anything inside a `{false && (...)}` block. `app/page.tsx`'s nine virtual pages were
+  extracted into real routes and `components/marketing/**` (see
+  plans/002-production-readiness.md, P2A); the same five disabled homepage sections and
+  the `AnimatedServiceCards` carousel now live in
+  `components/marketing/DisabledHomeSections.tsx`, gated the same way at their call site
+  in `app/(marketing)/page.tsx`. None of that copy is on the live site and none of it is
+  in the tool. Re-enable a block in the code and wire its source back into
+  `scripts/copy/extract-copy.mjs` to bring its copy back.
+- The dev tuning overlay `#hc-card-tuning-panel` (inside the disabled `AnimatedServiceCards`,
+  so already excluded above). The homepage's `#hiw-paw-tuning-panel` ("Tune Paws") was a
+  production-shipping control, not a disabled block — it has been removed from the code
+  entirely (R16), not just excluded from this tool.
 - SVG contents, class names, URLs, and structural numbering (step "1", "02").
 
 ## When the code changes

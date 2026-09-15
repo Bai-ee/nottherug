@@ -19,50 +19,109 @@ const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 
 /* ---------------------------------------------------------------- sources */
 
-// components/AnimatedServiceCards.tsx is deliberately absent: app/page.tsx
-// renders it inside a `{false && (...)}` block, so none of its copy is on the
-// live site. Five homepage sections are gated the same way and drop out for the
-// same reason — the scanner skips JSX expressions, so they never reach the
-// inventory. Re-enable a block in the code and it reappears here on the next run.
+// app/page.tsx's nine virtual pages were extracted into real routes and
+// components/marketing/** (plans/002-production-readiness.md, P2A). Each
+// small file below now maps to one (or occasionally two) of the original
+// sections in copy-map.mjs instead of one giant file with line ranges.
 //
-// jsxRange bounds the scan to the component's returned markup. Scanning the
-// whole file would feed TypeScript generics (`Record<string, ...>`) to the tag
-// reader and corrupt the element stack.
+// components/AnimatedServiceCards.tsx and components/marketing/
+// DisabledHomeSections.tsx are deliberately absent: every export in
+// DisabledHomeSections.tsx is only ever mounted behind `{false && ...}` at
+// its call site (app/(marketing)/page.tsx), so none of that copy is on the
+// live site — same rule as the original app/page.tsx `{false && (...)}`
+// blocks. Re-enable a block in the code and wire its source back in here to
+// bring its copy back into the inventory.
+// jsxRange must start at (or after) the component's own `return (` line, not
+// at the top of the file: the scanner treats the first unmatched `{` it sees
+// as the start of a JSX expression and skips to its balanced `}`, so
+// starting inside `export default function X() {` — before `return (` —
+// swallows the entire function body (imports/types above `return` contain
+// their own `{}` too, e.g. `import { x } from '...'`, which produces
+// garbage "text" items). Each range below was picked by hand against the
+// actual file.
 const JSX_SOURCES = [
-  { file: 'app/page.tsx', page: null, jsxRange: [655, 2317], skipRanges: [[2235, 2317]] },
-  { file: 'components/SiteNav.tsx', page: 'SiteNav', jsxRange: [13, 48], skipRanges: [] },
-  { file: 'components/MeetGreetForm.tsx', page: 'MeetGreetForm', jsxRange: [153, 583], skipRanges: [] },
-  { file: 'app/book/page.tsx', page: 'book', jsxRange: [36, 95], skipRanges: [] },
-  { file: 'app/contact/page.tsx', page: 'contact', jsxRange: [46, 79], skipRanges: [] },
+  { file: 'components/SiteNav.tsx', page: 'global', jsxRange: [36, 999], skipRanges: [] },
+  { file: 'components/marketing/SiteFooter.tsx', page: 'global', jsxRange: [7, 999], skipRanges: [] },
+
+  { file: 'components/marketing/HomeHero.tsx', page: 'home', jsxRange: [11, 999], skipRanges: [] },
+  { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', jsxRange: [49, 999], skipRanges: [] },
+  { file: 'components/marketing/TrustBar.tsx', page: 'home', jsxRange: [4, 999], skipRanges: [] },
+  // Two entries, not one [4, 999] range with a skipRange over the gap: the
+  // scanner treats any unescaped `{` it meets outside a tag as the start of
+  // a JSX expression and skips to its balanced `}` (skipBalancedBraces) —
+  // the gap between PreviewCard's closing brace and the main component
+  // contains `export default function ServicesPreview() {`, whose own
+  // opening brace gets mistaken for one, silently swallowing the rest of
+  // the file as "inside an expression" (this is how "A Williamsburg
+  // service, not a platform" first went missing from the inventory —
+  // caught during manual QA, not by the scanner itself). skipRanges only
+  // filters output lines; it cannot stop the scan from being derailed by
+  // that gap. Two ranges, each ending before the other component's own
+  // `{`, avoid the gap entirely.
+  { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [4, 11], skipRanges: [] },
+  { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [19, 999], skipRanges: [] },
+  { file: 'components/marketing/ClosingTrust.tsx', page: 'home', jsxRange: [10, 999], skipRanges: [] },
+  { file: 'components/marketing/FeaturedReviews.tsx', page: 'home', jsxRange: [7, 999], skipRanges: [] },
+  { file: 'components/marketing/HomePageContent.tsx', page: 'home', jsxRange: [28, 999], skipRanges: [] },
+
+  { file: 'components/marketing/ServicesPageContent.tsx', page: 'services', jsxRange: [40, 999], skipRanges: [] },
+  { file: 'components/marketing/ServiceGrid.tsx', page: 'services', jsxRange: [6, 999], skipRanges: [] },
+
+  { file: 'components/marketing/HowItWorksPageContent.tsx', page: 'how-it-works', jsxRange: [15, 999], skipRanges: [] },
+  { file: 'components/marketing/SampleWalkReportCard.tsx', page: 'how-it-works', jsxRange: [3, 999], skipRanges: [] },
+
+  { file: 'components/marketing/AboutPageContent.tsx', page: 'about', jsxRange: [15, 999], skipRanges: [] },
+  { file: 'components/marketing/TeamGrid.tsx', page: 'about', jsxRange: [46, 999], skipRanges: [] },
+  { file: 'components/marketing/ValuesGrid.tsx', page: 'about', jsxRange: [9, 999], skipRanges: [] },
+
+  { file: 'components/marketing/SafetyPageContent.tsx', page: 'safety', jsxRange: [16, 999], skipRanges: [] },
+  { file: 'components/marketing/CertificationStrip.tsx', page: 'safety', jsxRange: [5, 999], skipRanges: [] },
+  { file: 'components/marketing/SafetyFaq.tsx', page: 'safety', jsxRange: [19, 999], skipRanges: [] },
+
+  { file: 'components/marketing/NeighborhoodsPageContent.tsx', page: 'neighborhoods', jsxRange: [16, 999], skipRanges: [] },
+  { file: 'components/marketing/NeighborhoodCard.tsx', page: 'neighborhoods', jsxRange: [19, 999], skipRanges: [] },
+  { file: 'components/marketing/NeighborhoodDetail.tsx', page: 'neighborhoods', jsxRange: [8, 999], skipRanges: [] },
+
+  { file: 'components/marketing/ReviewsPageContent.tsx', page: 'reviews', jsxRange: [14, 999], skipRanges: [] },
+
+  // components/MeetGreetForm.tsx is now a re-export shim (Worker A moved the
+  // real form to components/booking/**, in progress concurrently with this
+  // extraction — see the P2A report). This range covers only BookingForm.tsx's
+  // own JSX; BookingSteps.tsx and SchedulingDialog.tsx are not yet mapped and
+  // should be added once that rewrite lands.
+  { file: 'components/booking/BookingForm.tsx', page: 'MeetGreetForm', jsxRange: [185, 358], skipRanges: [] },
+  { file: 'app/(marketing)/book/page.tsx', page: 'book', jsxRange: [13, 999], skipRanges: [] },
+  { file: 'app/(marketing)/contact/page.tsx', page: 'contact', jsxRange: [21, 999], skipRanges: [] },
+  { file: 'components/marketing/ContactInfoCard.tsx', page: 'contact', jsxRange: [19, 999], skipRanges: [] },
 ];
 
 // Copy that lives in plain object literals or module constants, not in JSX.
 const DATA_SOURCES = [
-  {
-    file: 'app/page.tsx',
-    page: 'neighborhoods',
-    range: [551, 561],
-    props: ['name', 'tagline', 'desc', 'seo'],
-    arrayProps: ['parks'],
-  },
-  {
-    file: 'app/layout.tsx',
-    page: 'layout',
-    range: [1, 120],
-    consts: ['PAGE_TITLE', 'PAGE_DESCRIPTION'],
-  },
-  {
-    file: 'app/book/page.tsx',
-    page: 'book',
-    range: [1, 40],
-    consts: ['PAGE_TITLE', 'PAGE_DESCRIPTION'],
-  },
-  {
-    file: 'app/contact/page.tsx',
-    page: 'contact',
-    range: [1, 45],
-    consts: ['PAGE_TITLE', 'PAGE_DESCRIPTION'],
-  },
+  { file: 'lib/content/services.ts', page: 'home', range: [17, 42], props: ['title', 'copy', 'price', 'priceUnit', 'badge'] },
+  { file: 'lib/content/services.ts', page: 'services', range: [50, 96], props: ['title', 'copy', 'price', 'priceUnit', 'badge'] },
+  { file: 'lib/content/coverage.ts', page: 'neighborhoods', range: [16, 24], props: ['name', 'tagline', 'desc', 'seo'], arrayProps: ['parks'] },
+  { file: 'lib/content/contact.ts', page: 'contact', range: [1, 17], consts: ['PHONE_DISPLAY', 'EMAIL_DISPLAY', 'ADDRESS_LINE_1', 'ADDRESS_LINE_2', 'RESPONSE_HOURS', 'RESPONSE_TIME_NOTE', 'SERVICE_AREA_NOTE'] },
+
+  { file: 'components/marketing/ProofMarquee.tsx', page: 'home', range: [1, 11], props: ['quote', 'author'] },
+  { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', range: [38, 43], props: ['title', 'copy'] },
+  { file: 'components/marketing/ServicesPageContent.tsx', page: 'services', range: [13, 34], props: ['title', 'desc'] },
+  { file: 'components/marketing/TeamGrid.tsx', page: 'about', range: [12, 43], props: ['name', 'role', 'bio'] },
+  { file: 'components/marketing/ValuesGrid.tsx', page: 'about', range: [1, 6], props: ['title', 'copy'] },
+  { file: 'components/marketing/TrustCards.tsx', page: 'safety', range: [1, 27], props: ['title', 'copy'] },
+  { file: 'components/marketing/SafetyFaq.tsx', page: 'safety', range: [5, 11], props: ['q', 'a'] },
+  { file: 'components/marketing/ReviewsMasonry.tsx', page: 'reviews', range: [1, 18], props: ['name', 'meta', 'text'] },
+
+  { file: 'app/(marketing)/page.tsx', page: 'home', range: [1, 30], props: ['title', 'description'] },
+  { file: 'app/(marketing)/services/page.tsx', page: 'services', range: [1, 13], props: ['title', 'description'] },
+  { file: 'app/(marketing)/how-it-works/page.tsx', page: 'how-it-works', range: [1, 13], props: ['title', 'description'] },
+  { file: 'app/(marketing)/about/page.tsx', page: 'about', range: [1, 13], props: ['title', 'description'] },
+  { file: 'app/(marketing)/safety/page.tsx', page: 'safety', range: [1, 13], props: ['title', 'description'] },
+  { file: 'app/(marketing)/neighborhoods/williamsburg/page.tsx', page: 'neighborhoods', range: [1, 13], props: ['title', 'description'] },
+  { file: 'app/(marketing)/reviews/page.tsx', page: 'reviews', range: [1, 13], props: ['title', 'description'] },
+  { file: 'app/(marketing)/book/page.tsx', page: 'book', range: [1, 13], props: ['title', 'description'] },
+  { file: 'app/(marketing)/contact/page.tsx', page: 'contact', range: [1, 13], props: ['title', 'description'] },
+
+  { file: 'app/layout.tsx', page: 'layout', range: [1, 120], consts: ['PAGE_TITLE', 'PAGE_DESCRIPTION'] },
 ];
 
 /* -------------------------------------------------------------- utilities */
@@ -156,11 +215,17 @@ const FIELD_FOR_PROP = {
   copy: 'body', desc: 'body', description: 'body', PAGE_DESCRIPTION: 'seo-description',
   title: 'heading', name: 'heading', PAGE_TITLE: 'seo-title',
   price: 'price', priceUnit: 'price-unit', text: 'label', tagline: 'label',
-  seo: 'seo-phrase', parks: 'list-item',
+  seo: 'seo-phrase', parks: 'list-item', badge: 'label',
+  q: 'heading', a: 'body', meta: 'label', role: 'label', bio: 'body',
+  quote: 'body', author: 'label',
 };
 
 function pushData(src, propName, value, lineNo, match) {
-  if (!/[A-Za-z]{2}/.test(value) || ignored(value)) return;
+  // Most copy needs real letters to be worth a founder's review, but a
+  // price like "$60" or "$100" is exactly the kind of value P2A moved into
+  // typed content specifically so it stays reviewable (see lib/content/
+  // services.ts) — so a leading "$" is let through even without letters.
+  if ((!/[A-Za-z]{2}/.test(value) && !/^\$/.test(value)) || ignored(value)) return;
   const section = sectionFor(src.file, lineNo);
   push({
     key: `${src.page}.${section.id}.${keyPart(value, FIELD_FOR_PROP[propName] || 'text')}`,
