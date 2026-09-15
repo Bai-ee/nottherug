@@ -12,15 +12,15 @@ The coordinator is the only writer of this file. Workers report their task ID, c
 | --- | --- | --- | --- | --- | --- |
 | P0 | Baseline, ownership, contracts, test setup | Coordinator | — | DONE | Baseline `711fbe1`; primitives + screenshots `9f7cae8`. Working tree preserved, not reset. |
 | P1A | Intake contract, validation, delivery, accessible form | Sonnet A | P0 | DONE | `55f51e7` + `a36fec5`. Review found the idempotency key broke at its own hour boundary; fixed with a previous-bucket lookback and a boundary-straddling test. |
-| P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | REVIEW | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
+| P1B | Auth, Firebase rules, storage lifecycle/privacy | Sonnet B | P0 | DONE | `56af17f`. Coordinator review rejected an over-broad `allow read: if true` on the `photos/**` storage rule; worker corrected it and re-ran checks. Emulator rules tests skip explicitly (no Java runtime here) — a pending gate, not a pass. |
 | P1C | Dependency/runtime update and CI | Coordinator | P0 | DONE | `b5a81a1`. Advisories rechecked at execution time; user's tracing fixes retained. |
-| P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | REVIEW | `023b8be` + `092be7b`. Coordinator review found a `/contact` heading overlap; the worker traced it further to a grid-item min-content overflow (`document.body.scrollWidth` 1884px at a 1440px viewport) and fixed both. 4 lint errors remain in owned files, assigned back. `app/globals.css` split deferred with recorded rationale. |
+| P2A | Public routes, components, motion, copy tooling | Sonnet C | P1A | DONE | `023b8be` + `092be7b`. Coordinator review found a `/contact` heading overlap; the worker traced it further to a grid-item min-content overflow (`document.body.scrollWidth` 1884px at a 1440px viewport) and fixed both. 4 lint errors remain in owned files, assigned back. `app/globals.css` split deferred with recorded rationale. |
 | P3A | Admin shell, feature components, stats/export | Sonnet A | P1A, P1B | DONE | `fa0cc3b`, `14aa455`, `a36fec5`, `ceb18f9`. Both stranded admin pages migrated; the false-success on a skipped send fixed. |
-| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | REVIEW | `3aac7ec`. Duration deliberately **not** measured — a real run would invoke a paid model without authorization. The run record now self-reports `durationMs`, so the first authorized run measures itself. |
+| P3B | Brief/generator services and job reliability | Sonnet B | P1B, P1C | DONE | `3aac7ec`. Duration deliberately **not** measured — a real run would invoke a paid model without authorization. The run record now self-reports `durationMs`, so the first authorized run measures itself. |
 | P3C | Packaged function verification | Coordinator | P3B, P1C | DONE | `7b9f5af`, `0e01f0a`. Per-function sizes and contents recorded in [docs/function-packaging.md](../docs/function-packaging.md). |
-| P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | REVIEW | `052b355`, `273c827`, `73fba67`, `41bdf95`. Under independent review. |
-| P5A | Integrated review and preview acceptance | Coordinator + reviewer | All above | TODO | Test the same clean candidate commit. |
-| P5B | Authorized release and production verification | Coordinator | P5A, go-live instruction | TODO | Not authorized. Prepare rollback before deployment. |
+| P4 | Launch strategy, SEO, performance, docs | Sonnet C + coordinator | P2A | DONE | `052b355`, `273c827`, `73fba67`, `41bdf95`, `9f4db8c`. Review found the analytics sanitizer weaker than its stated claim; fixed. |
+| P5A | Integrated review and preview acceptance | Coordinator + reviewer | All above | DONE (local) | `9f4db8c`. All checks re-run on one clean candidate; see the release record. Preview-deployment acceptance remains outstanding — no deployment was made. |
+| P5B | Authorized release and production verification | Coordinator | P5A, go-live instruction | BLOCKED | Waiting on an explicit go-live instruction. Nothing has been deployed. Checklist and rollback are in [docs/release-checklist.md](../docs/release-checklist.md). |
 
 ### Execution model
 
@@ -64,19 +64,30 @@ Review-time logs under `/tmp/ntr-review-*` were diagnostic conveniences, not acc
 | Field | Value |
 | --- | --- |
 | Integration baseline commit | `711fbe1` |
-| Release candidate commit | Pending |
-| Preview deployment | Pending |
-| Runtime and framework versions | Node 24.7.0 (engines `24.x`), Next 16.3.5, React 19.3.0, sharp 0.35.4, firebase-admin 14.4.0 |
-| Unit / integration / browser check results | Pending |
-| Firebase rules and private-data checks | Pending |
-| Test lead ID and notification status | Pending; record synthetic identifiers only |
-| Media rendering evidence | Pending |
-| Timed brief run / schedule / email evidence | Pending |
-| Approved business facts | Pending |
-| Go-live instruction | Pending |
-| Previous deployment / rollback steps | Pending |
-| Production smoke result | Pending |
-| Operations owner / observation outcome | Pending |
+| Release candidate commit | `9f4db8c` — 38 commits on `main`; 234 files changed against the review base `114dd85` |
+| Preview deployment | **None.** No deployment of any kind was made. |
+| Runtime and framework versions | Node 24.7.0 (`engines: 24.x`, which overrides the Vercel project setting), Next 16.3.5, React 19.3.0, sharp 0.35.4, firebase-admin 14.4.0 |
+| Clean install | `rm -rf node_modules .next && npm ci` → reproducible |
+| Dependency audit | `npm audit` → **0 vulnerabilities**, from 29 (3 critical, 9 high) at review time |
+| Application lint | `npm run lint` → **0 errors**, 23 warnings, from 57 errors. No suppressions added |
+| Pipeline lint | `npm run lint:pipeline` → 0 errors, 0 warnings, from 1 error and 5 warnings |
+| Type check | `npm run typecheck` → clean |
+| Unit / integration tests | `npm test` → **131 passed, 13 skipped** (20 files). The 13 skips are the Firebase rules suites, which skip explicitly because no Java runtime is present |
+| Production build | `npm run build` → succeeds, 40 routes |
+| Browser tests | `npx playwright test` → **132 passed, 4 skipped, 0 failed** across desktop 1440x900 and mobile iPhone 13 |
+| Route verification | All 9 public routes, `/admin`, `/robots.txt`, `/sitemap.xml` → 200. `/playground/service-cards` → 404 in production. All 8 legacy `?page=`/`?hood=` URLs → 307 to the correct new path |
+| Unauthenticated access | `/admin/leads`, `/api/admin/photos/list`, `/api/cron/founder-brief` → 401 |
+| Indexing headers | Non-production responses carry `X-Robots-Tag: noindex, nofollow`; robots.txt disallows `/admin`, `/playground`, `/api`; sitemap lists 8 routes and correctly omits the noindexed `/contact` |
+| Screenshots | Desktop and mobile full-page captures before and after, retained in the session scratchpad. Design preserved; the only intended visual changes are the removed Tune Paws control, the restored `/contact` Instagram badge, and the new contact sentence on `/services` |
+| Firebase rules and private-data checks | **Not verified.** Rules are versioned and their tests are written, but both suites skip — the Firestore emulator needs a Java runtime this machine lacks. Deployed rules have never been audited |
+| Test lead ID and notification status | **Not performed.** No lead was written and no email was sent, in any environment |
+| Media rendering evidence | Unit-tested with sharp mocked; no real upload or render was performed against Storage |
+| Timed brief run / schedule / email evidence | **Not measured.** A real run invokes a paid model, which was not authorized. The run record now persists `durationMs`, so the first authorized run measures itself |
+| Approved business facts | **Pending.** See [docs/launch-facts-review.md](../docs/launch-facts-review.md) |
+| Go-live instruction | **Not given.** Nothing deployed |
+| Previous deployment / rollback steps | Recorded in [docs/release-checklist.md](../docs/release-checklist.md). The rollback target must be captured before deploying |
+| Production smoke result | Not performed |
+| Operations owner / observation outcome | Unassigned. The 24–48 hour observation has not begun |
 
 ## Worker completion report
 
