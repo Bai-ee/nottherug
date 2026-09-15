@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import CertificationStrip from './CertificationStrip';
+import TrackedCtaLink from './TrackedCtaLink';
 
 // Closing trust recap — safety credentials + Williamsburg-specific proof
 // combined into one section, positioned right before Reviews as the site's
@@ -50,7 +51,7 @@ export default function ClosingTrust() {
             <p style={{ fontSize: '16px', lineHeight: '1.8', marginTop: '12px' }}>We know every park, shortcut, and puddle to avoid — because we&apos;ve been walking these blocks since 2011. Not a citywide app dispatching whoever&apos;s nearest: the same local team, every time.</p>
             <div className="divider" style={{ margin: '28px 0' }}></div>
             <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <Link href="/book" className="btn btn-primary">Book a Walk in Williamsburg</Link>
+              <TrackedCtaLink href="/book" className="btn btn-primary" cta="closing_trust_book" page="home">Book a Walk in Williamsburg</TrackedCtaLink>
               <Link href="/contact" className="btn btn-outline">Ask About Williamsburg Coverage</Link>
             </div>
           </div>

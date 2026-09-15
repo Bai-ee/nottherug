@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useNavScrollShadow } from './marketing/hooks/useNavScrollShadow';
+import { track } from '@/lib/analytics/track';
 
 const NAV_LINKS: Array<{ href: string; label: string; dataPage: string }> = [
   { href: '/services', label: 'Services & Rates', dataPage: 'services' },
@@ -38,7 +39,7 @@ export default function SiteNav() {
       <nav id="main-nav" ref={navRef}>
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" />
+            <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" width={498} height={88} />
           </Link>
           <div className="nav-links">
             {NAV_LINKS.map((link) => (
@@ -52,7 +53,14 @@ export default function SiteNav() {
               </Link>
             ))}
             <Link href="/admin" id="nav-admin-login-link">Login</Link>
-            <Link href="/book" className="nav-cta" data-page="book">Book a Walk</Link>
+            <Link
+              href="/book"
+              className="nav-cta"
+              data-page="book"
+              onClick={() => track('cta_click', { cta: 'nav_book', page: pathname })}
+            >
+              Book a Walk
+            </Link>
           </div>
           <div
             id="nav-hamburger-toggle"
@@ -79,7 +87,13 @@ export default function SiteNav() {
           <Link key={link.href} href={link.href}>{link.label}</Link>
         ))}
         <Link href="/contact">Contact</Link>
-        <Link href="/book" className="mobile-cta">Book a Walk</Link>
+        <Link
+          href="/book"
+          className="mobile-cta"
+          onClick={() => track('cta_click', { cta: 'mobile_menu_book', page: pathname })}
+        >
+          Book a Walk
+        </Link>
         <Link href="/admin" id="mobile-menu-login-link">Login</Link>
       </div>
     </>

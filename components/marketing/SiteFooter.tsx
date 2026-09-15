@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import TrackedCtaLink from './TrackedCtaLink';
 
 // Shared footer for the marketing pages that had it in the source SPA (home,
 // services, how-it-works, about, safety, neighborhoods, reviews). /book and
@@ -57,7 +58,7 @@ export default function SiteFooter() {
               <h4 style={{ fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.6)', marginBottom: '6px' }}>Ready to get started?</h4>
               <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', margin: 0 }}>Book a free meet &amp; greet and tell us about your dog. No commitment — just a chance to connect.</p>
             </div>
-            <Link href="/book" className="btn btn-primary btn-sm" style={{ whiteSpace: 'nowrap' }}>Book Luis, for a Meet &amp; Greet</Link>
+            <TrackedCtaLink href="/book" className="btn btn-primary btn-sm" style={{ whiteSpace: 'nowrap' }} cta="footer_book" page="footer">Book Luis, for a Meet &amp; Greet</TrackedCtaLink>
           </div>
           <div className="divider-word divider-word-dark" id="footer-est-divider" aria-hidden="true">Brooklyn &middot; Est. 2011</div>
           <div className="footer-bottom">

@@ -17,6 +17,22 @@ export const INSTAGRAM_HANDLE = '@nottherug';
 // Not a real destination — flagged in the P2A report, fix belongs to P4/R18.
 export const INSTAGRAM_PLACEHOLDER_URL = 'https://instagram.com/placeholder';
 
+// Single source of truth for app/sitemap.ts and the route coverage in
+// tests/e2e/public-routes.spec.ts. /contact is deliberately absent: it sets
+// `noIndex: true` below (unchanged from the pre-P2A route), and a noindexed
+// page has no business in the sitemap. /admin and /playground are never
+// public routes and must never appear here — see app/robots.ts.
+export const PUBLIC_ROUTES: string[] = [
+  '/',
+  '/services',
+  '/how-it-works',
+  '/about',
+  '/safety',
+  '/neighborhoods/williamsburg',
+  '/reviews',
+  '/book',
+];
+
 /**
  * Builds the per-page <title>/description/canonical/OG/Twitter metadata
  * shared shape used by every marketing route. Each route still supplies its
@@ -29,16 +45,25 @@ export function buildPageMetadata({
   title,
   description,
   noIndex,
+  absoluteTitle,
 }: {
   path: string;
   title: string;
   description: string;
   noIndex?: boolean;
+  /**
+   * app/layout.tsx applies a `%s · Not The Rug` title template to every page
+   * title, so every route's `title` here should be brand-suffix-free (e.g.
+   * "Services & Rates", not "Services & Rates — Not The Rug"). Pass this only
+   * for the homepage, which wants the exact root default title verbatim
+   * instead of that title run through the template a second time.
+   */
+  absoluteTitle?: boolean;
 }): Metadata {
   const url = `${SITE_URL}${path}`;
   return {
     metadataBase: new URL(SITE_URL),
-    title,
+    title: absoluteTitle ? { absolute: title } : title,
     description,
     alternates: { canonical: path },
     ...(noIndex ? { robots: { index: false, follow: false } } : {}),

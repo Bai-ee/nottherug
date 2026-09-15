@@ -4,7 +4,7 @@ import { buildPageMetadata } from '@/lib/content/site';
 
 export const metadata: Metadata = buildPageMetadata({
   path: '/services',
-  title: 'Services & Rates — Not The Rug',
+  title: 'Services & Rates',
   description: 'Every service includes a free consultation, GPS tracking, and post-walk photo updates. Transparent pricing, no surprises.',
 });
 

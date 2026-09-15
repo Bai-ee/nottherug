@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { NeighborhoodInfo } from '@/lib/content/coverage';
+import TrackedCtaLink from './TrackedCtaLink';
 
 // Real JSX replacement for the SPA's `showNeighborhood()` innerHTML
 // injection (R13) — same content and colors, driven by NeighborhoodInfo
@@ -21,7 +22,7 @@ export default function NeighborhoodDetail({ hood }: { hood: NeighborhoodInfo })
           </div>
         </div>
         <div style={{ marginTop: '32px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-          <Link href="/book" className="btn btn-primary">Book a Walk in {hood.name}</Link>
+          <TrackedCtaLink href="/book" className="btn btn-primary" cta="neighborhood_detail_book" page="neighborhoods">Book a Walk in {hood.name}</TrackedCtaLink>
           <Link href="/contact" className="btn btn-outline">Ask About {hood.name} Coverage</Link>
         </div>
       </div>

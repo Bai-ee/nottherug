@@ -41,7 +41,7 @@ export default function ServicesPageContent() {
     <div id="services-page-shell" ref={pageRef}>
       <SiteNav />
 
-      <div className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00001.png') center 20%/cover no-repeat" }}>
+      <div className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00001.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Services &amp; Rates</div>
           <h1>Transparent pricing,<br />no surprises</h1>

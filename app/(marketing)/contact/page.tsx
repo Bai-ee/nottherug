@@ -6,7 +6,7 @@ import { buildPageMetadata } from '@/lib/content/site';
 
 export const metadata: Metadata = buildPageMetadata({
   path: '/contact',
-  title: "We're real people with a real number — Not The Rug",
+  title: "We're real people with a real number",
   description: 'No chatbots, no ticket queues. Text us, call us, or fill out the form.',
   noIndex: true,
 });
@@ -15,7 +15,7 @@ export const metadata: Metadata = buildPageMetadata({
 // ("Screenshot 2026-03-23 at 8.41.59 AM.png" is not in public/dogs) —
 // this route uses the same photo already shipped on /book instead.
 const CONTACT_HERO_BACKGROUND =
-  "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.png') center 20%/cover no-repeat";
+  "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.webp') center 20%/cover no-repeat";
 
 export default function ContactPage() {
   return (

@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
+import { track } from '@/lib/analytics/track';
 
 export default function HomeHero() {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -19,7 +20,7 @@ export default function HomeHero() {
             </video>
           </div>
           <figcaption className="polaroid-caption" id="hero-polaroid-caption"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park, Williamsburg</figcaption>
-          <img className="polaroid-badge" id="hero-polaroid-badge" src="/logos/notRugGreen.png" alt="Not The Rug NYC dog walking badge" />
+          <img className="polaroid-badge" id="hero-polaroid-badge" src="/logos/notRugGreen.png" alt="Not The Rug NYC dog walking badge" width={1080} height={1080} />
         </figure>
       </div>
       <div className="hero-content" id="hero-content-shell">
@@ -29,7 +30,14 @@ export default function HomeHero() {
         <h1 className="hero-h1">Your dog deserves<br /><em>someone they know.</em></h1>
         <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently. Because peace of mind starts with knowing exactly who&apos;s holding the leash.</p>
         <div className="hero-actions" id="hero-actions-row">
-          <Link href="/book" className="btn btn-primary" id="hero-cta-primary">Book Luis, for a Meet &amp; Greet</Link>
+          <Link
+            href="/book"
+            className="btn btn-primary"
+            id="hero-cta-primary"
+            onClick={() => track('cta_click', { cta: 'hero_book', page: 'home' })}
+          >
+            Book Luis, for a Meet &amp; Greet
+          </Link>
           <Link href="/services" className="btn btn-ghost" id="hero-cta-secondary">View Services</Link>
         </div>
       </div>

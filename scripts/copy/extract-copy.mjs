@@ -40,10 +40,10 @@ const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 // garbage "text" items). Each range below was picked by hand against the
 // actual file.
 const JSX_SOURCES = [
-  { file: 'components/SiteNav.tsx', page: 'global', jsxRange: [36, 999], skipRanges: [] },
-  { file: 'components/marketing/SiteFooter.tsx', page: 'global', jsxRange: [7, 999], skipRanges: [] },
+  { file: 'components/SiteNav.tsx', page: 'global', jsxRange: [37, 999], skipRanges: [] },
+  { file: 'components/marketing/SiteFooter.tsx', page: 'global', jsxRange: [8, 999], skipRanges: [] },
 
-  { file: 'components/marketing/HomeHero.tsx', page: 'home', jsxRange: [11, 999], skipRanges: [] },
+  { file: 'components/marketing/HomeHero.tsx', page: 'home', jsxRange: [12, 999], skipRanges: [] },
   { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', jsxRange: [49, 999], skipRanges: [] },
   { file: 'components/marketing/TrustBar.tsx', page: 'home', jsxRange: [4, 999], skipRanges: [] },
   // Two entries, not one [4, 999] range with a skipRange over the gap: the
@@ -60,7 +60,7 @@ const JSX_SOURCES = [
   // `{`, avoid the gap entirely.
   { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [4, 11], skipRanges: [] },
   { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [19, 999], skipRanges: [] },
-  { file: 'components/marketing/ClosingTrust.tsx', page: 'home', jsxRange: [10, 999], skipRanges: [] },
+  { file: 'components/marketing/ClosingTrust.tsx', page: 'home', jsxRange: [11, 999], skipRanges: [] },
   { file: 'components/marketing/FeaturedReviews.tsx', page: 'home', jsxRange: [7, 999], skipRanges: [] },
   { file: 'components/marketing/HomePageContent.tsx', page: 'home', jsxRange: [28, 999], skipRanges: [] },
 
@@ -80,7 +80,7 @@ const JSX_SOURCES = [
 
   { file: 'components/marketing/NeighborhoodsPageContent.tsx', page: 'neighborhoods', jsxRange: [16, 999], skipRanges: [] },
   { file: 'components/marketing/NeighborhoodCard.tsx', page: 'neighborhoods', jsxRange: [19, 999], skipRanges: [] },
-  { file: 'components/marketing/NeighborhoodDetail.tsx', page: 'neighborhoods', jsxRange: [8, 999], skipRanges: [] },
+  { file: 'components/marketing/NeighborhoodDetail.tsx', page: 'neighborhoods', jsxRange: [9, 999], skipRanges: [] },
 
   { file: 'components/marketing/ReviewsPageContent.tsx', page: 'reviews', jsxRange: [14, 999], skipRanges: [] },
 

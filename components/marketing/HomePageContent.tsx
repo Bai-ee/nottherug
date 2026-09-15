@@ -33,7 +33,7 @@ export default function HomePageContent() {
           (home only) is handled in CSS via #home-floating-logo-badge's
           :has() selector — this element only needs to exist on the home
           route, which it now does since this component is home-only. */}
-      <img id="home-floating-logo-badge" src="/logos/notRugGreen.png" alt="Not The Rug NYC dog walking" />
+      <img id="home-floating-logo-badge" src="/logos/notRugGreen.png" alt="Not The Rug NYC dog walking" width={1080} height={1080} />
 
       {/* id + "active" class kept: globals.css gates #home-floating-logo-badge
           and several homepage-only masking-tape decorations on
