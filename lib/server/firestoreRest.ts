@@ -1,9 +1,24 @@
-import { adminApp } from '@/lib/firebase-admin';
-
 const PROJECT = process.env.FIREBASE_ADMIN_PROJECT_ID!;
-const FS_BASE = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT)}/databases/(default)/documents`;
+
+/**
+ * Set only by the Firebase emulator (and by tests that start one). Google's
+ * client libraries use the same variable, and it is never present in a deployed
+ * environment, so this cannot accidentally redirect production traffic.
+ */
+const EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST?.trim();
+
+const FS_BASE = EMULATOR_HOST
+  ? `http://${EMULATOR_HOST}/v1/projects/${encodeURIComponent(PROJECT)}/databases/(default)/documents`
+  : `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT)}/databases/(default)/documents`;
 
 async function getToken(): Promise<string> {
+  // The emulator accepts any bearer token; asking for a real one would demand
+  // service-account keys just to run a test.
+  if (EMULATOR_HOST) return 'owner';
+  // Imported lazily: lib/firebase-admin.ts initialises at module scope and throws
+  // on a malformed key, so a static import would make merely loading this module
+  // require valid credentials even on code paths that never call Firestore.
+  const { adminApp } = await import('@/lib/firebase-admin');
   const result = await adminApp.options.credential!.getAccessToken();
   return result.access_token;
 }
