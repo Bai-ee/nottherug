@@ -1,3 +1,4 @@
+import type { RendererName } from '@/lib/media/createRenderer';
 export interface LogoPlacement {
   x: number;
   y: number;
@@ -20,6 +21,6 @@ export interface RenderOutput {
 }
 
 export interface MediaRenderer {
-  readonly name: string;
+  readonly name: RendererName;
   render(input: RenderInput): Promise<RenderOutput>;
 }
