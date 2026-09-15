@@ -26,16 +26,12 @@ describe('getLeadStats', () => {
     vi.useRealTimers();
   });
 
-  it('reports a truthfully named, capped recent count alongside the deprecated allTime alias', async () => {
+  it('reports a truthfully named, capped recent count', async () => {
     fsQueryCollection.mockResolvedValueOnce([lead('a', '2026-01-05T12:00:00.000Z')]);
     const { getLeadStats } = await import('@/lib/leads/stats');
     const stats = await getLeadStats(7);
     expect(stats.totals.recentCount).toBe(1);
     expect(stats.totals.recentCountCap).toBeGreaterThan(0);
-    // `allTime` is kept only because lib/email/founder-brief-template.ts (not
-    // owned by this task) reads it directly — it must equal recentCount, not
-    // a fictitious unbounded total.
-    expect(stats.totals.allTime).toBe(stats.totals.recentCount);
     expect(fsQueryCollection).toHaveBeenCalledWith('leads', 'submittedAt', 'DESCENDING', stats.totals.recentCountCap);
   });
 
@@ -78,5 +74,29 @@ describe('getLeadStats', () => {
     const byDate = new Map(stats.byDay.map((d) => [d.date, d.count]));
     expect(byDate.get('2026-03-08')).toBe(2);
     expect(byDate.get('2026-03-07')).toBe(1);
+  });
+
+  it('keeps day bucketing correct across the fall-back DST transition', async () => {
+    // "now" = 2026-11-01 noon NY (EST, UTC-5, after the transition).
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-11-01T17:00:00.000Z'));
+
+    fsQueryCollection.mockResolvedValueOnce([
+      // 2026-11-01 01:30 EDT, before the 2am -> 1am repeat (05:30Z at UTC-4)
+      lead('pre-fallback', '2026-11-01T05:30:00.000Z'),
+      // 2026-11-01 01:30 EST, the same wall-clock hour repeated after the
+      // fall-back (06:30Z at UTC-5) — a naive UTC-offset-only bucketing
+      // would double this into the wrong day or miscount it.
+      lead('post-fallback', '2026-11-01T06:30:00.000Z'),
+      // 2026-10-31 23:59 EDT — the day before
+      lead('day-before', '2026-11-01T03:59:00.000Z'),
+    ]);
+
+    const { getLeadStats } = await import('@/lib/leads/stats');
+    const stats = await getLeadStats(7);
+
+    const byDate = new Map(stats.byDay.map((d) => [d.date, d.count]));
+    expect(byDate.get('2026-11-01')).toBe(2);
+    expect(byDate.get('2026-10-31')).toBe(1);
   });
 });

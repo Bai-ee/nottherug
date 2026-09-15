@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, signOut, User, getIdToken } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
+import { BriefHtmlPreview } from '@/components/admin/brief/BriefHtmlPreview';
 
 interface BriefSummary {
   latestRunAt: string | null;
@@ -495,12 +496,8 @@ export default function AdminBriefPage() {
                       </div>
                     ) : null}
                   </div>
-                ) : loading ? (
-                  <div className="nb-empty">Loading latest brief…</div>
-                ) : html ? (
-                  <iframe title="Latest Not The Rug brief" srcDoc={html} />
                 ) : (
-                  <div className="nb-empty">No HTML brief has been generated yet. Run the brief to create one.</div>
+                  <BriefHtmlPreview loading={loading} html={html} />
                 )}
               </div>
             </div>

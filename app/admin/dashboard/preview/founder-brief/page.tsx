@@ -194,8 +194,14 @@ export default function FounderBriefPreviewPage() {
               Subject: <strong style={{ color: '#EDF3DB' }}>{subject}</strong>
             </div>
             <iframe
+              id="founder-brief-preview-frame"
               title="Founder brief email preview"
               srcDoc={html}
+              // Fixture/generated report HTML is untrusted: no scripts, and never
+              // paired with allow-same-origin (that combination would let sandboxed
+              // script escape the sandbox). allow-popups lets source links in the
+              // report open in a new tab instead of silently doing nothing.
+              sandbox="allow-popups"
               style={{ width: '100%', height: 'calc(100vh - 200px)', border: '1px solid rgba(237,243,219,0.2)', borderRadius: 8, background: '#fff' }}
             />
           </>

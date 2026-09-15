@@ -3,12 +3,15 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { onAuthStateChanged, signOut, User, getIdToken } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
 import type { PhotoUpload, PhotoRender } from '@/lib/photos/types';
 import type { LogoAsset } from '@/app/api/admin/photos/assets/route';
+import { AdminSessionProvider } from '@/components/admin/AdminSession';
+import { AdminGuard } from '@/components/admin/AdminGuard';
+import { adminFetch, useAbortSignal, isAbortError, readBodyStringField, AdminRequestError, type GetIdToken } from '@/components/admin/adminFetch';
+import { PhotoUploadPanel, type UploadPhase } from '@/components/admin/photos/PhotoUploadPanel';
+import { PhotoLibrary } from '@/components/admin/photos/PhotoLibrary';
+import { RenderControls, type RenderPhase } from '@/components/admin/photos/RenderControls';
+import { RenderedGallery } from '@/components/admin/photos/RenderedGallery';
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
@@ -111,6 +114,9 @@ const css = `
   .ph-btn-delete { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #C4674B; background: transparent; border: 1px solid rgba(196,103,75,0.25); border-radius: 3px; padding: 5px 10px; cursor: pointer; transition: background 150ms; }
   .ph-btn-delete:hover { background: rgba(196,103,75,0.1); }
 
+  /* ── PER-ITEM ERROR (thumbnail / delete failures kept visible, not hidden) ── */
+  .ph-item-error { font-family: 'Space Mono', monospace; font-size: 9px; color: #C4674B; padding: 0 12px 8px; line-height: 1.4; }
+
   .ph-empty { font-size: 13px; color: #4E5A42; font-style: italic; }
   .ph-no-logos { font-family: 'Space Mono', monospace; font-size: 11px; color: #4E5A42; }
 
@@ -124,18 +130,17 @@ const css = `
   }
 `;
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type UploadPhase = 'idle' | 'uploading' | 'success' | 'error';
-type RenderPhase = 'idle' | 'rendering' | 'success' | 'error';
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function AdminPhotosPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-
+function AdminPhotosPageContent({
+  email,
+  getToken,
+  signOut,
+}: {
+  email: string;
+  getToken: GetIdToken;
+  signOut: () => Promise<void>;
+}) {
   // Upload
   const [uploads, setUploads] = useState<PhotoUpload[]>([]);
   const [uploadPhase, setUploadPhase] = useState<UploadPhase>('idle');
@@ -161,85 +166,59 @@ export default function AdminPhotosPage() {
   const [renderPhase, setRenderPhase] = useState<RenderPhase>('idle');
   const [renderMsg, setRenderMsg] = useState('');
 
-  // Auth + initial data load
+  // Delete failures keep the row visible with a retry action (truthful
+  // deletion — see deleteItem below). Keyed by record id.
+  const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
+
+  const abortSignal = useAbortSignal();
+
+  // Initial data load
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser || !firebaseUser.email) { router.push('/admin'); return; }
-      const snap = await getDoc(doc(db, 'admins', firebaseUser.email));
-      if (!snap.exists()) { router.push('/admin'); return; }
-      setUser(firebaseUser);
-      setAuthChecked(true);
-
-      const token = await getIdToken(firebaseUser, true);
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const [origRes, rendRes, logoRes] = await Promise.all([
-        fetch('/api/admin/photos/list?type=originals', { headers }),
-        fetch('/api/admin/photos/list?type=rendered', { headers }),
-        fetch('/api/admin/photos/assets', { headers }),
+    (async () => {
+      const [origList, rendList, logoList] = await Promise.allSettled([
+        adminFetch<{ items: PhotoUpload[] }>('/api/admin/photos/list?type=originals', getToken, { signal: abortSignal }),
+        adminFetch<{ items: PhotoRender[] }>('/api/admin/photos/list?type=rendered', getToken, { signal: abortSignal }),
+        adminFetch<{ logos: LogoAsset[] }>('/api/admin/photos/assets', getToken, { signal: abortSignal }),
       ]);
-
-      if (origRes.ok) setUploads((await origRes.json()).items ?? []);
-      if (rendRes.ok) setRenders((await rendRes.json()).items ?? []);
-      if (logoRes.ok) setLogos((await logoRes.json()).logos ?? []);
-    });
-    return () => unsub();
-  }, [router]);
-
-  async function handleSignOut() {
-    await signOut(auth);
-    router.push('/admin');
-  }
+      if (origList.status === 'fulfilled') setUploads(origList.value.items ?? []);
+      if (rendList.status === 'fulfilled') setRenders(rendList.value.items ?? []);
+      if (logoList.status === 'fulfilled') setLogos(logoList.value.logos ?? []);
+    })();
+  }, [getToken, abortSignal]);
 
   // ── Upload ────────────────────────────────────────────────────────────────
 
   async function uploadFile(file: File) {
-    if (!user) return;
     setUploadPhase('uploading');
     setUploadProgress(10);
     setUploadMsg('');
 
-    let token: string;
-    try {
-      token = await getIdToken(user, true);
-    } catch {
-      setUploadPhase('error');
-      setUploadMsg('Could not get auth token.');
-      return;
-    }
-
-    setUploadProgress(30);
     const form = new FormData();
     form.append('file', file);
+    setUploadProgress(30);
 
-    let res: Response;
     try {
-      res = await fetch('/api/admin/photos/upload', {
+      const body = await adminFetch<{ upload: PhotoUpload }>('/api/admin/photos/upload', getToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
         body: form,
+        signal: abortSignal,
       });
-    } catch {
+      setUploadProgress(90);
+      const upload = body.upload;
+      setUploads((prev) => [upload, ...prev]);
+      setUploadPhase('success');
+      setUploadProgress(100);
+      const thumbnailNote = upload.thumbnailStatus === 'failed'
+        ? ` — thumbnail generation failed${upload.thumbnailError ? `: ${upload.thumbnailError}` : ''}`
+        : '';
+      setUploadMsg(`Uploaded: ${upload.fileName} (${upload.width}×${upload.height})${thumbnailNote}`);
+    } catch (err) {
+      if (isAbortError(err)) return;
       setUploadPhase('error');
-      setUploadMsg('Network error during upload.');
-      return;
+      const cleanup = err instanceof AdminRequestError ? readBodyStringField(err.body, 'cleanup') : undefined;
+      const base = err instanceof Error ? err.message : 'Upload failed';
+      setUploadMsg(cleanup ? `${base} (storage cleanup: ${cleanup})` : base);
     }
-
-    setUploadProgress(90);
-
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      setUploadPhase('error');
-      setUploadMsg(body.error ?? `Upload failed (${res.status})`);
-      return;
-    }
-
-    const body = await res.json();
-    const upload: PhotoUpload = body.upload;
-    setUploads((prev) => [upload, ...prev]);
-    setUploadPhase('success');
-    setUploadMsg(`Uploaded: ${upload.fileName} (${upload.width}×${upload.height})`);
-    setUploadProgress(100);
   }
 
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -258,84 +237,77 @@ export default function AdminPhotosPage() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   async function handleRender() {
-    if (!user || !selectedUploadId || !selectedLogoPath) return;
-
+    if (!selectedUploadId || !selectedLogoPath) return;
     const sourceUpload = uploads.find((u) => u.id === selectedUploadId);
     if (!sourceUpload) return;
 
     setRenderPhase('rendering');
     setRenderMsg('');
 
-    let token: string;
     try {
-      token = await getIdToken(user, true);
-    } catch {
-      setRenderPhase('error');
-      setRenderMsg('Could not get auth token.');
-      return;
-    }
-
-    let res: Response;
-    try {
-      res = await fetch('/api/admin/photos/render', {
+      const body = await adminFetch<{ render: PhotoRender }>('/api/admin/photos/render', getToken, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sourcePhotoId: sourceUpload.id,
           sourceStoragePath: sourceUpload.storagePath,
           logoStoragePath: selectedLogoPath,
-          placement: {
-            x: placementX,
-            y: placementY,
-            width: placementW,
-            height: placementH,
-            opacity: placementOpacity,
-          },
+          placement: { x: placementX, y: placementY, width: placementW, height: placementH, opacity: placementOpacity },
           renderer: 'sharp',
         }),
+        signal: abortSignal,
       });
-    } catch {
+      setRenders((prev) => [body.render, ...prev]);
+      setRenderPhase('success');
+      setRenderMsg('Render complete.');
+    } catch (err) {
+      if (isAbortError(err)) return;
       setRenderPhase('error');
-      setRenderMsg('Network error during render.');
-      return;
+      setRenderMsg(err instanceof Error ? err.message : 'Render failed');
     }
+  }
 
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      setRenderPhase('error');
-      setRenderMsg(body.error ?? `Render failed (${res.status})`);
-      return;
-    }
-
-    const body = await res.json();
-    const render: PhotoRender = body.render;
-    setRenders((prev) => [render, ...prev]);
-    setRenderPhase('success');
-    setRenderMsg('Render complete.');
+  function onPlacementChange(field: 'x' | 'y' | 'w' | 'h' | 'opacity', value: number) {
+    if (field === 'x') setPlacementX(value);
+    else if (field === 'y') setPlacementY(value);
+    else if (field === 'w') setPlacementW(value);
+    else if (field === 'h') setPlacementH(value);
+    else setPlacementOpacity(value);
   }
 
   // ── Delete ───────────────────────────────────────────────────────────────
+  // Only removes the row once the API confirms `ok: true`. A pending_cleanup
+  // or metadata_delete_failed response keeps the row and shows the error
+  // (`err.message` — the route's `error` field) so the admin can retry.
 
-  async function deleteItem(
-    collection: 'photoUploads' | 'photoRenders',
-    id: string,
-    storagePath: string,
-  ) {
-    if (!user) return;
-    const token = await getIdToken(user, true);
-    await fetch('/api/admin/photos/delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ collection, id, storagePath }),
+  async function deleteItem(collection: 'photoUploads' | 'photoRenders', id: string) {
+    setDeleteErrors((prev) => {
+      if (!(id in prev)) return prev;
+      const next = { ...prev };
+      delete next[id];
+      return next;
     });
-    if (collection === 'photoUploads') {
-      setUploads((prev) => prev.filter((u) => u.id !== id));
-      if (selectedUploadId === id) setSelectedUploadId(null);
-    } else {
-      setRenders((prev) => prev.filter((r) => r.id !== id));
+    try {
+      // 200 { ok: true, status: 'deleted' } is the only 2xx shape this route
+      // returns; 502 (pending_cleanup) and 500 (metadata_delete_failed) are
+      // non-2xx and land in the catch block below via adminFetch.
+      await adminFetch<{ ok: true; status: 'deleted' }>('/api/admin/photos/delete', getToken, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collection, id }),
+        signal: abortSignal,
+      });
+      if (collection === 'photoUploads') {
+        setUploads((prev) => prev.filter((u) => u.id !== id));
+        if (selectedUploadId === id) setSelectedUploadId(null);
+      } else {
+        setRenders((prev) => prev.filter((r) => r.id !== id));
+      }
+    } catch (err) {
+      if (isAbortError(err)) return;
+      // err.message is the route's `error` field (pending_cleanup / metadata_delete_failed) —
+      // the row stays in state so it stays visible, with this message and a retry button.
+      setDeleteErrors((prev) => ({ ...prev, [id]: err instanceof Error ? err.message : 'Delete failed' }));
     }
   }
 
@@ -343,21 +315,11 @@ export default function AdminPhotosPage() {
   const isRendering = renderPhase === 'rendering';
   const canRender = !!selectedUploadId && !!selectedLogoPath && !isRendering;
 
-  if (!authChecked) {
-    return (
-      <div style={{ background: '#1F2318', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&display=swap');`}</style>
-        <span style={{ fontFamily: '"Space Mono",monospace', fontSize: '11px', letterSpacing: '0.1em', color: '#4E5A42', textTransform: 'uppercase' }}>[LOADING...]</span>
-      </div>
-    );
-  }
-
   return (
     <>
       <style>{css}</style>
       <div className="ph" id="admin-photos-shell">
 
-        {/* TOPBAR */}
         <div className="ph-top" id="admin-photos-topbar">
           <div className="ph-top-l">
             <span className="ph-brand">NTR</span>
@@ -365,12 +327,11 @@ export default function AdminPhotosPage() {
             <span className="ph-top-title">Admin</span>
           </div>
           <div className="ph-top-r">
-            <span className="ph-topemail">{user?.email}</span>
-            <button className="ph-signout" onClick={handleSignOut}>Sign Out</button>
+            <span className="ph-topemail">{email}</span>
+            <button className="ph-signout" onClick={() => void signOut()}>Sign Out</button>
           </div>
         </div>
 
-        {/* NAV */}
         <nav className="ph-nav" id="admin-photos-nav">
           <a className="ph-nav-link" href="/admin/dashboard">Overview</a>
           <a className="ph-nav-link ph-nav-link-active" href="/admin/dashboard/photos">Photos</a>
@@ -378,7 +339,6 @@ export default function AdminPhotosPage() {
           <a className="ph-nav-link" href="/admin/dashboard/brief">Brief</a>
         </nav>
 
-        {/* PAGE */}
         <div className="ph-page" id="admin-photos-page">
           <div className="ph-page-header" id="admin-photos-page-header">
             <div className="ph-page-eyebrow">Admin · Photo Tool</div>
@@ -386,213 +346,96 @@ export default function AdminPhotosPage() {
             <div className="ph-page-sub">Upload, brand, and download images.</div>
           </div>
 
-          {/* ── UPLOAD ── */}
           <div className="ph-section" id="admin-photos-upload-section">
             <div className="ph-section-head">
               <span className="ph-section-label">Upload</span>
               <div className="ph-section-rule" />
             </div>
-
-            <div
-              id="admin-photos-upload-zone"
-              className={`ph-upload-zone${dragOver ? ' ph-upload-zone-drag' : ''}`}
-              onClick={() => !isUploading && fileInputRef.current?.click()}
+            <PhotoUploadPanel
+              fileInputRef={fileInputRef}
+              dragOver={dragOver}
               onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
               onDragLeave={() => setDragOver(false)}
               onDrop={onDrop}
-            >
-              <div className="ph-upload-zone-icon">[↑]</div>
-              <div className="ph-upload-zone-label">Tap to choose from camera roll or drag an image</div>
-              <div className="ph-upload-zone-hint">JPEG · PNG · HEIC · camera library supported</div>
-              <button
-                className="ph-btn"
-                disabled={isUploading}
-                onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-              >
-                {isUploading ? 'Uploading…' : 'Choose Photo'}
-              </button>
-
-              {uploadPhase === 'uploading' && (
-                <div style={{ width: '100%', maxWidth: 320 }}>
-                  <div className="ph-progress-bar-shell">
-                    <div className="ph-progress-bar-fill" style={{ width: `${uploadProgress}%` }} />
-                  </div>
-                  <div className="ph-progress-label">Uploading…</div>
-                </div>
-              )}
-            </div>
-
-            <input
-              ref={fileInputRef}
-              className="ph-upload-input"
-              type="file"
-              accept="image/*"
-              onChange={onFileChange}
+              onFileChange={onFileChange}
+              onChooseClick={() => fileInputRef.current?.click()}
+              isUploading={isUploading}
+              uploadPhase={uploadPhase}
+              uploadProgress={uploadProgress}
+              uploadMsg={uploadMsg}
             />
-
-            {uploadPhase === 'success' && <div className="ph-status-ok" id="admin-photos-upload-success">{uploadMsg}</div>}
-            {uploadPhase === 'error' && <div className="ph-status-err" id="admin-photos-upload-error">Error: {uploadMsg}</div>}
           </div>
 
-          {/* ── ORIGINALS ── */}
           <div className="ph-section" id="admin-photos-originals-section">
             <div className="ph-section-head">
               <span className="ph-section-label">Originals</span>
               <div className="ph-section-rule" />
             </div>
-            {uploads.length === 0 ? (
-              <div className="ph-empty">No uploads yet.</div>
-            ) : (
-              <div className="ph-gallery" id="admin-photos-originals-gallery">
-                {uploads.map((u) => (
-                  <div
-                    key={u.id}
-                    className={`ph-gallery-item${selectedUploadId === u.id ? ' ph-gallery-item-selected' : ''}`}
-                    onClick={() => setSelectedUploadId(u.id)}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img className="ph-gallery-img" src={u.downloadURL} alt={u.fileName} />
-                    <div className="ph-gallery-meta">
-                      <div className="ph-gallery-name">{u.fileName}</div>
-                      <div className="ph-gallery-dim">{u.width}×{u.height}</div>
-                    </div>
-                    <div style={{ padding: '0 12px 10px', display: 'flex', gap: 6 }}>
-                      <button
-                        className="ph-btn-delete"
-                        onClick={(e) => { e.stopPropagation(); deleteItem('photoUploads', u.id, u.storagePath); }}
-                      >Delete</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <PhotoLibrary
+              uploads={uploads}
+              selectedUploadId={selectedUploadId}
+              onSelect={setSelectedUploadId}
+              onDelete={(u) => deleteItem('photoUploads', u.id)}
+              deleteErrors={deleteErrors}
+            />
           </div>
 
-          {/* ── RENDER ── */}
           <div className="ph-section" id="admin-photos-render-section">
             <div className="ph-section-head">
               <span className="ph-section-label">Render</span>
               <div className="ph-section-rule" />
             </div>
-
-            <div className="ph-render-panel" id="admin-photos-render-panel">
-              {/* Logo selection */}
-              <div className="ph-field-group" id="admin-photos-logo-selector">
-                <div className="ph-field-label">Select Logo</div>
-                {logos.length === 0 ? (
-                  <div className="ph-no-logos">No logos in storage. Upload files to photos/logos/ in Firebase Storage.</div>
-                ) : (
-                  <div className="ph-logo-grid">
-                    {logos.map((l) => (
-                      <div
-                        key={l.storagePath}
-                        className={`ph-logo-item${selectedLogoPath === l.storagePath ? ' ph-logo-item-selected' : ''}`}
-                        onClick={() => setSelectedLogoPath(l.storagePath)}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img className="ph-logo-img" src={l.downloadURL} alt={l.name} />
-                        <div className="ph-logo-name">{l.name}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Placement controls */}
-              <div className="ph-field-group" id="admin-photos-placement-controls">
-                <div className="ph-field-label">Logo Placement</div>
-                <div className="ph-controls-grid">
-                  <div className="ph-control">
-                    <label className="ph-field-label" htmlFor="ph-x">X (px)</label>
-                    <input id="ph-x" className="ph-control-input" type="number" value={placementX} onChange={(e) => setPlacementX(Number(e.target.value))} />
-                  </div>
-                  <div className="ph-control">
-                    <label className="ph-field-label" htmlFor="ph-y">Y (px)</label>
-                    <input id="ph-y" className="ph-control-input" type="number" value={placementY} onChange={(e) => setPlacementY(Number(e.target.value))} />
-                  </div>
-                  <div className="ph-control">
-                    <label className="ph-field-label" htmlFor="ph-w">Width (px)</label>
-                    <input id="ph-w" className="ph-control-input" type="number" value={placementW} onChange={(e) => setPlacementW(Number(e.target.value))} />
-                  </div>
-                  <div className="ph-control">
-                    <label className="ph-field-label" htmlFor="ph-h">Height (px)</label>
-                    <input id="ph-h" className="ph-control-input" type="number" value={placementH} onChange={(e) => setPlacementH(Number(e.target.value))} />
-                  </div>
-                  <div className="ph-control">
-                    <label className="ph-field-label" htmlFor="ph-op">Opacity (0–1)</label>
-                    <input id="ph-op" className="ph-control-input" type="number" min={0} max={1} step={0.05} value={placementOpacity} onChange={(e) => setPlacementOpacity(Number(e.target.value))} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Render action */}
-              <div className="ph-render-actions" id="admin-photos-render-actions">
-                <button className="ph-btn" disabled={!canRender} onClick={handleRender}>
-                  {isRendering ? 'Rendering…' : 'Render'}
-                </button>
-                {selectedUploadId && (
-                  <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '10px', color: '#4E5A42' }}>
-                    Source: {uploads.find((u) => u.id === selectedUploadId)?.fileName ?? '—'}
-                  </span>
-                )}
-              </div>
-
-              {renderPhase === 'success' && <div className="ph-status-ok" id="admin-photos-render-success">{renderMsg}</div>}
-              {renderPhase === 'error' && <div className="ph-status-err" id="admin-photos-render-error">Error: {renderMsg}</div>}
-            </div>
+            <RenderControls
+              logos={logos}
+              selectedLogoPath={selectedLogoPath}
+              onSelectLogo={setSelectedLogoPath}
+              placementX={placementX}
+              placementY={placementY}
+              placementW={placementW}
+              placementH={placementH}
+              placementOpacity={placementOpacity}
+              onPlacementChange={onPlacementChange}
+              canRender={canRender}
+              isRendering={isRendering}
+              onRender={handleRender}
+              sourceFileName={uploads.find((u) => u.id === selectedUploadId)?.fileName}
+              renderPhase={renderPhase}
+              renderMsg={renderMsg}
+            />
           </div>
 
-          {/* ── RENDERED OUTPUTS ── */}
           <div className="ph-section" id="admin-photos-rendered-section">
             <div className="ph-section-head">
               <span className="ph-section-label">Rendered</span>
               <div className="ph-section-rule" />
             </div>
-            {renders.length === 0 ? (
-              <div className="ph-empty">No rendered outputs yet.</div>
-            ) : (
-              <div className="ph-gallery" id="admin-photos-rendered-gallery">
-                {renders.map((r) => (
-                  <div key={r.id} className="ph-rendered-item">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img className="ph-gallery-img" src={r.renderDownloadURL} alt={r.id} />
-                    <div className="ph-rendered-actions">
-                      <a
-                        className="ph-rendered-download"
-                        href={r.renderDownloadURL}
-                        download={`render-${r.id}.jpg`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Download
-                      </a>
-                      <button
-                        className="ph-btn-ghost ph-btn"
-                        style={{ fontSize: '10px', padding: '5px 10px' }}
-                        onClick={() => {
-                          setSelectedUploadId(r.sourcePhotoId);
-                          setSelectedLogoPath(r.logoStoragePath);
-                          setPlacementX(r.placement.x);
-                          setPlacementY(r.placement.y);
-                          setPlacementW(r.placement.width);
-                          setPlacementH(r.placement.height);
-                          setPlacementOpacity(r.placement.opacity);
-                          document.getElementById('admin-photos-render-section')?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                      >Re-render</button>
-                      <button
-                        className="ph-btn-delete"
-                        onClick={() => deleteItem('photoRenders', r.id, r.renderStoragePath)}
-                      >Delete</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <RenderedGallery
+              renders={renders}
+              onReRender={(r) => {
+                setSelectedUploadId(r.sourcePhotoId);
+                setSelectedLogoPath(r.logoStoragePath);
+                setPlacementX(r.placement.x);
+                setPlacementY(r.placement.y);
+                setPlacementW(r.placement.width);
+                setPlacementH(r.placement.height);
+                setPlacementOpacity(r.placement.opacity);
+                document.getElementById('admin-photos-render-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              onDelete={(r) => deleteItem('photoRenders', r.id)}
+              deleteErrors={deleteErrors}
+            />
           </div>
 
         </div>
       </div>
     </>
+  );
+}
+
+export default function AdminPhotosPage() {
+  return (
+    <AdminSessionProvider>
+      <AdminGuard>{(session) => <AdminPhotosPageContent email={session.email} getToken={session.getToken} signOut={session.signOut} />}</AdminGuard>
+    </AdminSessionProvider>
   );
 }

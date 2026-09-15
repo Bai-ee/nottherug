@@ -14,14 +14,6 @@ export type LeadStats = {
     recentCountCap: number;
     last7Days: number;
     last30Days: number;
-    /**
-     * @deprecated Same value as recentCount, kept only because
-     * lib/email/founder-brief-template.ts (not owned by this task) reads
-     * `.allTime` directly. It was never a true all-time count — the query is
-     * capped at recentCountCap. Migrate that reader to recentCount and drop
-     * this field.
-     */
-    allTime: number;
   };
   byDay: Array<{ date: string; count: number }>;
   bySource: Record<string, number>;
@@ -115,7 +107,6 @@ export async function getLeadStats(rangeDays = 30): Promise<LeadStats> {
       recentCountCap: RECENT_QUERY_LIMIT,
       last7Days: last7,
       last30Days: last30,
-      allTime: all.length,
     },
     byDay: byDayArr,
     bySource,

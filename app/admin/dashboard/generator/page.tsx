@@ -3,17 +3,10 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { onAuthStateChanged, signOut, User, getIdToken } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
 import type { PhotoUpload } from '@/lib/photos/types';
 import {
   CANVAS_PRESETS,
-  CANVAS_PRESET_ORDER,
   DEFAULT_CANVAS_PRESET,
-  LOGO_ASSETS,
-  LOGO_ASSET_ORDER,
   DEFAULT_LOGO_ASSET,
   DEFAULT_LOGO_PLACEMENT,
   clampPlacement,
@@ -22,7 +15,14 @@ import {
   type NormalizedLogoPlacement,
   type GeneratorRender,
 } from '@/lib/generator/types';
-import { PREVIEW_COVER_STYLE } from '@/lib/generator/fitUtils';
+import { AdminSessionProvider } from '@/components/admin/AdminSession';
+import { AdminGuard } from '@/components/admin/AdminGuard';
+import { adminFetch, useAbortSignal, isAbortError, readBodyStringField, AdminRequestError, type GetIdToken } from '@/components/admin/adminFetch';
+import { GeneratorCanvas } from '@/components/admin/generator/GeneratorCanvas';
+import { GeneratorControls } from '@/components/admin/generator/GeneratorControls';
+import { GeneratorUploadPanel } from '@/components/admin/generator/GeneratorUploadPanel';
+import { GeneratorExportOverlay, type GenPhase } from '@/components/admin/generator/GeneratorExportOverlay';
+import { DeleteConfirmModal } from '@/components/admin/generator/DeleteConfirmModal';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
@@ -885,27 +885,19 @@ html, body { background: #55624C; overflow: hidden; }
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type SourceMode   = 'random' | 'selected';
-type GenPhase     = 'idle' | 'generating' | 'success' | 'error';
 type RendererPref = 'sharp' | 'ffmpeg';
-
-// ─── Preset thumbnail dimensions ─────────────────────────────────────────────
-
-function presetThumbSize(key: CanvasPresetKey): { w: number; h: number } {
-  const maxH = 38;
-  const p = CANVAS_PRESETS[key];
-  const ar = p.width / p.height;
-  const h = maxH;
-  const w = Math.max(10, Math.round(h * ar));
-  return { w, h };
-}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function AdminGeneratorPage() {
-  const router = useRouter();
-  const [user,         setUser]        = useState<User | null>(null);
-  const [authChecked,  setAuthChecked] = useState(false);
-
+function AdminGeneratorPageContent({
+  email,
+  getToken,
+  signOut,
+}: {
+  email: string;
+  getToken: GetIdToken;
+  signOut: () => Promise<void>;
+}) {
   // Source
   const [sourceMode,       setSourceMode]       = useState<SourceMode>('random');
   const [uploads,          setUploads]          = useState<PhotoUpload[]>([]);
@@ -913,6 +905,7 @@ export default function AdminGeneratorPage() {
   const [uploadsLoaded,    setUploadsLoaded]    = useState(false);
   const [randomSource,     setRandomSource]     = useState<PhotoUpload | null>(null);
   const [pendingDelete,    setPendingDelete]    = useState<{ id: string; storagePath: string; fileName: string } | null>(null);
+  const [deleteError,      setDeleteError]      = useState<{ id: string; storagePath: string; fileName: string; message: string } | null>(null);
   const [visibleCount,     setVisibleCount]     = useState(20);
 
   // Canvas
@@ -950,6 +943,8 @@ export default function AdminGeneratorPage() {
   const isDraggingRef    = useRef(false);
   const fileInputRef     = useRef<HTMLInputElement>(null);
 
+  const abortSignal = useAbortSignal();
+
   // ── Derived ──────────────────────────────────────────────────────────────────
 
   const currentPreset = CANVAS_PRESETS[preset];
@@ -986,27 +981,17 @@ export default function AdminGeneratorPage() {
   const latestRender = renders[0] ?? null;
   const displayRender = activeRender ?? latestRender;
 
-  // ── Auth + data load ──────────────────────────────────────────────────────────
+  // ── Data load ──────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser?.email) { router.push('/admin'); return; }
-      const snap = await getDoc(doc(db, 'admins', firebaseUser.email));
-      if (!snap.exists()) { router.push('/admin'); return; }
-      setUser(firebaseUser);
-      setAuthChecked(true);
-
-      const token = await getIdToken(firebaseUser, true);
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const [origRes, histRes] = await Promise.all([
-        fetch('/api/admin/photos/list?type=originals', { headers }),
-        fetch('/api/admin/generator/list',             { headers }),
+    (async () => {
+      const [origRes, histRes] = await Promise.allSettled([
+        adminFetch<{ items: PhotoUpload[] }>('/api/admin/photos/list?type=originals', getToken, { signal: abortSignal }),
+        adminFetch<{ renders: GeneratorRender[] }>('/api/admin/generator/list', getToken, { signal: abortSignal }),
       ]);
 
-      if (origRes.ok) {
-        const data = await origRes.json();
-        const items: PhotoUpload[] = data.items ?? [];
+      if (origRes.status === 'fulfilled') {
+        const items = origRes.value.items ?? [];
         setUploads(items);
         if (items.length > 0) {
           setRandomSource(items[Math.floor(Math.random() * items.length)]);
@@ -1014,13 +999,11 @@ export default function AdminGeneratorPage() {
       }
       setUploadsLoaded(true);
 
-      if (histRes.ok) {
-        const histData = await histRes.json();
-        setRenders(histData.renders ?? []);
+      if (histRes.status === 'fulfilled') {
+        setRenders(histRes.value.renders ?? []);
       }
-    });
-    return () => unsub();
-  }, [router]);
+    })();
+  }, [getToken, abortSignal]);
 
   // ── Canvas sizing via ResizeObserver ──────────────────────────────────────────
 
@@ -1053,18 +1036,13 @@ export default function AdminGeneratorPage() {
     const ro = new ResizeObserver(compute);
     ro.observe(zone);
     return () => ro.disconnect();
-  }, [currentPreset.width, currentPreset.height, authChecked]);
+  }, [currentPreset.width, currentPreset.height]);
 
   // ── Handlers ─────────────────────────────────────────────────────────────────
 
   function shuffleRandom() {
     if (uploads.length === 0) return;
     setRandomSource(uploads[Math.floor(Math.random() * uploads.length)]);
-  }
-
-  async function handleSignOut() {
-    await signOut(auth);
-    router.push('/admin');
   }
 
   const placementFromClientPos = useCallback((clientX: number, clientY: number) => {
@@ -1101,44 +1079,37 @@ export default function AdminGeneratorPage() {
   }, []);
 
   async function uploadFile(file: File) {
-    if (!user) return;
     setUploadPhase('uploading');
     setUploadProgress(10);
     setUploadMsg('');
 
-    let token: string;
-    try { token = await getIdToken(user, true); }
-    catch { setUploadPhase('error'); setUploadMsg('Auth error.'); return; }
-
-    setUploadProgress(30);
     const form = new FormData();
     form.append('file', file);
+    setUploadProgress(30);
 
-    let res: Response;
     try {
-      res = await fetch('/api/admin/photos/upload', {
+      const data = await adminFetch<{ upload: PhotoUpload }>('/api/admin/photos/upload', getToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
         body: form,
+        signal: abortSignal,
       });
-    } catch { setUploadPhase('error'); setUploadMsg('Network error.'); return; }
-
-    setUploadProgress(90);
-
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
+      setUploadProgress(90);
+      const upload = data.upload;
+      setUploads((prev) => [upload, ...prev]);
+      if (!randomSource) setRandomSource(upload);
+      setUploadPhase('success');
+      const thumbnailNote = upload.thumbnailStatus === 'failed'
+        ? ` — thumbnail generation failed${upload.thumbnailError ? `: ${upload.thumbnailError}` : ''}`
+        : '';
+      setUploadMsg(`Uploaded: ${upload.fileName}${thumbnailNote}`);
+      setUploadProgress(100);
+    } catch (err) {
+      if (isAbortError(err)) return;
       setUploadPhase('error');
-      setUploadMsg(body.error ?? `Upload failed (${res.status})`);
-      return;
+      const cleanup = err instanceof AdminRequestError ? readBodyStringField(err.body, 'cleanup') : undefined;
+      const base = err instanceof Error ? err.message : 'Upload failed';
+      setUploadMsg(cleanup ? `${base} (storage cleanup: ${cleanup})` : base);
     }
-
-    const data = await res.json();
-    const upload: PhotoUpload = data.upload;
-    setUploads((prev) => [upload, ...prev]);
-    if (!randomSource) setRandomSource(upload);
-    setUploadPhase('success');
-    setUploadMsg(`Uploaded: ${upload.fileName}`);
-    setUploadProgress(100);
   }
 
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -1154,24 +1125,31 @@ export default function AdminGeneratorPage() {
     if (file) uploadFile(file);
   }
 
-  async function deleteUpload(id: string, storagePath: string) {
-    if (!user) return;
-    const token = await getIdToken(user, true);
-    await fetch('/api/admin/photos/delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ collection: 'photoUploads', id, storagePath }),
-    });
-    setUploads((prev) => prev.filter((u) => u.id !== id));
-    if (selectedUploadId === id) setSelectedUploadId(null);
-    if (randomSource?.id === id) {
-      const remaining = uploads.filter((u) => u.id !== id);
-      setRandomSource(remaining.length > 0 ? remaining[Math.floor(Math.random() * remaining.length)] : null);
+  // Only removes the upload from state once the API confirms `ok: true` — a
+  // pending_cleanup / metadata_delete_failed response keeps it and surfaces
+  // the error with a retry action instead of hiding the row.
+  async function deleteUpload(id: string, storagePath: string, fileName: string) {
+    try {
+      await adminFetch<{ ok: true; status: 'deleted' }>('/api/admin/photos/delete', getToken, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collection: 'photoUploads', id }),
+        signal: abortSignal,
+      });
+      setDeleteError((prev) => (prev?.id === id ? null : prev));
+      setUploads((prev) => prev.filter((u) => u.id !== id));
+      if (selectedUploadId === id) setSelectedUploadId(null);
+      if (randomSource?.id === id) {
+        const remaining = uploads.filter((u) => u.id !== id);
+        setRandomSource(remaining.length > 0 ? remaining[Math.floor(Math.random() * remaining.length)] : null);
+      }
+    } catch (err) {
+      if (isAbortError(err)) return;
+      setDeleteError({ id, storagePath, fileName, message: err instanceof Error ? err.message : 'Delete failed' });
     }
   }
 
   async function handleGenerate() {
-    if (!user) return;
     if (sourceMode === 'selected' && !selectedUploadId) return;
     if (sourceMode === 'random' && !randomSource && uploads.length > 0) {
       shuffleRandom(); return;
@@ -1182,19 +1160,10 @@ export default function AdminGeneratorPage() {
     setGenError('');
     setGenPhase('generating');
 
-    let token: string;
-    try { token = await getIdToken(user, true); }
-    catch {
-      setGenPhase('error');
-      setGenError('Could not verify your admin session.');
-      return;
-    }
-
-    let res: Response;
     try {
-      res = await fetch('/api/admin/generator/render', {
+      const body = await adminFetch<{ render: GeneratorRender }>('/api/admin/generator/render', getToken, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sourceMode,
           sourcePhotoId: sourceMode === 'selected' ? selectedUploadId : randomSource?.id,
@@ -1203,24 +1172,16 @@ export default function AdminGeneratorPage() {
           placement,
           renderer: rendererPref,
         }),
+        signal: abortSignal,
       });
-    } catch {
+      setActiveRender(body.render);
+      setRenders((prev) => [body.render, ...prev.filter((render) => render.id !== body.render.id)]);
+      setGenPhase('success');
+    } catch (err) {
+      if (isAbortError(err)) return;
       setGenPhase('error');
-      setGenError('Network error while generating the image.');
-      return;
+      setGenError(err instanceof Error ? err.message : 'Generation failed');
     }
-
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      setGenPhase('error');
-      setGenError(body.error ?? `Generation failed (${res.status})`);
-      return;
-    }
-
-    const body = await res.json();
-    setActiveRender(body.render);
-    setRenders((prev) => [body.render, ...prev.filter((render) => render.id !== body.render.id)]);
-    setGenPhase('success');
   }
 
   // ── Share handler ─────────────────────────────────────────────────────────────
@@ -1246,12 +1207,6 @@ export default function AdminGeneratorPage() {
     }
   }
 
-  // ── Loading ───────────────────────────────────────────────────────────────────
-
-  if (!authChecked) {
-    return <div style={{ background: '#0C0F09', height: '100dvh' }} />;
-  }
-
   // ─── JSX ──────────────────────────────────────────────────────────────────────
 
   return (
@@ -1259,7 +1214,6 @@ export default function AdminGeneratorPage() {
       <style>{css}</style>
       <div className="ed" id="admin-gen-shell">
 
-        {/* ── TOPBAR ─────────────────────────────────────────────────────────── */}
         <div className="ed-top" id="admin-gen-topbar">
           <div className="ed-top-l">
             <span className="ed-brand">NTR</span>
@@ -1267,217 +1221,57 @@ export default function AdminGeneratorPage() {
             <span className="ed-top-title">Admin</span>
           </div>
           <div className="ed-top-r">
-            <span className="ed-email">{user?.email}</span>
-            <button className="ed-signout" onClick={handleSignOut}>Sign Out</button>
+            <span className="ed-email">{email}</span>
+            <button className="ed-signout" onClick={() => void signOut()}>Sign Out</button>
           </div>
         </div>
 
-        {/* ── NAV BAR ────────────────────────────────────────────────────────── */}
         <nav className="ed-nav" id="admin-gen-nav">
           <a className="ed-nav-link" href="/admin/dashboard">Overview</a>
-          {/* <a className="ed-nav-link" href="/admin/dashboard/photos">Photos</a> */}
           <a className="ed-nav-link ed-nav-active" href="/admin/dashboard/generator">Generator</a>
-          {/* <a className="ed-nav-link" href="/admin/dashboard/brief">Brief</a> */}
         </nav>
 
-        {/* ── BODY ───────────────────────────────────────────────────────────── */}
         <div className="ed-body" id="admin-gen-body">
+          <GeneratorCanvas
+            canvasZoneRef={canvasZoneRef}
+            canvasWrapperRef={canvasWrapperRef}
+            canvasSize={canvasSize}
+            resolvedSource={resolvedSource}
+            uploadsLoaded={uploadsLoaded}
+            uploadsCount={uploads.length}
+            sourceMode={sourceMode}
+            logoOverlayCss={logoOverlayCss}
+            logoAsset={logoAsset}
+            onCanvasClick={onCanvasClick}
+            onLogoPointerDown={onLogoPointerDown}
+            onLogoPointerMove={onLogoPointerMove}
+            onLogoPointerUp={onLogoPointerUp}
+            preset={preset}
+            onSelectPreset={setPreset}
+          />
 
-          {/* ── CANVAS ZONE ────────────────────────────────────────────────── */}
-          <div ref={canvasZoneRef} className="ed-canvas-zone" id="admin-gen-canvas-zone">
-            <div
-              ref={canvasWrapperRef}
-              id="admin-gen-canvas-frame"
-              className="ed-canvas-frame"
-              style={{ width: canvasSize.w, height: canvasSize.h }}
-              onClick={onCanvasClick}
-            >
-              {resolvedSource ? (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={resolvedSource.downloadURL}
-                    alt="source"
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block', ...PREVIEW_COVER_STYLE, zIndex: 1 }}
-                  />
-                  <div
-                    id="admin-gen-logo-overlay"
-                    style={logoOverlayCss}
-                    onPointerDown={onLogoPointerDown}
-                    onPointerMove={onLogoPointerMove}
-                    onPointerUp={onLogoPointerUp}
-                    title="Drag to reposition"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={LOGO_ASSETS[logoAsset].previewSrc}
-                      alt="logo"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none', userSelect: 'none' }}
-                      draggable={false}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="ed-canvas-placeholder">
-                  <div className="ed-canvas-ph-text">
-                    {!uploadsLoaded ? '[loading]' : uploads.length === 0 ? '[no images]' : sourceMode === 'selected' ? '[select image]' : '[loading]'}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <GeneratorControls
+            placement={placement}
+            onPlacementSizeChange={(diameterRatio) => setPlacement((prev) => clampPlacement({ ...prev, diameterRatio }))}
+            onResetPlacement={() => setPlacement(DEFAULT_LOGO_PLACEMENT)}
+            logoAsset={logoAsset}
+            onSelectLogo={setLogoAsset}
+            sourceMode={sourceMode}
+            onSourceModeChange={setSourceMode}
+            uploads={uploads}
+            uploadsLoaded={uploadsLoaded}
+            randomSource={randomSource}
+            onShuffle={shuffleRandom}
+            selectedUploadId={selectedUploadId}
+            onSelectUpload={setSelectedUploadId}
+            showAdvanced={showAdvanced}
+            onToggleAdvanced={() => setShowAdvanced((v) => !v)}
+            rendererPref={rendererPref}
+            onSelectRenderer={setRendererPref}
+          />
 
-          {/* ── PRESET STRIP ───────────────────────────────────────────────── */}
-          <div className="ed-preset-strip" id="admin-gen-preset-strip">
-            {CANVAS_PRESET_ORDER.map((key) => {
-              const { w, h } = presetThumbSize(key);
-              const p = CANVAS_PRESETS[key];
-              return (
-                <div
-                  key={key}
-                  className={`ed-preset-chip${preset === key ? ' ed-preset-chip-active' : ''}`}
-                  onClick={() => setPreset(key)}
-                >
-                  <div className="ed-preset-thumb" style={{ width: w, height: h }} />
-                  <div className="ed-preset-label">{p.aspectLabel}</div>
-                  <div className="ed-preset-dim">{p.width}×{p.height}</div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* ── CONTROLS PANEL ─────────────────────────────────────────────── */}
-          <div className="ed-controls-panel" id="admin-gen-controls-panel">
-            <div className="ed-controls-grid" id="admin-gen-controls-grid">
-
-              {/* Logo section */}
-              <div className="ed-section" id="admin-gen-section-logo">
-
-                <div className="ed-size-row" id="admin-gen-size-row">
-                  <span className="ed-size-lbl">Size</span>
-                  <input
-                    id="admin-gen-size-slider"
-                    type="range"
-                    min={5} max={60} step={1}
-                    value={Math.round(placement.diameterRatio * 100)}
-                    className="ed-size-range"
-                    onChange={(e) =>
-                      setPlacement((prev) =>
-                        clampPlacement({ ...prev, diameterRatio: Number(e.target.value) / 100 }),
-                      )
-                    }
-                  />
-                  <span className="ed-size-val">{Math.round(placement.diameterRatio * 100)}%</span>
-                  <button className="ed-reset-btn" onClick={() => setPlacement(DEFAULT_LOGO_PLACEMENT)}>Reset</button>
-                </div>
-
-                <div className="ed-logo-swatches" id="admin-gen-logo-swatches">
-                  {LOGO_ASSET_ORDER.map((key) => {
-                    const l = LOGO_ASSETS[key];
-                    return (
-                      <div
-                        key={key}
-                        className={`ed-logo-swatch${logoAsset === key ? ' ed-logo-swatch-active' : ''}`}
-                        onClick={() => setLogoAsset(key)}
-                      >
-                        <div className="ed-logo-ring">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={l.previewSrc} alt={l.label} />
-                        </div>
-                        <div className="ed-logo-name">{l.label}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-              </div>
-
-              {/* Source section */}
-              <div className="ed-section" id="admin-gen-section-source">
-
-                <div className="ed-seg" id="admin-gen-source-seg">
-                  {(['random', 'selected'] as SourceMode[]).map((m) => (
-                    <button
-                      key={m}
-                      className={`ed-seg-btn${sourceMode === m ? ' ed-seg-btn-active' : ''}`}
-                      onClick={() => setSourceMode(m)}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
-
-                {sourceMode === 'random' && (
-                  uploads.length === 0 ? (
-                    <div className="ed-empty">No uploads yet</div>
-                  ) : randomSource ? (
-                    <div className="ed-random-row" id="admin-gen-random-row">
-                      <div className="ed-random-img">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={randomSource.downloadURL} alt={randomSource.fileName} />
-                      </div>
-                      <div className="ed-random-info">
-                        <div className="ed-random-lock">Locked</div>
-                        <div className="ed-random-file">{randomSource.fileName}</div>
-                      </div>
-                      <button className="ed-shuffle-btn" onClick={shuffleRandom}>Shuffle</button>
-                    </div>
-                  ) : (
-                    <div className="ed-empty">Picking…</div>
-                  )
-                )}
-
-                {sourceMode === 'selected' && (
-                  !uploadsLoaded ? (
-                    <div className="ed-empty">Loading…</div>
-                  ) : uploads.length === 0 ? (
-                    <div className="ed-empty">No uploads yet</div>
-                  ) : (
-                    <div className="ed-media-tray" id="admin-gen-media-tray">
-                      {uploads.map((u) => (
-                        <div
-                          key={u.id}
-                          className={`ed-media-item${selectedUploadId === u.id ? ' ed-media-item-active' : ''}`}
-                          onClick={() => setSelectedUploadId(u.id)}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={u.downloadURL} alt={u.fileName} />
-                        </div>
-                      ))}
-                    </div>
-                  )
-                )}
-              </div>
-
-
-            </div>
-
-            {/* Advanced */}
-            <div className="ed-section" id="admin-gen-section-advanced" style={{ borderBottom: 'none' }}>
-              <button className="ed-advanced-toggle" onClick={() => setShowAdvanced((v) => !v)}>
-                {showAdvanced ? '▾' : '▸'} Advanced
-              </button>
-              {showAdvanced && (
-                <div className="ed-renderer-row" id="admin-gen-renderer-row">
-                  {(['sharp', 'ffmpeg'] as RendererPref[]).map((r) => (
-                    <button
-                      key={r}
-                      className={`ed-renderer-btn${rendererPref === r ? ' ed-renderer-btn-active' : ''}`}
-                      onClick={() => setRendererPref(r)}
-                    >{r}</button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* ── GENERATE + UPLOAD BAR ──────────────────────────────────────── */}
           <div className="ed-gen-bar" id="admin-gen-bar">
-            <button
-              className="ed-gen-btn"
-              disabled={!canGenerate}
-              onClick={handleGenerate}
-            >
+            <button className="ed-gen-btn" disabled={!canGenerate} onClick={handleGenerate}>
               {isGenerating ? 'Generating…' : 'Generate'}
             </button>
             <button
@@ -1490,188 +1284,62 @@ export default function AdminGeneratorPage() {
             </button>
           </div>
 
-          {/* ── UPLOAD SECTION ─────────────────────────────────────────────── */}
-          <div className="ed-upload-section" id="admin-gen-upload-section">
-            <div
-              id="admin-gen-upload-zone"
-              className={`ed-upload-zone${dragOver ? ' ed-upload-zone-drag' : ''}`}
-              onClick={() => !isUploading && fileInputRef.current?.click()}
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={onDrop}
-            >
-              <div className="ed-upload-zone-icon">[↑]</div>
-              <div className="ed-upload-zone-label">Tap to choose from camera roll or drag an image</div>
-              <div className="ed-upload-zone-hint">JPEG · PNG · HEIC · camera library supported</div>
-              {isUploading && (
-                <div style={{ width: '100%', maxWidth: 280 }}>
-                  <div className="ed-upload-prog-shell">
-                    <div className="ed-upload-prog-fill" style={{ width: `${uploadProgress}%` }} />
-                  </div>
-                  <div className="ed-upload-prog-label">Uploading…</div>
-                </div>
-              )}
-            </div>
-
-            <input
-              ref={fileInputRef}
-              className="ed-upload-input"
-              type="file"
-              accept="image/*"
-              onChange={onFileChange}
-            />
-
-            {uploadPhase === 'success' && <div className="ed-upload-ok" id="admin-gen-upload-ok">{uploadMsg}</div>}
-            {uploadPhase === 'error'   && <div className="ed-upload-err" id="admin-gen-upload-err">Error: {uploadMsg}</div>}
-
-            {uploads.length > 0 && (
-              <>
-                <div className="ed-uploads-grid" id="admin-gen-uploads-grid">
-                  {uploads.slice(0, visibleCount).map((u) => (
-                    <div
-                      key={u.id}
-                      className={`ed-upload-item${selectedUploadId === u.id ? ' ed-upload-item-selected' : ''}`}
-                      onClick={() => { setSourceMode('selected'); setSelectedUploadId(u.id); }}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={u.thumbnailURL ?? u.downloadURL}
-                        alt={u.fileName}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <button
-                        className="ed-upload-item-del"
-                        onClick={(e) => { e.stopPropagation(); setPendingDelete({ id: u.id, storagePath: u.storagePath, fileName: u.fileName }); }}
-                      >✕</button>
-                    </div>
-                  ))}
-                </div>
-                {visibleCount < uploads.length && (
-                  <button
-                    className="ed-load-more"
-                    id="admin-gen-load-more"
-                    onClick={() => setVisibleCount((n) => n + 20)}
-                  >
-                    Load more ({uploads.length - visibleCount} remaining)
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-
+          <GeneratorUploadPanel
+            fileInputRef={fileInputRef}
+            dragOver={dragOver}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={onDrop}
+            onFileChange={onFileChange}
+            onChooseClick={() => fileInputRef.current?.click()}
+            isUploading={isUploading}
+            uploadPhase={uploadPhase}
+            uploadProgress={uploadProgress}
+            uploadMsg={uploadMsg}
+            uploads={uploads}
+            visibleCount={visibleCount}
+            onShowMore={() => setVisibleCount((n) => n + 20)}
+            selectedUploadId={selectedUploadId}
+            onSelectUpload={(id) => { setSourceMode('selected'); setSelectedUploadId(id); }}
+            onRequestDelete={(u) => setPendingDelete({ id: u.id, storagePath: u.storagePath, fileName: u.fileName })}
+            deleteError={deleteError}
+            onRetryDelete={() => deleteError && void deleteUpload(deleteError.id, deleteError.storagePath, deleteError.fileName)}
+            onDismissDeleteError={() => setDeleteError(null)}
+          />
         </div>
 
-        {/* ── EXPORT OVERLAY ─────────────────────────────────────────────────── */}
         {showExport && (
-          <div className="ed-export" id="admin-gen-export-overlay">
-            <div className="ed-export-bar">
-              <span className="ed-export-title">
-                {genPhase === 'generating' ? 'Generating' : genPhase === 'error' ? 'Generation Issue' : 'Export'}
-              </span>
-              <button className="ed-export-back" onClick={() => setShowExport(false)}>← Back</button>
-            </div>
-
-            <div className="ed-export-preview">
-              {genPhase === 'generating' && (
-                <div className="ed-canvas-placeholder">
-                  <div className="ed-canvas-ph-text">[generating image]</div>
-                </div>
-              )}
-              {genPhase === 'error' && (
-                <div className="ed-canvas-placeholder" style={{ padding: 24 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                    <div className="ed-canvas-ph-text">[generation failed]</div>
-                    <div
-                      style={{
-                        fontFamily: 'var(--mono)',
-                        fontSize: 10,
-                        letterSpacing: '0.04em',
-                        color: 'var(--t1)',
-                        textTransform: 'uppercase',
-                        textAlign: 'center',
-                        lineHeight: 1.5,
-                        maxWidth: 260,
-                      }}
-                    >
-                      {genError || 'The image did not finish generating.'}
-                    </div>
-                    <button className="ed-export-share" onClick={() => setShowExport(false)}>
-                      Close
-                    </button>
-                  </div>
-                </div>
-              )}
-              {genPhase !== 'generating' && genPhase !== 'error' && displayRender && (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={displayRender.renderDownloadURL} alt="Generated output" />
-                </>
-              )}
-              <button className="ed-export-close" id="admin-gen-export-close" onClick={() => setShowExport(false)}>✕</button>
-            </div>
-
-            {displayRender && genPhase !== 'error' && (
-              <div className="ed-export-panel">
-                <div className="ed-export-btns">
-                  <a
-                    className="ed-export-dl"
-                    href={displayRender.renderDownloadURL}
-                    download={`ntr-${displayRender.id}.jpg`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Download
-                  </a>
-                  {typeof navigator !== 'undefined' && !!navigator.share && (
-                    <button className="ed-export-share" onClick={() => handleShare(displayRender)}>
-                      Share
-                    </button>
-                  )}
-                </div>
-                <div className="ed-export-hint">Download or Share to save to Photos</div>
-
-                {renders.length > 1 && (
-                  <div className="ed-history-strip" id="admin-gen-history-strip">
-                    {renders
-                      .filter((r) => r.id !== displayRender.id)
-                      .slice(0, 7)
-                      .map((r) => (
-                        <div
-                          key={r.id}
-                          className="ed-history-thumb"
-                          title={r.id}
-                          onClick={() => setActiveRender(r)}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={r.renderDownloadURL} alt="" />
-                        </div>
-                      ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <GeneratorExportOverlay
+            genPhase={genPhase}
+            genError={genError}
+            displayRender={displayRender}
+            renders={renders}
+            onClose={() => setShowExport(false)}
+            onSelectRender={setActiveRender}
+            onShare={handleShare}
+          />
         )}
 
-        {/* ── CONFIRM DELETE MODAL ──────────────────────────────────────────── */}
         {pendingDelete && (
-          <div className="ed-confirm-backdrop" id="admin-gen-confirm-backdrop" onClick={() => setPendingDelete(null)}>
-            <div className="ed-confirm-modal" id="admin-gen-confirm-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="ed-confirm-title">Delete photo?</div>
-              <div className="ed-confirm-body">{pendingDelete.fileName}</div>
-              <div className="ed-confirm-actions">
-                <button className="ed-confirm-cancel" onClick={() => setPendingDelete(null)}>Cancel</button>
-                <button
-                  className="ed-confirm-delete"
-                  onClick={() => { deleteUpload(pendingDelete.id, pendingDelete.storagePath); setPendingDelete(null); }}
-                >Delete</button>
-              </div>
-            </div>
-          </div>
+          <DeleteConfirmModal
+            fileName={pendingDelete.fileName}
+            onCancel={() => setPendingDelete(null)}
+            onConfirm={() => {
+              void deleteUpload(pendingDelete.id, pendingDelete.storagePath, pendingDelete.fileName);
+              setPendingDelete(null);
+            }}
+          />
         )}
 
       </div>
     </>
+  );
+}
+
+export default function AdminGeneratorPage() {
+  return (
+    <AdminSessionProvider>
+      <AdminGuard>{(session) => <AdminGeneratorPageContent email={session.email} getToken={session.getToken} signOut={session.signOut} />}</AdminGuard>
+    </AdminSessionProvider>
   );
 }
