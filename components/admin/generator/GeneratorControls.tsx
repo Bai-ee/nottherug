@@ -9,7 +9,6 @@ import {
 import type { PhotoUpload } from '@/lib/photos/types';
 
 type SourceMode = 'random' | 'selected';
-type RendererPref = 'sharp' | 'ffmpeg';
 
 export function GeneratorControls({
   placement,
@@ -25,10 +24,6 @@ export function GeneratorControls({
   onShuffle,
   selectedUploadId,
   onSelectUpload,
-  showAdvanced,
-  onToggleAdvanced,
-  rendererPref,
-  onSelectRenderer,
 }: {
   placement: NormalizedLogoPlacement;
   onPlacementSizeChange: (diameterRatio: number) => void;
@@ -43,10 +38,6 @@ export function GeneratorControls({
   onShuffle: () => void;
   selectedUploadId: string | null;
   onSelectUpload: (id: string) => void;
-  showAdvanced: boolean;
-  onToggleAdvanced: () => void;
-  rendererPref: RendererPref;
-  onSelectRenderer: (renderer: RendererPref) => void;
 }) {
   return (
     <div className="ed-controls-panel" id="admin-gen-controls-panel">
@@ -142,23 +133,6 @@ export function GeneratorControls({
           )}
         </div>
 
-      </div>
-
-      <div className="ed-section" id="admin-gen-section-advanced" style={{ borderBottom: 'none' }}>
-        <button className="ed-advanced-toggle" onClick={onToggleAdvanced}>
-          {showAdvanced ? '▾' : '▸'} Advanced
-        </button>
-        {showAdvanced && (
-          <div className="ed-renderer-row" id="admin-gen-renderer-row">
-            {(['sharp', 'ffmpeg'] as RendererPref[]).map((r) => (
-              <button
-                key={r}
-                className={`ed-renderer-btn${rendererPref === r ? ' ed-renderer-btn-active' : ''}`}
-                onClick={() => onSelectRenderer(r)}
-              >{r}</button>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

@@ -456,37 +456,6 @@ html, body { background: #55624C; overflow: hidden; }
   text-transform: uppercase;
 }
 
-/* ── ADVANCED ───────────────────────────────────────────────────────────────── */
-.ed-advanced-toggle {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--t0);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: color 150ms;
-}
-.ed-advanced-toggle:hover { color: var(--t1); }
-.ed-renderer-row { display: flex; gap: 6px; margin-top: 8px; }
-.ed-renderer-btn {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--t1);
-  background: var(--s1);
-  border: 1px solid var(--bd1);
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: all 150ms;
-}
-.ed-renderer-btn-active { border-color: var(--t3); color: var(--t3); }
-.ed-renderer-btn:hover { border-color: var(--bd2); }
-
 /* ── GENERATE BAR ───────────────────────────────────────────────────────────── */
 .ed-gen-bar {
   flex-shrink: 0;
@@ -884,8 +853,7 @@ html, body { background: #55624C; overflow: hidden; }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type SourceMode   = 'random' | 'selected';
-type RendererPref = 'sharp' | 'ffmpeg';
+type SourceMode = 'random' | 'selected';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -916,10 +884,6 @@ function AdminGeneratorPageContent({
 
   // Placement
   const [placement, setPlacement] = useState<NormalizedLogoPlacement>(DEFAULT_LOGO_PLACEMENT);
-
-  // UI
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [rendererPref, setRendererPref] = useState<RendererPref>('sharp');
 
   // Canvas display sizing
   const [canvasSize, setCanvasSize] = useState({ w: 0, h: 0 });
@@ -1165,12 +1129,14 @@ function AdminGeneratorPageContent({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          // No `renderer` field: sharp is the only production renderer, and
+          // the route defaults to it. Do not offer a choice the UI can't
+          // actually deliver on.
           sourceMode,
           sourcePhotoId: sourceMode === 'selected' ? selectedUploadId : randomSource?.id,
           canvasPreset: preset,
           logoAsset,
           placement,
-          renderer: rendererPref,
         }),
         signal: abortSignal,
       });
@@ -1264,10 +1230,6 @@ function AdminGeneratorPageContent({
             onShuffle={shuffleRandom}
             selectedUploadId={selectedUploadId}
             onSelectUpload={setSelectedUploadId}
-            showAdvanced={showAdvanced}
-            onToggleAdvanced={() => setShowAdvanced((v) => !v)}
-            rendererPref={rendererPref}
-            onSelectRenderer={setRendererPref}
           />
 
           <div className="ed-gen-bar" id="admin-gen-bar">
