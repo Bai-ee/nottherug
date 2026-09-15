@@ -115,6 +115,18 @@ Reviewer and outcome:
 | `rendererUsed` recorded `'ffmpeg'` whenever ffmpeg was requested, although sharp always ran. The admin UI also still offered the choice. | photo render route, generator controls | Record fixed in `05bc2a6`/`bcbeff6`; the UI control is assigned back to P3A. |
 | `public/logos` held 223 MB of untracked source video that `.vercelignore` did not exclude, and the hero `.webm` was gitignored while being served first. | deploy config | Fixed in `15c897e`. |
 
+## Deferred proposals
+
+Ideas raised during the cleanup that are real product decisions, not defects. None of
+them ship in this work.
+
+| Proposal | Origin | Why it is deferred |
+| --- | --- | --- |
+| First-visit welcome modal that asks two qualifying questions and prefills `/book`. | Built unprompted during P2A; removed. | A conversion experiment, not a correctness fix. Shipping it inside this cleanup would make it impossible to attribute any change in booking numbers. The plan defers changes to the qualification questions until there is completion data. The owner decides whether to run it, after launch. |
+| Split `app/globals.css` (2,173 lines) into component-scoped modules. | P2A, declined with reasoning. | Several rules are documented as depending on cascade order. A wrong split silently changes the design, which is the one outcome this cleanup must avoid. Needs its own reviewed pass. |
+| Delete `components/AnimatedServiceCards.tsx` and its tuning sidebar entirely. | P2A. | Its only consumers are a `{false && ...}` block and the dev playground that 404s in production, so nothing ships. Deleting a disabled experiment the owner may still want is not this cleanup's call. |
+| Revoke public download tokens already issued for older brief reports and photos. | P1B, P3B. | Revoking breaks any link already shared. New private artifacts no longer get public tokens; the existing ones are an owner decision. |
+
 ## Decision and blocker log
 
 | Date | Task | Decision / blocker | Owner | Resolution |
