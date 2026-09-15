@@ -1,3 +1,4 @@
-// Kept as a mounting shim: app/page.tsx, app/book/page.tsx, and app/contact/page.tsx
-// import from this path. The real implementation lives in components/booking/.
+// Mounting shim. Four call sites import the booking form from this path:
+// app/(marketing)/book, app/(marketing)/contact, and the home and services page
+// content components. The implementation lives in components/booking/.
 export { default } from './booking/BookingForm';
