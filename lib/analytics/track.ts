@@ -1,26 +1,38 @@
 'use client';
 
-// Thin, provider-agnostic event tracker (plans/002-production-readiness.md
-// P4: "Record anonymous CTA click, form start, lead saved, and
-// scheduling-open events... Never send names, notes, phone numbers, or email
-// addresses in analytics"). No vendor SDK is installed and none is added
-// here — without NEXT_PUBLIC_ANALYTICS_ENDPOINT configured, track() is a
-// no-op. When an endpoint is configured, this posts a small anonymous JSON
-// beacon to it; swap the body of `send()` for a real provider's snippet
-// later without touching any call site.
+// First-party analytics tracker: posts validated events to the same-origin
+// POST /api/track endpoint (app/api/track/route.ts), which re-validates and
+// stores them in Firestore. See plans/003-admin-dashboard-and-tracking.md
+// (the locked A0 decision table) and lib/analytics/events.ts for the shared
+// contract every field here must match — that file is the source of truth
+// for event names, allowlists and limits, not this one.
+//
+// Tracking defaults OFF (decision 10): nothing is read from sessionStorage
+// and nothing is sent until NEXT_PUBLIC_ANALYTICS_ENABLED=true. A separate
+// NEXT_PUBLIC_ANALYTICS_TEST_MODE flag stamps mode:'test' on every event, so
+// preview/acceptance traffic can be proven end to end without mixing into
+// real business numbers.
 
-export type AnalyticsEventName =
-  | 'cta_click'
-  | 'booking_form_start'
-  | 'lead_saved'
-  | 'scheduling_dialog_opened'
-  | 'appointment_completed';
+import {
+  isBookingStep,
+  isCtaId,
+  toTrackedRoute,
+  type AnalyticsEvent as WireEvent,
+  type EventName,
+} from './events';
+import { getSessionSnapshot, newOpaqueId, noteEngagementSignal } from './session';
+
+export type AnalyticsEventName = EventName;
 
 // Deliberately narrow: every field here is meant to carry an id/category/path,
 // never a value typed directly from a user. That intent doesn't make it safe
 // on its own — sanitize() below checks the actual *content* of every value,
 // not just which of these keys it arrived under, because a caller can put
-// anything in a `string` field (see its own comment for why).
+// anything in a `string` field (see its own comment for why). `page`/`source`
+// stay here for backward compatibility with existing call sites, but they are
+// not part of the stored event (see lib/analytics/events.ts) — `route` is
+// derived independently from the current URL instead of trusting a caller's
+// free-form label.
 export interface AnalyticsPayload {
   page?: string;
   source?: string;
@@ -96,30 +108,107 @@ export function sanitize(payload: Record<string, unknown>): Record<string, strin
   return clean;
 }
 
-function send(name: AnalyticsEventName, payload: Record<string, string>) {
-  const endpoint = process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT;
-  if (!endpoint || typeof window === 'undefined') return;
+const TRACK_ENDPOINT = '/api/track';
 
-  const body = JSON.stringify({ event: name, ...payload, ts: Date.now() });
+/** Default OFF (decision 10) — flip on only for the intended production/
+ *  preview host, never globally. */
+export function isAnalyticsEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === 'true';
+}
+
+/** Stamps every event with mode:'test' so preview/acceptance traffic never
+ *  mixes into real business numbers (decision 10). */
+function isTestMode(): boolean {
+  return process.env.NEXT_PUBLIC_ANALYTICS_TEST_MODE === 'true';
+}
+
+// Best-effort delivery, never awaited by a caller and never allowed to
+// propagate: a click handler or a booking save must not stall or fail
+// because analytics couldn't reach the network.
+function deliver(body: string) {
   try {
     if (navigator.sendBeacon) {
-      navigator.sendBeacon(endpoint, body);
-    } else {
-      void fetch(endpoint, { method: 'POST', body, keepalive: true, headers: { 'Content-Type': 'application/json' } });
+      // sendBeacon can return false (queue full, payload rejected) without
+      // throwing — that isn't an exception, so without this check a beacon
+      // failure would silently drop the event instead of falling back.
+      const queued = navigator.sendBeacon(TRACK_ENDPOINT, new Blob([body], { type: 'application/json' }));
+      if (queued) return;
     }
+    // Fetch rejection (offline, blocked by an extension, etc.) must be
+    // caught here — an unhandled rejection here would surface in every
+    // visitor's console for something that is never their problem.
+    void fetch(TRACK_ENDPOINT, {
+      method: 'POST',
+      body,
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+    }).catch((err) => {
+      console.warn('[analytics] delivery failed', err);
+    });
   } catch (err) {
     // Analytics must never break the page it's measuring.
-    console.warn('[analytics] failed to send event', name, err);
+    console.warn('[analytics] failed to send event', err);
+  }
+}
+
+function sendEvent(event: EventName, fields: Partial<Pick<WireEvent, 'cta' | 'step'>>) {
+  if (!isAnalyticsEnabled() || typeof window === 'undefined') return;
+  // Admin is never tracked. Structurally true today (PageViewTracker and
+  // TrackedCtaLink only render on public marketing routes), and enforced
+  // here too so that stays true even if a future call site slips.
+  if (window.location.pathname.startsWith('/admin')) return;
+
+  const snapshot = getSessionSnapshot();
+  if (!snapshot) return; // sessionStorage unusable (private mode, etc.) — degrade to disabled, not a crash
+
+  const wireEvent: WireEvent = {
+    event,
+    id: newOpaqueId(),
+    sid: snapshot.id,
+    ts: Date.now(),
+    route: toTrackedRoute(window.location.pathname),
+    ...fields,
+    ...(snapshot.attribution ?? {}),
+  };
+  if (isTestMode()) wireEvent.mode = 'test';
+
+  try {
+    // Sent as a one-element batch: app/api/track/route.ts accepts an array
+    // (bounded by MAX_BATCH_EVENTS) so the wire format doesn't need to change
+    // if a future caller ever batches multiple events into one delivery.
+    deliver(JSON.stringify([wireEvent]));
+  } catch (err) {
+    console.warn('[analytics] failed to send event', event, err);
   }
 }
 
 /**
- * Records one anonymous product event. No-ops entirely unless
- * NEXT_PUBLIC_ANALYTICS_ENDPOINT is set, so this is always safe to call —
- * including in this repo today, where no analytics provider is configured.
- * Every value is checked for PII-shaped content (not just its key name)
- * before anything is sent — see sanitize()/sanitizeValue() above.
+ * Records one anonymous product event. No-ops entirely unless tracking is
+ * enabled (see isAnalyticsEnabled) — always safe to call, including in this
+ * repo today with tracking off by default. Every value is checked for
+ * PII-shaped content (not just its key name) before anything is built — see
+ * sanitize()/sanitizeValue() above — and the event itself is re-validated
+ * server-side against lib/analytics/events.ts before it is ever stored.
  */
 export function track(name: AnalyticsEventName, payload: AnalyticsPayload = {}) {
-  send(name, sanitize(payload as Record<string, unknown>));
+  if (!isAnalyticsEnabled()) return;
+
+  const clean = sanitize(payload as Record<string, unknown>);
+
+  if (name === 'cta_click') {
+    if (!isCtaId(clean.cta)) return; // not a stable, allowlisted CTA id — nothing valid to record
+    sendEvent(name, { cta: clean.cta });
+    // "Any tracked click" (decision 2) counts toward engagement; cta_click is
+    // the only click-shaped event any call site sends today.
+    if (noteEngagementSignal()) sendEvent('engagement', {});
+    return;
+  }
+
+  if (name === 'booking_step') {
+    if (!isBookingStep(clean.step)) return;
+    sendEvent(name, { step: clean.step });
+    return;
+  }
+
+  sendEvent(name, {});
 }

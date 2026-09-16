@@ -204,3 +204,132 @@ export async function fsQueryCollection(
     .filter((r) => r.document?.fields)
     .map((r) => fromFields(r.document!.fields!));
 }
+
+/**
+ * Query one collection for documents whose `field` falls inside a half-open
+ * range [`start`, `end`), ordered by that same field. `start`/`end` accept a
+ * number so a caller can range-query a numeric field (e.g. retention cleanup
+ * ranging analyticsRateLimits' epoch-ms `windowStart`) — `toValue` encodes
+ * each the same way a write of that same JS type would.
+ *
+ * Added for analytics reporting, which must never scan the whole collection:
+ * every dashboard query is bounded by a date window. Firestore requires the
+ * first orderBy to match the range field, so that ordering is not configurable
+ * here — exposing it would just let a caller build a query Firestore rejects.
+ *
+ * `limit` is a real ceiling, not a page size. When a result comes back at the
+ * limit the caller is seeing a truncated window and must not report the count
+ * as a total — see `fsQueryRangeCount` for the honest way to ask "how many".
+ */
+export async function fsQueryRange(
+  collectionId: string,
+  field: string,
+  start: string | number,
+  end: string | number,
+  limit = 5000,
+  direction: 'ASCENDING' | 'DESCENDING' = 'ASCENDING'
+): Promise<Record<string, unknown>[]> {
+  const rows = await runRangeQuery(collectionId, field, start, end, limit, direction);
+  return rows.map((r) => r.data);
+}
+
+/**
+ * Same bounded [`start`, `end`) range query as `fsQueryRange`, but also
+ * returns each document's id alongside its fields.
+ *
+ * Added for analytics retention cleanup (lib/analytics/retention.ts), which
+ * must delete a specific document rather than only read it. `analytics_events`
+ * happens to also store its own id as a field, but `analyticsRateLimits`
+ * does not — its id is a composite of hash and window that only exists as
+ * the document name — so `fsQueryRange`'s field-only result isn't enough for
+ * a caller that needs to delete what it found.
+ */
+export async function fsQueryRangeWithIds(
+  collectionId: string,
+  field: string,
+  start: string | number,
+  end: string | number,
+  limit = 5000,
+  direction: 'ASCENDING' | 'DESCENDING' = 'ASCENDING'
+): Promise<Array<{ id: string; data: Record<string, unknown> }>> {
+  return runRangeQuery(collectionId, field, start, end, limit, direction);
+}
+
+async function runRangeQuery(
+  collectionId: string,
+  field: string,
+  start: string | number,
+  end: string | number,
+  limit: number,
+  direction: 'ASCENDING' | 'DESCENDING'
+): Promise<Array<{ id: string; data: Record<string, unknown> }>> {
+  const token = await getToken();
+  const res = await fetch(`${FS_BASE}:runQuery`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      structuredQuery: {
+        from: [{ collectionId }],
+        where: {
+          compositeFilter: {
+            op: 'AND',
+            filters: [
+              { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: toValue(start) } },
+              { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: toValue(end) } },
+            ],
+          },
+        },
+        orderBy: [{ field: { fieldPath: field }, direction }],
+        limit,
+      },
+    }),
+  });
+  if (!res.ok) throw new Error(`Firestore RANGE ${collectionId}: ${res.status} ${await res.text()}`);
+  const results = (await res.json()) as Array<{ document?: { name?: string; fields?: Record<string, FsValue> } }>;
+  return results
+    .filter((r) => r.document?.fields && r.document?.name)
+    .map((r) => ({ id: r.document!.name!.split('/').pop()!, data: fromFields(r.document!.fields!) }));
+}
+
+/**
+ * Count documents in a range without transferring them, via Firestore's
+ * aggregation endpoint.
+ *
+ * This exists so a total is never inferred by counting a capped result set.
+ * `lib/leads/stats.ts` has a standing caveat that its 1,000-record cap must not
+ * be labelled "all time"; this is how a genuine total is obtained instead.
+ */
+export async function fsQueryRangeCount(
+  collectionId: string,
+  field: string,
+  start: string,
+  end: string
+): Promise<number> {
+  const token = await getToken();
+  const res = await fetch(`${FS_BASE}:runAggregationQuery`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      structuredAggregationQuery: {
+        structuredQuery: {
+          from: [{ collectionId }],
+          where: {
+            compositeFilter: {
+              op: 'AND',
+              filters: [
+                { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: start } } },
+                { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: { stringValue: end } } },
+              ],
+            },
+          },
+        },
+        aggregations: [{ alias: 'total', count: {} }],
+      },
+    }),
+  });
+  if (!res.ok) throw new Error(`Firestore COUNT ${collectionId}: ${res.status} ${await res.text()}`);
+  const results = (await res.json()) as Array<{ result?: { aggregateFields?: Record<string, FsValue> } }>;
+  const raw = results.find((r) => r.result?.aggregateFields)?.result?.aggregateFields?.total;
+  if (!raw || !('integerValue' in raw)) return 0;
+  return Number(raw.integerValue);
+}
