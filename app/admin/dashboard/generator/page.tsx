@@ -17,6 +17,7 @@ import {
 } from '@/lib/generator/types';
 import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { adminFetch, useAbortSignal, isAbortError, readBodyStringField, AdminRequestError, type GetIdToken } from '@/components/admin/adminFetch';
 import { GeneratorCanvas } from '@/components/admin/generator/GeneratorCanvas';
 import { GeneratorControls } from '@/components/admin/generator/GeneratorControls';
@@ -51,90 +52,20 @@ html, body { background: #55624C; overflow: hidden; }
 }
 
 /* ── SHELL ──────────────────────────────────────────────────────────────────── */
+/* Sized against --admin-chrome-h (app/admin/admin.css), not 100dvh: AdminShell
+   now owns the topbar/nav above this and the footer below it, so .ed fills
+   only the remaining space inside AdminShell's #admin-shell-main instead of
+   the whole viewport. .ed-body below still owns its own internal scroll. */
 .ed {
   background: var(--bg);
   color: var(--t3);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
-  height: 100dvh;
+  height: calc(100dvh - var(--admin-chrome-h, 92px));
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
-
-/* ── TOPBAR ─────────────────────────────────────────────────────────────────── */
-.ed-top {
-  height: 48px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  background: var(--s0);
-  border-bottom: 1px solid var(--bd0);
-}
-.ed-top-l { display: flex; align-items: center; gap: 14px; }
-.ed-brand {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--t1);
-}
-.ed-vsep { width: 1px; height: 12px; background: var(--bd1); }
-.ed-top-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--t4);
-}
-.ed-top-r { display: flex; align-items: center; gap: 20px; }
-.ed-email {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--t0);
-  display: none;
-}
-.ed-signout {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--t1);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: color 150ms;
-}
-.ed-signout:hover { color: var(--t3); }
-
-/* ── NAV BAR ─────────────────────────────────────────────────────────────────── */
-.ed-nav {
-  position: static;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--bd0);
-  background: var(--s1);
-  padding: 0 16px;
-}
-.ed-nav-link {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--t1);
-  padding: 0 16px;
-  height: 42px;
-  border-bottom: 2px solid transparent;
-  text-decoration: none;
-  transition: color 150ms;
-  display: flex;
-  align-items: center;
-}
-.ed-nav-link:hover { color: var(--t3); }
-.ed-nav-active { color: var(--t4); border-bottom-color: var(--t3); }
 
 /* ── BODY ───────────────────────────────────────────────────────────────────── */
 .ed-body {
@@ -832,10 +763,6 @@ html, body { background: #55624C; overflow: hidden; }
 
 /* ── DESKTOP ────────────────────────────────────────────────────────────────── */
 @media (min-width: 768px) {
-  .ed-top { padding: 0 32px; }
-  .ed-email { display: block; }
-  .ed-nav { padding: 0 32px; }
-
   .ed-canvas-zone { height: 320px; padding: 24px; }
 
   /* preset strip slightly taller */
@@ -1178,24 +1105,8 @@ function AdminGeneratorPageContent({
   return (
     <>
       <style>{css}</style>
+      <AdminShell title="Admin · Generator" email={email} onSignOut={signOut}>
       <div className="ed" id="admin-gen-shell">
-
-        <div className="ed-top" id="admin-gen-topbar">
-          <div className="ed-top-l">
-            <span className="ed-brand">NTR</span>
-            <div className="ed-vsep" />
-            <span className="ed-top-title">Admin</span>
-          </div>
-          <div className="ed-top-r">
-            <span className="ed-email">{email}</span>
-            <button className="ed-signout" onClick={() => void signOut()}>Sign Out</button>
-          </div>
-        </div>
-
-        <nav className="ed-nav" id="admin-gen-nav">
-          <a className="ed-nav-link" href="/admin/dashboard">Overview</a>
-          <a className="ed-nav-link ed-nav-active" href="/admin/dashboard/generator">Generator</a>
-        </nav>
 
         <div className="ed-body" id="admin-gen-body">
           <GeneratorCanvas
@@ -1294,6 +1205,7 @@ function AdminGeneratorPageContent({
         )}
 
       </div>
+      </AdminShell>
     </>
   );
 }

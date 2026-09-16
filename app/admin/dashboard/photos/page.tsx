@@ -7,6 +7,7 @@ import type { PhotoUpload, PhotoRender } from '@/lib/photos/types';
 import type { LogoAsset } from '@/app/api/admin/photos/assets/route';
 import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { adminFetch, useAbortSignal, isAbortError, readBodyStringField, AdminRequestError, type GetIdToken } from '@/components/admin/adminFetch';
 import { PhotoUploadPanel, type UploadPhase } from '@/components/admin/photos/PhotoUploadPanel';
 import { PhotoLibrary } from '@/components/admin/photos/PhotoLibrary';
@@ -20,24 +21,7 @@ const css = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: #1F2318; }
 
-  .ph { background: #1F2318; color: #B4C89E; font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
-
-  /* ── TOPBAR ── */
-  .ph-top { position: sticky; top: 0; z-index: 20; height: 48px; background: #1F2318; border-bottom: 1px solid #2E3828; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }
-  .ph-top-l { display: flex; align-items: center; gap: 14px; }
-  .ph-brand { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4E5A42; }
-  .ph-vsep  { width: 1px; height: 12px; background: #2E3828; }
-  .ph-top-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 400; color: #EEF4DB; }
-  .ph-top-r { display: flex; align-items: center; gap: 20px; }
-  .ph-topemail { font-family: 'Space Mono', monospace; font-size: 11px; color: #4E5A42; }
-  .ph-signout { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: #4E5A42; background: none; border: none; cursor: pointer; padding: 0; transition: color 150ms; }
-  .ph-signout:hover { color: #B4C89E; }
-
-  /* ── NAV ── */
-  .ph-nav { position: static; display: flex; align-items: center; border-bottom: 1px solid #2E3828; background: #1A1E14; padding: 0 32px; }
-  .ph-nav-link { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #4E5A42; padding: 12px 16px; border-bottom: 2px solid transparent; text-decoration: none; transition: color 150ms; display: block; }
-  .ph-nav-link:hover { color: #B4C89E; }
-  .ph-nav-link-active { color: #EEF4DB; border-bottom-color: #B4C89E; }
+  .ph { background: #1F2318; color: #B4C89E; font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased; min-height: 100%; }
 
   /* ── PAGE ── */
   .ph-page { max-width: 1100px; margin: 0 auto; padding: 40px 32px 80px; }
@@ -124,9 +108,6 @@ const css = `
     .ph-page { padding: 24px 16px 60px; }
     .ph-gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .ph-controls-grid { grid-template-columns: repeat(2, 1fr); }
-    .ph-top { padding: 0 16px; }
-    .ph-topemail { display: none; }
-    .ph-nav { padding: 0 16px; }
   }
 `;
 
@@ -318,26 +299,8 @@ function AdminPhotosPageContent({
   return (
     <>
       <style>{css}</style>
+      <AdminShell title="Admin · Photos" email={email} onSignOut={signOut}>
       <div className="ph" id="admin-photos-shell">
-
-        <div className="ph-top" id="admin-photos-topbar">
-          <div className="ph-top-l">
-            <span className="ph-brand">NTR</span>
-            <div className="ph-vsep" />
-            <span className="ph-top-title">Admin</span>
-          </div>
-          <div className="ph-top-r">
-            <span className="ph-topemail">{email}</span>
-            <button className="ph-signout" onClick={() => void signOut()}>Sign Out</button>
-          </div>
-        </div>
-
-        <nav className="ph-nav" id="admin-photos-nav">
-          <a className="ph-nav-link" href="/admin/dashboard">Overview</a>
-          <a className="ph-nav-link ph-nav-link-active" href="/admin/dashboard/photos">Photos</a>
-          <a className="ph-nav-link" href="/admin/dashboard/generator">Generator</a>
-          <a className="ph-nav-link" href="/admin/dashboard/brief">Brief</a>
-        </nav>
 
         <div className="ph-page" id="admin-photos-page">
           <div className="ph-page-header" id="admin-photos-page-header">
@@ -428,6 +391,7 @@ function AdminPhotosPageContent({
 
         </div>
       </div>
+      </AdminShell>
     </>
   );
 }
