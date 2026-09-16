@@ -1,9 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import Link from 'next/link';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
-import { track } from '@/lib/analytics/track';
+import TrackedCtaLink from './TrackedCtaLink';
 
 export default function HomeHero() {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -30,15 +29,24 @@ export default function HomeHero() {
         <h1 className="hero-h1">Your dog deserves<br /><em>someone they know.</em></h1>
         <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently. Because peace of mind starts with knowing exactly who&apos;s holding the leash.</p>
         <div className="hero-actions" id="hero-actions-row">
-          <Link
+          <TrackedCtaLink
             href="/book"
             className="btn btn-primary"
             id="hero-cta-primary"
-            onClick={() => track('cta_click', { cta: 'hero_book', page: 'home' })}
+            cta="hero_book"
+            page="home"
           >
             Book Luis, for a Meet &amp; Greet
-          </Link>
-          <Link href="/services" className="btn btn-ghost" id="hero-cta-secondary">View Services</Link>
+          </TrackedCtaLink>
+          <TrackedCtaLink
+            href="/services"
+            className="btn btn-ghost"
+            id="hero-cta-secondary"
+            cta="hero_view_services"
+            page="home"
+          >
+            View Services
+          </TrackedCtaLink>
         </div>
       </div>
       <div className="hero-stats" id="hero-stats-strip">

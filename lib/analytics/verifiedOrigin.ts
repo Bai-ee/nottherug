@@ -3,10 +3,8 @@
 // provider event (never inferred from the dialog simply being open) and
 // requires any postMessage listener to filter by expected origin.
 //
-// This has no call site in files this task owns — the Calendly iframe lives
-// in components/booking/SchedulingDialog.tsx, which belongs to Worker A. See
-// the P4 report for the exact `window.addEventListener('message', ...)`
-// change that would use this.
+// Call site: components/booking/SchedulingDialog.tsx's window 'message'
+// listener (plans/003-admin-dashboard-and-tracking.md A3 / decision 9).
 
 const CALENDLY_MESSAGE_ORIGIN = 'https://calendly.com';
 
@@ -15,9 +13,15 @@ const CALENDLY_MESSAGE_ORIGIN = 'https://calendly.com';
  * iframe and reports its "event_scheduled" event — the one Calendly
  * postMessage payload that means a real booking was completed, not just that
  * the widget loaded or the visitor clicked around in it.
+ *
+ * `expectedSource`, when provided, additionally requires the message's
+ * `source` window to be the exact Calendly iframe we rendered (its
+ * `contentWindow`) — not just any window that happens to share Calendly's
+ * origin. Optional so this stays testable/usable without a live iframe.
  */
-export function isVerifiedCalendlyBookingEvent(event: MessageEvent): boolean {
+export function isVerifiedCalendlyBookingEvent(event: MessageEvent, expectedSource?: Window | null): boolean {
   if (event.origin !== CALENDLY_MESSAGE_ORIGIN) return false;
+  if (expectedSource !== undefined && event.source !== expectedSource) return false;
   const data = event.data as unknown;
   if (!data || typeof data !== 'object') return false;
   const eventName = (data as { event?: unknown }).event;

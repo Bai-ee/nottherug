@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { track } from '@/lib/analytics/track';
+import { isVerifiedCalendlyBookingEvent } from '@/lib/analytics/verifiedOrigin';
 
 type Props = {
   open: boolean;
@@ -14,17 +15,74 @@ type Props = {
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
 
+/**
+ * track() is documented as best-effort/never-throwing, but this dialog must
+ * not be able to break the booking flow it's shown from because that
+ * contract was violated (plans/004-frontend-tracking-coverage.md T4 item 6).
+ * Every track() call in this file goes through this wrapper.
+ */
+function safeTrack(name: Parameters<typeof track>[0], payload?: Parameters<typeof track>[1]) {
+  try {
+    track(name, payload);
+  } catch (err) {
+    console.warn('[booking] analytics call failed', err);
+  }
+}
+
+/**
+ * Builds the window "message" handler that turns one verified Calendly
+ * scheduling event into exactly one appointment_completed call (plans/003
+ * A3, decision 9). `hasFired` is owned by the caller (a ref) so dedup
+ * survives the dialog being closed and reopened within the same booking
+ * attempt — Calendly can post the same event_scheduled message more than
+ * once for a single real booking. Never reads anything from `event.data`
+ * beyond what isVerifiedCalendlyBookingEvent itself inspects to validate the
+ * message — the Calendly payload carries the visitor's name/email, and none
+ * of it is forwarded to track(). Exported, state-free of the component, for
+ * tests/unit/scheduling-dialog-appointment.test.ts.
+ */
+export function createAppointmentCompletionHandler(
+  source: string,
+  getIframeWindow: () => Window | null,
+  hasFired: { current: boolean },
+) {
+  return function handleCalendlyMessage(event: MessageEvent) {
+    if (hasFired.current) return;
+    if (!isVerifiedCalendlyBookingEvent(event, getIframeWindow())) return;
+    hasFired.current = true;
+    safeTrack('appointment_completed', { source });
+  };
+}
+
 export default function SchedulingDialog({ open, onClose, calendlyUrl, source }: Props) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // Persists for the dialog's whole mount lifetime (not reset on close/
+  // reopen) — see createAppointmentCompletionHandler above.
+  const appointmentCompletedRef = useRef(false);
 
   // Opening the scheduler is not a booked appointment — this only records
-  // that the dialog was shown. A real completion would need a verified
-  // Calendly postMessage event (see lib/analytics/verifiedOrigin.ts); no such
-  // listener exists here, so no completion event is ever inferred from this.
+  // that the dialog was shown. Completion is reported separately, below,
+  // only from a verified Calendly postMessage event.
   useEffect(() => {
-    if (open) track('scheduling_dialog_opened', { source });
+    if (open) safeTrack('scheduling_dialog_opened', { source });
+  }, [open, source]);
+
+  // Real completion, verified against the actual Calendly iframe window —
+  // never inferred from the dialog simply being open, and never trusting an
+  // unfiltered postMessage. Only active while the dialog (and its iframe)
+  // are actually mounted; always removed on close or unmount.
+  useEffect(() => {
+    if (!open) return;
+    const handleMessage = createAppointmentCompletionHandler(
+      source,
+      () => iframeRef.current?.contentWindow ?? null,
+      appointmentCompletedRef,
+    );
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, [open, source]);
 
   // Lock body scroll while open, restore it (and the page's scroll position) on close.
@@ -209,6 +267,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source }:
           </button>
         </div>
         <iframe
+          ref={iframeRef}
           id="calendly-modal-iframe"
           title="Calendly scheduling"
           src={calendlyUrl}

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { HONEYPOT_FIELD_NAME, LEAD_FIELD_LIMITS } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
 import { track } from '@/lib/analytics/track';
+import type { BookingStep } from '@/lib/analytics/events';
 import { BOOKING_STEPS, StepAboutYou, StepCare, StepQuirks, StepWrapUp, StepYourDog } from './BookingSteps';
 import SchedulingDialog from './SchedulingDialog';
 import type { BookingFieldErrors, BookingFormValues, BookingSubmittedSummary, RegisterField } from './types';
@@ -15,6 +16,22 @@ type Props = {
 };
 
 type SubmitLeadResult = { ok: true; data: { id?: string; notifications?: unknown } } | { ok: false; error: string };
+
+/**
+ * track() is documented as best-effort/never-throwing, but a booking must not
+ * be able to fail because that contract was violated (plans/004-frontend-
+ * tracking-coverage.md T4 item 6) — a call site here is the last line of
+ * defense. Every track() call in this file goes through this wrapper instead
+ * of calling track() directly. Exported for
+ * tests/unit/booking-analytics-failure-isolation.test.ts.
+ */
+export function safeTrack(name: Parameters<typeof track>[0], payload?: Parameters<typeof track>[1]) {
+  try {
+    track(name, payload);
+  } catch (err) {
+    console.warn('[booking] analytics call failed', err);
+  }
+}
 
 /**
  * Posts a meet & greet submission and, only once the API confirms a genuine
@@ -33,11 +50,45 @@ export async function submitMeetGreetLead(body: Record<string, unknown>, source:
     if (!res.ok || !data.ok) {
       return { ok: false, error: data.error || 'Something went wrong. Please try again.' };
     }
-    track('lead_saved', { source });
+    safeTrack('lead_saved', { source });
     return { ok: true, data };
   } catch {
     return { ok: false, error: 'Network error. Please try again.' };
   }
+}
+
+/**
+ * Maps a BookingSteps.tsx UI step index (0-4: you/dog/care/quirks/wrap) to
+ * the coarser named funnel step it represents (plans/003 A3, BOOKING_STEPS in
+ * lib/analytics/events.ts), or null when that UI step isn't part of the
+ * tracked funnel. "care" and "quirks" are intentionally not individually
+ * funneled — the owner's four named steps are a coarser view of the same
+ * journey. "details" (step 0) is fired from markFormStarted() below instead
+ * of here, since reaching step 0 by mere render isn't a meaningful signal
+ * without real interaction — same gate booking_form_start already uses.
+ * Exported for tests/unit/booking-step-funnel.test.ts.
+ */
+export function funnelStepForFormIndex(index: number): BookingStep | null {
+  if (index === 1) return 'dog';
+  if (index === BOOKING_STEPS.length - 1) return 'review';
+  return null;
+}
+
+/**
+ * Builds a booking_step recorder that fires each named funnel step at most
+ * once — "first reach... per attempt" (plans/003 A3 requirement 2). Kept as
+ * a plain closure (not component state) so back/forward navigation through
+ * the form, or reopening the scheduler, can call `reach` freely without
+ * inflating the funnel. Exported, state-free of any component, for
+ * tests/unit/booking-step-funnel.test.ts.
+ */
+export function createStepFunnelTracker(source: string) {
+  const reached = new Set<BookingStep>();
+  return function reach(step: BookingStep) {
+    if (reached.has(step)) return;
+    reached.add(step);
+    safeTrack('booking_step', { step, source });
+  };
 }
 
 const initial: BookingFormValues = {
@@ -71,6 +122,11 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
   const hasTrackedFormStart = useRef(false);
   const [trackH, setTrackH] = useState<number | undefined>(undefined);
+  // Lazily created once per mount ("per attempt") and never reset — see
+  // createStepFunnelTracker above.
+  const stepTrackerRef = useRef<ReturnType<typeof createStepFunnelTracker> | null>(null);
+  if (!stepTrackerRef.current) stepTrackerRef.current = createStepFunnelTracker(source);
+  const reachStep = stepTrackerRef.current;
 
   const alertId = `${paneId}-step-alert`;
   const stepAlertMessage = Object.values(fieldErrors).find((m): m is string => Boolean(m)) ?? '';
@@ -100,12 +156,24 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
   // Fires once per mount, on the first genuine field interaction — not on
   // mount itself, so a visitor who never touches the form is not counted as
   // having started it. Only `source` (a category, not a customer value)
-  // leaves the browser; see lib/analytics/track.ts.
+  // leaves the browser; see lib/analytics/track.ts. Also marks the funnel's
+  // first named step ("details") reached, on the same gate — see
+  // funnelStepForFormIndex above for why step 0 isn't tracked from the step
+  // effect below.
   function markFormStarted() {
     if (hasTrackedFormStart.current) return;
     hasTrackedFormStart.current = true;
-    track('booking_form_start', { source });
+    safeTrack('booking_form_start', { source });
+    reachStep('details');
   }
+
+  // Funnel steps for the later UI steps: fires at most once per step per
+  // attempt (see createStepFunnelTracker), so jumping back to re-edit an
+  // earlier step and forward again never inflates the funnel.
+  useEffect(() => {
+    const funnelStep = funnelStepForFormIndex(step);
+    if (funnelStep) reachStep(funnelStep);
+  }, [step, reachStep]);
 
   const update = <K extends keyof BookingFormValues>(key: K, value: string) => {
     markFormStarted();
@@ -188,6 +256,16 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
     setFieldErrors({});
   }
 
+  // Reaching the Calendly scheduler is the funnel's "schedule" step — fired
+  // once per attempt, whether the dialog opens automatically after a
+  // successful submit or the visitor reopens it manually. Never called on
+  // the phone-consult branch (see handleSubmit below), so that path is never
+  // misread as having abandoned scheduling — it completed a different way.
+  function openScheduling() {
+    reachStep('schedule');
+    setShowCalendly(true);
+  }
+
   async function handleSubmit() {
     setStatus('submitting');
     setErrorMsg('');
@@ -228,7 +306,7 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
     setHoneypot('');
     setStep(0);
     setFieldErrors({});
-    if (calendlyUrl && !wantsPhoneConsult) setShowCalendly(true);
+    if (calendlyUrl && !wantsPhoneConsult) openScheduling();
   }
 
   function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
@@ -414,7 +492,7 @@ export default function BookingForm({ paneId, source, hidden = false }: Props) {
           type="button"
           className="btn btn-primary"
           style={{ width: '100%', justifyContent: 'center', padding: '14px', marginTop: '12px' }}
-          onClick={() => setShowCalendly(true)}
+          onClick={openScheduling}
         >
           Schedule your Meet &amp; Greet →
         </button>

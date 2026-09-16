@@ -5,9 +5,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useNavScrollShadow } from './marketing/hooks/useNavScrollShadow';
 import { track } from '@/lib/analytics/track';
+import type { CtaId } from '@/lib/analytics/events';
+import TrackedCtaLink from './marketing/TrackedCtaLink';
 
-const NAV_LINKS: Array<{ href: string; label: string; dataPage: string }> = [
-  { href: '/services', label: 'Services & Rates', dataPage: 'services' },
+// `cta` is set only on the Services entry (service discovery, decision 6).
+// Exported so its wiring — exactly one entry carries a cta id — is unit
+// testable without rendering the hook-driven component itself.
+export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; cta?: CtaId }> = [
+  { href: '/services', label: 'Services & Rates', dataPage: 'services', cta: 'nav_services' },
   { href: '/how-it-works', label: 'How It Works', dataPage: 'how-it-works' },
   { href: '/about', label: 'About Us', dataPage: 'about' },
   { href: '/safety', label: 'Safety & Trust', dataPage: 'safety' },
@@ -48,6 +53,8 @@ export default function SiteNav() {
                 href={link.href}
                 data-page={link.dataPage}
                 className={pathname === link.href ? 'active' : undefined}
+                id={link.cta ? `nav-link-${link.dataPage}` : undefined}
+                onClick={link.cta ? () => track('cta_click', { cta: link.cta as CtaId, page: pathname }) : undefined}
               >
                 {link.label}
               </Link>
@@ -84,9 +91,18 @@ export default function SiteNav() {
 
       <div className="mobile-menu" id="mobile-menu" style={{ display: mobileOpen ? 'block' : 'none' }}>
         {NAV_LINKS.map((link) => (
-          <Link key={link.href} href={link.href}>{link.label}</Link>
+          <Link
+            key={link.href}
+            href={link.href}
+            id={link.cta ? `mobile-menu-link-${link.dataPage}` : undefined}
+            onClick={link.cta ? () => track('cta_click', { cta: link.cta as CtaId, page: pathname }) : undefined}
+          >
+            {link.label}
+          </Link>
         ))}
-        <Link href="/contact">Contact</Link>
+        <TrackedCtaLink href="/contact" id="mobile-menu-link-contact" cta="nav_contact" page={pathname}>
+          Contact
+        </TrackedCtaLink>
         <Link
           href="/book"
           className="mobile-cta"

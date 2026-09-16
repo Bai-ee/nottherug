@@ -28,11 +28,15 @@ export default function SiteFooter() {
             <div className="footer-col">
               <h4>Services</h4>
               <ul>
-                <li><Link href="/services">Group Walks</Link></li>
-                <li><Link href="/services">Walk + Training</Link></li>
-                <li><Link href="/services">Puppy Visits</Link></li>
-                <li><Link href="/services">Senior Dog Care</Link></li>
-                <li><Link href="/services">Boarding</Link></li>
+                {/* All five deep-link to the same /services page, so they
+                    share one footer_services id (plan 004) rather than five
+                    ids that would just fragment one signal: "did someone use
+                    the footer to discover services." */}
+                <li><TrackedCtaLink href="/services" id="footer-services-link-group-walks" cta="footer_services" page="footer">Group Walks</TrackedCtaLink></li>
+                <li><TrackedCtaLink href="/services" id="footer-services-link-walk-training" cta="footer_services" page="footer">Walk + Training</TrackedCtaLink></li>
+                <li><TrackedCtaLink href="/services" id="footer-services-link-puppy-visits" cta="footer_services" page="footer">Puppy Visits</TrackedCtaLink></li>
+                <li><TrackedCtaLink href="/services" id="footer-services-link-senior-dog-care" cta="footer_services" page="footer">Senior Dog Care</TrackedCtaLink></li>
+                <li><TrackedCtaLink href="/services" id="footer-services-link-boarding" cta="footer_services" page="footer">Boarding</TrackedCtaLink></li>
               </ul>
             </div>
             <div className="footer-col">
@@ -48,8 +52,8 @@ export default function SiteFooter() {
                 <li><Link href="/how-it-works">How It Works</Link></li>
                 <li><Link href="/safety">Safety &amp; Trust</Link></li>
                 <li><Link href="/reviews">Reviews</Link></li>
-                <li><Link href="/contact">Contact</Link></li>
-                <li><Link href="/book">Book a Walk</Link></li>
+                <li><TrackedCtaLink href="/contact" id="footer-company-contact-link" cta="footer_contact" page="footer">Contact</TrackedCtaLink></li>
+                <li><TrackedCtaLink href="/book" id="footer-company-book-link" cta="footer_book" page="footer">Book a Walk</TrackedCtaLink></li>
               </ul>
             </div>
           </div>

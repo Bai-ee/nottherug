@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import type { NeighborhoodInfo } from '@/lib/content/coverage';
 import TrackedCtaLink from './TrackedCtaLink';
 
@@ -23,7 +22,7 @@ export default function NeighborhoodDetail({ hood }: { hood: NeighborhoodInfo })
         </div>
         <div style={{ marginTop: '32px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
           <TrackedCtaLink href="/book" className="btn btn-primary" cta="neighborhood_detail_book" page="neighborhoods">Book a Walk in {hood.name}</TrackedCtaLink>
-          <Link href="/contact" className="btn btn-outline">Ask About {hood.name} Coverage</Link>
+          <TrackedCtaLink href="/contact" className="btn btn-outline" id="neighborhood-detail-contact-link" cta="neighborhood_detail_contact" page="neighborhoods">Ask About {hood.name} Coverage</TrackedCtaLink>
         </div>
       </div>
       <div className="grid-3" style={{ gap: '24px' }}>

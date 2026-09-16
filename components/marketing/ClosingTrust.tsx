@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import CertificationStrip from './CertificationStrip';
 import TrackedCtaLink from './TrackedCtaLink';
 
@@ -52,7 +51,7 @@ export default function ClosingTrust() {
             <div className="divider" style={{ margin: '28px 0' }}></div>
             <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
               <TrackedCtaLink href="/book" className="btn btn-primary" cta="closing_trust_book" page="home">Book a Walk in Williamsburg</TrackedCtaLink>
-              <Link href="/contact" className="btn btn-outline">Ask About Williamsburg Coverage</Link>
+              <TrackedCtaLink href="/contact" className="btn btn-outline" id="closing-trust-contact-link" cta="closing_trust_contact" page="home">Ask About Williamsburg Coverage</TrackedCtaLink>
             </div>
           </div>
         </div>

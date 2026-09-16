@@ -10,6 +10,7 @@ import {
   SERVICE_AREA_NOTE,
 } from '@/lib/content/contact';
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '@/lib/content/site';
+import TrackedCtaAnchor from './TrackedCtaAnchor';
 
 // Verified contact details — moved here from the SPA's `?page=contact`
 // content (app/page.tsx), which was reachable only inside the toggling
@@ -24,7 +25,7 @@ export default function ContactInfoCard() {
           <div>
             <h4>Call or Text</h4>
             <p>The fastest way to reach us. Luis personally responds to all messages.</p>
-            <a href={PHONE_HREF} style={{ display: 'block', marginTop: '10px' }}>{PHONE_DISPLAY}</a>
+            <TrackedCtaAnchor href={PHONE_HREF} id="contact-phone-link" cta="contact_phone" page="contact" style={{ display: 'block', marginTop: '10px' }}>{PHONE_DISPLAY}</TrackedCtaAnchor>
           </div>
         </div>
         <div className="contact-method">
@@ -32,7 +33,7 @@ export default function ContactInfoCard() {
           <div>
             <h4>Email</h4>
             <p>For new client intake, less urgent inquiries, or detailed questions.</p>
-            <a href={EMAIL_HREF} style={{ display: 'block', marginTop: '10px' }}>{EMAIL_DISPLAY}</a>
+            <TrackedCtaAnchor href={EMAIL_HREF} id="contact-email-link" cta="contact_email" page="contact" style={{ display: 'block', marginTop: '10px' }}>{EMAIL_DISPLAY}</TrackedCtaAnchor>
           </div>
         </div>
         <div className="contact-method">

@@ -6,6 +6,7 @@ import SiteNav from '@/components/SiteNav';
 import MeetGreetForm from '@/components/MeetGreetForm';
 import SiteFooter from './SiteFooter';
 import ServiceGrid from './ServiceGrid';
+import TrackedCtaAnchor from './TrackedCtaAnchor';
 import { useSectionReveals } from './hooks/useSectionReveals';
 import { PHONE_DISPLAY, PHONE_HREF, EMAIL_DISPLAY, EMAIL_HREF } from '@/lib/content/contact';
 import { INSTAGRAM_PLACEHOLDER_URL } from '@/lib/content/site';
@@ -85,8 +86,8 @@ export default function ServicesPageContent() {
           </div>
           <p style={{ textAlign: 'center', color: 'var(--mid-gray)', fontSize: '14px', marginTop: '20px' }}>
             Already a client, or have a quick question first? Call or text{' '}
-            <a href={PHONE_HREF}>{PHONE_DISPLAY}</a>, email{' '}
-            <a href={EMAIL_HREF}>{EMAIL_DISPLAY}</a>, or <Link href="/contact">visit our contact page</Link>.
+            <TrackedCtaAnchor href={PHONE_HREF} id="services-phone-link" cta="services_phone" page="services">{PHONE_DISPLAY}</TrackedCtaAnchor>, email{' '}
+            <TrackedCtaAnchor href={EMAIL_HREF} id="services-email-link" cta="services_email" page="services">{EMAIL_DISPLAY}</TrackedCtaAnchor>, or <Link href="/contact">visit our contact page</Link>.
           </p>
         </div>
       </section>
