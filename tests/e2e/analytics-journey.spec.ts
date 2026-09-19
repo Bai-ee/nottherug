@@ -1,4 +1,5 @@
 import { test, expect, type Request } from '@playwright/test';
+import { suppressWelcomeModal } from './helpers/welcomeModal';
 
 /**
  * One real browser journey, checked at the wire: what the page actually POSTs
@@ -55,6 +56,8 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
     Object.defineProperty(window.navigator, 'sendBeacon', { value: undefined, configurable: true });
   });
 
+    // The scroll-triggered welcome modal would land on the footer CTA mid-click.
+    await suppressWelcomeModal(page);
     await page.goto('/');
     await expect
       .poll(() => collectEvents(trackRequests).filter((e) => e.event === 'page_view').length, {
