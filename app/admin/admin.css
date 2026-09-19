@@ -146,6 +146,20 @@
 #admin-shell-main .hero-stat-num { margin-bottom: 10px; }
 #admin-shell-main .admin-analytics-hero-stats-row { gap: 32px; }
 
+/* Two rows the leads page used to lay out with inline styles; they live here
+   so the phone breakpoint below can restack and centre them. */
+.admin-lead-card-header-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 12px;
+}
+#admin-leads-filter-meta-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-top: 16px;
+}
+
+/* Form labels want the same air from their field as a stat label does. */
+#admin-shell-main .form-group { gap: 10px; }
+
 /* A label/value row keeps its two edges on wide screens — that is what makes
    a column of numbers scannable — so it opts out of the centring above. */
 #admin-shell-main .rc-row { text-align: left; }
@@ -178,5 +192,12 @@
     width: 100%;
   }
   #admin-analytics-trend-axis { justify-content: center; gap: 12px; }
+  .admin-lead-card-header-row,
+  #admin-leads-filter-meta-row {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
   #admin-chrome-footer .container { justify-content: center; text-align: center; }
 }

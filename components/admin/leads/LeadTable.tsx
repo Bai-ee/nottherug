@@ -101,7 +101,7 @@ export function LeadTable({
           >
             <div
               id={`admin-lead-card-header-${rowKey}`}
-              style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}
+              className="admin-lead-card-header-row"
             >
               <div>
                 <div className="rc-title">{lead.ownerName || '—'}</div>
