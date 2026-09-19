@@ -185,14 +185,22 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
   return placed;
 }
 
+/** Sample count for the length ESTIMATE only (not the real per-print
+    placement in layoutPawWalk, which needs GAIT.samples' finer resolution to
+    place individual prints accurately). A route-length sum converges fast —
+    100 samples is within a percent or two of GAIT.samples' 1400 — and this
+    runs in a layout effect on every mount, so keeping it cheap matters more
+    than the extra precision would. */
+const ESTIMATE_SAMPLES = 100;
+
 /**
  * DOM-measuring half of the print-count estimate (see `pawStepsForRouteLength`
  * for the arithmetic half). Samples the route the same way `layoutPawWalk`
- * does — same GAIT.samples, same page-box scaling — but only needs the total
- * pixel length, not a per-print placement, so it can run before the real
- * print count is known. `fallbackPawSize` is used only when the tuning has no
- * fixed size (0 = "use the CSS clamp"); the shipped default has a fixed size,
- * so this DOM read is skipped in production.
+ * does — same page-box scaling, coarser sample count (see ESTIMATE_SAMPLES) —
+ * but only needs the total pixel length, not a per-print placement, so it can
+ * run before the real print count is known. `fallbackPawSize` is used only
+ * when the tuning has no fixed size (0 = "use the CSS clamp"); the shipped
+ * default has a fixed size, so this DOM read is skipped in production.
  */
 export function estimateRequiredPawSteps(
   layer: HTMLElement,
@@ -213,8 +221,8 @@ export function estimateRequiredPawSteps(
   let routeLength = 0;
   let prevX = 0;
   let prevY = 0;
-  for (let k = 0; k <= GAIT.samples; k++) {
-    const p = path.getPointAtLength((total * k) / GAIT.samples);
+  for (let k = 0; k <= ESTIMATE_SAMPLES; k++) {
+    const p = path.getPointAtLength((total * k) / ESTIMATE_SAMPLES);
     const x = p.x * sx;
     const y = p.y * sy;
     if (k > 0) routeLength += Math.hypot(x - prevX, y - prevY);

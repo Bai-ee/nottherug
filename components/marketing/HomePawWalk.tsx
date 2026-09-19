@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import dynamic from 'next/dynamic';
-import { useHomePawWalk } from './hooks/useHomePawWalk';
+import { useHomePawWalk, estimateRequiredPawSteps } from './hooks/useHomePawWalk';
 import { HOME_PAW_WALK_PATH, PAW_WALK_VIEWBOX } from '@/lib/marketing/paw-walk-path';
 import {
   pawWalkDevFlags,
@@ -12,21 +12,30 @@ import {
 } from '@/lib/marketing/paw-walk-tuning';
 
 /**
- * Rendered print count. Grows on demand rather than always mounting a fixed
- * worst-case number of `<img>` elements: `useHomePawWalk` measures the actual
- * route length against the page's real size and stride (see
- * `estimateRequiredPawSteps` / `pawStepsForRouteLength`) and reports back
- * through `growStepCount` whenever more prints are needed than are currently
- * mounted — on first layout, and again on a resize that makes the page
- * taller. Count only ever grows during a session (never shrinks, so an
- * already-tweened print is never unmounted mid-walk) and is capped at
- * `ABSOLUTE_MAX_STEPS`, the previous fixed allocation, as a safety net if a
- * dev-tuner size setting ever demands more steps than the estimate expects.
+ * Rendered print count. INITIAL_STEP_ESTIMATE is a measurement, not a guess:
+ * it is the largest requirement (route length / stride — see
+ * `estimateRequiredPawSteps` / `pawStepsForRouteLength`) observed on the
+ * production home page at 320/375/400/768/1024/1280/1440/1920px widths (the
+ * max was 145 prints, at 1920px), plus headroom, so the shipped default never
+ * needs to grow past it. That matters: growing later mounts new nodes and
+ * tears down/rebuilds the whole GSAP ScrollTrigger context, and doing that
+ * turned out to be able to shift the timing of an unrelated scroll-triggered
+ * UI (the welcome modal) enough to flip a pre-existing Playwright race in
+ * tests/e2e/public-routes.spec.ts — real work worth keeping off the common
+ * path even though it runs once, off-screen, during the intro wipe.
+ *
+ * `useHomePawWalk` still measures on mount and on every resize, and reports
+ * back through `growStepCount` for the cases the fixed estimate doesn't
+ * cover — an unusually tall page, or the dev tuner's smaller sizes packing
+ * more steps onto the route. Count only ever grows during a session (never
+ * shrinks, so an already-tweened print is never unmounted mid-walk) and is
+ * capped at `ABSOLUTE_MAX_STEPS`, the previous fixed allocation, as a
+ * last-resort ceiling.
  */
-const INITIAL_STEP_ESTIMATE = 56;
-/** Extra prints mounted past the measured requirement, so a small measurement
-    variance (a font swap, a late-loading image nudging page height) doesn't
-    leave a visible gap before the next layout/resize pass catches up. */
+const INITIAL_STEP_ESTIMATE = 168;
+/** Extra prints mounted past a measured requirement that exceeds
+    INITIAL_STEP_ESTIMATE, so a small measurement variance doesn't leave a
+    visible gap before the next layout/resize pass catches up. */
 const SAFETY_BUFFER_STEPS = 16;
 const ABSOLUTE_MAX_STEPS = 320;
 
@@ -67,6 +76,27 @@ export default function HomePawWalk() {
   const growStepCount = useCallback((required: number) => {
     setStepCount((prev) => Math.min(ABSOLUTE_MAX_STEPS, Math.max(prev, required + SAFETY_BUFFER_STEPS)));
   }, []);
+
+  // Sizes the mounted count BEFORE the browser paints, not after: a
+  // useLayoutEffect measurement (route length vs. stride, from the page box
+  // and SVG path — both already in the DOM at this point) can call
+  // growStepCount and have React re-render/re-commit synchronously, in the
+  // same tick, before anything ever gets to see the smaller intermediate
+  // count. Without this, the estimate-then-grow instead happened inside
+  // useHomePawWalk's regular (post-paint) effect, which added a batch of new
+  // <img> nodes and tore down/rebuilt the whole ScrollTrigger context a beat
+  // after first paint — invisible to a human, but real DOM churn that shifted
+  // the timing of an unrelated scroll-triggered UI (the welcome modal) enough
+  // to flip a pre-existing Playwright race in tests/e2e/public-routes.spec.ts.
+  useLayoutEffect(() => {
+    const layer = layerRef.current;
+    if (!layer) return;
+    const required = estimateRequiredPawSteps(layer, tuning, measuredSize);
+    if (required + SAFETY_BUFFER_STEPS > stepCount) growStepCount(required);
+    // measuredSize is a rough fallback only used when tuning.size is 0 (dev
+    // tuner "use the CSS clamp" mode); it does not need to retrigger this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tuning, stepCount, growStepCount]);
 
   useHomePawWalk(layerRef, tuning, stepCount, setMeasuredSize, growStepCount);
 
