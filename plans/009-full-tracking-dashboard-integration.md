@@ -396,8 +396,8 @@ The plan is complete only when:
 
 | Phase | Status | Evidence / commit | Open risks |
 | --- | --- | --- | --- |
-| P0 Preserve and baseline | NOT STARTED | — | Both worktrees currently contain user-owned changes. |
-| P1 Merge foundation | NOT STARTED | — | Conflict resolution must preserve live UI and main hardening. |
+| P0 Preserve and baseline | DONE | main-worktree checkpoint `0cfde87`; integration checkpoint `9d08ed2` on `codex/full-analytics-dashboard-integration`; `main` still `f77e3d2`, `feat/welcome-modal` still `41bdf95`. Baseline: integration typecheck clean, main focused analytics 12 files / 128 tests passed. | Both original dirty trees are now recoverable from those two commits; do not delete them before P6 acceptance. |
+| P1 Merge foundation | DONE | merge `bcd862f` (156 files, +10196/-1510). 11 conflicts: 3 intentional route deletions kept deleted, 7 UI/booking files resolved to the live redesign, plans/README merged by hand. Post-merge: 6 test files / 34 tests fail, 302 pass, 49 skip — all missing-instrumentation, scoped to P3. | Live marketing and booking components carry no tracking calls yet; main's scheduler hardening must be re-implemented in P3B from the `codex/booking-first-analytics-checkpoint` reference, not assumed present. |
 | P2 Lock contract | NOT STARTED | — | Final rendered CTA inventory must be re-audited. |
 | P3A Public instrumentation | NOT STARTED | — | Hash navigation and modal handlers must remain intact. |
 | P3B Booking funnel | NOT STARTED | — | Booking-first ordering differs from the old linear funnel. |

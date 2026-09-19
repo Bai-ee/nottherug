@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createHash } from 'node:crypto';
 import { EVENTS_COLLECTION, MAX_BATCH_EVENTS, MAX_BODY_BYTES, validateEvent } from '@/lib/analytics/events';
 import { fsCreateDoc, fsIncrementField } from '@/lib/server/firestoreRest';
+import { eventExpiryAt, rateLimitExpiryAt } from '@/lib/analytics/retention';
 import { errorResponse } from '@/lib/server/errors';
 
 // Public, unauthenticated collection endpoint (plans/003-admin-dashboard-and-tracking.md
@@ -124,7 +125,10 @@ async function checkRateLimit(ip: string): Promise<boolean> {
     const windowStart = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
     const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 24);
     const path = `analyticsRateLimits/${ipHash}_${windowStart}`;
-    const count = await fsIncrementField(path, 'count', 1, { windowStart });
+    const count = await fsIncrementField(path, 'count', 1, {
+      windowStart,
+      expiresAt: rateLimitExpiryAt(windowStart),
+    });
     return count <= RATE_LIMIT_MAX_PER_WINDOW;
   } catch (err) {
     console.error('[track] rate limit check failed', err instanceof Error ? err.message : 'unknown');
@@ -153,6 +157,9 @@ async function storeOneEvent(raw: unknown, receivedAt: string): Promise<StoreOut
     route: event.route,
     receivedAt,
     clientTs: event.ts,
+    // Firestore TTL deletes the document once this passes; the manual cleanup
+    // route stays for backlog written before the policy existed.
+    expiresAt: eventExpiryAt(new Date(receivedAt)),
   };
   if (event.cta) doc.cta = event.cta;
   if (event.step) doc.step = event.step;

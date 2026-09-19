@@ -28,6 +28,7 @@ async function getToken(): Promise<string> {
 type FsValue =
   | { stringValue: string }
   | { integerValue: string }
+  | { timestampValue: string }
   | { doubleValue: number }
   | { booleanValue: boolean }
   | { nullValue: null }
@@ -41,6 +42,9 @@ function toValue(v: unknown): FsValue {
     return Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v };
   }
   if (typeof v === 'string') return { stringValue: v };
+  // Dates serialize as real Firestore timestamps because a TTL policy can only
+  // expire a timestamp field — a stored ISO string would be ignored by it.
+  if (v instanceof Date) return { timestampValue: v.toISOString() };
   if (Array.isArray(v)) return { arrayValue: { values: v.map(toValue) } };
   if (typeof v === 'object') {
     return {
@@ -57,6 +61,7 @@ function toValue(v: unknown): FsValue {
 function fromValue(v: FsValue): unknown {
   if ('stringValue' in v) return v.stringValue;
   if ('integerValue' in v) return Number(v.integerValue);
+  if ('timestampValue' in v) return v.timestampValue;
   if ('doubleValue' in v) return v.doubleValue;
   if ('booleanValue' in v) return v.booleanValue;
   if ('nullValue' in v) return null;

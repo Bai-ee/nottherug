@@ -49,6 +49,20 @@ export function rateLimitCutoffMs(now: Date): number {
   return now.getTime() - RATE_LIMIT_RETENTION_HOURS * 60 * 60 * 1000;
 }
 
+/** The moment a document received at `receivedAt` falls out of retention:
+ *  13 months later. Written onto each event as `expiresAt` so a Firestore TTL
+ *  policy can expire it without anyone running the manual cleanup below. */
+export function eventExpiryAt(receivedAt: Date): Date {
+  const expiry = new Date(receivedAt.getTime());
+  expiry.setUTCMonth(expiry.getUTCMonth() + EVENTS_RETENTION_MONTHS);
+  return expiry;
+}
+
+/** Same idea for a rate-limit bucket: 48 hours after the bucket's window. */
+export function rateLimitExpiryAt(windowStartMs: number): Date {
+  return new Date(windowStartMs + RATE_LIMIT_RETENTION_HOURS * 60 * 60 * 1000);
+}
+
 export interface CollectionCleanupResult {
   collection: string;
   /** Rows the bounded query actually returned (never more than the per-run ceiling). */

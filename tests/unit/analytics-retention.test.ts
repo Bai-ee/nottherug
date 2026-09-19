@@ -195,3 +195,26 @@ describe('runAnalyticsRetentionCleanup', () => {
     expect(b.events.deleted).toBe(2);
   });
 });
+
+describe('TTL expiry stamps', () => {
+  it('expires an event 13 months after it was received', async () => {
+    const { eventExpiryAt } = await import('@/lib/analytics/retention');
+    const expiry = eventExpiryAt(new Date('2026-01-15T10:00:00.000Z'));
+    expect(expiry.toISOString()).toBe('2027-02-15T10:00:00.000Z');
+  });
+
+  it('expires a rate-limit bucket 48 hours after its window', async () => {
+    const { rateLimitExpiryAt } = await import('@/lib/analytics/retention');
+    const windowStart = Date.parse('2026-01-15T10:00:00.000Z');
+    expect(rateLimitExpiryAt(windowStart).toISOString()).toBe('2026-01-17T10:00:00.000Z');
+  });
+
+  it('stamps an expiry the cleanup cutoff agrees with', async () => {
+    const { eventExpiryAt, eventsCutoffIso } = await import('@/lib/analytics/retention');
+    // A document stamped at receipt is expired exactly when a cleanup run at
+    // that moment would also consider it past the cutoff.
+    const receivedAt = new Date('2026-01-15T10:00:00.000Z');
+    const expiry = eventExpiryAt(receivedAt);
+    expect(eventsCutoffIso(expiry)).toBe(receivedAt.toISOString());
+  });
+});
