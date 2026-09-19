@@ -45,7 +45,7 @@ export default function HomeHero() {
             className="btn btn-primary btn-accent"
             id="hero-cta-primary"
             cta="hero_view_services"
-            page="home"
+           
             onClick={(e) => {
               const target = document.getElementById('home-personalized-care-section');
               if (!target) return; // no section on this page — let the anchor do its thing
@@ -68,8 +68,10 @@ export default function HomeHero() {
             className="btn btn-ghost"
             id="hero-cta-secondary"
             cta="hero_contact"
-            page="home"
+           
             onClick={(e) => {
+              // Let a cmd/ctrl/shift-click open /contact in a new tab instead.
+              if (e.metaKey || e.ctrlKey || e.shiftKey) return;
               e.preventDefault();
               openWelcomeWalkModal();
             }}

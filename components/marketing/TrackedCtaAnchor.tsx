@@ -7,8 +7,6 @@ import type { CtaId } from '@/lib/analytics/events';
 type Props = ComponentProps<'a'> & {
   /** Which CTA this is — must be one of the locked, rendered ids in lib/analytics/events.ts. */
   cta: CtaId;
-  /** The page the CTA appears on (e.g. "contact", "services"). */
-  page: string;
 };
 
 // A plain <a> that also records an anonymous cta_click — for tel:, mailto:,
@@ -16,7 +14,7 @@ type Props = ComponentProps<'a'> & {
 // semantics and renders the wrong element. Never calls preventDefault, so
 // the browser's native tel/mailto handoff and modified-click behavior
 // (cmd/ctrl/shift/middle-click) are untouched.
-export default function TrackedCtaAnchor({ cta, page, onClick, ...anchorProps }: Props) {
+export default function TrackedCtaAnchor({ cta, onClick, ...anchorProps }: Props) {
   return (
     <a
       {...anchorProps}
@@ -24,7 +22,7 @@ export default function TrackedCtaAnchor({ cta, page, onClick, ...anchorProps }:
         // A tracking failure must never stop a caller's own onClick or the
         // tel:/mailto:/external handoff itself.
         try {
-          track('cta_click', { cta, page });
+          track('cta_click', { cta });
         } catch (err) {
           console.warn('[analytics] cta_click failed', err);
         }

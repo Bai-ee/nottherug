@@ -28,7 +28,6 @@ describe('TrackedCtaAnchor', () => {
     const { default: TrackedCtaAnchor } = await import('@/components/marketing/TrackedCtaAnchor');
     const element = TrackedCtaAnchor({
       cta: 'contact_phone',
-      page: 'contact',
       href: 'tel:+13476109676',
       target: '_self',
       rel: 'noopener',
@@ -43,12 +42,12 @@ describe('TrackedCtaAnchor', () => {
 
   it('fires exactly one cta_click per click, with only the cta id and page', async () => {
     const { default: TrackedCtaAnchor } = await import('@/components/marketing/TrackedCtaAnchor');
-    const element = TrackedCtaAnchor({ cta: 'contact_email', page: 'contact', href: 'mailto:luis@nottherug.com', children: 'Email' });
+    const element = TrackedCtaAnchor({ cta: 'contact_email', href: 'mailto:luis@nottherug.com', children: 'Email' });
 
     element.props.onClick?.(fakeClickEvent);
 
     expect(track).toHaveBeenCalledTimes(1);
-    expect(track).toHaveBeenCalledWith('cta_click', { cta: 'contact_email', page: 'contact' });
+    expect(track).toHaveBeenCalledWith('cta_click', { cta: 'contact_email' });
   });
 
   it('still calls a caller-supplied onClick, without firing a second cta_click', async () => {
@@ -56,7 +55,6 @@ describe('TrackedCtaAnchor', () => {
     const callerOnClick = vi.fn();
     const element = TrackedCtaAnchor({
       cta: 'contact_phone',
-      page: 'services',
       href: 'tel:+13476109676',
       children: 'Call',
       onClick: callerOnClick,
@@ -70,7 +68,7 @@ describe('TrackedCtaAnchor', () => {
 
   it('does not double-fire on a modified click (cmd/ctrl/shift/middle-click)', async () => {
     const { default: TrackedCtaAnchor } = await import('@/components/marketing/TrackedCtaAnchor');
-    const element = TrackedCtaAnchor({ cta: 'contact_email', page: 'services', href: 'mailto:luis@nottherug.com', children: 'Email' });
+    const element = TrackedCtaAnchor({ cta: 'contact_email', href: 'mailto:luis@nottherug.com', children: 'Email' });
 
     element.props.onClick?.(modifiedClickEvent);
 
@@ -85,7 +83,6 @@ describe('TrackedCtaAnchor', () => {
     const callerOnClick = vi.fn();
     const element = TrackedCtaAnchor({
       cta: 'contact_phone',
-      page: 'contact',
       href: 'tel:+13476109676',
       children: 'Call',
       onClick: callerOnClick,

@@ -21,8 +21,8 @@ export default function NeighborhoodDetail({ hood }: { hood: NeighborhoodInfo })
           </div>
         </div>
         <div style={{ marginTop: '32px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-          <TrackedCtaLink href="/book" className="btn btn-primary" cta="neighborhood_detail_book" page="neighborhoods">Book a Walk in {hood.name}</TrackedCtaLink>
-          <TrackedCtaLink href="/contact" className="btn btn-outline" id="neighborhood-detail-contact-link" cta="neighborhood_detail_contact" page="neighborhoods">Ask About {hood.name} Coverage</TrackedCtaLink>
+          <TrackedCtaLink href="/book" className="btn btn-primary" cta="neighborhood_detail_book">Book a Walk in {hood.name}</TrackedCtaLink>
+          <TrackedCtaLink href="/contact" className="btn btn-outline" id="neighborhood-detail-contact-link" cta="neighborhood_detail_contact">Ask About {hood.name} Coverage</TrackedCtaLink>
         </div>
       </div>
       <div className="grid-3" style={{ gap: '24px' }}>

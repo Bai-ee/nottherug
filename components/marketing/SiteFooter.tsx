@@ -98,7 +98,7 @@ export default function SiteFooter() {
               <ul>
                 {FOOTER_RATES.map((link) => (
                   <li key={link.href}>
-                    <TrackedCtaLink href={link.href} id={link.id} cta="footer_services" page="site">{link.label}</TrackedCtaLink>
+                    <TrackedCtaLink href={link.href} id={link.id} cta="footer_services">{link.label}</TrackedCtaLink>
                   </li>
                 ))}
               </ul>
@@ -109,7 +109,7 @@ export default function SiteFooter() {
                 {FOOTER_COMPANY.map((link) => (
                   <li key={link.href}>
                     {link.cta ? (
-                      <TrackedCtaLink href={link.href} id={link.id} cta={link.cta} page="site">{link.label}</TrackedCtaLink>
+                      <TrackedCtaLink href={link.href} id={link.id} cta={link.cta}>{link.label}</TrackedCtaLink>
                     ) : (
                       <Link href={link.href}>{link.label}</Link>
                     )}
@@ -134,7 +134,7 @@ export default function SiteFooter() {
               className="btn btn-primary btn-sm btn-accent"
               style={{ whiteSpace: 'nowrap' }}
               cta="footer_book"
-              page="site"
+             
             >Contact Luis</TrackedCtaLink>
           </div>
           <div className="footer-bottom">

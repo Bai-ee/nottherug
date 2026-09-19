@@ -55,11 +55,16 @@ export const CTA_IDS = [
   'footer_book',
   'group_walk_card_submit',
   'welcome_modal_schedule',
+  // The modal's "answer questions first" exit, taken instead of scheduling.
+  // Continuing to the questionnaire AFTER a booking goes to the same page but
+  // is a different act, and is deliberately not counted here.
   'welcome_modal_details',
 
   // Contact intent. On the homepage these are in-page anchors, not the
   // /contact route, so the id says where the visitor clicked, not where the
-  // click landed.
+  // click landed. nav_contact and nav_services are shared by the desktop bar
+  // and the mobile menu, which render the same list; only Book is split by
+  // width, because that is the one the owner asked to see separately.
   'nav_contact',
   'footer_contact',
   'hero_contact',

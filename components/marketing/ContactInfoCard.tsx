@@ -25,7 +25,7 @@ export default function ContactInfoCard() {
           <div>
             <h4>Call or Text</h4>
             <p>The fastest way to reach us. Luis personally responds to all messages.</p>
-            <TrackedCtaAnchor href={PHONE_HREF} id="contact-phone-link" cta="contact_phone" page="contact" style={{ display: 'block', marginTop: '10px' }}>{PHONE_DISPLAY}</TrackedCtaAnchor>
+            <TrackedCtaAnchor href={PHONE_HREF} id="contact-phone-link" cta="contact_phone" style={{ display: 'block', marginTop: '10px' }}>{PHONE_DISPLAY}</TrackedCtaAnchor>
           </div>
         </div>
         <div className="contact-method">
@@ -33,7 +33,7 @@ export default function ContactInfoCard() {
           <div>
             <h4>Email</h4>
             <p>For new client intake, less urgent inquiries, or detailed questions.</p>
-            <TrackedCtaAnchor href={EMAIL_HREF} id="contact-email-link" cta="contact_email" page="contact" style={{ display: 'block', marginTop: '10px' }}>{EMAIL_DISPLAY}</TrackedCtaAnchor>
+            <TrackedCtaAnchor href={EMAIL_HREF} id="contact-email-link" cta="contact_email" style={{ display: 'block', marginTop: '10px' }}>{EMAIL_DISPLAY}</TrackedCtaAnchor>
           </div>
         </div>
         <div className="contact-method">

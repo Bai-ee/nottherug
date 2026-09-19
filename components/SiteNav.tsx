@@ -45,7 +45,7 @@ export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; c
 // must never break the navigation it is measuring, hence the try/catch.
 function trackNavCta(cta: CtaId) {
   try {
-    track('cta_click', { cta, page: 'nav' });
+    track('cta_click', { cta });
   } catch (err) {
     console.warn('[analytics] cta_click failed', err);
   }
@@ -90,6 +90,9 @@ export default function SiteNav() {
   const bookOpensModal = pathname === '/';
   function handleBookClick(e: React.MouseEvent<HTMLAnchorElement>, cta: CtaId) {
     trackNavCta(cta);
+    // A cmd/ctrl/shift-click means "open this somewhere else" — let the browser
+    // do that with the real href instead of opening the modal over this page.
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
     if (!bookOpensModal) return;
     e.preventDefault();
     setMobileOpen(false);

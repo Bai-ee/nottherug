@@ -27,12 +27,12 @@ describe('TrackedCtaLink', () => {
 
   it('fires exactly one cta_click per click, with only the cta id and page', async () => {
     const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
-    const element = TrackedCtaLink({ cta: 'closing_trust_book', page: 'home', href: '/book', children: 'Book' });
+    const element = TrackedCtaLink({ cta: 'closing_trust_book', href: '/book', children: 'Book' });
 
     element.props.onClick?.(fakeClickEvent);
 
     expect(track).toHaveBeenCalledTimes(1);
-    expect(track).toHaveBeenCalledWith('cta_click', { cta: 'closing_trust_book', page: 'home' });
+    expect(track).toHaveBeenCalledWith('cta_click', { cta: 'closing_trust_book' });
   });
 
   it('still calls a caller-supplied onClick, without firing a second cta_click', async () => {
@@ -40,7 +40,6 @@ describe('TrackedCtaLink', () => {
     const callerOnClick = vi.fn();
     const element = TrackedCtaLink({
       cta: 'footer_book',
-      page: 'footer',
       href: '/book',
       children: 'Book',
       onClick: callerOnClick,
@@ -54,7 +53,7 @@ describe('TrackedCtaLink', () => {
 
   it('does not double-fire on a modified click (cmd/ctrl/shift/middle-click)', async () => {
     const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
-    const element = TrackedCtaLink({ cta: 'nav_services', page: 'home', href: '/services', children: 'Services' });
+    const element = TrackedCtaLink({ cta: 'nav_services', href: '/services', children: 'Services' });
 
     element.props.onClick?.(modifiedClickEvent);
 
@@ -69,7 +68,6 @@ describe('TrackedCtaLink', () => {
     const callerOnClick = vi.fn();
     const element = TrackedCtaLink({
       cta: 'closing_trust_book',
-      page: 'home',
       href: '/book',
       children: 'Book',
       onClick: callerOnClick,
