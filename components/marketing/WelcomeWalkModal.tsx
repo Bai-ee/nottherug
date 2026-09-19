@@ -30,6 +30,7 @@ import {
   hasScrolledPastTrigger,
   hasSeenWelcomeModal,
   markWelcomeModalSeen,
+  WELCOME_MODAL_OPEN_EVENT,
   type WelcomeModalStorage,
 } from '@/lib/marketing/welcome-modal';
 
@@ -77,18 +78,6 @@ const LOGO_BADGE = '/logos/notRugGreen.png';
  * nothing about what is captured or where it is sent.
  */
 const FORCE_PARAM = 'welcome';
-
-/**
- * Any element on the page can open this modal by dispatching this event —
- * the home hero's primary CTA does. Kept as a DOM event so callers don't need
- * a shared provider or a lifted state hook just to pop the sheet.
- */
-const OPEN_EVENT = 'ntr:open-welcome-modal';
-
-/** Opens the welcome modal from anywhere on the page. */
-export function openWelcomeWalkModal() {
-  window.dispatchEvent(new CustomEvent(OPEN_EVENT));
-}
 
 function isForced(): boolean {
   try {
@@ -168,7 +157,7 @@ export default function WelcomeWalkModal() {
   // (cleared) once read, so the gate<->scheduler visibility transition still
   // falls back to a live document.activeElement read, same as before.
   const pendingOpenerRef = useRef<HTMLElement | null>(null);
-  // Set by the OPEN_EVENT handler and by every dismissal path below. Guards
+  // Set by the WELCOME_MODAL_OPEN_EVENT handler and by every dismissal path below. Guards
   // the first-visit scroll trigger: without this, a visitor who opens the
   // modal manually (hero CTA) and dismisses it before scrolling would see it
   // pop back open uninvited on their first scroll down — acceptance scenario
@@ -242,8 +231,8 @@ export default function WelcomeWalkModal() {
       pendingOpenerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setOpen(true);
     }
-    window.addEventListener(OPEN_EVENT, handleOpenRequest);
-    return () => window.removeEventListener(OPEN_EVENT, handleOpenRequest);
+    window.addEventListener(WELCOME_MODAL_OPEN_EVENT, handleOpenRequest);
+    return () => window.removeEventListener(WELCOME_MODAL_OPEN_EVENT, handleOpenRequest);
   }, []);
 
   /**

@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -54,16 +53,20 @@ export function AdminNav() {
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
             {/* Same #nav-logo-img CSS sizing as the marketing nav (see
-                app/globals.css and app/(marketing)/book/page.tsx): CSS-driven
-                width across breakpoints/scroll states, not a static box. */}
-            <Image
+                app/globals.css and app/(marketing)/book/page.tsx). Plain
+                <img>, not next/image: the source PNG is already ~50KB, so
+                the next/image client runtime cost more than the
+                resize/format conversion saved here — see plans/010
+                "Release budgets" and components/SiteNav.tsx. */}
+            {/* eslint-disable-next-line @next/next/no-img-element -- small (~50KB) CSS-sized wordmark shown as-is; next/image runtime cost exceeds its savings here */}
+            <img
               id="nav-logo-img"
               src="/img/horiz_logo_off_white.png"
               alt="Not The Rug"
               width={498}
               height={88}
-              sizes="(max-width: 767px) 200px, 370px"
-              priority
+              decoding="async"
+              fetchPriority="high"
             />
           </Link>
           <div className="nav-links">
