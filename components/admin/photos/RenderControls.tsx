@@ -56,7 +56,7 @@ export function RenderControls({
                   cursor: 'pointer',
                   padding: 8,
                   textAlign: 'center',
-                  outline: selectedLogoPath === l.storagePath ? '2px solid var(--sage)' : undefined,
+                  outline: selectedLogoPath === l.storagePath ? '2px solid var(--terracotta)' : undefined,
                   outlineOffset: selectedLogoPath === l.storagePath ? -2 : undefined,
                 }}
               >
@@ -78,23 +78,23 @@ export function RenderControls({
       <div className="form-group" id="admin-photos-placement-controls" style={{ marginTop: 24 }}>
         <div className="stamp-label">Logo Placement</div>
         <div className="grid-3" id="admin-photos-placement-grid">
-          <div className="form-group">
+          <div className="form-group" style={{ gap: 10 }}>
             <label htmlFor="ph-x">X (px)</label>
             <input id="ph-x" className="form-control" type="number" value={placementX} onChange={(e) => onPlacementChange('x', Number(e.target.value))} />
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{ gap: 10 }}>
             <label htmlFor="ph-y">Y (px)</label>
             <input id="ph-y" className="form-control" type="number" value={placementY} onChange={(e) => onPlacementChange('y', Number(e.target.value))} />
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{ gap: 10 }}>
             <label htmlFor="ph-w">Width (px)</label>
             <input id="ph-w" className="form-control" type="number" value={placementW} onChange={(e) => onPlacementChange('w', Number(e.target.value))} />
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{ gap: 10 }}>
             <label htmlFor="ph-h">Height (px)</label>
             <input id="ph-h" className="form-control" type="number" value={placementH} onChange={(e) => onPlacementChange('h', Number(e.target.value))} />
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{ gap: 10 }}>
             <label htmlFor="ph-op">Opacity (0–1)</label>
             <input
               id="ph-op"
@@ -110,8 +110,8 @@ export function RenderControls({
         </div>
       </div>
 
-      <div id="admin-photos-render-actions" style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginTop: 24 }}>
-        <button type="button" className="btn btn-primary" disabled={!canRender} onClick={onRender}>
+      <div id="admin-photos-render-actions" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap', marginTop: 24 }}>
+        <button type="button" className="btn btn-accent" disabled={!canRender} onClick={onRender}>
           {isRendering ? 'Rendering…' : 'Render'}
         </button>
         {sourceFileName && <span className="form-note" style={{ margin: 0 }}>Source: {sourceFileName}</span>}

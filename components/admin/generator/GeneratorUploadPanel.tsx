@@ -6,7 +6,7 @@ import type { PhotoUpload } from '@/lib/photos/types';
 export type UploadPhase = 'idle' | 'uploading' | 'success' | 'error';
 
 /** Same dropzone treatment as the Photos page's PhotoUploadPanel: a `.card`
- * drop target with the paper-ticket `.btn-primary` file picker. The uploads
+ * drop target with the terracotta `.btn-accent` file picker. The uploads
  * grid uses `.grid-4` (already collapses to 2/1 columns on tablet/mobile via
  * app/globals.css) instead of a custom auto-fill track. */
 export function GeneratorUploadPanel({
@@ -101,9 +101,9 @@ export function GeneratorUploadPanel({
       {deleteError && (
         <div id="admin-gen-delete-err" style={{ marginBottom: 12 }}>
           <p className="form-note text-terra" style={{ margin: 0 }}>Could not delete {deleteError.fileName}: {deleteError.message}</p>
-          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-            <button type="button" className="btn btn-outline btn-sm" onClick={onRetryDelete}>Retry</button>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={onDismissDeleteError}>Dismiss</button>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8, justifyContent: 'center' }}>
+            <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onRetryDelete}>Retry</button>
+            <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onDismissDeleteError}>Dismiss</button>
           </div>
         </div>
       )}
@@ -137,7 +137,7 @@ export function GeneratorUploadPanel({
                   />
                   <button
                     type="button"
-                    className="btn btn-ghost btn-sm"
+                    className="btn btn-sm admin-btn-secondary"
                     onClick={(e) => { e.stopPropagation(); onRequestDelete(u); }}
                     style={{ position: 'absolute', top: 4, right: 4, padding: '2px 8px' }}
                   >✕</button>
@@ -146,7 +146,7 @@ export function GeneratorUploadPanel({
             })}
           </div>
           {visibleCount < uploads.length && (
-            <button type="button" className="btn btn-outline btn-sm" id="admin-gen-load-more" style={{ width: '100%', marginTop: 12, justifyContent: 'center' }} onClick={onShowMore}>
+            <button type="button" className="btn btn-sm admin-btn-secondary" id="admin-gen-load-more" style={{ width: '100%', marginTop: 12, justifyContent: 'center' }} onClick={onShowMore}>
               Load more ({uploads.length - visibleCount} remaining)
             </button>
           )}

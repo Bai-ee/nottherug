@@ -12,7 +12,7 @@ type SourceMode = 'random' | 'selected';
 
 /** Logo + source controls. Two `.card card-pad` sections side by side on
  * desktop (see #admin-gen-controls-grid in the parent page), stacked on
- * mobile. Source mode is a two-button toggle (`.btn-primary` / `.btn-outline`)
+ * mobile. Source mode is a two-button toggle (`.btn-accent` / `.admin-btn-secondary`)
  * rather than a custom segmented control — no such control exists in the
  * allowed vocabulary. */
 export function GeneratorControls({
@@ -61,7 +61,7 @@ export function GeneratorControls({
             onChange={(e) => onPlacementSizeChange(Number(e.target.value) / 100)}
           />
           <span className="form-note" style={{ margin: 0, minWidth: 32, textAlign: 'right' }}>{Math.round(placement.diameterRatio * 100)}%</span>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={onResetPlacement}>Reset</button>
+          <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onResetPlacement}>Reset</button>
         </div>
 
         <div id="admin-gen-logo-swatches" style={{ display: 'flex', gap: 16 }}>
@@ -80,7 +80,7 @@ export function GeneratorControls({
                     height: 64,
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    border: isActive ? '2px solid var(--sage-dark)' : '2px solid var(--light-gray)',
+                    border: isActive ? '2px solid var(--terracotta)' : '2px solid var(--olive)',
                   }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -101,7 +101,7 @@ export function GeneratorControls({
             <button
               key={m}
               type="button"
-              className={`btn btn-sm ${sourceMode === m ? 'btn-primary' : 'btn-outline'}`}
+              className={`btn btn-sm ${sourceMode === m ? 'btn-accent' : 'admin-btn-secondary'}`}
               onClick={() => onSourceModeChange(m)}
             >
               {m === 'random' ? 'Random' : 'Selected'}
@@ -122,7 +122,7 @@ export function GeneratorControls({
                 <div className="form-note" style={{ margin: '0 0 3px' }}>Locked</div>
                 <div style={{ fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{randomSource.fileName}</div>
               </div>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={onShuffle}>Shuffle</button>
+              <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onShuffle}>Shuffle</button>
             </div>
           ) : (
             <p className="form-note" style={{ margin: 0 }}>Picking…</p>

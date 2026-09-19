@@ -139,6 +139,10 @@
 #admin-shell-main .admin-analytics-panel-head { justify-content: center; }
 #admin-shell-main .admin-analytics-hero-stats-row { justify-content: center; }
 .card .form-note { margin-left: auto; margin-right: auto; }
+/* text-align does not move a button that is a flex or grid child, so centre
+   those explicitly too — both the button itself and the row it sits in. */
+.card .btn { align-self: center; }
+.card div:has(> .btn) { justify-content: center; }
 
 /* Air between a label and the thing it labels. */
 .card .stamp-label { margin-bottom: 18px; }

@@ -132,7 +132,7 @@ export function GeneratorCanvas({
                 style={{
                   width: w,
                   height: h,
-                  border: isActive ? '2px solid var(--sage-dark)' : '1.5px solid var(--light-gray)',
+                  border: isActive ? '2px solid var(--terracotta)' : '1.5px solid var(--olive)',
                   flexShrink: 0,
                 }}
               />

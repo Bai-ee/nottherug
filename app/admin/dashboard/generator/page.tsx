@@ -411,12 +411,12 @@ function AdminGeneratorPageContent({
               className="card card-pad"
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, position: 'sticky', bottom: 0, borderRadius: 0 }}
             >
-              <button className="btn btn-primary" style={{ width: '100%', maxWidth: 400, justifyContent: 'center' }} disabled={!canGenerate} onClick={handleGenerate}>
+              <button className="btn btn-accent" style={{ width: '100%', maxWidth: 400, justifyContent: 'center' }} disabled={!canGenerate} onClick={handleGenerate}>
                 {isGenerating ? 'Generating…' : 'Generate'}
               </button>
               <button
                 id="admin-gen-upload-cta"
-                className="btn btn-outline"
+                className="btn admin-btn-secondary"
                 style={{ width: '100%', maxWidth: 400, justifyContent: 'center' }}
                 disabled={isUploading}
                 onClick={() => fileInputRef.current?.click()}
