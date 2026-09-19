@@ -82,7 +82,7 @@ const css = `
 #dashboard-history-run-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
 #dashboard-history-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 4px; margin-top: 14px; }
 #dashboard-history-scroll > .card { flex: 0 0 auto; width: 200px; display: grid; }
-.dashboard-history-item-btn { display: grid; gap: 8px; width: 100%; text-align: left; background: none; border: 0; padding: 16px; cursor: pointer; font: inherit; color: inherit; }
+.dashboard-history-item-btn { display: grid; gap: 8px; width: 100%; text-align: center; background: none; border: 0; padding: 16px; cursor: pointer; font: inherit; color: inherit; }
 .dashboard-history-thumb .polaroid-window { width: 100%; aspect-ratio: 4 / 5; }
 .dashboard-history-thumb .polaroid-window img { width: 100%; height: 100%; object-fit: cover; display: block; }
 #dashboard-history-scroll .btn { margin: 0 16px 16px; }
@@ -277,7 +277,7 @@ function AdminBriefPageContent({
             <div className="stamp-label stamp-label-heading">Scout, Scribe, Guardian, Reporter</div>
             {readinessChip}
             <div id="admin-brief-actions-row-controls">
-              <button className="btn btn-outline" disabled={loading || running} onClick={() => void fetchOverview()}>
+              <button className="btn btn-accent" disabled={loading || running} onClick={() => void fetchOverview()}>
                 Refresh Latest
               </button>
             </div>

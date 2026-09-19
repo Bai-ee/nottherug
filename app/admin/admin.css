@@ -123,25 +123,25 @@
 
 /* The mirror of .btn-accent. Same tokens, swapped: olive at rest, terracotta
    on hover. Admin-only, so the marketing buttons keep their own pairing. */
-#admin-shell-main .btn.admin-btn-secondary {
+.btn.admin-btn-secondary {
   background-color: var(--olive);
   background-image: none;
   color: var(--paper);
   outline-color: rgba(243, 236, 217, 0.45);
 }
-#admin-shell-main .btn.admin-btn-secondary:hover {
+.btn.admin-btn-secondary:hover {
   background-color: var(--terracotta);
   color: var(--paper);
 }
 
 /* Labels, data and explanations centre inside every panel. */
-#admin-shell-main .card { text-align: center; }
+.card { text-align: center; }
 #admin-shell-main .admin-analytics-panel-head { justify-content: center; }
 #admin-shell-main .admin-analytics-hero-stats-row { justify-content: center; }
-#admin-shell-main .card .form-note { margin-left: auto; margin-right: auto; }
+.card .form-note { margin-left: auto; margin-right: auto; }
 
 /* Air between a label and the thing it labels. */
-#admin-shell-main .card .stamp-label { margin-bottom: 18px; }
+.card .stamp-label { margin-bottom: 18px; }
 #admin-shell-main .admin-analytics-panel-body { gap: 20px; }
 #admin-shell-main .hero-stat-num { margin-bottom: 10px; }
 #admin-shell-main .admin-analytics-hero-stats-row { gap: 32px; }
@@ -162,7 +162,10 @@
 
 /* A label/value row keeps its two edges on wide screens — that is what makes
    a column of numbers scannable — so it opts out of the centring above. */
-#admin-shell-main .rc-row { text-align: left; }
+.rc-row { text-align: left; }
+/* A label and its value sit flush against each other everywhere this pattern
+   repeats; give the pair the same air the stat labels got. */
+.rc-row > div > * + * { margin-top: 6px; }
 
 @media (max-width: 768px) {
   /* Phone: one column, everything centred on top of everything else. */

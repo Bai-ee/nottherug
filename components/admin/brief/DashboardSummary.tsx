@@ -138,7 +138,7 @@ export function DashboardSummary({
                       <div className="form-note" id="brief-post-instagram-empty">
                         Generated post image appears here
                         <br />
-                        <a className="btn btn-outline btn-sm" href="/admin/dashboard/photos">Open Photos →</a>
+                        <a className="btn btn-sm admin-btn-secondary" href="/admin/dashboard/photos">Open Photos →</a>
                       </div>
                     )}
                   </div>
@@ -183,27 +183,28 @@ export function DashboardSummary({
           </CarouselContent>
 
           <div className="carousel-footer" id="brief-post-carousel-footer">
-            <CarouselPrevious className="btn btn-ghost btn-sm" />
+            <CarouselPrevious className="btn btn-sm admin-btn-secondary" />
             <div id="brief-post-carousel-slide-jumps">
               {PLATFORM_LABELS.map((label, i) => (
                 <button
                   key={label}
                   type="button"
-                  className={`btn btn-sm ${carouselIndex === i ? 'btn-outline' : 'btn-ghost'}`}
+                  className="btn btn-sm admin-btn-secondary"
+                  aria-current={carouselIndex === i ? 'true' : undefined}
                   onClick={() => onSelectSlide(i)}
                 >
                   {label}
                 </button>
               ))}
             </div>
-            <CarouselNext className="btn btn-ghost btn-sm" />
+            <CarouselNext className="btn btn-sm admin-btn-secondary" />
           </div>
         </Carousel>
 
         {generatedImageUrl && (
           <div id="brief-post-of-day-actions">
-            <a className="btn btn-primary" href={generatedImageUrl} target="_blank" rel="noreferrer">Open Generator</a>
-            <a className="btn btn-outline" href={generatedImageUrl} download>Download</a>
+            <a className="btn btn-accent" href={generatedImageUrl} target="_blank" rel="noreferrer">Open Generator</a>
+            <a className="btn btn-sm admin-btn-secondary" href={generatedImageUrl} download>Download</a>
           </div>
         )}
       </section>
