@@ -23,36 +23,46 @@ export function LeadFilterBar({
   cap: number | null;
 }) {
   return (
-    <div id="leads-filter-toolbar" className="leads-toolbar">
-      <input
-        id="leads-search-input"
-        className="leads-input"
-        placeholder="Search name, email, dog, neighborhood…"
-        value={query}
-        onChange={(e) => onQueryChange(e.target.value)}
-        style={{ minWidth: 280 }}
-      />
-      <select
-        id="leads-source-select"
-        className="leads-select"
-        value={sourceFilter}
-        onChange={(e) => onSourceFilterChange(e.target.value)}
-      >
-        <option value="all">All sources</option>
-        {sources.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
-      <span id="leads-result-count" className="leads-count">
-        {loading ? 'Loading…' : `${filteredCount} of ${totalCount} lead${totalCount === 1 ? '' : 's'}`}
-      </span>
-      {!loading && cap !== null && totalCount >= cap ? (
-        <div id="leads-cap-notice" className="leads-cap-notice">
-          Showing the most recent {cap} leads. Older leads are not included.
+    <div id="admin-leads-filter-panel" className="card card-pad">
+      <div id="admin-leads-filter-row" className="form-row" style={{ marginBottom: 0 }}>
+        <div className="form-group" id="admin-leads-search-group">
+          <label htmlFor="leads-search-input">Search</label>
+          <input
+            id="leads-search-input"
+            className="form-control"
+            placeholder="Search name, email, dog, neighborhood…"
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+          />
         </div>
-      ) : null}
+        <div className="form-group" id="admin-leads-source-group">
+          <label htmlFor="leads-source-select">Source</label>
+          <select
+            id="leads-source-select"
+            className="form-control form-select"
+            value={sourceFilter}
+            onChange={(e) => onSourceFilterChange(e.target.value)}
+          >
+            <option value="all">All sources</option>
+            {sources.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div id="admin-leads-filter-meta-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
+        <span id="admin-leads-result-count" className="form-note" style={{ margin: 0, textAlign: 'left' }}>
+          {loading ? 'Loading…' : `${filteredCount} of ${totalCount} lead${totalCount === 1 ? '' : 's'}`}
+        </span>
+        {!loading && cap !== null && totalCount >= cap ? (
+          <span id="admin-leads-cap-notice" className="form-note text-terra" style={{ margin: 0, textAlign: 'left' }}>
+            Showing the most recent {cap} leads. Older leads are not included.
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }
