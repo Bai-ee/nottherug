@@ -311,8 +311,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, id, duplicate: true, notifications: existingNotifications });
   }
 
-  console.log('[lead:meetgreet] saved', id);
-
   const notifications = await sendLeadNotifications(lead);
   lead.notifications = notifications;
 
