@@ -34,10 +34,10 @@ export function DashboardHistory({
       <span className="form-note">Swap the dashboard to a prior day</span>
 
       <div id="dashboard-history-run-actions">
-        <button className="btn btn-accent" onClick={() => onRunBrief(true)} disabled={running}>
+        <button className="btn btn-primary btn-accent" onClick={() => onRunBrief(true)} disabled={running}>
           {running ? 'Running Brief…' : 'Run Brief'}
         </button>
-        <button className="btn btn-sm admin-btn-secondary" onClick={() => onRunBrief(false)} disabled={running}>
+        <button className="btn btn-primary btn-sm admin-btn-secondary" onClick={() => onRunBrief(false)} disabled={running}>
           {running ? 'Refreshing…' : 'Use Cached Inputs'}
         </button>
       </div>
@@ -74,7 +74,7 @@ export function DashboardHistory({
                   <div className="rc-label">{truncate(item.scoutPriorityAction ?? item.contentAngle, 70)}</div>
                 </button>
                 <button
-                  className="btn btn-sm admin-btn-secondary"
+                  className="btn btn-primary btn-sm admin-btn-secondary"
                   type="button"
                   onClick={() => onDownloadHtml(item.id)}
                   disabled={downloadingRunId === item.id}

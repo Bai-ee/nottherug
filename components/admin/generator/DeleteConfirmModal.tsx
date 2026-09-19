@@ -28,8 +28,8 @@ export function DeleteConfirmModal({
         <h3 style={{ margin: 0 }}>Delete photo?</h3>
         <p className="form-note" style={{ margin: 0, wordBreak: 'break-all' }}>{fileName}</p>
         <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-          <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onCancel}>Cancel</button>
-          <button type="button" className="btn btn-accent btn-sm" onClick={onConfirm}>Delete</button>
+          <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={onCancel}>Cancel</button>
+          <button type="button" className="btn btn-primary btn-accent btn-sm" onClick={onConfirm}>Delete</button>
         </div>
       </div>
     </div>

@@ -85,10 +85,10 @@ function LeadsPageContent({
       onSignOut={signOut}
       actions={
         <>
-          <button type="button" className="btn btn-sm admin-btn-secondary" id="admin-leads-refresh-btn" onClick={refresh}>Refresh</button>
+          <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" id="admin-leads-refresh-btn" onClick={refresh}>Refresh</button>
           <button
             type="button"
-            className="btn btn-accent btn-sm"
+            className="btn btn-primary btn-accent btn-sm"
             id="admin-leads-export-csv-btn"
             onClick={() => exportLeadsCsv(filtered)}
             disabled={!filtered.length}

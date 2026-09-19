@@ -22,7 +22,7 @@ export function AdminGuard({ children }: { children: (session: ReadySession) => 
     case 'signed-out':
       return (
         <AdminStateScreen id="admin-session-signed-out-shell" label="You're signed out.">
-          <a href="/admin" id="admin-session-signed-out-link" className="btn btn-sm btn-accent">
+          <a href="/admin" id="admin-session-signed-out-link" className="btn btn-primary btn-sm btn-accent">
             Go to sign in →
           </a>
         </AdminStateScreen>
@@ -32,7 +32,7 @@ export function AdminGuard({ children }: { children: (session: ReadySession) => 
       return (
         <AdminStateScreen id="admin-session-expired-shell" label="Your session expired.">
           <p className="form-note">Sign in again to keep working.</p>
-          <a href="/admin" id="admin-session-expired-link" className="btn btn-sm btn-accent">
+          <a href="/admin" id="admin-session-expired-link" className="btn btn-primary btn-sm btn-accent">
             Sign in again →
           </a>
         </AdminStateScreen>
@@ -42,7 +42,7 @@ export function AdminGuard({ children }: { children: (session: ReadySession) => 
       return (
         <AdminStateScreen id="admin-session-forbidden-shell" label="Access denied.">
           <p className="form-note">{state.email} is not on the admin whitelist.</p>
-          <button id="admin-session-forbidden-signout" className="btn btn-sm btn-accent" onClick={() => void signOut()}>
+          <button id="admin-session-forbidden-signout" className="btn btn-primary btn-sm btn-accent" onClick={() => void signOut()}>
             Sign out
           </button>
         </AdminStateScreen>
@@ -52,7 +52,7 @@ export function AdminGuard({ children }: { children: (session: ReadySession) => 
       return (
         <AdminStateScreen id="admin-session-network-error-shell" label="Could not verify admin access.">
           <p className="form-note">{state.message}</p>
-          <button id="admin-session-network-error-retry" className="btn btn-sm btn-accent" onClick={retry}>
+          <button id="admin-session-network-error-retry" className="btn btn-primary btn-sm btn-accent" onClick={retry}>
             Retry
           </button>
         </AdminStateScreen>

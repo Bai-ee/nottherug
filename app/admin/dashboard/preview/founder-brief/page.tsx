@@ -132,7 +132,7 @@ function FounderBriefPreviewPageContent({
             </div>
             <div id="founder-brief-topbar-right">
               <span className="form-note">{email}</span>{' '}
-              <a href="/admin/dashboard" className="btn btn-sm admin-btn-secondary">Back</a>
+              <a href="/admin/dashboard" className="btn btn-primary btn-sm admin-btn-secondary">Back</a>
             </div>
           </div>
 
@@ -144,7 +144,7 @@ function FounderBriefPreviewPageContent({
             <div id="founder-brief-actions-buttons">
               <button
                 type="button"
-                className="btn btn-accent"
+                className="btn btn-primary btn-accent"
                 onClick={() => send({ runFirst: false })}
                 disabled={sending}
               >
@@ -152,7 +152,7 @@ function FounderBriefPreviewPageContent({
               </button>
               <button
                 type="button"
-                className="btn btn-sm admin-btn-secondary"
+                className="btn btn-primary btn-sm admin-btn-secondary"
                 onClick={() => send({ runFirst: true })}
                 disabled={sending}
               >

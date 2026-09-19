@@ -61,7 +61,7 @@ export function GeneratorControls({
             onChange={(e) => onPlacementSizeChange(Number(e.target.value) / 100)}
           />
           <span className="form-note" style={{ margin: 0, minWidth: 32, textAlign: 'right' }}>{Math.round(placement.diameterRatio * 100)}%</span>
-          <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onResetPlacement}>Reset</button>
+          <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={onResetPlacement}>Reset</button>
         </div>
 
         <div id="admin-gen-logo-swatches" style={{ display: 'flex', gap: 16 }}>
@@ -101,7 +101,7 @@ export function GeneratorControls({
             <button
               key={m}
               type="button"
-              className={`btn btn-sm ${sourceMode === m ? 'btn-accent' : 'admin-btn-secondary'}`}
+              className={`btn btn-primary btn-sm ${sourceMode === m ? 'btn-accent' : 'admin-btn-secondary'}`}
               onClick={() => onSourceModeChange(m)}
             >
               {m === 'random' ? 'Random' : 'Selected'}
@@ -122,7 +122,7 @@ export function GeneratorControls({
                 <div className="form-note" style={{ margin: '0 0 3px' }}>Locked</div>
                 <div style={{ fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{randomSource.fileName}</div>
               </div>
-              <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onShuffle}>Shuffle</button>
+              <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={onShuffle}>Shuffle</button>
             </div>
           ) : (
             <p className="form-note" style={{ margin: 0 }}>Picking…</p>

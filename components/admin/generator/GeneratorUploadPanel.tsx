@@ -102,8 +102,8 @@ export function GeneratorUploadPanel({
         <div id="admin-gen-delete-err" style={{ marginBottom: 12 }}>
           <p className="form-note text-terra" style={{ margin: 0 }}>Could not delete {deleteError.fileName}: {deleteError.message}</p>
           <div style={{ display: 'flex', gap: 8, marginTop: 8, justifyContent: 'center' }}>
-            <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onRetryDelete}>Retry</button>
-            <button type="button" className="btn btn-sm admin-btn-secondary" onClick={onDismissDeleteError}>Dismiss</button>
+            <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={onRetryDelete}>Retry</button>
+            <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={onDismissDeleteError}>Dismiss</button>
           </div>
         </div>
       )}
@@ -137,7 +137,7 @@ export function GeneratorUploadPanel({
                   />
                   <button
                     type="button"
-                    className="btn btn-sm admin-btn-secondary"
+                    className="btn btn-primary btn-sm admin-btn-secondary"
                     onClick={(e) => { e.stopPropagation(); onRequestDelete(u); }}
                     style={{ position: 'absolute', top: 4, right: 4, padding: '2px 8px' }}
                   >✕</button>
@@ -146,7 +146,7 @@ export function GeneratorUploadPanel({
             })}
           </div>
           {visibleCount < uploads.length && (
-            <button type="button" className="btn btn-sm admin-btn-secondary" id="admin-gen-load-more" style={{ width: '100%', marginTop: 12, justifyContent: 'center' }} onClick={onShowMore}>
+            <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" id="admin-gen-load-more" style={{ width: '100%', marginTop: 12, justifyContent: 'center' }} onClick={onShowMore}>
               Load more ({uploads.length - visibleCount} remaining)
             </button>
           )}

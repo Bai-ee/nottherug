@@ -53,7 +53,7 @@ export function AdminShell({
               <button
                 type="button"
                 id="admin-page-header-signout"
-                className="btn btn-ghost btn-sm"
+                className="btn btn-primary btn-sm admin-btn-secondary"
                 onClick={() => void onSignOut()}
               >
                 Sign Out

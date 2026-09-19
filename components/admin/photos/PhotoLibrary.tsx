@@ -68,7 +68,7 @@ export function PhotoLibrary({
           <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 8 }}>
             <button
               type="button"
-              className="btn btn-sm admin-btn-secondary"
+              className="btn btn-primary btn-sm admin-btn-secondary"
               onClick={(e) => { e.stopPropagation(); onDelete(u); }}
             >
               {deleteErrors[u.id] ? 'Retry delete' : 'Delete'}

@@ -38,7 +38,7 @@ export function RenderedGallery({
 
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, paddingTop: 10 }}>
             <a
-              className="btn btn-sm admin-btn-secondary"
+              className="btn btn-primary btn-sm admin-btn-secondary"
               href={r.renderDownloadURL}
               download={`render-${r.id}.jpg`}
               target="_blank"
@@ -46,8 +46,8 @@ export function RenderedGallery({
             >
               Download
             </a>
-            <button type="button" className="btn btn-sm admin-btn-secondary" onClick={() => onReRender(r)}>Re-render</button>
-            <button type="button" className="btn btn-sm admin-btn-secondary" onClick={() => onDelete(r)}>
+            <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={() => onReRender(r)}>Re-render</button>
+            <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={() => onDelete(r)}>
               {deleteErrors[r.id] ? 'Retry delete' : 'Delete'}
             </button>
           </div>
