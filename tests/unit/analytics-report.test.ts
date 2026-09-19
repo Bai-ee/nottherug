@@ -149,11 +149,13 @@ describe('getAnalyticsReport', () => {
     expect(report.ctaClicks.every((r) => r.cta !== 'closing_trust_book' ? r.clicks === 0 : true)).toBe(true);
 
     expect(report.funnel.formStarts).toBe(2);
+    // Rows follow BOOKING_STEPS: details → dog → review → schedule, because
+    // the scheduler opens only after the questionnaire is submitted.
     expect(report.funnel.steps).toEqual([
       { step: 'details', sessions: 2 },
       { step: 'dog', sessions: 1 },
-      { step: 'schedule', sessions: 1 },
       { step: 'review', sessions: 2 },
+      { step: 'schedule', sessions: 1 },
     ]);
     expect(report.funnel.dialogOpened).toBe(1);
     expect(report.funnel.phoneConsultPath).toBe(1); // sess-b
@@ -188,6 +190,52 @@ describe('getAnalyticsReport', () => {
     const test = await getAnalyticsReport('today', { now, includeTest: true });
     expect(test.pageviews).toBe(1);
     expect(test.meta.testMode).toBe(true);
+  });
+
+  it('never puts the real leads total in a test-mode report', async () => {
+    const fixtures: RawDoc[] = [
+      ev({ id: 'test-1', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z', mode: 'test' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
+    fsQueryRangeCount.mockImplementation(countQueryMock(7));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const now = new Date('2026-01-15T18:00:00.000Z');
+
+    // Leads carry no mode field, so a test-mode view reports "not measured"
+    // rather than the real business total under a test-data banner.
+    const test = await getAnalyticsReport('today', { now, includeTest: true });
+    expect(test.inquiries).toBeNull();
+    expect(test.meta.degraded).toEqual([]); // null here means not measured, not a failure
+    expect(fsQueryRangeCount).not.toHaveBeenCalled();
+
+    // The tracked-cohort inquiry rate is event-derived, so it still applies.
+    expect(test.inquiryRate.trackedSessions).toBe(1);
+
+    const real = await getAnalyticsReport('today', { now });
+    expect(real.inquiries).toBe(7);
+  });
+
+  it('never reports no_data_yet while the range actually has events', async () => {
+    // The earliest-events sample is read across both modes and filtered after
+    // the fact, so 25+ older real events hide every test event from it and
+    // trackingStartDate comes back null in test mode. The status must still
+    // follow the data in range.
+    const fixtures: RawDoc[] = [
+      ...Array.from({ length: 30 }, (_, i) =>
+        ev({ id: `old-${i}`, sid: `sess-old-${i}`, event: 'page_view', receivedAt: `2025-01-01T00:00:${String(i).padStart(2, '0')}.000Z` })
+      ),
+      ev({ id: 'test-1', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z', mode: 'test' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
+    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z'), includeTest: true });
+
+    expect(report.pageviews).toBe(1);
+    expect(report.meta.trackingStartDate).toBeNull();
+    expect(report.meta.status).toBe('ok'); // never 'no_data_yet' above a non-zero tile
   });
 
   it('builds the page table from page_view events only, counting distinct sessions per route', async () => {

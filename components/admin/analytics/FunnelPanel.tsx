@@ -12,6 +12,12 @@ function humanizeStep(step: string): string {
  * phone-consultation path, which is a completed inquiry, not abandonment.
  * That is why phoneConsultPath is shown as its own row rather than folded
  * into a drop-off count.
+ *
+ * These rows are also not a strict cascade, and the notes under the table say
+ * so plainly rather than letting the owner read a bigger number below a
+ * smaller one as a tracking bug (docs/analytics-operations.md explains the
+ * same two cases). Row order follows BOOKING_STEPS from
+ * lib/analytics/events.ts — the contract order, never a local re-sort.
  */
 export function FunnelPanel({ funnel }: { funnel: BookingFunnel }) {
   return (
@@ -22,7 +28,7 @@ export function FunnelPanel({ funnel }: { funnel: BookingFunnel }) {
       <div className="analytics-panel-body">
         <table className="analytics-table">
           <thead>
-            <tr><th>Step</th><th className="analytics-table-num">Sessions</th></tr>
+            <tr><th>Step</th><th className="analytics-table-num">Visits</th></tr>
           </thead>
           <tbody>
             <tr>
@@ -49,6 +55,17 @@ export function FunnelPanel({ funnel }: { funnel: BookingFunnel }) {
             </tr>
           </tbody>
         </table>
+
+        <div className="analytics-note-block">
+          <div className="analytics-note">
+            Form Started also counts the short form on the home page, which has no question steps of its own, so it is
+            normally higher than the step rows below it.
+          </div>
+          <div className="analytics-note">
+            Scheduling Dialog Opened also counts people who picked a time straight from the welcome pop-up without
+            answering the questions, so it can be higher than the step above it.
+          </div>
+        </div>
       </div>
     </section>
   );

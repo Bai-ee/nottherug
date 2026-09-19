@@ -36,7 +36,7 @@ export function PageTable({ pages }: { pages: PageRow[] }) {
               <tr>
                 <th>Page</th>
                 <th className="analytics-table-num">Views</th>
-                <th className="analytics-table-num">Sessions</th>
+                <th className="analytics-table-num">Visits</th>
               </tr>
             </thead>
             <tbody>
@@ -54,8 +54,9 @@ export function PageTable({ pages }: { pages: PageRow[] }) {
         )}
       </div>
       <div className="analytics-note">
-        Sessions counts visits that reached each page, so the column adds up to more than total visits when one visit
-        reads several pages.
+        Visits counts the visits that reached each page, so that column adds up to more than the total visits when one
+        visit reads several pages. Views only covers the pages listed above, so it can add up to less than the page
+        views total — a view of any other address is recorded without a page name and gets no row here.
       </div>
     </section>
   );

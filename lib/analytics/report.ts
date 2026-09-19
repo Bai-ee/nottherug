@@ -163,7 +163,17 @@ export interface AnalyticsReport {
   meta: AnalyticsReportMeta;
   range: RangeWindow;
 
-  /** Authoritative saved-lead count for the range, from the leads collection — never the client lead_saved event. Null only when the leads query itself failed (see meta.degraded). */
+  /**
+   * Authoritative saved-lead count for the range, from the leads collection —
+   * never the client lead_saved event.
+   *
+   * Null in exactly two cases the UI must tell apart:
+   *  - the leads query failed (meta.degraded includes 'leads');
+   *  - this is a test-mode report (meta.testMode). Leads carry no mode field,
+   *    so real inquiries cannot be split out of a test-mode view, and showing
+   *    the real total under a "not real business data" banner would be a lie.
+   *    Not measured is the only honest answer there.
+   */
   inquiries: number | null;
   inquiryRate: InquiryRateInfo;
 
@@ -522,8 +532,16 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
   // Leads (authoritative inquiries) and events (everything else) are
   // independent dependencies. One failing must not blank out the other —
   // that is what meta.degraded communicates instead of a bare 500.
+  // The leads collection has no mode field: every lead in it is a real
+  // inquiry. A test-mode report therefore does not query it at all and
+  // reports `inquiries: null` (= not measured), rather than putting the real
+  // business total on a page labelled "not real business data".
+  const leadsQuery = includeTest
+    ? Promise.resolve<number | null>(null)
+    : fsQueryRangeCount('leads', 'submittedAt', window.startIso, window.endIso);
+
   const [leadsResult, eventsResult, liveResult, earliestResult] = await Promise.allSettled([
-    fsQueryRangeCount('leads', 'submittedAt', window.startIso, window.endIso),
+    leadsQuery,
     fetchRangeEvents(window.startIso, window.endIso, EVENTS_QUERY_LIMIT[range], includeTest),
     fetchLive(now, includeTest),
     fetchTrackingStartDate(includeTest),
@@ -570,11 +588,18 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
   const dayWindows = buildDayWindows(shiftLabel(todayLabel, -(window.days - 1)), window.days);
   const dailyTrend = bucketDailyTrend(events, dayWindows);
 
+  // Order matters. The range's own events decide 'ok' BEFORE trackingStartDate
+  // is consulted, so the status can never contradict the numbers on screen:
+  // trackingStartDate comes from a small earliest-events sample that is
+  // filtered by mode after it is read (fsQueryRange takes no equality filter),
+  // so it can come back null while this mode plainly has events in range —
+  // which used to render "no events have ever been recorded" above non-zero
+  // tiles. Events in range now always mean 'ok'.
   let status: ReportStatus;
   if (degraded.length > 0) status = 'partial_failure';
+  else if (events.length > 0) status = 'ok';
   else if (trackingStartDate === null) status = 'no_data_yet';
-  else if (events.length === 0) status = 'zero_activity';
-  else status = 'ok';
+  else status = 'zero_activity';
 
   return {
     meta: {

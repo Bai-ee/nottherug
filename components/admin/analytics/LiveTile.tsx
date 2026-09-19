@@ -22,11 +22,11 @@ export function LiveTile({ live }: { live: LiveTileData }) {
       <div className="analytics-live-row">
         <div>
           <div className="analytics-secondary-number">{live.sessions.toLocaleString('en-US')}</div>
-          <div className="analytics-note">sessions</div>
+          <div className="analytics-note">visits</div>
         </div>
         <div>
           <div className="analytics-secondary-number">{live.pageviews.toLocaleString('en-US')}</div>
-          <div className="analytics-note">pageviews</div>
+          <div className="analytics-note">page views</div>
         </div>
       </div>
       <div className="analytics-note">{asOf ? `As of ${asOf} ET · reload the page to update` : 'Reload the page to update'}</div>

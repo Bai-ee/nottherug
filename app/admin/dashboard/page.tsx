@@ -60,6 +60,13 @@ function AdminAnalyticsDashboardContent({
   const abortSignal = useAbortSignal();
 
   useEffect(() => {
+    // Cancellation flag: when the range or the data mode changes mid-flight,
+    // the superseded request must not write any state. Without it, a late
+    // response could land after the new request started and leave the page
+    // with loading already false, no banner, and a fresh "last refreshed"
+    // stamp above a report the render below then discards for mode mismatch —
+    // a silent all-zero dashboard. The replacement effect run owns loading.
+    let cancelled = false;
     setLoading(true);
     setError('');
     (async () => {
@@ -71,15 +78,19 @@ function AdminAnalyticsDashboardContent({
           getToken,
           { cache: 'no-store', signal: abortSignal },
         );
+        if (cancelled) return;
         setReport(data);
         setLastRefreshed(new Date());
       } catch (err) {
-        if (isAbortError(err)) return;
+        if (cancelled || isAbortError(err)) return;
         setError(err instanceof Error ? err.message : 'Could not load analytics.');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [range, testMode, getToken, abortSignal, retryKey]);
 
   const retry = useCallback(() => setRetryKey((k) => k + 1), []);
@@ -128,6 +139,7 @@ function AdminAnalyticsDashboardContent({
             inquiries={view.inquiries}
             inquiryRate={view.inquiryRate}
             degraded={degradedLeads}
+            testMode={testMode}
           />
 
           <LiveTile live={view.live} />
