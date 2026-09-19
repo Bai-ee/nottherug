@@ -838,6 +838,7 @@ export default function ServiceCardsPlayground() {
   return (
     <div id="page-home" style={{ position: "relative", zIndex: 0, minHeight: "100vh", display: "flex", flexDirection: "row", background: "var(--cream)" }}>
       {settings.pageBg.enabled && (
+        // eslint-disable-next-line @next/next/no-img-element -- dev-only playground page, position controlled by tuner sliders
         <img
           id="service-cards-page-background"
           src="/img/product_background.png"
@@ -938,6 +939,7 @@ export default function ServiceCardsPlayground() {
                 }}
               >
                 {settings.cardBg.enabled && (
+                  // eslint-disable-next-line @next/next/no-img-element -- dev-only playground page, animation-controlled (GSAP opacity/scale/rotation)
                   <img
                     id={`service-card-bg-${i}`}
                     src="/img/card_bg.png"
@@ -971,6 +973,7 @@ export default function ServiceCardsPlayground() {
                     background: "var(--warm-white)",
                   }}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- dev-only playground page, animation-controlled (GSAP ref transform) */}
                   <img
                     id={`service-card-bottom-layer-${i}`}
                     ref={(el) => { bottomRefs.current[i] = el; }}
@@ -985,6 +988,7 @@ export default function ServiceCardsPlayground() {
                       willChange: "transform",
                     }}
                   />
+                  {/* eslint-disable-next-line @next/next/no-img-element -- dev-only playground page, animation-controlled (GSAP ref transform) */}
                   <img
                     id={`service-card-top-layer-${i}`}
                     ref={(el) => { topRefs.current[i] = el; }}

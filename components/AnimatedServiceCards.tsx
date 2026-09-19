@@ -715,6 +715,11 @@ function stopIndexAt(st: CareScrollTrigger, scrollY: number): number {
   return Math.round(progress * (STOP_COUNT - 1));
 }
 
+// Only reachable from app/playground/service-cards/PersonalizedCareCarouselExperiment.tsx
+// (a dev-gated route — see that file). Its native <img> elements below are
+// each driven by a GSAP ref (x/y/scale/rotation tweens keyed to hover), which
+// next/image's own layout would fight; documented local exceptions rather
+// than a next/image swap.
 export default function AnimatedServiceCards() {
   // Seeded from localStorage via useSyncExternalStore (see
   // getStoredSettingsSnapshot/getServerSettingsSnapshot above): the server
@@ -980,6 +985,7 @@ export default function AnimatedServiceCards() {
             onClick={goToServices}
             style={{ cursor: "pointer" }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element -- dev-only playground component, decorative icon */}
             <div className="service-icon-badge" aria-hidden="true"><img src={card.icon} alt="" loading="lazy" /></div>
             <h3>{card.title}</h3>
             <p>{card.copy}</p>
@@ -1053,6 +1059,7 @@ export default function AnimatedServiceCards() {
               }}
             >
               {settings.cardBg.enabled && (
+                // eslint-disable-next-line @next/next/no-img-element -- dev-only playground component, animation-controlled (GSAP opacity/scale/rotation)
                 <img
                   id={`home-product-card-bg-${i}`}
                   src="/img/card_bg.png"
@@ -1081,6 +1088,7 @@ export default function AnimatedServiceCards() {
                     background: "var(--warm-white)",
                   }}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- dev-only playground component, animation-controlled (GSAP ref transform) */}
                   <img
                     id={`home-product-card-bottom-layer-${i}`}
                     ref={(el) => { bottomRefs.current[i] = el; }}
@@ -1092,6 +1100,7 @@ export default function AnimatedServiceCards() {
                       willChange: "transform",
                     }}
                   />
+                  {/* eslint-disable-next-line @next/next/no-img-element -- dev-only playground component, animation-controlled (GSAP ref transform) */}
                   <img
                     id={`home-product-card-top-layer-${i}`}
                     ref={(el) => { topRefs.current[i] = el; }}
