@@ -13,7 +13,15 @@ import { PHONE_HREF, EMAIL_HREF } from '@/lib/content/contact';
 
 vi.mock('@/lib/analytics/track', () => ({ track: vi.fn() }));
 
-type AnyElement = ReactElement<any>;
+/** Only the CTA-relevant props these tests read; avoids `any` while still
+ *  letting findByType walk an arbitrary element tree. */
+type CtaElementProps = {
+  cta?: string;
+  href?: string;
+  id?: string;
+  children?: ReactNode;
+};
+type AnyElement = ReactElement<CtaElementProps>;
 
 function findByType(node: ReactNode, type: unknown, out: AnyElement[] = []): AnyElement[] {
   if (node === null || node === undefined || typeof node !== 'object') return out;
@@ -44,11 +52,13 @@ describe('ContactInfoCard CTA wiring', () => {
     const email = anchors.filter((el) => el.props.cta === 'contact_email');
 
     expect(phone).toHaveLength(1);
-    expect(phone[0].props.href).toBe(PHONE_HREF);
-    expect(phone[0].props.href.startsWith('tel:')).toBe(true);
+    const phoneHref = phone[0]?.props.href;
+    expect(phoneHref).toBe(PHONE_HREF);
+    expect(phoneHref?.startsWith('tel:')).toBe(true);
 
     expect(email).toHaveLength(1);
-    expect(email[0].props.href).toBe(EMAIL_HREF);
-    expect(email[0].props.href.startsWith('mailto:')).toBe(true);
+    const emailHref = email[0]?.props.href;
+    expect(emailHref).toBe(EMAIL_HREF);
+    expect(emailHref?.startsWith('mailto:')).toBe(true);
   });
 });
