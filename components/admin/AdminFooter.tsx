@@ -17,8 +17,10 @@ export function AdminFooter({ lastRefreshed }: { lastRefreshed?: Date | null }) 
   const value = lastRefreshed ? `${REFRESH_TIME_FORMAT.format(lastRefreshed)} ET` : 'not refreshed yet';
   return (
     <footer id="admin-chrome-footer">
-      <span>Last data refresh</span>
-      <span className="admin-chrome-footer-value">{value}</span>
+      <div className="container">
+        <span className="stamp-label">Last data refresh</span>
+        <span id="admin-chrome-footer-value" className="form-note">{value}</span>
+      </div>
     </footer>
   );
 }
