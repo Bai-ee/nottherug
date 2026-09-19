@@ -4,6 +4,10 @@ import type { RefObject } from 'react';
 
 export type UploadPhase = 'idle' | 'uploading' | 'success' | 'error';
 
+/** Upload dropzone — a marketing `.card` acting as the drop target, with the
+ * paper-ticket `.btn-primary` for the file picker. Drag-over feedback and the
+ * progress meter reuse existing tokens (var(--sage), var(--light-gray)) via
+ * inline layout styles rather than new CSS. */
 export function PhotoUploadPanel({
   fileInputRef,
   dragOver,
@@ -33,17 +37,27 @@ export function PhotoUploadPanel({
     <>
       <div
         id="admin-photos-upload-zone"
-        className={`ph-upload-zone${dragOver ? ' ph-upload-zone-drag' : ''}`}
+        className="card card-pad card-hover"
         onClick={() => !isUploading && onChooseClick()}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 12,
+          textAlign: 'center',
+          cursor: isUploading ? 'default' : 'pointer',
+          outline: dragOver ? '2px solid var(--sage)' : undefined,
+          outlineOffset: dragOver ? -4 : undefined,
+        }}
       >
-        <div className="ph-upload-zone-icon">[↑]</div>
-        <div className="ph-upload-zone-label">Tap to choose from camera roll or drag an image</div>
-        <div className="ph-upload-zone-hint">JPEG · PNG · HEIC · camera library supported</div>
+        <p className="label" style={{ margin: 0 }}>Tap to choose from camera roll or drag an image</p>
+        <p className="form-note" style={{ margin: 0 }}>JPEG · PNG · HEIC · camera library supported</p>
         <button
-          className="ph-btn"
+          type="button"
+          className="btn btn-primary btn-sm"
           disabled={isUploading}
           onClick={(e) => { e.stopPropagation(); onChooseClick(); }}
         >
@@ -51,25 +65,29 @@ export function PhotoUploadPanel({
         </button>
 
         {uploadPhase === 'uploading' && (
-          <div style={{ width: '100%', maxWidth: 320 }}>
-            <div className="ph-progress-bar-shell">
-              <div className="ph-progress-bar-fill" style={{ width: `${uploadProgress}%` }} />
+          <div id="admin-photos-upload-progress" style={{ width: '100%', maxWidth: 320 }}>
+            <div id="admin-photos-upload-progress-shell" style={{ width: '100%', height: 4, background: 'var(--light-gray)', overflow: 'hidden' }}>
+              <div
+                id="admin-photos-upload-progress-fill"
+                style={{ width: `${uploadProgress}%`, height: '100%', background: 'var(--sage-dark)', transition: 'width 200ms' }}
+              />
             </div>
-            <div className="ph-progress-label">Uploading…</div>
+            <p className="form-note" style={{ marginTop: 8 }}>Uploading…</p>
           </div>
         )}
       </div>
 
       <input
         ref={fileInputRef}
-        className="ph-upload-input"
+        id="admin-photos-upload-input"
+        style={{ display: 'none' }}
         type="file"
         accept="image/*"
         onChange={onFileChange}
       />
 
-      {uploadPhase === 'success' && <div className="ph-status-ok" id="admin-photos-upload-success">{uploadMsg}</div>}
-      {uploadPhase === 'error' && <div className="ph-status-err" id="admin-photos-upload-error">Error: {uploadMsg}</div>}
+      {uploadPhase === 'success' && <p className="form-note text-sage" id="admin-photos-upload-success">{uploadMsg}</p>}
+      {uploadPhase === 'error' && <p className="form-note text-terra" id="admin-photos-upload-error">Error: {uploadMsg}</p>}
     </>
   );
 }

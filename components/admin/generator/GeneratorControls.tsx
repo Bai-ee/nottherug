@@ -10,6 +10,11 @@ import type { PhotoUpload } from '@/lib/photos/types';
 
 type SourceMode = 'random' | 'selected';
 
+/** Logo + source controls. Two `.card card-pad` sections side by side on
+ * desktop (see #admin-gen-controls-grid in the parent page), stacked on
+ * mobile. Source mode is a two-button toggle (`.btn-primary` / `.btn-outline`)
+ * rather than a custom segmented control — no such control exists in the
+ * allowed vocabulary. */
 export function GeneratorControls({
   placement,
   onPlacementSizeChange,
@@ -40,100 +45,124 @@ export function GeneratorControls({
   onSelectUpload: (id: string) => void;
 }) {
   return (
-    <div className="ed-controls-panel" id="admin-gen-controls-panel">
-      <div className="ed-controls-grid" id="admin-gen-controls-grid">
+    <div id="admin-gen-controls-grid">
 
-        <div className="ed-section" id="admin-gen-section-logo">
-          <div className="ed-size-row" id="admin-gen-size-row">
-            <span className="ed-size-lbl">Size</span>
-            <input
-              id="admin-gen-size-slider"
-              type="range"
-              min={5} max={60} step={1}
-              value={Math.round(placement.diameterRatio * 100)}
-              className="ed-size-range"
-              onChange={(e) => onPlacementSizeChange(Number(e.target.value) / 100)}
-            />
-            <span className="ed-size-val">{Math.round(placement.diameterRatio * 100)}%</span>
-            <button className="ed-reset-btn" onClick={onResetPlacement}>Reset</button>
-          </div>
+      <div className="card card-pad" id="admin-gen-section-logo">
+        <div className="stamp-label stamp-label-heading">Logo</div>
 
-          <div className="ed-logo-swatches" id="admin-gen-logo-swatches">
-            {LOGO_ASSET_ORDER.map((key) => {
-              const l = LOGO_ASSETS[key];
-              return (
-                <div
-                  key={key}
-                  className={`ed-logo-swatch${logoAsset === key ? ' ed-logo-swatch-active' : ''}`}
-                  onClick={() => onSelectLogo(key)}
-                >
-                  <div className="ed-logo-ring">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={l.previewSrc} alt={l.label} />
-                  </div>
-                  <div className="ed-logo-name">{l.label}</div>
-                </div>
-              );
-            })}
-          </div>
+        <div id="admin-gen-size-row" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+          <span className="form-note" style={{ margin: 0 }}>Size</span>
+          <input
+            id="admin-gen-size-slider"
+            type="range"
+            min={5} max={60} step={1}
+            value={Math.round(placement.diameterRatio * 100)}
+            style={{ flex: 1 }}
+            onChange={(e) => onPlacementSizeChange(Number(e.target.value) / 100)}
+          />
+          <span className="form-note" style={{ margin: 0, minWidth: 32, textAlign: 'right' }}>{Math.round(placement.diameterRatio * 100)}%</span>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={onResetPlacement}>Reset</button>
         </div>
 
-        <div className="ed-section" id="admin-gen-section-source">
-          <div className="ed-seg" id="admin-gen-source-seg">
-            {(['random', 'selected'] as SourceMode[]).map((m) => (
-              <button
-                key={m}
-                className={`ed-seg-btn${sourceMode === m ? ' ed-seg-btn-active' : ''}`}
-                onClick={() => onSourceModeChange(m)}
+        <div id="admin-gen-logo-swatches" style={{ display: 'flex', gap: 16 }}>
+          {LOGO_ASSET_ORDER.map((key) => {
+            const l = LOGO_ASSETS[key];
+            const isActive = logoAsset === key;
+            return (
+              <div
+                key={key}
+                onClick={() => onSelectLogo(key)}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7, cursor: 'pointer' }}
               >
-                {m}
-              </button>
-            ))}
-          </div>
-
-          {sourceMode === 'random' && (
-            uploads.length === 0 ? (
-              <div className="ed-empty">No uploads yet</div>
-            ) : randomSource ? (
-              <div className="ed-random-row" id="admin-gen-random-row">
-                <div className="ed-random-img">
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    border: isActive ? '2px solid var(--sage-dark)' : '2px solid var(--light-gray)',
+                  }}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={randomSource.downloadURL} alt={randomSource.fileName} />
+                  <img src={l.previewSrc} alt={l.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 </div>
-                <div className="ed-random-info">
-                  <div className="ed-random-lock">Locked</div>
-                  <div className="ed-random-file">{randomSource.fileName}</div>
-                </div>
-                <button className="ed-shuffle-btn" onClick={onShuffle}>Shuffle</button>
+                <span className="form-note" style={{ margin: 0 }}>{l.label}</span>
               </div>
-            ) : (
-              <div className="ed-empty">Picking…</div>
-            )
-          )}
+            );
+          })}
+        </div>
+      </div>
 
-          {sourceMode === 'selected' && (
-            !uploadsLoaded ? (
-              <div className="ed-empty">Loading…</div>
-            ) : uploads.length === 0 ? (
-              <div className="ed-empty">No uploads yet</div>
-            ) : (
-              <div className="ed-media-tray" id="admin-gen-media-tray">
-                {uploads.map((u) => (
+      <div className="card card-pad" id="admin-gen-section-source">
+        <div className="stamp-label stamp-label-heading">Source</div>
+
+        <div id="admin-gen-source-seg" style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          {(['random', 'selected'] as SourceMode[]).map((m) => (
+            <button
+              key={m}
+              type="button"
+              className={`btn btn-sm ${sourceMode === m ? 'btn-primary' : 'btn-outline'}`}
+              onClick={() => onSourceModeChange(m)}
+            >
+              {m === 'random' ? 'Random' : 'Selected'}
+            </button>
+          ))}
+        </div>
+
+        {sourceMode === 'random' && (
+          uploads.length === 0 ? (
+            <p className="form-note" style={{ margin: 0 }}>No uploads yet</p>
+          ) : randomSource ? (
+            <div id="admin-gen-random-row" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 52, height: 52, overflow: 'hidden', flexShrink: 0 }} className="card">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={randomSource.downloadURL} alt={randomSource.fileName} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="form-note" style={{ margin: '0 0 3px' }}>Locked</div>
+                <div style={{ fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{randomSource.fileName}</div>
+              </div>
+              <button type="button" className="btn btn-ghost btn-sm" onClick={onShuffle}>Shuffle</button>
+            </div>
+          ) : (
+            <p className="form-note" style={{ margin: 0 }}>Picking…</p>
+          )
+        )}
+
+        {sourceMode === 'selected' && (
+          !uploadsLoaded ? (
+            <p className="form-note" style={{ margin: 0 }}>Loading…</p>
+          ) : uploads.length === 0 ? (
+            <p className="form-note" style={{ margin: 0 }}>No uploads yet</p>
+          ) : (
+            <div id="admin-gen-media-tray" style={{ display: 'flex', gap: 8, overflowX: 'auto' }}>
+              {uploads.map((u) => {
+                const isActive = selectedUploadId === u.id;
+                return (
                   <div
                     key={u.id}
-                    className={`ed-media-item${selectedUploadId === u.id ? ' ed-media-item-active' : ''}`}
                     onClick={() => onSelectUpload(u.id)}
+                    style={{
+                      width: 60,
+                      height: 60,
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      flexShrink: 0,
+                      outline: isActive ? '2px solid var(--sage-dark)' : undefined,
+                      outlineOffset: isActive ? -2 : undefined,
+                    }}
+                    className="card"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={u.downloadURL} alt={u.fileName} />
+                    <img src={u.downloadURL} alt={u.fileName} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   </div>
-                ))}
-              </div>
-            )
-          )}
-        </div>
-
+                );
+              })}
+            </div>
+          )
+        )}
       </div>
+
     </div>
   );
 }

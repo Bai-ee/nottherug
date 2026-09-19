@@ -4,6 +4,8 @@ import type { LogoAsset } from '@/app/api/admin/photos/assets/route';
 
 export type RenderPhase = 'idle' | 'rendering' | 'success' | 'error';
 
+/** Render options panel: logo picker + placement fields inside a marketing
+ * `.card card-pad`, numeric inputs as `.form-control` in `.form-group`s. */
 export function RenderControls({
   logos,
   selectedLogoPath,
@@ -38,67 +40,85 @@ export function RenderControls({
   renderMsg: string;
 }) {
   return (
-    <div className="ph-render-panel" id="admin-photos-render-panel">
-      <div className="ph-field-group" id="admin-photos-logo-selector">
-        <div className="ph-field-label">Select Logo</div>
+    <div className="card card-pad" id="admin-photos-render-panel">
+      <div className="form-group" id="admin-photos-logo-selector">
+        <div className="stamp-label">Select Logo</div>
         {logos.length === 0 ? (
-          <div className="ph-no-logos">No logos in storage. Upload files to photos/logos/ in Firebase Storage.</div>
+          <p className="form-note" id="admin-photos-no-logos">No logos in storage. Upload files to photos/logos/ in Firebase Storage.</p>
         ) : (
-          <div className="ph-logo-grid">
+          <div className="grid-4" id="admin-photos-logo-grid">
             {logos.map((l) => (
               <div
                 key={l.storagePath}
-                className={`ph-logo-item${selectedLogoPath === l.storagePath ? ' ph-logo-item-selected' : ''}`}
+                className="card"
                 onClick={() => onSelectLogo(l.storagePath)}
+                style={{
+                  cursor: 'pointer',
+                  padding: 8,
+                  textAlign: 'center',
+                  outline: selectedLogoPath === l.storagePath ? '2px solid var(--sage)' : undefined,
+                  outlineOffset: selectedLogoPath === l.storagePath ? -2 : undefined,
+                }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="ph-logo-img" src={l.downloadURL} alt={l.name} />
-                <div className="ph-logo-name">{l.name}</div>
+                <img
+                  src={l.downloadURL}
+                  alt={l.name}
+                  style={{ width: '100%', aspectRatio: '1', objectFit: 'contain', display: 'block' }}
+                />
+                <p className="form-note" style={{ margin: '6px 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {l.name}
+                </p>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <div className="ph-field-group" id="admin-photos-placement-controls">
-        <div className="ph-field-label">Logo Placement</div>
-        <div className="ph-controls-grid">
-          <div className="ph-control">
-            <label className="ph-field-label" htmlFor="ph-x">X (px)</label>
-            <input id="ph-x" className="ph-control-input" type="number" value={placementX} onChange={(e) => onPlacementChange('x', Number(e.target.value))} />
+      <div className="form-group" id="admin-photos-placement-controls" style={{ marginTop: 24 }}>
+        <div className="stamp-label">Logo Placement</div>
+        <div className="grid-3" id="admin-photos-placement-grid">
+          <div className="form-group">
+            <label htmlFor="ph-x">X (px)</label>
+            <input id="ph-x" className="form-control" type="number" value={placementX} onChange={(e) => onPlacementChange('x', Number(e.target.value))} />
           </div>
-          <div className="ph-control">
-            <label className="ph-field-label" htmlFor="ph-y">Y (px)</label>
-            <input id="ph-y" className="ph-control-input" type="number" value={placementY} onChange={(e) => onPlacementChange('y', Number(e.target.value))} />
+          <div className="form-group">
+            <label htmlFor="ph-y">Y (px)</label>
+            <input id="ph-y" className="form-control" type="number" value={placementY} onChange={(e) => onPlacementChange('y', Number(e.target.value))} />
           </div>
-          <div className="ph-control">
-            <label className="ph-field-label" htmlFor="ph-w">Width (px)</label>
-            <input id="ph-w" className="ph-control-input" type="number" value={placementW} onChange={(e) => onPlacementChange('w', Number(e.target.value))} />
+          <div className="form-group">
+            <label htmlFor="ph-w">Width (px)</label>
+            <input id="ph-w" className="form-control" type="number" value={placementW} onChange={(e) => onPlacementChange('w', Number(e.target.value))} />
           </div>
-          <div className="ph-control">
-            <label className="ph-field-label" htmlFor="ph-h">Height (px)</label>
-            <input id="ph-h" className="ph-control-input" type="number" value={placementH} onChange={(e) => onPlacementChange('h', Number(e.target.value))} />
+          <div className="form-group">
+            <label htmlFor="ph-h">Height (px)</label>
+            <input id="ph-h" className="form-control" type="number" value={placementH} onChange={(e) => onPlacementChange('h', Number(e.target.value))} />
           </div>
-          <div className="ph-control">
-            <label className="ph-field-label" htmlFor="ph-op">Opacity (0–1)</label>
-            <input id="ph-op" className="ph-control-input" type="number" min={0} max={1} step={0.05} value={placementOpacity} onChange={(e) => onPlacementChange('opacity', Number(e.target.value))} />
+          <div className="form-group">
+            <label htmlFor="ph-op">Opacity (0–1)</label>
+            <input
+              id="ph-op"
+              className="form-control"
+              type="number"
+              min={0}
+              max={1}
+              step={0.05}
+              value={placementOpacity}
+              onChange={(e) => onPlacementChange('opacity', Number(e.target.value))}
+            />
           </div>
         </div>
       </div>
 
-      <div className="ph-render-actions" id="admin-photos-render-actions">
-        <button className="ph-btn" disabled={!canRender} onClick={onRender}>
+      <div id="admin-photos-render-actions" style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginTop: 24 }}>
+        <button type="button" className="btn btn-primary" disabled={!canRender} onClick={onRender}>
           {isRendering ? 'Rendering…' : 'Render'}
         </button>
-        {sourceFileName && (
-          <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '10px', color: '#4E5A42' }}>
-            Source: {sourceFileName}
-          </span>
-        )}
+        {sourceFileName && <span className="form-note" style={{ margin: 0 }}>Source: {sourceFileName}</span>}
       </div>
 
-      {renderPhase === 'success' && <div className="ph-status-ok" id="admin-photos-render-success">{renderMsg}</div>}
-      {renderPhase === 'error' && <div className="ph-status-err" id="admin-photos-render-error">Error: {renderMsg}</div>}
+      {renderPhase === 'success' && <p className="form-note text-sage" id="admin-photos-render-success">{renderMsg}</p>}
+      {renderPhase === 'error' && <p className="form-note text-terra" id="admin-photos-render-error">Error: {renderMsg}</p>}
     </div>
   );
 }

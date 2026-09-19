@@ -12,7 +12,7 @@ import { PREVIEW_COVER_STYLE } from '@/lib/generator/fitUtils';
 import type { PhotoUpload } from '@/lib/photos/types';
 
 function presetThumbSize(key: CanvasPresetKey): { w: number; h: number } {
-  const maxH = 38;
+  const maxH = 30;
   const p = CANVAS_PRESETS[key];
   const ar = p.width / p.height;
   const h = maxH;
@@ -26,6 +26,10 @@ function presetThumbSize(key: CanvasPresetKey): { w: number; h: number } {
  * strip's active state and the canvas's aspect ratio are the same piece of
  * state (`preset`) — splitting them further would just push props back and
  * forth for no benefit.
+ *
+ * The canvas frame is a `.card` (paper background, border, shadow already
+ * provide the "surface" reading) sized in JS against the viewport — see
+ * canvasSize in the parent page — so nothing here sets its width/height.
  */
 export function GeneratorCanvas({
   canvasZoneRef,
@@ -62,12 +66,16 @@ export function GeneratorCanvas({
 }) {
   return (
     <>
-      <div ref={canvasZoneRef} className="ed-canvas-zone" id="admin-gen-canvas-zone">
+      <div
+        ref={canvasZoneRef}
+        id="admin-gen-canvas-zone"
+        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, overflow: 'hidden' }}
+      >
         <div
           ref={canvasWrapperRef}
           id="admin-gen-canvas-frame"
-          className="ed-canvas-frame"
-          style={{ width: canvasSize.w, height: canvasSize.h }}
+          className="card"
+          style={{ position: 'relative', cursor: 'crosshair', userSelect: 'none', flexShrink: 0, width: canvasSize.w, height: canvasSize.h }}
           onClick={onCanvasClick}
         >
           {resolvedSource ? (
@@ -96,28 +104,40 @@ export function GeneratorCanvas({
               </div>
             </>
           ) : (
-            <div className="ed-canvas-placeholder">
-              <div className="ed-canvas-ph-text">
-                {!uploadsLoaded ? '[loading]' : uploadsCount === 0 ? '[no images]' : sourceMode === 'selected' ? '[select image]' : '[loading]'}
-              </div>
+            <div id="admin-gen-canvas-placeholder" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span className="stamp-label">
+                {!uploadsLoaded ? 'Loading' : uploadsCount === 0 ? 'No images' : sourceMode === 'selected' ? 'Select image' : 'Loading'}
+              </span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="ed-preset-strip" id="admin-gen-preset-strip">
+      <div
+        id="admin-gen-preset-strip"
+        style={{ flexShrink: 0, display: 'flex', gap: 8, padding: '10px 16px', overflowX: 'auto', alignItems: 'flex-end', justifyContent: 'center' }}
+      >
         {CANVAS_PRESET_ORDER.map((key) => {
           const { w, h } = presetThumbSize(key);
           const p = CANVAS_PRESETS[key];
+          const isActive = preset === key;
           return (
             <div
               key={key}
-              className={`ed-preset-chip${preset === key ? ' ed-preset-chip-active' : ''}`}
+              id={`admin-gen-preset-chip-${key}`}
               onClick={() => onSelectPreset(key)}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0, padding: '6px 8px' }}
             >
-              <div className="ed-preset-thumb" style={{ width: w, height: h }} />
-              <div className="ed-preset-label">{p.aspectLabel}</div>
-              <div className="ed-preset-dim">{p.width}×{p.height}</div>
+              <div
+                style={{
+                  width: w,
+                  height: h,
+                  border: isActive ? '2px solid var(--sage-dark)' : '1.5px solid var(--light-gray)',
+                  flexShrink: 0,
+                }}
+              />
+              <span className={`badge${isActive ? ' badge-sage' : ''}`}>{p.aspectLabel}</span>
+              <span className="form-note" style={{ margin: 0 }}>{p.width}×{p.height}</span>
             </div>
           );
         })}
