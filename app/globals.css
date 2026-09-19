@@ -3682,4 +3682,14 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-headline br:nth-of-type(1),
   #hero-headline br:nth-of-type(3) { display: none; }
   #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); }
+  /* Phones drop the walker illustration behind the hero (the mobile .hero
+     background above layers it under the veil) and the round sticker on the
+     video polaroid; the paper grain, veil and bottom strip stay. */
+  .hero {
+    background:
+      url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+      linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
+      url('/img/hero-walker-strip.webp') bottom center / 100% auto no-repeat;
+  }
+  #hero-polaroid-badge { display: none; }
 }
