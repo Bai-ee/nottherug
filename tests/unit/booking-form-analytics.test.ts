@@ -81,6 +81,26 @@ describe('submitMeetGreetLead', () => {
     vi.unstubAllGlobals();
   });
 
+  // app/api/leads/meetgreet/route.ts answers { ok: true, duplicate: true } for
+  // a resubmission it recognised as the same lead and deliberately did not
+  // write again. The visitor's submission succeeded, so the form must still
+  // report success — but the inquiry was already counted when the original
+  // was saved, and counting it twice inflates the inquiry rate.
+  it('does not record lead_saved for a dedupe-suppressed duplicate, but still reports success', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse(200, { ok: true, id: 'lead-1', duplicate: true, notifications: {} })),
+    );
+
+    const { submitMeetGreetLead } = await import('@/components/booking/BookingForm');
+    const result = await submitMeetGreetLead(CUSTOMER_BODY, 'book-page');
+
+    expect(result.ok).toBe(true);
+    expect(track).not.toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
+  });
+
   it('does not record lead_saved on a network error', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('Failed to fetch'); }));
 

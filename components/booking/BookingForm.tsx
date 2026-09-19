@@ -42,7 +42,9 @@ type Props = {
   layout?: 'steps' | 'full';
 };
 
-type SubmitLeadResult = { ok: true; data: { id?: string; notifications?: unknown } } | { ok: false; error: string };
+type SubmitLeadResult =
+  | { ok: true; data: { id?: string; duplicate?: boolean; notifications?: unknown } }
+  | { ok: false; error: string };
 
 /**
  * track() is documented as best-effort/never-throwing, but a booking must not
@@ -67,7 +69,7 @@ export function safeTrack(name: Parameters<typeof track>[0], payload?: Parameter
  * without a rendering harness; see tests/unit/booking-form-analytics.test.ts.
  */
 export async function submitMeetGreetLead(body: Record<string, unknown>, source: string): Promise<SubmitLeadResult> {
-  let data: { ok?: boolean; error?: string; id?: string; notifications?: unknown };
+  let data: { ok?: boolean; error?: string; id?: string; duplicate?: boolean; notifications?: unknown };
   try {
     const res = await fetch('/api/leads/meetgreet', {
       method: 'POST',
@@ -81,7 +83,12 @@ export async function submitMeetGreetLead(body: Record<string, unknown>, source:
   } catch {
     return { ok: false, error: 'Network error. Please try again.' };
   }
-  safeTrack('lead_saved', { source });
+  // A dedupe-suppressed resubmission answers { ok: true, duplicate: true }
+  // without writing anything (app/api/leads/meetgreet/route.ts): the original
+  // save already counted, so recording it again would inflate the inquiry
+  // numerator. The visitor's submission still succeeded, so the caller is
+  // told so either way.
+  if (!data.duplicate) safeTrack('lead_saved', { source });
   return { ok: true, data };
 }
 
@@ -109,11 +116,16 @@ export function funnelStepForFormIndex(index: number): BookingStep | null {
  */
 export function createStepFunnelTracker(source: string) {
   const reached = new Set<BookingStep>();
-  return function reach(step: BookingStep) {
+  function reach(step: BookingStep) {
     if (reached.has(step)) return;
     reached.add(step);
     safeTrack('booking_step', { step, source });
+  }
+  /** Starts a fresh attempt: every named step may be reported once more. */
+  reach.reset = function reset() {
+    reached.clear();
   };
+  return reach;
 }
 
 /**
@@ -187,9 +199,19 @@ export default function BookingForm({
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
   const [trackH, setTrackH] = useState<number | undefined>(undefined);
   const hasTrackedFormStart = useRef(false);
-  // Created once per mount ("per attempt") and never reset — see createStepFunnelTracker.
+  // Which attempt this mount is on. Also keys SchedulingDialog below, so a
+  // second genuine booking from the same mount is not swallowed by the first
+  // attempt's completion dedupe.
+  const [attempt, setAttempt] = useState(1);
+  // One tracker for the whole mount; reset() starts the next attempt's funnel.
   const [stepTracker] = useState(() => createStepFunnelTracker(source));
   const reachStep = fullLayout ? NO_STEP_TRACKING : stepTracker;
+  // Set when a submission succeeds: the NEXT genuine interaction is attempt
+  // two. Deliberately not reset at the end of handleSubmit — the finished
+  // attempt's scheduler opens after that point, and its "schedule" step (and
+  // the dialog's own completion dedupe) still belong to the attempt that
+  // just submitted.
+  const startsNewAttemptRef = useRef(false);
 
   const alertId = `${paneId}-step-alert`;
   const stepAlertMessage = Object.values(fieldErrors).find((m): m is string => Boolean(m)) ?? '';
@@ -239,6 +261,15 @@ export default function BookingForm({
   // customer value) leaves the browser. Also marks the funnel's first named
   // step reached, on the same gate — see funnelStepForFormIndex.
   function markFormStarted() {
+    // First interaction after a successful submission: begin attempt two, so
+    // it reports its own booking_form_start and its own full funnel rather
+    // than looking like a continuation of the attempt that already finished.
+    if (startsNewAttemptRef.current) {
+      startsNewAttemptRef.current = false;
+      hasTrackedFormStart.current = false;
+      stepTracker.reset();
+      setAttempt((n) => n + 1);
+    }
     if (hasTrackedFormStart.current) return;
     hasTrackedFormStart.current = true;
     safeTrack('booking_form_start', { source });
@@ -376,6 +407,9 @@ export default function BookingForm({
     setHoneypot('');
     setStep(0);
     setFieldErrors({});
+    // The form is blank again, so anything typed into it from here is a new
+    // attempt — see markFormStarted.
+    startsNewAttemptRef.current = true;
     // A successful booked-details save ends the handoff, so a later,
     // unrelated /book visit never adopts a stale draft.
     if (bookedDetailsMode) clearOnboardingHandoff(getOnboardingHandoffStorage());
@@ -698,7 +732,13 @@ export default function BookingForm({
         </button>
       )}
 
-      <SchedulingDialog open={showCalendly} onClose={() => setShowCalendly(false)} calendlyUrl={calendlyUrl} source={source} />
+      <SchedulingDialog
+        open={showCalendly}
+        onClose={() => setShowCalendly(false)}
+        calendlyUrl={calendlyUrl}
+        source={source}
+        attemptId={`${paneId}-attempt-${attempt}`}
+      />
     </div>
   );
 }

@@ -129,6 +129,26 @@ describe('createStepFunnelTracker', () => {
     expect(track).toHaveBeenCalledTimes(1);
   });
 
+  // A second submission from the same mounted form is a second attempt, not a
+  // continuation of the first: BookingForm calls reset() on the first genuine
+  // interaction after a successful save, so attempt two reports its own full
+  // funnel instead of silently deduping against the finished attempt.
+  it('reset() starts a fresh attempt, so each named step can be reported once again', async () => {
+    const { createStepFunnelTracker } = await import('@/components/booking/BookingForm');
+    const reach = createStepFunnelTracker('book-page');
+
+    reach('details');
+    reach('dog');
+    expect(track).toHaveBeenCalledTimes(2);
+
+    reach.reset();
+
+    reach('details');
+    reach('dog');
+    reach('dog'); // still deduped WITHIN the new attempt
+    expect(track).toHaveBeenCalledTimes(4);
+  });
+
   // T4 item 6: track() is documented as best-effort/never-throwing, but the
   // funnel tracker must not trust that — a throw here must not propagate out
   // of reach() and interrupt whatever caller (a step-change effect, a click
