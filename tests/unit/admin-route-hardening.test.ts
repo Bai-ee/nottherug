@@ -11,10 +11,10 @@ import { UnauthorizedError, ForbiddenError, ServiceError } from '@/lib/server/er
 const verifyAdmin = vi.fn();
 vi.mock('@/lib/server/verifyAdmin', () => ({ verifyAdmin: (r: unknown) => verifyAdmin(r) }));
 
-const storageDownload = vi.fn(async (_path: string) => Buffer.from('bytes'));
+const storageDownload = vi.fn(async () => Buffer.from('bytes'));
 vi.mock('@/lib/server/firebaseStorage', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/server/firebaseStorage')>()),
-  storageDownload: (p: string) => storageDownload(p),
+  storageDownload,
   storageUpload: vi.fn(async () => 'https://example.test/o?alt=media&token=t'),
   storageDelete: vi.fn(async () => {}),
   storageList: vi.fn(async () => []),

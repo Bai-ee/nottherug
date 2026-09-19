@@ -96,7 +96,7 @@ describe('track — gating (decision 10)', () => {
 
   it('sends nothing when NEXT_PUBLIC_ANALYTICS_ENABLED is unset (default off)', () => {
     vi.stubGlobal('window', fakeWindow());
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('page_view', {});
@@ -108,7 +108,9 @@ describe('track — gating (decision 10)', () => {
   it('sends an event once explicitly enabled', () => {
     vi.stubEnv('NEXT_PUBLIC_ANALYTICS_ENABLED', 'true');
     vi.stubGlobal('window', fakeWindow());
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    // Typed via the generic, not a named-but-unused parameter, so
+    // `.mock.calls[0][0]` below still knows it's the beacon URL.
+    const sendBeacon = vi.fn<(url: string, data?: BodyInit) => boolean>(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('page_view', {});
@@ -121,7 +123,7 @@ describe('track — gating (decision 10)', () => {
     vi.stubEnv('NEXT_PUBLIC_ANALYTICS_ENABLED', 'true');
     vi.stubEnv('NEXT_PUBLIC_ANALYTICS_TEST_MODE', 'true');
     vi.stubGlobal('window', fakeWindow());
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('page_view', {});
@@ -133,7 +135,7 @@ describe('track — gating (decision 10)', () => {
   it('never tracks admin routes, even when enabled', () => {
     vi.stubEnv('NEXT_PUBLIC_ANALYTICS_ENABLED', 'true');
     vi.stubGlobal('window', fakeWindow('/admin/dashboard'));
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('page_view', {});
@@ -145,7 +147,7 @@ describe('track — gating (decision 10)', () => {
     vi.stubEnv('NEXT_PUBLIC_ANALYTICS_ENABLED', 'true');
     getSessionSnapshot.mockReturnValue(null);
     vi.stubGlobal('window', fakeWindow());
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     expect(() => track('page_view', {})).not.toThrow();
@@ -167,8 +169,12 @@ describe('track — delivery transport', () => {
   });
 
   it('falls back to fetch when sendBeacon returns false (not just when it throws)', () => {
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => false);
-    const fetchMock = vi.fn((_url: string, _init?: RequestInit) => Promise.resolve(new Response(null, { status: 202 })));
+    const sendBeacon = vi.fn(() => false);
+    // Typed via the generic (see the sendBeacon mock above) so
+    // `.mock.calls[0][0]` below still knows it's the fetch URL.
+    const fetchMock = vi.fn<(url: string, init?: RequestInit) => Promise<Response>>(() =>
+      Promise.resolve(new Response(null, { status: 202 })),
+    );
     vi.stubGlobal('navigator', { sendBeacon });
     vi.stubGlobal('fetch', fetchMock);
 
@@ -180,7 +186,7 @@ describe('track — delivery transport', () => {
   });
 
   it('uses fetch directly when sendBeacon is unavailable', () => {
-    const fetchMock = vi.fn((_url: string, _init?: RequestInit) => Promise.resolve(new Response(null, { status: 202 })));
+    const fetchMock = vi.fn(() => Promise.resolve(new Response(null, { status: 202 })));
     vi.stubGlobal('navigator', {});
     vi.stubGlobal('fetch', fetchMock);
 
@@ -190,7 +196,7 @@ describe('track — delivery transport', () => {
   });
 
   it('does not throw, and does not produce an unhandled rejection, when the fetch fallback rejects', async () => {
-    const fetchMock = vi.fn((_url: string, _init?: RequestInit) => Promise.reject(new TypeError('Failed to fetch')));
+    const fetchMock = vi.fn(() => Promise.reject(new TypeError('Failed to fetch')));
     vi.stubGlobal('navigator', {});
     vi.stubGlobal('fetch', fetchMock);
 
@@ -214,7 +220,7 @@ describe('track — cta_click / booking_step field handling', () => {
   });
 
   it('sends nothing for a cta_click with no allowlisted cta id', () => {
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('cta_click', {});
@@ -223,7 +229,7 @@ describe('track — cta_click / booking_step field handling', () => {
   });
 
   it('sends nothing for a booking_step with an unrecognized step name', () => {
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('booking_step', { step: 'not-a-real-step' });
@@ -233,7 +239,7 @@ describe('track — cta_click / booking_step field handling', () => {
 
   it('sends a valid cta_click and, on the first qualifying click, also fires engagement', async () => {
     noteEngagementSignal.mockReturnValueOnce(true);
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('cta_click', { cta: 'closing_trust_book', page: 'home' });
@@ -248,7 +254,7 @@ describe('track — cta_click / booking_step field handling', () => {
 
   it('does not fire a second engagement event once the session already sent one', () => {
     noteEngagementSignal.mockReturnValue(false);
-    const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
+    const sendBeacon = vi.fn(() => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
     track('cta_click', { cta: 'closing_trust_book', page: 'home' });

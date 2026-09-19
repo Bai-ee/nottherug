@@ -17,7 +17,7 @@ const fsCreateDoc = vi.fn(async (path: string, data: Record<string, unknown> = {
   return { created: true };
 });
 
-const fsIncrementField = vi.fn(async (path: string, _field: string, amount: number, _seed?: Record<string, unknown>) => {
+const fsIncrementField = vi.fn(async (path: string, _field: string, amount: number) => {
   const next = (rateLimitCounts.get(path) ?? 0) + amount;
   rateLimitCounts.set(path, next);
   return next;
@@ -25,8 +25,7 @@ const fsIncrementField = vi.fn(async (path: string, _field: string, amount: numb
 
 vi.mock('@/lib/server/firestoreRest', () => ({
   fsCreateDoc: (path: string, data?: Record<string, unknown>) => fsCreateDoc(path, data),
-  fsIncrementField: (path: string, field: string, amount: number, seed?: Record<string, unknown>) =>
-    fsIncrementField(path, field, amount, seed),
+  fsIncrementField: (path: string, field: string, amount: number) => fsIncrementField(path, field, amount),
 }));
 
 const DEFAULT_HEADERS: Record<string, string> = {
