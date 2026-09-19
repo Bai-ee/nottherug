@@ -54,6 +54,7 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
 
     dailyTrend: [],
     sources: [],
+    pages: [],
 
     // Zero-filled for every live CTA id, matching what the reporting service
     // returns for a quiet period. As of the locked 16-id contract, CTA_IDS and

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { HONEYPOT_FIELD_NAME, LEAD_FIELD_LIMITS } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
+import { track } from '@/lib/analytics/track';
+import type { BookingStep } from '@/lib/analytics/events';
 import { clearOnboardingHandoff, getOnboardingHandoffStorage } from '@/lib/booking/onboarding-handoff';
 import { BOOKING_STEPS, StepAboutYou, StepCare, StepQuirks, StepWrapUp, StepYourDog } from './BookingSteps';
 import SchedulingDialog from './SchedulingDialog';
@@ -39,6 +41,91 @@ type Props = {
    */
   layout?: 'steps' | 'full';
 };
+
+type SubmitLeadResult = { ok: true; data: { id?: string; notifications?: unknown } } | { ok: false; error: string };
+
+/**
+ * track() is documented as best-effort/never-throwing, but a booking must not
+ * be able to fail because that contract was violated. Every track() call in
+ * this file goes through this wrapper instead of calling track() directly.
+ * Exported for tests/unit/booking-analytics-failure-isolation.test.ts.
+ */
+export function safeTrack(name: Parameters<typeof track>[0], payload?: Parameters<typeof track>[1]) {
+  try {
+    track(name, payload);
+  } catch (err) {
+    console.warn('[booking] analytics call failed', err);
+  }
+}
+
+/**
+ * Posts a meet & greet submission and, only once the API confirms a genuine
+ * save, records lead_saved — never on a rejected or network-errored attempt.
+ * The track call sits outside the network try/catch on purpose: a throwing
+ * tracker must never be reported back to the visitor as a failed submission.
+ * Exported, free of component state/DOM, so this decision can be unit-tested
+ * without a rendering harness; see tests/unit/booking-form-analytics.test.ts.
+ */
+export async function submitMeetGreetLead(body: Record<string, unknown>, source: string): Promise<SubmitLeadResult> {
+  let data: { ok?: boolean; error?: string; id?: string; notifications?: unknown };
+  try {
+    const res = await fetch('/api/leads/meetgreet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    data = await res.json();
+    if (!res.ok || !data.ok) {
+      return { ok: false, error: data.error || 'Something went wrong. Please try again.' };
+    }
+  } catch {
+    return { ok: false, error: 'Network error. Please try again.' };
+  }
+  safeTrack('lead_saved', { source });
+  return { ok: true, data };
+}
+
+/**
+ * Maps a BookingSteps.tsx UI step index (0-4: you/dog/care/quirks/wrap) to the
+ * coarser named funnel step it represents (BOOKING_STEPS in
+ * lib/analytics/events.ts), or null when that UI step is not part of the
+ * tracked funnel. "care" and "quirks" are deliberately not funneled
+ * individually. "details" (step 0) is fired from markFormStarted() instead of
+ * here: merely rendering step 0 is not a meaningful signal without a real
+ * interaction. Exported for tests/unit/booking-step-funnel.test.ts.
+ */
+export function funnelStepForFormIndex(index: number): BookingStep | null {
+  if (index === 1) return 'dog';
+  if (index === BOOKING_STEPS.length - 1) return 'review';
+  return null;
+}
+
+/**
+ * Builds a booking_step recorder that fires each named funnel step at most
+ * once per attempt, so moving back and forward through the form (or reopening
+ * the scheduler) never inflates the funnel. The step is marked reached BEFORE
+ * tracking, so even a throwing tracker still dedupes. Exported, free of
+ * component state, for tests/unit/booking-step-funnel.test.ts.
+ */
+export function createStepFunnelTracker(source: string) {
+  const reached = new Set<BookingStep>();
+  return function reach(step: BookingStep) {
+    if (reached.has(step)) return;
+    reached.add(step);
+    safeTrack('booking_step', { step, source });
+  };
+}
+
+/**
+ * The full layout has no steps to move through — every group is on the sheet
+ * at once — so it records no booking_step events at all. The stored event
+ * carries no source (see lib/analytics/events.ts), so the dashboard's funnel
+ * aggregates every layout together: letting a layout that can only ever
+ * report "details" into it would show a cliff between details and dog that no
+ * visitor actually fell off. Full-layout progress is read from
+ * booking_form_start -> lead_saved instead.
+ */
+const NO_STEP_TRACKING = (_step: BookingStep) => {};
 
 /**
  * Whether a successful save should open the Calendly scheduler. A
@@ -99,6 +186,11 @@ export default function BookingForm({
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
   const [trackH, setTrackH] = useState<number | undefined>(undefined);
+  const hasTrackedFormStart = useRef(false);
+  // Created once per mount ("per attempt") and never reset — see createStepFunnelTracker.
+  const stepTrackerRef = useRef<ReturnType<typeof createStepFunnelTracker> | null>(null);
+  if (!stepTrackerRef.current) stepTrackerRef.current = createStepFunnelTracker(source);
+  const reachStep = fullLayout ? NO_STEP_TRACKING : stepTrackerRef.current;
 
   const alertId = `${paneId}-step-alert`;
   const stepAlertMessage = Object.values(fieldErrors).find((m): m is string => Boolean(m)) ?? '';
@@ -142,7 +234,28 @@ export default function BookingForm({
     setForm((prev) => (prev.email ? prev : { ...prev, email: seeded }));
   }, [initialValues?.email]);
 
+  // Fires once per mount, on the first genuine field interaction — never on
+  // mount and never on navigation, so a visitor who only looks at the form is
+  // not counted as having started it. Only `source` (a category, never a
+  // customer value) leaves the browser. Also marks the funnel's first named
+  // step reached, on the same gate — see funnelStepForFormIndex.
+  function markFormStarted() {
+    if (hasTrackedFormStart.current) return;
+    hasTrackedFormStart.current = true;
+    safeTrack('booking_form_start', { source });
+    reachStep('details');
+  }
+
+  // Funnel steps for the later UI steps, at most once each per attempt (see
+  // createStepFunnelTracker). In the full layout `step` never advances, so
+  // this effect is a no-op there by construction — see NO_STEP_TRACKING.
+  useEffect(() => {
+    const funnelStep = funnelStepForFormIndex(step);
+    if (funnelStep) reachStep(funnelStep);
+  }, [step, reachStep]);
+
   const update = <K extends keyof BookingFormValues>(key: K, value: string) => {
+    markFormStarted();
     // A real edit to the email means the seeding effect below must never
     // overwrite it, even if a late handoff read arrives afterwards.
     if (key === 'email') emailTouchedRef.current = true;
@@ -150,11 +263,23 @@ export default function BookingForm({
   };
 
   function toggleReactivity(option: string) {
+    markFormStarted();
     setReactivity((prev) => (prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]));
   }
 
   function toggleAllergy(option: string) {
+    markFormStarted();
     setAllergies((prev) => (prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]));
+  }
+
+  function handleAllergyOtherChange(value: string) {
+    markFormStarted();
+    setAllergyOther(value);
+  }
+
+  function handlePhoneConsultChange(value: boolean) {
+    markFormStarted();
+    setPhoneConsult(value);
   }
 
   function validateStep(index: number): BookingFieldErrors {
@@ -201,6 +326,14 @@ export default function BookingForm({
     setFieldErrors({});
   }
 
+  // The one way the scheduler opens, used by both the auto-open after a save
+  // and the manual reopen button, so the two can never disagree about the
+  // funnel. Reaching the scheduler is the "schedule" step, once per attempt.
+  function openScheduling() {
+    reachStep('schedule');
+    setShowCalendly(true);
+  }
+
   async function handleSubmit() {
     setStatus('submitting');
     setErrorMsg('');
@@ -209,50 +342,46 @@ export default function BookingForm({
     // that lands in the POST body.
     const wantsPhoneConsult = bookedDetailsMode ? false : phoneConsult;
     const submittedDogName = form.dogName;
-    try {
-      const allergyList = allergies.includes('Other') && allergyOther
-        ? [...allergies.filter((a) => a !== 'Other'), `Other: ${allergyOther}`]
-        : allergies;
+    const allergyList = allergies.includes('Other') && allergyOther
+      ? [...allergies.filter((a) => a !== 'Other'), `Other: ${allergyOther}`]
+      : allergies;
 
-      const res = await fetch('/api/leads/meetgreet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          source,
-          reactivity: reactivity.join(', ') || 'None noted',
-          allergies: allergyList.join(', ') || 'None',
-          phoneConsult: wantsPhoneConsult,
-          [HONEYPOT_FIELD_NAME]: honeypot,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        setStatus('error');
-        setErrorMsg(data.error || 'Something went wrong. Please try again.');
-        return;
-      }
-      // Snapshot what was actually sent before the draft resets (R15): the
-      // success UI and the scheduling branch below read this, never `form`/`phoneConsult`.
-      setSubmittedSummary({ dogName: submittedDogName, phoneConsult: wantsPhoneConsult });
-      setStatus('success');
-      setForm({ ...initial, ...initialValues });
-      setReactivity([]);
-      setAllergies([]);
-      setAllergyOther('');
-      setPhoneConsult(initialPhoneConsult);
-      setHoneypot('');
-      setStep(0);
-      setFieldErrors({});
-      // A successful booked-details save ends the handoff, so a later,
-      // unrelated /book visit never adopts a stale draft.
-      if (bookedDetailsMode) clearOnboardingHandoff(getOnboardingHandoffStorage());
-      if (shouldOpenSchedulerAfterSave({ calendlyUrl, phoneConsult: wantsPhoneConsult, bookedDetailsMode })) {
-        setShowCalendly(true);
-      }
-    } catch {
+    const result = await submitMeetGreetLead(
+      {
+        ...form,
+        source,
+        reactivity: reactivity.join(', ') || 'None noted',
+        allergies: allergyList.join(', ') || 'None',
+        phoneConsult: wantsPhoneConsult,
+        [HONEYPOT_FIELD_NAME]: honeypot,
+      },
+      source,
+    );
+
+    if (!result.ok) {
+      // Keep the entered answers so a rejected submit can be retried.
       setStatus('error');
-      setErrorMsg('Network error. Please try again.');
+      setErrorMsg(result.error);
+      return;
+    }
+
+    // Snapshot what was actually sent before the draft resets (R15): the
+    // success UI and the scheduling branch below read this, never `form`/`phoneConsult`.
+    setSubmittedSummary({ dogName: submittedDogName, phoneConsult: wantsPhoneConsult });
+    setStatus('success');
+    setForm({ ...initial, ...initialValues });
+    setReactivity([]);
+    setAllergies([]);
+    setAllergyOther('');
+    setPhoneConsult(initialPhoneConsult);
+    setHoneypot('');
+    setStep(0);
+    setFieldErrors({});
+    // A successful booked-details save ends the handoff, so a later,
+    // unrelated /book visit never adopts a stale draft.
+    if (bookedDetailsMode) clearOnboardingHandoff(getOnboardingHandoffStorage());
+    if (shouldOpenSchedulerAfterSave({ calendlyUrl, phoneConsult: wantsPhoneConsult, bookedDetailsMode })) {
+      openScheduling();
     }
   }
 
@@ -432,7 +561,7 @@ export default function BookingForm({
                 allergies={allergies}
                 toggleAllergy={toggleAllergy}
                 allergyOther={allergyOther}
-                setAllergyOther={setAllergyOther}
+                setAllergyOther={handleAllergyOtherChange}
                 errors={fieldErrors}
                 alertId={alertId}
                 registerField={registerField}
@@ -447,7 +576,7 @@ export default function BookingForm({
                 onNotesChange={(v) => update('notes', v)}
                 phoneConsult={phoneConsult}
                 hidePhoneConsult={bookedDetailsMode}
-                onPhoneConsultChange={setPhoneConsult}
+                onPhoneConsultChange={handlePhoneConsultChange}
                 errors={fieldErrors}
                 alertId={alertId}
                 registerField={registerField}
@@ -557,13 +686,13 @@ export default function BookingForm({
           type="button"
           className="btn btn-primary"
           style={{ width: '100%', justifyContent: 'center', padding: '14px', marginTop: '12px' }}
-          onClick={() => setShowCalendly(true)}
+          onClick={openScheduling}
         >
           Schedule your Meet &amp; Greet →
         </button>
       )}
 
-      <SchedulingDialog open={showCalendly} onClose={() => setShowCalendly(false)} calendlyUrl={calendlyUrl} />
+      <SchedulingDialog open={showCalendly} onClose={() => setShowCalendly(false)} calendlyUrl={calendlyUrl} source={source} />
     </div>
   );
 }

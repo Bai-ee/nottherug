@@ -1,6 +1,6 @@
 # Frontend tracking coverage plan
 
-Status: **PLANNED.** This is an instrumentation pass on top of the uncommitted analytics foundation described in [003-admin-dashboard-and-tracking.md](003-admin-dashboard-and-tracking.md). It does not enable tracking, deploy, or replace the remaining preview gates.
+Status: **SUPERSEDED by [009-full-tracking-dashboard-integration.md](009-full-tracking-dashboard-integration.md)** (September 18, 2026). The instrumentation described here was written against the pre-redesign site; plan 009 P2 re-derived the route and CTA inventory from the rendered booking-first site and is the current contract. Kept for the reasoning behind which controls are worth measuring.
 
 ## Goal
 

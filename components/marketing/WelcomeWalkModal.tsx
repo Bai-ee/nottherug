@@ -886,9 +886,10 @@ export default function WelcomeWalkModal() {
           open={open && view === 'scheduler'}
           onClose={handleSchedulerDismiss}
           calendlyUrl={buildCalendlyEmailUrl(calendlyUrl, email.trim())}
-          // This tree's SchedulingDialog takes no `source`: it carries no
-          // analytics (there is no lib/analytics here), so there is nothing
-          // for a source label to tag. MODAL_SOURCE still labels the handoff.
+          // Labels this dialog's analytics (scheduling_dialog_opened,
+          // appointment_completed) as the welcome modal's scheduler — the same
+          // label the lead handoff already carries.
+          source={MODAL_SOURCE}
           // Not "step 2 of 2": in this flow the scheduler is followed by a
           // confirmation, and the questionnaire after it is optional.
           eyebrow="Pick your time"

@@ -1,6 +1,8 @@
 # Admin dashboard and website tracking
 
-Updated September 15, 2026 against `865024e`. The implementation described below is currently present in the working tree but is not committed or deployed. This document separates implemented work from local verification, preview acceptance, and production activation.
+Status: **SUPERSEDED FOR SEQUENCING by [009-full-tracking-dashboard-integration.md](009-full-tracking-dashboard-integration.md)** (September 18, 2026). Its privacy rules, metric definitions and owner decisions remain authoritative; its integration order does not. The route and CTA allowlists quoted below were re-locked in plan 009 P2 against the redesigned site — read `lib/analytics/events.ts` for the current list.
+
+Updated September 15, 2026 against `865024e`. The implementation described below is now committed and merged into the booking-first site; it is still not deployed and tracking is still off by default.
 
 ## Purpose
 

@@ -77,6 +77,15 @@ export interface SourceRow {
   sessions: number;
 }
 
+export interface PageRow {
+  /** A stored TrackedRoute, e.g. '/' or '/book'. Events whose route is null (an untracked/unknown path) are not counted here. */
+  route: string;
+  /** Deduplicated page_view events for this route in range. */
+  pageviews: number;
+  /** Distinct sids that viewed this route. Sums across rows can exceed AnalyticsReport.sessions — one session can visit several pages. */
+  sessions: number;
+}
+
 export interface CtaRow {
   cta: CtaId;
   clicks: number;
@@ -170,6 +179,8 @@ export interface AnalyticsReport {
 
   dailyTrend: DailyTrendPoint[];
   sources: SourceRow[];
+  /** Per-route page_view aggregation, sorted by pageviews desc. No engagement column: 'engagement' is a session-level event with no route of its own. */
+  pages: PageRow[];
   ctaClicks: CtaRow[];
   funnel: BookingFunnel;
 
@@ -436,6 +447,32 @@ function buildSourceTable(events: StoredAnalyticsEvent[]): SourceRow[] {
     .sort((a, b) => b.sessions - a.sessions || a.source.localeCompare(b.source));
 }
 
+/**
+ * Which pages were actually read, from page_view events only. Events stored
+ * with route null (a path outside TRACKED_ROUTES — see events.ts) are skipped
+ * rather than bucketed into an "other" row: the route was never recorded, so
+ * there is nothing truthful to label such a row with.
+ *
+ * Unlike the source table there is no engagement column here — 'engagement'
+ * is a session-level event and carries no per-page meaning.
+ */
+function buildPageTable(events: StoredAnalyticsEvent[]): PageRow[] {
+  const pageviews = new Map<string, number>();
+  const sessionsByRoute = new Map<string, Set<string>>();
+
+  for (const e of events) {
+    if (e.event !== 'page_view' || e.route === null) continue;
+    pageviews.set(e.route, (pageviews.get(e.route) ?? 0) + 1);
+    const sids = sessionsByRoute.get(e.route) ?? new Set<string>();
+    sids.add(e.sid);
+    sessionsByRoute.set(e.route, sids);
+  }
+
+  return Array.from(pageviews.entries())
+    .map(([route, views]) => ({ route, pageviews: views, sessions: sessionsByRoute.get(route)?.size ?? 0 }))
+    .sort((a, b) => b.pageviews - a.pageviews || a.route.localeCompare(b.route));
+}
+
 function buildCtaTable(events: StoredAnalyticsEvent[]): CtaRow[] {
   const counts = new Map<CtaId, number>(CTA_IDS.map((id) => [id, 0]));
   for (const e of events) {
@@ -557,6 +594,7 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
     engagedVisitPct,
     dailyTrend,
     sources: buildSourceTable(events),
+    pages: buildPageTable(events),
     ctaClicks: buildCtaTable(events),
     funnel: buildFunnel(events),
     live,

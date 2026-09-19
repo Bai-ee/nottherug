@@ -2,12 +2,15 @@
 
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { track } from '@/lib/analytics/track';
 import { isVerifiedCalendlyBookingEvent } from '@/lib/analytics/verifiedOrigin';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   calendlyUrl: string;
+  /** Which surface opened the scheduler; the only field sent with its events. */
+  source: string;
   /**
    * Invoked exactly once per attempt, and only for a scheduling message that
    * passes BOTH checks in isVerifiedCalendlyBookingEvent: Calendly's origin
@@ -29,15 +32,31 @@ type Props = {
 };
 
 /**
- * Turns one verified Calendly message into exactly one onBooked call.
- * `hasFired` is owned by the caller (a ref) so dedupe survives the dialog
- * being closed and reopened inside the same attempt — Calendly can post the
- * same event_scheduled message more than once for a single real booking.
- * Reads nothing from event.data beyond what the verifier inspects: that
- * payload carries the visitor's name and email, and none of it is forwarded
- * anywhere. Exported, free of component state, so it can be unit-tested.
+ * track() is documented as best-effort/never-throwing, but this dialog runs
+ * inside a raw window 'message' listener, where an uncaught throw would
+ * surface as a console error for every real visitor. Every track() call in
+ * this file goes through this wrapper.
  */
-export function createBookingCompletionHandler(
+function safeTrack(name: Parameters<typeof track>[0], payload?: Parameters<typeof track>[1]) {
+  try {
+    track(name, payload);
+  } catch (err) {
+    console.warn('[booking] analytics call failed', err);
+  }
+}
+
+/**
+ * Turns one verified Calendly message into exactly one appointment_completed
+ * event (and one onBooked call). `hasFired` is owned by the caller (a ref) so
+ * dedupe survives the dialog being closed and reopened inside the same
+ * attempt — Calendly can post the same event_scheduled message more than once
+ * for a single real booking. Reads nothing from event.data beyond what the
+ * verifier inspects: that payload carries the visitor's name and email, and
+ * none of it is forwarded anywhere — the event carries only `source`.
+ * Exported, free of component state, so it can be unit-tested.
+ */
+export function createAppointmentCompletionHandler(
+  source: string,
   getIframeWindow: () => Window | null,
   hasFired: { current: boolean },
   onBooked?: () => void,
@@ -46,6 +65,7 @@ export function createBookingCompletionHandler(
     if (hasFired.current) return;
     if (!isVerifiedCalendlyBookingEvent(event, getIframeWindow())) return;
     hasFired.current = true;
+    safeTrack('appointment_completed', { source });
     if (!onBooked) return;
     try {
       onBooked();
@@ -59,7 +79,7 @@ export function createBookingCompletionHandler(
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
 
-export default function SchedulingDialog({ open, onClose, calendlyUrl, onBooked, attemptId, eyebrow = 'Step 2 of 2' }: Props) {
+export default function SchedulingDialog({ open, onClose, calendlyUrl, source, onBooked, attemptId, eyebrow = 'Step 2 of 2' }: Props) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -76,18 +96,26 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, onBooked,
     attemptIdRef.current = attemptId;
   }, [attemptId]);
 
+  // Opening the scheduler is not a booked appointment — this records only
+  // that the dialog was shown. Completion is reported separately, below, and
+  // only from a verified Calendly message.
+  useEffect(() => {
+    if (open) safeTrack('scheduling_dialog_opened', { source });
+  }, [open, source]);
+
   // Only listens while the dialog (and its iframe) are actually mounted;
   // always removed on close or unmount.
   useEffect(() => {
     if (!open) return;
-    const handleMessage = createBookingCompletionHandler(
+    const handleMessage = createAppointmentCompletionHandler(
+      source,
       () => iframeRef.current?.contentWindow ?? null,
       bookingObservedRef,
       onBooked,
     );
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [open, onBooked]);
+  }, [open, source, onBooked]);
 
   // Lock body scroll while open, restore it (and the page's scroll position) on close.
   useEffect(() => {
