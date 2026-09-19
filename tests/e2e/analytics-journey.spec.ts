@@ -30,7 +30,8 @@ function collectEvents(requests: Request[]): SentEvent[] {
   const events: SentEvent[] = [];
   for (const req of requests) {
     try {
-      const batch = JSON.parse(req.postData() || '[]');
+      // sendBeacon sends a Blob: postData() is null, the buffer is not.
+      const batch = JSON.parse(req.postDataBuffer()?.toString('utf8') || '[]');
       if (Array.isArray(batch)) events.push(...batch);
     } catch {
       // A body we cannot parse is a failure of its own assertion, not this one.
@@ -47,6 +48,12 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
     page.on('request', (req) => {
       if (req.url().includes('/api/track') && req.method() === 'POST') trackRequests.push(req);
     });
+  // Playwright cannot read a sendBeacon Blob body, so the tracker is pushed onto
+  // its own fetch fallback. Same payload, same endpoint — only the transport
+  // differs, and this is the only way to assert on what is actually sent.
+  await page.addInitScript(() => {
+    Object.defineProperty(window.navigator, 'sendBeacon', { value: undefined, configurable: true });
+  });
 
     await page.goto('/');
     await expect
@@ -69,11 +76,11 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
       })
       .toBe(1);
 
-    // First real keystroke in the questionnaire starts the funnel, once.
-    const firstField = page.locator('form input[type="text"], form input[type="email"]').first();
-    await firstField.click();
-    await firstField.type('Journey Test');
-    await firstField.press('Tab');
+    // First real keystroke in the questionnaire starts the funnel, once. Use the
+    // named owner field, not the first input — the first one is the honeypot.
+    const ownerName = page.locator('#book-tab-meetgreet-owner-name');
+    await ownerName.fill('Journey Test');
+    await ownerName.press('Tab');
 
     await expect
       .poll(
@@ -88,9 +95,15 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
     page.on('request', (req) => {
       if (req.url().includes('/api/track') && req.method() === 'POST') trackRequests.push(req);
     });
+  // Playwright cannot read a sendBeacon Blob body, so the tracker is pushed onto
+  // its own fetch fallback. Same payload, same endpoint — only the transport
+  // differs, and this is the only way to assert on what is actually sent.
+  await page.addInitScript(() => {
+    Object.defineProperty(window.navigator, 'sendBeacon', { value: undefined, configurable: true });
+  });
 
     await page.goto('/book');
-    const email = page.locator('form input[type="email"]').first();
+    const email = page.locator('#book-tab-meetgreet-email');
     await email.fill('journey-test@example.com');
     await email.press('Tab');
 
@@ -98,7 +111,7 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
       .poll(() => trackRequests.length, { timeout: 8000 })
       .toBeGreaterThan(0);
 
-    const bodies = trackRequests.map((req) => req.postData() || '').join('\n');
+    const bodies = trackRequests.map((req) => req.postDataBuffer()?.toString('utf8') || '').join('\n');
     expect(bodies).not.toContain('journey-test@example.com');
     expect(bodies).not.toContain('example.com');
 

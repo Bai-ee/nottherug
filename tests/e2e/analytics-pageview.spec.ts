@@ -39,13 +39,22 @@ test.describe('analytics pageview (real browser -> /api/track)', () => {
         'E2E_BASE_URL at a tracking-enabled build to actually run this test — it is not verified in this run.'
     );
 
+  // Playwright cannot read a sendBeacon Blob body, so the tracker is pushed onto
+  // its own fetch fallback. Same payload, same endpoint — only the transport
+  // differs, and this is the only way to assert on what is actually sent.
+  await page.addInitScript(() => {
+    Object.defineProperty(window.navigator, 'sendBeacon', { value: undefined, configurable: true });
+  });
+
     const trackRequest = page.waitForRequest(
       (req) => req.url().includes('/api/track') && req.method() === 'POST',
       { timeout: 8000 }
     );
     await page.goto('/');
     const req = await trackRequest;
-    const body = JSON.parse(req.postData() || '[]');
+    // The tracker uses navigator.sendBeacon with a Blob, so postData() is null
+    // here and only the raw buffer carries the batch.
+    const body = JSON.parse(req.postDataBuffer()?.toString('utf8') || '[]');
     expect(Array.isArray(body)).toBe(true);
     expect(body[0].event).toBe('page_view');
   });
