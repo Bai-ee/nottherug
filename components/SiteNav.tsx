@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { INSTAGRAM_URL } from '@/lib/content/site';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
@@ -127,7 +128,19 @@ export default function SiteNav() {
       <nav id="main-nav" ref={navRef} data-mobile-open={mobileOpen ? 'true' : 'false'}>
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" />
+            {/* Nav wordmark, CSS-sized (#nav-logo-img in app/globals.css sets
+                width: 370/200/190/168px across breakpoints/scroll states,
+                height: auto); width/height/sizes here only reserve the
+                aspect ratio and pick the srcset candidate. */}
+            <Image
+              id="nav-logo-img"
+              src="/img/horiz_logo_off_white.png"
+              alt="Not The Rug"
+              width={498}
+              height={88}
+              sizes="(max-width: 767px) 200px, 370px"
+              priority
+            />
           </Link>
           <div className="nav-links">
             {NAV_LINKS.map((link) => (
