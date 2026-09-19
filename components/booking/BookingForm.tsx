@@ -347,6 +347,25 @@ export default function BookingForm({
   }
 
   function goToStep(index: number) {
+    if (index <= step) {
+      // Going back to re-edit earlier input is always allowed.
+      setStep(index);
+      setFieldErrors({});
+      return;
+    }
+    // Going forward: a dot click can otherwise jump straight past steps whose
+    // required fields were never filled, something a plain "Next" could never
+    // do. Validate every step between here and the target, stopping at the
+    // first one that fails.
+    for (let i = step; i < index; i++) {
+      const errors = validateStep(i);
+      if (Object.keys(errors).length > 0) {
+        setStep(i);
+        setFieldErrors(errors);
+        focusFirstError(errors);
+        return;
+      }
+    }
     setStep(index);
     setFieldErrors({});
   }
