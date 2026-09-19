@@ -650,7 +650,25 @@ export default function WelcomeWalkModal() {
                   width: auto;
                   transform: translateX(-50%);
                 }
-                #welcome-walk-modal-cta-row { justify-content: center !important; }
+                #welcome-walk-modal-cta-row { justify-content: center !important; gap: 8px !important; }
+                /* Fit the whole dialog in a phone viewport with no internal
+                   scrolling: shorter art strip, smaller title, the tax and
+                   rate fine print dropped (the /book page repeats them),
+                   tighter sheet spacing and compact CTAs. */
+                #welcome-walk-modal-shell { max-height: calc(100dvh - 12px) !important; }
+                #welcome-walk-modal-art-panel { min-height: 88px !important; }
+                #welcome-walk-modal-heading-panel { padding-top: 4px !important; }
+                #welcome-walk-modal-title { font-size: clamp(26px, 7.4vw, 34px) !important; line-height: 1 !important; }
+                #welcome-walk-modal-tax-note, #welcome-walk-modal-rate-fineprint { display: none !important; }
+                #welcome-walk-modal-form-panel { padding-top: 6px !important; padding-bottom: 10px !important; }
+                #welcome-walk-modal-sheet .booking-form-body { padding: 10px 12px 12px !important; }
+                #welcome-walk-modal-promo-row { margin-bottom: 2px !important; }
+                #welcome-walk-modal-package-line { margin-bottom: 4px !important; padding-bottom: 6px !important; }
+                #welcome-walk-modal-fields { gap: 6px !important; }
+                #welcome-walk-modal-fields .form-group { margin: 0 !important; }
+                #welcome-walk-modal-cta-primary, #welcome-walk-modal-cta-secondary, #welcome-walk-modal-cta-details {
+                  min-height: 42px !important; padding-top: 8px !important; padding-bottom: 8px !important;
+                }
                 /* Stacked only: the stamp bar sits above the art strip and needs the
                    same OPTICAL gap the headline has below it. The headline's 10px
                    padding renders larger because the Bebas line box adds leading

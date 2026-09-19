@@ -3642,3 +3642,20 @@ html[data-home-intro='loading'] body { overflow: hidden; }
 @media (max-width: 640px) {
   #home-intro-walker-silhouette { width: min(76vw, 340px); }
 }
+
+/* ── PHONE HERO COMPACTION ─────────────────────────────────────────────────
+   Phones only: the stacked hero (polaroid video, eyebrow, headline, CTA)
+   is tightened so the primary CTA lands inside the first screen on a
+   ~660px-tall Safari viewport. The polaroid gets a shorter window and
+   smaller margins, the headline steps down one size and the gaps close up.
+   Nothing here touches tablet or desktop. */
+@media (max-width: 768px) {
+  #hero-polaroid-frame { margin: 18px 30px 8px; }
+  #hero-polaroid-frame .polaroid-window { aspect-ratio: 16 / 10; }
+  #hero-polaroid-caption { padding-top: 4px; font-size: 12px; }
+  #hero-polaroid-badge { width: 64px; height: 64px; right: -8px; bottom: 30px; }
+  #hero-content-shell { padding: 0 20px 28px; }
+  #hero-eyebrow-stamp-row { margin-bottom: 10px; }
+  #hero-headline.hero-h1 { font-size: clamp(36px, 10vw, 46px); line-height: 1.02; margin-bottom: 14px; }
+  #hero-cta-primary { margin-bottom: 16px; }
+}

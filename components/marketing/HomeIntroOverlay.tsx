@@ -13,7 +13,9 @@ const WALKER_ART = '/img/3Top.png';
  * `beforeInteractive` is root-layout only, which would put it on every route.
  *
  * It does three things and nothing else:
- *  - reduced motion: leaves the attribute unset, so no loading screen at all
+ *  - reduced motion, or a phone-width viewport (<= 768px, where the walker
+ *    read as a flash over the stacked hero): leaves the attribute unset, so
+ *    no loading screen at all
  *  - otherwise marks <html data-home-intro="loading">, which globals.css uses
  *    to hide everything but the overlay
  *  - arms a last-ditch failsafe: if the React sequence never runs at all, the
@@ -23,6 +25,7 @@ const WALKER_ART = '/img/3Top.png';
 const INTRO_BOOTSTRAP = `(function(){try{
 var d=document.documentElement;
 if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+if(window.matchMedia('(max-width: 768px)').matches)return;
 d.dataset.homeIntro='loading';
 window.setTimeout(function(){if(d.dataset.homeIntro==='loading'){d.dataset.homeIntro='done';}},7000);
 }catch(e){}})();`;
