@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { TEAM } from '@/lib/content/team';
 
@@ -77,8 +78,13 @@ export default function TeamScroller() {
       {active && (
         <div id="home-team-preview" role="presentation">
           <div id="home-team-preview-frame">
-            {/* Decorative: the trigger already names the walker. */}
-            <img src={active.photo} alt="" />
+            {/* Decorative: the trigger already names the walker.
+                #home-team-preview-frame img (globals.css) is width:100%,
+                height:auto, object-fit:contain, so the intrinsic
+                width/height below must match this member's own photo (they
+                are cropped to different aspect ratios per person, see
+                lib/content/team.ts) rather than one shared guess. */}
+            <Image src={active.photo} alt="" width={active.photoWidth} height={active.photoHeight} />
             <p id="home-team-preview-caption">{active.name} &middot; {active.role}</p>
           </div>
         </div>

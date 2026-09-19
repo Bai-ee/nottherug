@@ -1,4 +1,19 @@
 import type { BriefHistoryItem, LatestBriefResponse, OverviewRun } from './types';
+import { CANVAS_PRESETS, DEFAULT_CANVAS_PRESET, type CanvasPresetKey } from '@/lib/generator/types';
+
+/**
+ * Intrinsic size for a run's generated-image preview, from its own canvas
+ * preset (falls back to the default preset for an unrecognized/missing
+ * value). Used only for an <img>'s width/height attributes in
+ * DashboardHistory.tsx and DashboardSummary.tsx — app/globals.css's global
+ * `img { width: 100%; height: 100%; object-fit: cover; }` still governs the
+ * actual rendered box, so this never changes layout, only the browser's
+ * aspect-ratio reservation before the image loads.
+ */
+export function generatedImageDimensions(canvasPreset: string | undefined): { width: number; height: number } {
+  const preset = CANVAS_PRESETS[canvasPreset as CanvasPresetKey] ?? CANVAS_PRESETS[DEFAULT_CANVAS_PRESET];
+  return { width: preset.width, height: preset.height };
+}
 
 export function formatDate(value: string | null | undefined): string {
   if (!value) return 'No runs yet';

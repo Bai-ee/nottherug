@@ -44,7 +44,26 @@ export default function HomeIntroOverlay() {
         <div id="home-intro-overlay" ref={overlayRef} aria-hidden="true">
           {/* Shell moves, image bobs — see #home-intro-walker-shell in globals.css. */}
           <div id="home-intro-walker-shell" ref={walkerRef}>
-            <img id="home-intro-walker-silhouette" src={WALKER_ART} alt="" fetchPriority="high" />
+            {/* First-paint-blocking loading screen (see the module comment on
+                INTRO_BOOTSTRAP above): this element also carries its own
+                running CSS keyframe animation (#home-intro-walker-silhouette
+                in globals.css bobs it on a 2.4s loop, independent of the
+                shell's own GSAP exit transform on walkerRef). Given how timing-
+                sensitive this first paint is, converting it to next/image
+                belongs with the rest of the hero/loading-media pass in P3
+                (plans/010-production-final-mile-optimization.md), where it can
+                get the same before/after Lighthouse comparison as the other
+                above-the-fold media. */}
+            {/* eslint-disable-next-line @next/next/no-img-element -- first-paint loading overlay with its own CSS keyframe animation; next/image conversion deferred to P3 with the rest of the hero/loading media */}
+            <img
+              id="home-intro-walker-silhouette"
+              src={WALKER_ART}
+              alt=""
+              fetchPriority="high"
+              width={499}
+              height={238}
+              decoding="async"
+            />
           </div>
         </div>
       )}

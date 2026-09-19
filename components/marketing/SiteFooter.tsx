@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { INSTAGRAM_URL, YELP_URL, GOOGLE_REVIEW_URL } from '@/lib/content/site';
 import TrackedCtaLink from './TrackedCtaLink';
@@ -53,11 +54,16 @@ export default function SiteFooter() {
           <div className="footer-grid">
             <div className="footer-brand">
               {/* Cream circle badge in place of the wordmark — the footer runs
-                  olive, and the disc is the one lockup that reads on it. */}
-              <img
+                  olive, and the disc is the one lockup that reads on it.
+                  #footer-logo-badge (globals.css) sizes it with a CSS clamp
+                  (168-224px), height auto — a static, CSS-only box. */}
+              <Image
                 id="footer-logo-badge"
                 src="/logos/notRugYellow.png"
                 alt="Not The Rug — NYC dog walking"
+                width={1096}
+                height={1099}
+                sizes="(max-width: 767px) 168px, 14vw"
               />
               <p className="footer-tagline">Brooklyn&apos;s most trusted neighborhood dog walking service. Williamsburg-based since 2011. Small groups, consistent walkers, genuine care.</p>
               <div className="footer-social">

@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { WeatherBackground, extractWeatherDisplay, getWeatherKey } from './WeatherBackdrop';
-import { formatCompactDate, formatDate, formatUsd } from './overview';
+import { formatCompactDate, formatDate, formatUsd, generatedImageDimensions } from './overview';
 import type { LatestBriefResponse, OverviewRun } from './types';
 
 const PLATFORM_LABELS = ['Instagram', 'X / Twitter', 'Facebook'];
@@ -60,6 +60,7 @@ export function DashboardSummary({
   );
 
   const generatedImageUrl = active?.generatedImage?.renderDownloadURL ?? null;
+  const generatedImageSize = generatedImageDimensions(active?.generatedImage?.canvasPreset);
 
   return (
     <>
@@ -133,7 +134,18 @@ export function DashboardSummary({
                 <div className="polaroid" id="brief-post-instagram-polaroid">
                   <div className="polaroid-window">
                     {generatedImageUrl ? (
-                      <img src={generatedImageUrl} alt="Not The Rug social post" />
+                      <>
+                        {/* Firebase Storage download URL for the active run's
+                            generated render — an authenticated admin preview of
+                            dynamic content, not a static public asset, so
+                            next/image (and its remote-pattern allowlist) does not
+                            apply here. Dimensions come from the run's own canvas
+                            preset (generatedImageDimensions in ./overview.ts);
+                            the visible box is still governed by the global img
+                            rule in app/globals.css. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element -- authenticated generator preview, remote per-run Storage URL, not a next/image candidate */}
+                        <img src={generatedImageUrl} alt="Not The Rug social post" {...generatedImageSize} decoding="async" loading="lazy" />
+                      </>
                     ) : (
                       <div className="form-note" id="brief-post-instagram-empty">
                         Generated post image appears here
@@ -154,7 +166,11 @@ export function DashboardSummary({
                 <div className="polaroid" id="brief-post-twitter-polaroid">
                   <div className="polaroid-window">
                     {generatedImageUrl ? (
-                      <img src={generatedImageUrl} alt="Not The Rug social post" />
+                      <>
+                        {/* Same authenticated per-run Storage preview as above. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element -- authenticated generator preview, remote per-run Storage URL, not a next/image candidate */}
+                        <img src={generatedImageUrl} alt="Not The Rug social post" {...generatedImageSize} decoding="async" loading="lazy" />
+                      </>
                     ) : (
                       <div className="form-note">No generated image for this run.</div>
                     )}
@@ -170,7 +186,11 @@ export function DashboardSummary({
                 <div className="polaroid" id="brief-post-facebook-polaroid">
                   <div className="polaroid-window">
                     {generatedImageUrl ? (
-                      <img src={generatedImageUrl} alt="Not The Rug social post" />
+                      <>
+                        {/* Same authenticated per-run Storage preview as above. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element -- authenticated generator preview, remote per-run Storage URL, not a next/image candidate */}
+                        <img src={generatedImageUrl} alt="Not The Rug social post" {...generatedImageSize} decoding="async" loading="lazy" />
+                      </>
                     ) : (
                       <div className="form-note">No generated image for this run.</div>
                     )}

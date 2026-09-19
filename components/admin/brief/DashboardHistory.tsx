@@ -1,6 +1,6 @@
 'use client';
 
-import { formatCompactDate, truncate } from './overview';
+import { formatCompactDate, generatedImageDimensions, truncate } from './overview';
 import type { BriefHistoryItem } from './types';
 
 /**
@@ -61,9 +61,21 @@ export function DashboardHistory({
                   {item.generatedImage?.renderDownloadURL ? (
                     <div className="polaroid dashboard-history-thumb" id={`dashboard-history-polaroid-${item.id}`}>
                       <div className="polaroid-window">
+                        {/* Firebase Storage download URL for a per-run generated
+                            render — an authenticated admin preview of dynamic
+                            content, not a static public asset, so next/image
+                            (and its remote-pattern allowlist) does not apply
+                            here. Dimensions come from the run's own canvas
+                            preset (see generatedImageDimensions in
+                            ./overview.ts); the visible box is still governed
+                            by the global img rule. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element -- authenticated generator preview, remote per-run Storage URL, not a next/image candidate */}
                         <img
                           src={item.generatedImage.renderDownloadURL}
                           alt={`Generated image for brief run ${formatCompactDate(item.createdAt)}`}
+                          {...generatedImageDimensions(item.generatedImage.canvasPreset)}
+                          decoding="async"
+                          loading="lazy"
                         />
                       </div>
                     </div>
