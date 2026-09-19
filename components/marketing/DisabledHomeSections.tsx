@@ -13,19 +13,20 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import AnimatedServiceCards from '@/components/AnimatedServiceCards';
 import NeighborhoodCard from './NeighborhoodCard';
 
-export function PersonalizedCareCarousel() {
-  return (
-    <div id="home-personalized-care-pin-stage">
-      <div id="home-personalized-care-scroll-window">
-        <AnimatedServiceCards />
-      </div>
-    </div>
-  );
-}
+// PersonalizedCareCarousel (the AnimatedServiceCards-based version of this
+// section) used to live here. It moved to
+// app/playground/service-cards/PersonalizedCareCarouselExperiment.tsx so
+// AnimatedServiceCards.tsx's GSAP import stays out of this file's — and so
+// HomePageContent's — module graph entirely (plans/010 P2.2 / P3.6): a
+// `{false && ...}` call site never runs the import, but does not stop the
+// bundler from having to account for it. See that file for how to restore it.
 
+// This whole section is gated off at its `{false && <OtherServicesTeaser />}`
+// call site (plans/002 P2A) and its icons are tiny (~24px) decorative SVGs
+// pulled by className, not content photography — not worth a next/image
+// wrapper for a section that never renders in production.
 export function OtherServicesTeaser() {
   const router = useRouter();
   return (
@@ -38,6 +39,7 @@ export function OtherServicesTeaser() {
         </div>
         <div className="grid-3" id="home-other-services-grid" style={{ gap: '32px' }}>
           <div className="service-card" onClick={() => router.push('/#home-personalized-care-section')}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- disabled section, decorative SVG icon */}
             <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-senior.svg" alt="" loading="lazy" /></div>
             <h3>Senior Dog Visits</h3>
             <p>Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.</p>
@@ -45,6 +47,7 @@ export function OtherServicesTeaser() {
             <div className="price-tax-note" style={{ fontSize: '12px', color: 'var(--mid-gray)', fontWeight: 400, marginTop: '2px' }}>+ sales tax</div>
           </div>
           <div className="service-card" onClick={() => router.push('/#home-personalized-care-section')}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- disabled section, decorative SVG icon */}
             <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-boarding.svg" alt="" loading="lazy" /></div>
             <h3>Boarding &amp; Overnight Sitting</h3>
             <p>Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.</p>
@@ -53,6 +56,7 @@ export function OtherServicesTeaser() {
             <div className="svc-badge">7+ day discounts</div>
           </div>
           <div className="service-card" onClick={() => router.push('/#home-personalized-care-section')}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- disabled section, decorative SVG icon */}
             <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-cat.svg" alt="" loading="lazy" /></div>
             <h3>Cat Visits</h3>
             <p>Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We&apos;ll also water plants, bring in the mail, and keep an eye on your home while you&apos;re away.</p>

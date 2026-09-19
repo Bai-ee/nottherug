@@ -6,6 +6,7 @@ import {
   DARK_SECTION_SELECTOR,
   PAW_WALK_UNITS,
   PAW_WALK_WINDOWS,
+  pawStepsForRouteLength,
 } from '@/lib/marketing/paw-walk-path';
 import {
   clearStoredPath,
@@ -184,6 +185,55 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
   return placed;
 }
 
+/** Sample count for the length ESTIMATE only (not the real per-print
+    placement in layoutPawWalk, which needs GAIT.samples' finer resolution to
+    place individual prints accurately). A route-length sum converges fast —
+    100 samples is within a percent or two of GAIT.samples' 1400 — and this
+    runs in a layout effect on every mount, so keeping it cheap matters more
+    than the extra precision would. */
+const ESTIMATE_SAMPLES = 100;
+
+/**
+ * DOM-measuring half of the print-count estimate (see `pawStepsForRouteLength`
+ * for the arithmetic half). Samples the route the same way `layoutPawWalk`
+ * does — same page-box scaling, coarser sample count (see ESTIMATE_SAMPLES) —
+ * but only needs the total pixel length, not a per-print placement, so it can
+ * run before the real print count is known. `fallbackPawSize` is used only
+ * when the tuning has no fixed size (0 = "use the CSS clamp"); the shipped
+ * default has a fixed size, so this DOM read is skipped in production.
+ */
+export function estimateRequiredPawSteps(
+  layer: HTMLElement,
+  tuning: PawWalkTuning,
+  fallbackPawSize: number
+): number {
+  const page = layer.parentElement;
+  const path = layer.querySelector<SVGPathElement>('#home-paw-walk-path');
+  if (!page || !path) return 0;
+
+  const pageW = page.offsetWidth;
+  const pageH = page.offsetHeight;
+  const box = (path.ownerSVGElement ?? path.closest('svg'))?.viewBox.baseVal;
+  const sx = pageW / (box?.width || PAW_WALK_UNITS);
+  const sy = pageH / (box?.height || PAW_WALK_UNITS);
+
+  const total = path.getTotalLength();
+  let routeLength = 0;
+  let prevX = 0;
+  let prevY = 0;
+  for (let k = 0; k <= ESTIMATE_SAMPLES; k++) {
+    const p = path.getPointAtLength((total * k) / ESTIMATE_SAMPLES);
+    const x = p.x * sx;
+    const y = p.y * sy;
+    if (k > 0) routeLength += Math.hypot(x - prevX, y - prevY);
+    prevX = x;
+    prevY = y;
+  }
+
+  const pawSize = tuning.size > 0 ? tuning.size : fallbackPawSize;
+  return pawStepsForRouteLength(routeLength, pawSize, tuning.strideRatio);
+}
+
 /**
  * Scroll-scrubbed paw walk down the home page, starting at the gate section
  * (PAW_WALK_GATE_SELECTOR) so the hero scrolls clean. Each print is pinned to
@@ -200,9 +250,18 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
 export function useHomePawWalk(
   layerRef: RefObject<HTMLElement | null>,
   tuning: PawWalkTuning = PAW_WALK_DEFAULTS,
+  /** How many `.home-paw-step` prints are currently mounted. Passed back in
+      (rather than read from the DOM) so this effect re-runs — and rebuilds
+      against the bigger set — the moment the caller mounts more of them. */
+  renderedStepCount: number,
   /** Reports the print size the CSS clamp resolved to, so the tuner's size
       slider can start from what is actually on screen. */
-  onMeasure?: (pawSize: number) => void
+  onMeasure?: (pawSize: number) => void,
+  /** Called with the measured requirement when the route needs more prints
+      than are currently mounted (first layout, or a resize that made the
+      page taller). The caller owns the actual DOM count and re-renders with
+      enough of a buffer that this rarely fires twice in a row. */
+  onRequireSteps?: (required: number) => void
 ) {
   // Re-running on every slider move is what makes the tuner feel live: the
   // route is re-walked and the timeline rebuilt from the new numbers.
@@ -216,6 +275,17 @@ export function useHomePawWalk(
     if (!layer) return;
 
     applyStoredPath(layer);
+
+    // The route may need more prints than are currently mounted (first paint
+    // before the real count is known, or a resize that made the page taller).
+    // Bail and let the caller re-render with enough of them — this effect
+    // re-runs automatically once renderedStepCount changes.
+    const measuredFallback = layer.querySelector<HTMLElement>('.home-paw-step')?.offsetWidth || 44;
+    const required = estimateRequiredPawSteps(layer, tuning, measuredFallback);
+    if (onRequireSteps && required > renderedStepCount) {
+      onRequireSteps(required);
+      return;
+    }
 
     if (prefersReducedMotion()) {
       layoutPawWalk(layer, tuning);
@@ -235,6 +305,16 @@ export function useHomePawWalk(
 
         ctx = gsap.context(() => {
           const build = () => {
+            // A resize can grow the route past what's mounted; same bail as
+            // above, so the next ScrollTrigger refresh (or the effect re-run
+            // below) lays out against the bigger set instead of leaving the
+            // last stretch of a newly-taller page bare.
+            const fallback = layer.querySelector<HTMLElement>('.home-paw-step')?.offsetWidth || 44;
+            const stillRequired = estimateRequiredPawSteps(layer, tuning, fallback);
+            if (onRequireSteps && stillRequired > renderedStepCount) {
+              onRequireSteps(stillRequired);
+              return null;
+            }
             const placed = layoutPawWalk(layer, tuning);
             if (!placed.length) return null;
             onMeasure?.(placed[0].el.offsetWidth);
@@ -306,7 +386,7 @@ export function useHomePawWalk(
     };
     // tuning is reconstructed on every change; tuningKey is its stable identity.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layerRef, tuningKey, onMeasure]);
+  }, [layerRef, tuningKey, renderedStepCount, onMeasure, onRequireSteps]);
 
   // Dev path editor, mounted once. Deliberately NOT keyed on tuningKey: every
   // enable re-stretches the route into edit space, so rebuilding it per slider

@@ -1,6 +1,3 @@
-'use client';
-
-import { useRef } from 'react';
 import SiteNav from '@/components/SiteNav';
 import MeetGreetForm from '@/components/MeetGreetForm';
 import HomeHero from './HomeHero';
@@ -16,10 +13,8 @@ import WelcomeWalkModal from './WelcomeWalkModal';
 import HomeIntroOverlay from './HomeIntroOverlay';
 import HomePawWalk from './HomePawWalk';
 import HowItWorksStrip from './HowItWorksStrip';
-import { useSectionReveals } from './hooks/useSectionReveals';
-import { useScrollToTopOnLoad } from './hooks/useScrollToTopOnLoad';
+import HomeSectionRevealShell from './HomeSectionRevealShell';
 import {
-  PersonalizedCareCarousel,
   OtherServicesTeaser,
   WeekdayBenefits,
   VisitIncludes,
@@ -27,13 +22,18 @@ import {
   NeighborhoodTeaser,
 } from './DisabledHomeSections';
 
+// Server Component: this file composes the page but owns no browser state
+// itself. ProofMarquee, WalkConceptsMarquee, TrustBar, TeamBand, ClosingTrust,
+// FeaturedReviews and SiteFooter carry no 'use client' of their own, so
+// rendering them here (rather than from inside a client file) keeps them, and
+// everything they import, out of the homepage's client JS. The scroll/reveal
+// orchestration that used to run at this level now lives in
+// HomeSectionRevealShell, the one client boundary this page needs; everything
+// else already client-side (HomeHero, ServicesPreview, HowItWorksStrip,
+// HomePawWalk, HomeIntroOverlay, WelcomeWalkModal) keeps its own 'use client'
+// and is passed in as children/direct JSX, not imported by the shell itself —
+// see that file's comment for why that distinction matters here.
 export default function HomePageContent() {
-  const pageRef = useRef<HTMLDivElement | null>(null);
-  // Home always opens at the top — no restored offset mid-page while the
-  // reveals replay from the start.
-  useScrollToTopOnLoad();
-  useSectionReveals(pageRef);
-
   return (
     <>
       {/* Loading screen. First in the tree so its inline gate script runs
@@ -49,7 +49,7 @@ export default function HomePageContent() {
 
       {/* id + "active" class kept: globals.css gates several homepage-only
           masking-tape decorations on `#page-home.active` / `#page-home .foo`. */}
-      <div id="page-home" className="page active" ref={pageRef}>
+      <HomeSectionRevealShell>
         {/* Paw trail walking the whole page along an editable SVG route.
             First child so it measures #page-home, and z-indexed above the
             sections it crosses — see lib/marketing/paw-walk-path.ts. */}
@@ -100,9 +100,11 @@ export default function HomePageContent() {
         <WalkConceptsMarquee />
 
         {/* Animated product carousel — disabled per current direction; the
-            static rate cards in ServicesPreview replace it. Left in place
-            (not deleted) in case it comes back. */}
-        {false && <PersonalizedCareCarousel />}
+            static rate cards in ServicesPreview replace it. The
+            AnimatedServiceCards-based version of this section now lives at
+            app/playground/service-cards/PersonalizedCareCarouselExperiment.tsx
+            instead of being gated here, so its GSAP import stays out of this
+            route's module graph — see that file for how to bring it back. */}
 
         {false && <OtherServicesTeaser />}
 
@@ -153,7 +155,7 @@ export default function HomePageContent() {
         {false && <VisitIncludes />}
         {false && <FounderPullQuote />}
         {false && <NeighborhoodTeaser />}
-      </div>
+      </HomeSectionRevealShell>
     </>
   );
 }

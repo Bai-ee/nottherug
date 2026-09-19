@@ -5,7 +5,6 @@ import {
   Oswald,
   Bebas_Neue,
   Courier_Prime,
-  Space_Mono,
 } from "next/font/google";
 import "./globals.css";
 
@@ -38,13 +37,10 @@ const courierPrime = Courier_Prime({
   weight: ["400", "700"],
 });
 
-// Dense numeric/tabular text in the admin dashboard. Loaded here with the rest
-// so admin chrome never pays for a render-blocking stylesheet import.
-const spaceMono = Space_Mono({
-  variable: "--font-mono-data",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+// Space Mono (dense numeric/tabular text) moved to app/admin/layout.tsx: it
+// has no public-page consumer (grep app/globals.css and every .tsx for
+// `--font-mono-data` before moving this back), so loading it here charged
+// every public page for a font only the admin dashboard is meant to use.
 
 const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
 const OG_IMAGE = `${SITE_URL}/img/og_meta_img_contact.png`;
@@ -87,7 +83,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable} ${spaceMono.variable}`}
+      className={`${fraunces.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable}`}
     >
       <body>
         {children}
