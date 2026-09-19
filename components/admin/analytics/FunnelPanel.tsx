@@ -18,53 +18,57 @@ function humanizeStep(step: string): string {
  * smaller one as a tracking bug (docs/analytics-operations.md explains the
  * same two cases). Row order follows BOOKING_STEPS from
  * lib/analytics/events.ts — the contract order, never a local re-sort.
+ *
+ * Presentation: paper card; rows use rc-row/rc-value instead of a <table>.
+ * The phone-consult row's inline aside moves to its own form-note line
+ * below the row (still the same words); the homepage's .divider marks the
+ * break before the funnel's two explanatory notes, in place of the old
+ * border-top.
  */
 export function FunnelPanel({ funnel }: { funnel: BookingFunnel }) {
   return (
-    <section id="admin-analytics-funnel-panel" className="analytics-panel">
-      <div className="analytics-panel-head">
-        <h2 className="analytics-panel-title">Booking Funnel</h2>
-      </div>
-      <div className="analytics-panel-body">
-        <table className="analytics-table">
-          <thead>
-            <tr><th>Step</th><th className="analytics-table-num">Visits</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Form Started</td>
-              <td className="analytics-table-num">{funnel.formStarts.toLocaleString('en-US')}</td>
-            </tr>
-            {funnel.steps.map((row) => (
-              <tr key={row.step}>
-                <td>{humanizeStep(row.step)}</td>
-                <td className="analytics-table-num">{row.sessions.toLocaleString('en-US')}</td>
-              </tr>
-            ))}
-            <tr>
-              <td>Scheduling Dialog Opened</td>
-              <td className="analytics-table-num">{funnel.dialogOpened.toLocaleString('en-US')}</td>
-            </tr>
-            <tr>
-              <td>Scheduled via Calendly</td>
-              <td className="analytics-table-num">{funnel.calendlyScheduled.toLocaleString('en-US')}</td>
-            </tr>
-            <tr>
-              <td>Phone-Consultation Path <span className="analytics-note">(saved a lead without opening the dialog — a completed inquiry, not a drop-off)</span></td>
-              <td className="analytics-table-num">{funnel.phoneConsultPath.toLocaleString('en-US')}</td>
-            </tr>
-          </tbody>
-        </table>
+    <section id="admin-analytics-funnel-panel" className="card card-pad">
+      <div className="stamp-label">Booking Funnel</div>
+      <div className="admin-analytics-panel-body">
+        <div id="admin-analytics-funnel-rows">
+          <div className="rc-row">
+            <span>Form Started</span>
+            <span className="rc-value">{funnel.formStarts.toLocaleString('en-US')}</span>
+          </div>
+          {funnel.steps.map((row) => (
+            <div key={row.step} className="rc-row">
+              <span>{humanizeStep(row.step)}</span>
+              <span className="rc-value">{row.sessions.toLocaleString('en-US')}</span>
+            </div>
+          ))}
+          <div className="rc-row">
+            <span>Scheduling Dialog Opened</span>
+            <span className="rc-value">{funnel.dialogOpened.toLocaleString('en-US')}</span>
+          </div>
+          <div className="rc-row">
+            <span>Scheduled via Calendly</span>
+            <span className="rc-value">{funnel.calendlyScheduled.toLocaleString('en-US')}</span>
+          </div>
+          <div className="rc-row">
+            <span>Phone-Consultation Path</span>
+            <span className="rc-value">{funnel.phoneConsultPath.toLocaleString('en-US')}</span>
+          </div>
+          <p className="form-note">
+            (saved a lead without opening the dialog — a completed inquiry, not a drop-off)
+          </p>
+        </div>
 
-        <div className="analytics-note-block">
-          <div className="analytics-note">
+        <div className="divider" />
+
+        <div id="admin-analytics-funnel-notes">
+          <p className="form-note">
             Form Started also counts the short form on the home page, which has no question steps of its own, so it is
             normally higher than the step rows below it.
-          </div>
-          <div className="analytics-note">
+          </p>
+          <p className="form-note">
             Scheduling Dialog Opened also counts people who picked a time straight from the welcome pop-up without
             answering the questions, so it can be higher than the step above it.
-          </div>
+          </p>
         </div>
       </div>
     </section>

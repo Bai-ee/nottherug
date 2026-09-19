@@ -1,373 +1,106 @@
 /* Shared admin chrome — AdminShell / AdminNav / AdminFooter.
    Only app/admin/layout.tsx imports this, so it loads on /admin routes only.
-   Tokens below are derived from the real homepage palette in app/globals.css
-   (--paper, --olive, --sage-light, --gold, --font-stamp) — no invented names.
-   Page CONTENT styles stay in each page's own inline <style> string; this
-   file owns chrome (topbar, nav, footer) only. */
+   The admin area now wears the marketing skin: the nav band, buttons, cards,
+   stamped labels and paper background all come from app/globals.css. What is
+   left here is layout plumbing that the marketing pages do not need — the
+   generator's full-viewport mode, and the page header row. */
 
-
-:root {
-  /* Ground: the homepage's dark olive, replacing the old off-palette #55624C. */
-  --admin-ground: var(--olive);
-  --admin-chrome-bg: color-mix(in srgb, var(--olive) 90%, black 10%);
-  --admin-surface: color-mix(in srgb, var(--olive) 85%, black 15%);
-  --admin-line: color-mix(in srgb, var(--paper) 16%, transparent);
-  --admin-ink: var(--paper);
-  --admin-muted: color-mix(in srgb, var(--paper) 55%, transparent);
-  --admin-faint: color-mix(in srgb, var(--paper) 34%, transparent);
-  --admin-active: var(--sage-light);
-  --admin-accent: var(--gold);
-  --admin-topbar-h: 48px;
-  --admin-nav-h: 44px;
-  --admin-chrome-h: calc(var(--admin-topbar-h) + var(--admin-nav-h));
+/* The dashboard is a normal document like every marketing page: the nav is
+   fixed, so the content clears it by the nav's own height. */
+#admin-shell-main {
+  padding-top: calc(var(--nav-h) + 48px);
+  padding-bottom: 64px;
+  min-height: 60vh;
 }
 
-/* Replaces the old `<style>{html, body { background: #55624C !important }}</style>`
-   hack that used to live in app/admin/layout.tsx. */
-html, body { background: var(--admin-ground); margin: 0; padding: 0; }
+/* Page header row: the stamped label + title on the left, the page's own
+   controls, the signed-in address and Sign Out on the right. */
+#admin-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+#admin-page-title { margin: 6px 0 0; }
+#admin-page-header-controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+#admin-page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#admin-page-header-email { margin: 0; }
 
-.admin-shell {
+#admin-chrome-footer { padding: 0 0 56px; }
+#admin-chrome-footer .container { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+#admin-chrome-footer-value { margin: 0; }
+
+/* The generator is a canvas editor that sizes itself against the viewport
+   and cannot scroll as a document, so it keeps the old full-viewport column. */
+.admin-shell[data-admin-layout='fixed'] {
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--admin-ground);
-  color: var(--admin-ink);
   overflow: hidden;
 }
-
-/* ── TOPBAR ───────────────────────────────────────────────────────────── */
-#admin-chrome-topbar {
-  flex-shrink: 0;
-  height: var(--admin-topbar-h);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 20px;
-  background: var(--admin-chrome-bg);
-  border-bottom: 1px solid var(--admin-line);
-}
-.admin-chrome-topbar-left,
-.admin-chrome-topbar-right { display: flex; align-items: center; gap: 14px; min-width: 0; }
-.admin-chrome-brand {
-  font-family: var(--font-stamp);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--admin-faint);
-  flex-shrink: 0;
-}
-.admin-chrome-vsep { width: 1px; height: 12px; background: var(--admin-line); flex-shrink: 0; }
-.admin-chrome-title {
-  font-family: var(--font-stamp);
-  font-size: 14px;
-  color: var(--admin-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.admin-chrome-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.admin-chrome-email {
-  font-family: var(--font-mono-data), 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--admin-faint);
-  display: none;
-  white-space: nowrap;
-}
-.admin-chrome-signout {
-  font-family: var(--font-stamp);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--admin-muted);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 2px;
-  flex-shrink: 0;
-  transition: color 150ms;
-}
-.admin-chrome-signout:hover { color: var(--admin-ink); }
-
-/* ── NAV ──────────────────────────────────────────────────────────────── */
-#admin-chrome-nav {
-  flex-shrink: 0;
-  height: var(--admin-nav-h);
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  background: var(--admin-surface);
-  border-bottom: 1px solid var(--admin-line);
-  padding: 0 12px;
-}
-.admin-chrome-nav-link {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 0 14px;
-  font-family: var(--font-stamp);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--admin-muted);
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  transition: color 150ms, border-color 150ms;
-}
-.admin-chrome-nav-link:hover { color: var(--admin-ink); }
-.admin-chrome-nav-link-active { color: var(--admin-ink); border-bottom-color: var(--admin-active); }
-
-.admin-chrome-signout:focus-visible,
-.admin-chrome-nav-link:focus-visible {
-  outline: 2px solid var(--admin-accent);
-  outline-offset: 2px;
-}
-
-/* ── MAIN ─────────────────────────────────────────────────────────────── */
-/* Scrolls internally so topbar/nav/footer stay put — required by the
-   generator page, which is a fixed-viewport canvas app (see its own
-   `.ed` rule, sized against --admin-chrome-h). */
-#admin-shell-main {
+.admin-shell[data-admin-layout='fixed'] #admin-shell-main {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+  padding-top: var(--nav-h);
+  padding-bottom: 0;
 }
 
-/* ── FOOTER ───────────────────────────────────────────────────────────── */
-#admin-chrome-footer {
-  flex-shrink: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 8px 20px;
-  background: var(--admin-chrome-bg);
-  border-top: 1px solid var(--admin-line);
-  font-family: var(--font-stamp);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--admin-faint);
-}
-.admin-chrome-footer-value {
-  font-family: var(--font-mono-data), 'Space Mono', monospace;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--admin-muted);
-}
+/* ── ANALYTICS DASHBOARD (plan A5) ──────────────────────────────────────────────
+   The owner-facing site-performance view at /admin/dashboard. Restyled onto
+   the marketing design system (see app/globals.css) — every visual property
+   (color, type, radius, shadow) now comes from homepage classes: card,
+   stamp-label, hero-stat-*, rc-row/rc-label/rc-value, btn, badge, form-note,
+   text-sage/text-gold/text-terra/text-mid. Nothing below sets a color, font
+   or shadow — it is layout-only plumbing for structure the marketing
+   classes don't already provide on their own (grouping panels into a grid,
+   spacing report rows, sizing the trend chart). */
 
-@media (min-width: 768px) {
-  .admin-chrome-email { display: inline; }
-}
+/* Replaces the old .analytics-page: stacks every panel with even spacing.
+   Width/side-gutter already come from AdminShell's .container. */
+#admin-analytics-dashboard-grid { display: grid; gap: 24px; }
 
-@media (min-width: 900px) {
-  #admin-chrome-topbar { padding: 0 32px; }
-  #admin-chrome-nav { padding: 0 32px; }
-  #admin-chrome-footer { padding: 8px 32px; }
-}
-
-/* ── ANALYTICS DASHBOARD (plan A5) ───────────────────────────────────────
-   The owner-facing site-performance view at /admin/dashboard. Numbers are
-   the hero: neutral paper for the biggest figure, one accent (gold) used
-   sparingly for the live indicator and active controls, no gradients or
-   glass. Same token layer as the chrome above — no new colors invented. */
-
-.analytics-view { min-height: 100%; background: var(--admin-ground); color: var(--admin-ink); }
-.analytics-page { max-width: 920px; margin: 0 auto; padding: 20px 16px 72px; display: grid; gap: 16px; }
-
-.analytics-panel {
-  border: 1px solid var(--admin-line);
-  border-radius: 14px;
-  background: var(--admin-surface);
-  padding: 18px;
-  display: grid;
-  gap: 10px;
-}
-.analytics-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.analytics-panel-title { font-family: var(--font-stamp); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--admin-ink); }
-.analytics-panel-body { display: grid; gap: 12px; }
-
-.analytics-label {
-  font-family: var(--font-stamp);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--admin-muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.analytics-note { font-size: 12px; line-height: 1.5; color: var(--admin-faint); }
-.analytics-note-warn { color: var(--admin-accent); }
-
-.analytics-link {
-  font-family: var(--font-stamp);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--admin-active);
-  text-decoration: none;
-}
-.analytics-link:hover { text-decoration: underline; }
-
-/* Headline row: inquiries (the biggest number on the page) + inquiry rate. */
-.analytics-headline-row { display: grid; grid-template-columns: 1fr; gap: 16px; }
-.analytics-headline-tile { display: grid; gap: 6px; align-content: start; }
-.analytics-hero-number {
-  font-family: var(--font-mono-data), 'Space Mono', monospace;
-  font-size: clamp(48px, 14vw, 88px);
-  line-height: 1;
-  color: var(--admin-ink);
-  font-variant-numeric: tabular-nums;
-}
-.analytics-secondary-number {
-  font-family: var(--font-mono-data), 'Space Mono', monospace;
-  font-size: clamp(26px, 6vw, 36px);
-  line-height: 1;
-  color: var(--admin-active);
-  font-variant-numeric: tabular-nums;
-}
-
-.analytics-stat-panel { gap: 6px; }
-
-/* Live tile: rolling 60 minutes, always present, refreshed only on load —
-   the gold dot is the one place this view uses the accent color to mean
-   "right now" rather than decoration. */
-.analytics-live-tile { gap: 8px; }
-.analytics-live-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--admin-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 25%, transparent);
-}
-.analytics-live-row { display: flex; gap: 28px; }
-
-/* Range selector */
-#admin-analytics-range-selector { display: flex; gap: 6px; flex-wrap: wrap; }
-.analytics-range-btn {
-  font-family: var(--font-stamp);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--admin-muted);
-  background: var(--admin-surface);
-  border: 1px solid var(--admin-line);
-  border-radius: 999px;
-  min-height: 36px;
-  padding: 0 16px;
-  cursor: pointer;
-}
-.analytics-range-btn:disabled { opacity: 0.6; cursor: default; }
-.analytics-range-btn-active { color: var(--admin-ground); background: var(--admin-active); border-color: transparent; }
-
-/* Controls row: range selector + real/test data toggle, side by side on
-   wider screens and stacked on a phone. */
+/* Controls row: range selector + real/test toggle, side by side on wider
+   screens and stacked on a phone. */
 #admin-analytics-controls-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
-#admin-analytics-data-mode-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
+#admin-analytics-range-selector { display: flex; gap: 6px; flex-wrap: wrap; }
+#admin-analytics-data-mode-toggle { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
-/* Test-data mode. Gold (the accent already used for "right now" and for
-   warning callouts) marks the active button and outlines the whole view, so
-   test/preview traffic can never be mistaken at a glance for real business
-   numbers. The two datasets are queried separately and never blended. */
-.analytics-mode-btn-test-active { color: var(--admin-ground); background: var(--admin-accent); border-color: transparent; }
-.analytics-test-mode .analytics-page {
-  border: 1px dashed color-mix(in srgb, var(--admin-accent) 60%, transparent);
-  border-radius: 14px;
-}
+/* Shared panel-head row — a stamp-label heading plus an optional badge or
+   legend on the right — reused by every card panel that needs one. */
+.admin-analytics-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.admin-analytics-panel-body { display: grid; gap: 12px; }
 
-/* Two numbers side by side inside one stat panel (visits / page views). */
-.analytics-stat-row { display: flex; gap: 28px; flex-wrap: wrap; }
+/* Groups of hero-stat-item/hero-stat-divider pairs inside one stat card.
+   The homepage's own hero-stats-strip is a flex row over a dark paper-grain
+   band; this reproduces just the flex layout, without that background. */
+.admin-analytics-hero-stats-row { display: flex; gap: 24px; flex-wrap: wrap; }
 
-/* Trend sparkline — plain inline SVG, no charting library. */
-.analytics-legend { display: flex; gap: 14px; }
-.analytics-legend-item {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-mono-data), 'Space Mono', monospace;
-  font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
-  color: var(--admin-faint);
-}
-.analytics-legend-swatch { width: 10px; height: 2px; display: inline-block; }
-.analytics-legend-swatch-sessions { background: var(--admin-active); }
-.analytics-legend-swatch-pageviews { background: var(--admin-faint); }
-.analytics-trend-svg { width: 100%; height: 110px; display: block; }
-.analytics-trend-line { stroke-width: 2; vector-effect: non-scaling-stroke; }
-.analytics-trend-line-sessions { stroke: var(--admin-active); }
-.analytics-trend-line-pageviews { stroke: var(--admin-faint); stroke-dasharray: 3 3; }
-.analytics-trend-axis { display: flex; justify-content: space-between; font-family: var(--font-mono-data), 'Space Mono', monospace; font-size: 10px; color: var(--admin-faint); }
+/* Trend sparkline — plain inline SVG, no charting library (unchanged: two
+   polylines on a fixed grid). Each line's color comes from stroke=
+   "currentColor" in the SVG markup plus a text-sage/text-mid className on
+   the <path> itself, so no new color is declared here — only geometry. */
+#admin-analytics-trend-svg { width: 100%; height: 110px; display: block; }
+.admin-analytics-trend-line { stroke-width: 2; vector-effect: non-scaling-stroke; }
+.admin-analytics-trend-line-pageviews { stroke-dasharray: 3 3; }
+#admin-analytics-trend-axis { display: flex; justify-content: space-between; }
 
-/* Tables — rigid grid alignment, mono figures right-aligned. */
-.analytics-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.analytics-table th {
-  text-align: left;
-  font-family: var(--font-stamp);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--admin-faint);
-  padding: 0 0 8px;
-  border-bottom: 1px solid var(--admin-line);
-}
-.analytics-table td { padding: 8px 0; border-bottom: 1px solid var(--admin-line); color: var(--admin-ink); vertical-align: top; }
-.analytics-table tr:last-child td { border-bottom: none; }
-.analytics-table-num {
-  text-align: right;
-  font-family: var(--font-mono-data), 'Space Mono', monospace;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.analytics-table-kind { color: var(--admin-faint); }
-.analytics-empty { font-size: 13px; color: var(--admin-faint); font-style: italic; }
-
-.analytics-note-block { display: grid; gap: 6px; padding-top: 4px; border-top: 1px solid var(--admin-line); }
-.analytics-tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.analytics-tag {
-  font-family: var(--font-mono-data), 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--admin-faint);
-  border: 1px solid var(--admin-line);
-  border-radius: 999px;
-  padding: 3px 9px;
-}
-
-/* Status callouts — one shared shape, three tints. No red/amber tokens exist
-   in this file yet, so these read off the real homepage globals (--gold,
-   --terracotta) rather than inventing new ones. */
-.analytics-meta-banner { display: grid; gap: 8px; }
-.analytics-callout {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--admin-line);
-  background: color-mix(in srgb, var(--admin-surface) 60%, transparent);
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--admin-ink);
-  display: flex;
-  align-items: center;
+/* Report rows here read as label + value pairs, not the sample walk-report's
+   icon-and-caption cluster, so the value is pushed to the row's far edge
+   instead of sitting close to its label. */
+#admin-analytics-source-table .rc-row,
+#admin-analytics-page-table .rc-row,
+#admin-analytics-cta-table .rc-row,
+#admin-analytics-funnel-panel .rc-row {
   justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.analytics-callout-warn { border-color: color-mix(in srgb, var(--gold) 45%, transparent); color: var(--gold-light); }
-.analytics-callout-error { border-color: color-mix(in srgb, var(--terracotta) 45%, transparent); color: var(--terracotta-light); }
-.analytics-retry-btn {
-  font-family: var(--font-stamp);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: inherit;
-  background: none;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  padding: 4px 12px;
-  cursor: pointer;
-  flex-shrink: 0;
+  gap: 16px;
 }
 
-@media (min-width: 560px) {
-  .analytics-headline-row { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; }
-}
+/* Error banner: message and Retry button share one row on wide screens. */
+#admin-analytics-error-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
 @media (min-width: 900px) {
-  .analytics-page { padding: 24px 24px 96px; }
+  #admin-analytics-dashboard-grid { gap: 28px; }
 }

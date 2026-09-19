@@ -12,32 +12,31 @@ function formatSource(source: string): { kind: string; value: string } {
   return { kind: 'Direct', value: 'includes referrer-stripped traffic' };
 }
 
+/**
+ * Presentation: paper card; rows use the homepage's own report-card row
+ * vocabulary (rc-row/rc-label/rc-value) instead of a <table> — see
+ * app/admin/admin.css for the id-scoped rule that spaces rc-row's label and
+ * value to the row's opposite edges here.
+ */
 export function SourceTable({ sources }: { sources: SourceRow[] }) {
   return (
-    <section id="admin-analytics-source-table" className="analytics-panel">
-      <div className="analytics-panel-head">
-        <h2 className="analytics-panel-title">Traffic Sources</h2>
-      </div>
-      <div className="analytics-panel-body">
+    <section id="admin-analytics-source-table" className="card card-pad">
+      <div className="stamp-label">Traffic Sources</div>
+      <div className="admin-analytics-panel-body">
         {sources.length === 0 ? (
-          <div className="analytics-empty">No sessions in range yet.</div>
+          <p className="text-mid">No sessions in range yet.</p>
         ) : (
-          <table className="analytics-table">
-            <thead>
-              <tr><th>Source</th><th className="analytics-table-num">Sessions</th></tr>
-            </thead>
-            <tbody>
-              {sources.map((row) => {
-                const { kind, value } = formatSource(row.source);
-                return (
-                  <tr key={row.source}>
-                    <td><span className="analytics-table-kind">{kind}</span> {value}</td>
-                    <td className="analytics-table-num">{row.sessions.toLocaleString('en-US')}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div id="admin-analytics-source-rows">
+            {sources.map((row) => {
+              const { kind, value } = formatSource(row.source);
+              return (
+                <div key={row.source} className="rc-row">
+                  <span><span className="rc-label">{kind}</span> {value}</span>
+                  <span className="rc-value">{row.sessions.toLocaleString('en-US')}</span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </section>

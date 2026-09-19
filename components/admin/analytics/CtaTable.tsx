@@ -24,40 +24,37 @@ function categorySlug(category: CtaCategory): string {
  * cannot appear in ctaClicks at all — that section was dead code once the
  * nine stale reserved ids were removed from the contract, and has been
  * deleted rather than kept around unreachable.
+ *
+ * Presentation: paper card; each category is a stamp of its own (rc-label)
+ * over its own set of rc-row/rc-value pairs instead of a per-category
+ * <table>.
  */
 export function CtaTable({ ctaClicks }: { ctaClicks: CtaRow[] }) {
   const clicksById = new Map(ctaClicks.map((row) => [row.cta, row.clicks]));
   const categoriesWithIds = CTA_CATEGORY_ORDER.filter((category) => CATEGORY_GROUPS[category].length > 0);
 
   return (
-    <section id="admin-analytics-cta-table" className="analytics-panel">
-      <div className="analytics-panel-head">
-        <h2 className="analytics-panel-title">CTA Clicks</h2>
-      </div>
-      <div className="analytics-panel-body">
+    <section id="admin-analytics-cta-table" className="card card-pad">
+      <div className="stamp-label">CTA Clicks</div>
+      <div className="admin-analytics-panel-body">
         {categoriesWithIds.length === 0 ? (
-          <div className="analytics-empty">No CTA buttons are configured.</div>
+          <p className="text-mid">No CTA buttons are configured.</p>
         ) : (
           categoriesWithIds.map((category) => {
             const rows = CATEGORY_GROUPS[category]
               .map((id) => ({ id, clicks: clicksById.get(id) ?? 0 }))
               .sort((a, b) => b.clicks - a.clicks);
             return (
-              <div key={category} id={`admin-analytics-cta-group-${categorySlug(category)}`} className="analytics-cta-group">
-                <div className="analytics-label">{category}</div>
-                <table className="analytics-table">
-                  <thead>
-                    <tr><th>Button</th><th className="analytics-table-num">Clicks</th></tr>
-                  </thead>
-                  <tbody>
-                    {rows.map((row) => (
-                      <tr key={row.id}>
-                        <td>{CTA_LABELS[row.id]}</td>
-                        <td className="analytics-table-num">{row.clicks.toLocaleString('en-US')}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div key={category} id={`admin-analytics-cta-group-${categorySlug(category)}`}>
+                <div className="rc-label">{category}</div>
+                <div>
+                  {rows.map((row) => (
+                    <div key={row.id} className="rc-row">
+                      <span>{CTA_LABELS[row.id]}</span>
+                      <span className="rc-value">{row.clicks.toLocaleString('en-US')}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             );
           })

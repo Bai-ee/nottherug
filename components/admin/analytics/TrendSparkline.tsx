@@ -23,6 +23,13 @@ function buildPath(values: number[], max: number): string {
  * direction is read off the shape, not a computed comparison. Deliberately
  * hand-rolled inline SVG (CLAUDE.md: no new dependencies, no chart library)
  * — this is two polylines on a fixed grid, not worth a library.
+ *
+ * Presentation: paper card with a stamp-label heading. The two lines still
+ * need two distinguishable colors and no new color may be declared in
+ * admin.css, so each <path> sets stroke="currentColor" and picks up its
+ * color from a text-sage/text-mid className — colors that already exist in
+ * the marketing system. The legend reuses the same two classes on plain
+ * text instead of a separate swatch element.
  */
 export function TrendSparkline({ points }: { points: DailyTrendPoint[] }) {
   const sessions = points.map((p) => p.sessions);
@@ -35,33 +42,42 @@ export function TrendSparkline({ points }: { points: DailyTrendPoint[] }) {
   };
 
   return (
-    <section id="admin-analytics-trend-panel" className="analytics-panel">
-      <div className="analytics-panel-head">
-        <h2 className="analytics-panel-title">Daily Trend</h2>
-        <div className="analytics-legend">
-          <span className="analytics-legend-item"><i className="analytics-legend-swatch analytics-legend-swatch-sessions" />Sessions</span>
-          <span className="analytics-legend-item"><i className="analytics-legend-swatch analytics-legend-swatch-pageviews" />Pageviews</span>
+    <section id="admin-analytics-trend-panel" className="card card-pad">
+      <div id="admin-analytics-trend-panel-head" className="admin-analytics-panel-head">
+        <div className="stamp-label">Daily Trend</div>
+        <div id="admin-analytics-trend-legend">
+          <span className="text-sage">Sessions</span>{' · '}
+          <span className="text-mid">Pageviews</span>
         </div>
       </div>
-      <div className="analytics-panel-body">
+      <div className="admin-analytics-panel-body">
         {points.length === 0 ? (
-          <div className="analytics-empty">No days in range yet.</div>
+          <p className="text-mid">No days in range yet.</p>
         ) : (
           <>
             <svg
               id="admin-analytics-trend-svg"
               viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
               preserveAspectRatio="none"
-              className="analytics-trend-svg"
               role="img"
               aria-label="Daily sessions and pageviews trend"
             >
-              <path d={buildPath(pageviews, max)} className="analytics-trend-line analytics-trend-line-pageviews" fill="none" />
-              <path d={buildPath(sessions, max)} className="analytics-trend-line analytics-trend-line-sessions" fill="none" />
+              <path
+                d={buildPath(pageviews, max)}
+                stroke="currentColor"
+                className="text-mid admin-analytics-trend-line admin-analytics-trend-line-pageviews"
+                fill="none"
+              />
+              <path
+                d={buildPath(sessions, max)}
+                stroke="currentColor"
+                className="text-sage admin-analytics-trend-line"
+                fill="none"
+              />
             </svg>
-            <div className="analytics-trend-axis">
-              <span>{shortDate(points[0].date)}</span>
-              {points.length > 1 ? <span>{shortDate(points[points.length - 1].date)}</span> : null}
+            <div id="admin-analytics-trend-axis">
+              <span className="form-note">{shortDate(points[0].date)}</span>
+              {points.length > 1 ? <span className="form-note">{shortDate(points[points.length - 1].date)}</span> : null}
             </div>
           </>
         )}

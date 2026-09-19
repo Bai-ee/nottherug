@@ -9,6 +9,12 @@
  * State lives in the URL (?testMode=1) so a reload, a copied link or a
  * bookmark keeps showing the same mode instead of silently snapping back to
  * real data.
+ *
+ * Presentation: same .btn/.btn-sm/.btn-primary "active" treatment as
+ * RangeSelector, so both controls in the row read as one button system.
+ * Test mode also gets its own badge-gold marker next to the buttons — the
+ * one piece of "this is not real data" chrome that isn't just button color,
+ * per the hard requirement that test mode stay visually unmistakable.
  */
 export function DataModeToggle({
   testMode,
@@ -23,7 +29,7 @@ export function DataModeToggle({
     <div id="admin-analytics-data-mode-toggle" role="group" aria-label="Data mode">
       <button
         type="button"
-        className={testMode ? 'analytics-range-btn' : 'analytics-range-btn analytics-range-btn-active'}
+        className={testMode ? 'btn btn-sm btn-outline' : 'btn btn-sm btn-primary'}
         onClick={() => onChange(false)}
         disabled={disabled}
         aria-pressed={!testMode}
@@ -32,13 +38,16 @@ export function DataModeToggle({
       </button>
       <button
         type="button"
-        className={testMode ? 'analytics-range-btn analytics-mode-btn-test-active' : 'analytics-range-btn'}
+        className={testMode ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline'}
         onClick={() => onChange(true)}
         disabled={disabled}
         aria-pressed={testMode}
       >
         Test Data
       </button>
+      {testMode ? (
+        <span id="admin-analytics-test-mode-badge" className="badge badge-gold">Test Data Active</span>
+      ) : null}
     </div>
   );
 }

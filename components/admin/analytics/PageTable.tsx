@@ -21,43 +21,38 @@ const ROUTE_LABELS: Record<string, string> = {
   '/safety': 'Safety',
 };
 
+/**
+ * Presentation: paper card; rows use rc-row/rc-label/rc-value instead of a
+ * <table>. Views and visits are combined into one rc-value string per row
+ * (rather than a second value column) to keep each row to the label+value
+ * pair the rc-row spacing rule in app/admin/admin.css expects.
+ */
 export function PageTable({ pages }: { pages: PageRow[] }) {
   return (
-    <section id="admin-analytics-page-table" className="analytics-panel">
-      <div className="analytics-panel-head">
-        <h2 className="analytics-panel-title">Pages Viewed</h2>
-      </div>
-      <div className="analytics-panel-body">
+    <section id="admin-analytics-page-table" className="card card-pad">
+      <div className="stamp-label">Pages Viewed</div>
+      <div className="admin-analytics-panel-body">
         {pages.length === 0 ? (
-          <div className="analytics-empty">No page views in range yet.</div>
+          <p className="text-mid">No page views in range yet.</p>
         ) : (
-          <table className="analytics-table">
-            <thead>
-              <tr>
-                <th>Page</th>
-                <th className="analytics-table-num">Views</th>
-                <th className="analytics-table-num">Visits</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pages.map((row) => (
-                <tr key={row.route}>
-                  <td>
-                    <span className="analytics-table-kind">{ROUTE_LABELS[row.route] ?? row.route}</span> {row.route}
-                  </td>
-                  <td className="analytics-table-num">{row.pageviews.toLocaleString('en-US')}</td>
-                  <td className="analytics-table-num">{row.sessions.toLocaleString('en-US')}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div id="admin-analytics-page-rows">
+            {pages.map((row) => (
+              <div key={row.route} className="rc-row">
+                <span><span className="rc-label">{ROUTE_LABELS[row.route] ?? row.route}</span> {row.route}</span>
+                <span className="rc-value">
+                  {row.pageviews.toLocaleString('en-US')} views · {row.sessions.toLocaleString('en-US')} visits
+                </span>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-      <div className="analytics-note">
+      <div className="divider" />
+      <p className="form-note">
         Visits counts the visits that reached each page, so that column adds up to more than the total visits when one
         visit reads several pages. Views only covers the pages listed above, so it can add up to less than the page
         views total — a view of any other address is recorded without a page name and gets no row here.
-      </div>
+      </p>
     </section>
   );
 }

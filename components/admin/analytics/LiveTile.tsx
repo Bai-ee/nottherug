@@ -7,6 +7,11 @@ import type { LiveTile as LiveTileData } from '@/lib/analytics/report';
  * selected today/7d/30d range, refreshed only when the report is (re)fetched
  * — never a background poll (that would be the auto-refresh the owner
  * explicitly declined).
+ *
+ * Presentation: paper card, badge-gold as the "this is happening now"
+ * marker (the old pulsing accent dot had no equivalent in the allowed
+ * vocabulary, so this reuses the badge component instead), numbers in the
+ * homepage's own hero-stat-item/hero-stat-num/hero-stat-divider row.
  */
 export function LiveTile({ live }: { live: LiveTileData }) {
   const asOf = live.endIso
@@ -14,22 +19,23 @@ export function LiveTile({ live }: { live: LiveTileData }) {
     : null;
 
   return (
-    <section id="admin-analytics-live-tile" className="analytics-panel analytics-live-tile">
-      <div className="analytics-label">
-        Live — Last {live.windowMinutes} Minutes
-        <span className="analytics-live-dot" aria-hidden="true" />
+    <section id="admin-analytics-live-tile" className="card card-pad">
+      <div id="admin-analytics-live-tile-head" className="admin-analytics-panel-head">
+        <div className="stamp-label">Last {live.windowMinutes} Minutes</div>
+        <span className="badge badge-gold">Live</span>
       </div>
-      <div className="analytics-live-row">
-        <div>
-          <div className="analytics-secondary-number">{live.sessions.toLocaleString('en-US')}</div>
-          <div className="analytics-note">visits</div>
+      <div id="admin-analytics-live-stats-row" className="admin-analytics-hero-stats-row">
+        <div className="hero-stat-item">
+          <div className="hero-stat-num">{live.sessions.toLocaleString('en-US')}</div>
+          <div className="hero-stat-label">Visits</div>
         </div>
-        <div>
-          <div className="analytics-secondary-number">{live.pageviews.toLocaleString('en-US')}</div>
-          <div className="analytics-note">page views</div>
+        <div className="hero-stat-divider" />
+        <div className="hero-stat-item">
+          <div className="hero-stat-num">{live.pageviews.toLocaleString('en-US')}</div>
+          <div className="hero-stat-label">Page Views</div>
         </div>
       </div>
-      <div className="analytics-note">{asOf ? `As of ${asOf} ET · reload the page to update` : 'Reload the page to update'}</div>
+      <p className="form-note">{asOf ? `As of ${asOf} ET · reload the page to update` : 'Reload the page to update'}</p>
     </section>
   );
 }

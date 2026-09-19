@@ -116,56 +116,56 @@ function AdminAnalyticsDashboardContent({
 
   return (
     <AdminShell
-      title="Not The Rug · Site Performance"
+      title="Site Performance"
       email={email}
       onSignOut={signOut}
       lastRefreshed={lastRefreshed}
     >
-      <div
-        id="admin-analytics-content"
-        className={testMode ? 'analytics-view analytics-test-mode' : 'analytics-view'}
-        data-data-mode={testMode ? 'test' : 'real'}
-      >
-        <div className="analytics-page">
+      {/* Restyled onto the marketing design system (see app/admin/admin.css)
+          — every panel below is a paper card; #admin-analytics-dashboard-grid
+          is the only layout plumbing standing in for the old .analytics-page. */}
+      <div id="admin-analytics-dashboard-grid" data-data-mode={testMode ? 'test' : 'real'}>
 
-          {!trackingEnabled ? <TrackingDisabledBanner /> : null}
+        {!trackingEnabled ? <TrackingDisabledBanner /> : null}
 
-          {loading && !synced ? <LoadingBanner /> : null}
-          {error ? <ErrorBanner message={error} onRetry={retry} /> : null}
+        {loading && !synced ? <LoadingBanner /> : null}
+        {error ? <ErrorBanner message={error} onRetry={retry} /> : null}
 
-          {synced ? <ReportMetaBanner meta={view.meta} /> : null}
+        {synced ? <ReportMetaBanner meta={view.meta} /> : null}
 
-          <InquiryHeadline
-            inquiries={view.inquiries}
-            inquiryRate={view.inquiryRate}
-            degraded={degradedLeads}
-            testMode={testMode}
-          />
+        <InquiryHeadline
+          inquiries={view.inquiries}
+          inquiryRate={view.inquiryRate}
+          degraded={degradedLeads}
+          testMode={testMode}
+        />
 
-          <LiveTile live={view.live} />
+        <LiveTile live={view.live} />
 
-          <div id="admin-analytics-controls-row">
-            <RangeSelector value={range} onChange={setRange} disabled={loading} />
-            <DataModeToggle testMode={testMode} onChange={onTestModeChange} disabled={loading} />
-          </div>
-
-          <TrendSparkline points={view.dailyTrend} />
-
-          <VisitsStat pageviews={view.pageviews} sessions={view.sessions} range={range} />
-
-          <EngagedVisitStat engagedVisitPct={view.engagedVisitPct} sessions={view.sessions} />
-
-          <AppointmentsStat appointmentsScheduled={view.appointmentsScheduled} />
-
-          <SourceTable sources={view.sources} />
-
-          <PageTable pages={view.pages} />
-
-          <CtaTable ctaClicks={view.ctaClicks} />
-
-          <FunnelPanel funnel={view.funnel} />
-
+        <div id="admin-analytics-controls-row">
+          <RangeSelector value={range} onChange={setRange} disabled={loading} />
+          <DataModeToggle testMode={testMode} onChange={onTestModeChange} disabled={loading} />
         </div>
+
+        <TrendSparkline points={view.dailyTrend} />
+
+        {/* Three range-scoped stat cards side by side, homepage grid-3. */}
+        <div id="admin-analytics-stats-row" className="grid-3">
+          <VisitsStat pageviews={view.pageviews} sessions={view.sessions} range={range} />
+          <EngagedVisitStat engagedVisitPct={view.engagedVisitPct} sessions={view.sessions} />
+          <AppointmentsStat appointmentsScheduled={view.appointmentsScheduled} />
+        </div>
+
+        {/* Traffic sources and pages viewed side by side, homepage grid-2. */}
+        <div id="admin-analytics-tables-row" className="grid-2">
+          <SourceTable sources={view.sources} />
+          <PageTable pages={view.pages} />
+        </div>
+
+        <CtaTable ctaClicks={view.ctaClicks} />
+
+        <FunnelPanel funnel={view.funnel} />
+
       </div>
     </AdminShell>
   );

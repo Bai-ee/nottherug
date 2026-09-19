@@ -9,17 +9,23 @@ const PCT_FORMAT = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
  *
  * The prop is named `sessions` because that is the report field; the copy says
  * "visits", the one word this dashboard uses for that quantity throughout.
+ *
+ * Presentation: one of three stat cards in #admin-analytics-stats-row
+ * (homepage .grid-3), figure in the shared hero-stat-item treatment.
  */
 export function EngagedVisitStat({ engagedVisitPct, sessions }: { engagedVisitPct: number | null; sessions: number }) {
   return (
-    <section id="admin-analytics-engaged-visit-panel" className="analytics-panel analytics-stat-panel">
-      <div className="analytics-label">Engaged Visits</div>
-      <div className="analytics-secondary-number">
-        {engagedVisitPct === null ? 'Not enough data' : `${PCT_FORMAT.format(engagedVisitPct)}%`}
+    <section id="admin-analytics-engaged-visit-panel" className="card card-pad">
+      <div className="stamp-label">Engaged Visits</div>
+      <div className="hero-stat-item">
+        <div className="hero-stat-num">
+          {engagedVisitPct === null ? 'Not enough data' : `${PCT_FORMAT.format(engagedVisitPct)}%`}
+        </div>
+        <div className="hero-stat-label">of visits</div>
       </div>
-      <div className="analytics-note">
+      <p className="form-note">
         Share of visits with meaningful scroll, 15s+ dwell, or a tracked click · {sessions.toLocaleString('en-US')} visits in range
-      </div>
+      </p>
     </section>
   );
 }
