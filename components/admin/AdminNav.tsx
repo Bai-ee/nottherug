@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useNavScrollShadow } from '@/components/marketing/hooks/useNavScrollShadow';
 
 /**
  * The admin section bar. Same markup shape and the same class names as
@@ -35,6 +36,11 @@ function isActive(pathname: string, href: string): boolean {
 export function AdminNav() {
   const pathname = usePathname() ?? '';
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
+  // The same hook the marketing nav uses: past the top of the viewport the
+  // band takes its shadow and the oversized paper logo tucks back in, so it
+  // stops hanging over the content scrolling underneath it.
+  useNavScrollShadow(navRef);
 
   return (
     <>
@@ -43,7 +49,7 @@ export function AdminNav() {
           reusing them is what makes this bar identical to the site's without
           a line of admin-only nav CSS. SiteNav never renders on these pages,
           so the ids stay unique. */}
-      <nav id="main-nav" data-mobile-open={mobileOpen ? 'true' : 'false'}>
+      <nav id="main-nav" ref={navRef} data-mobile-open={mobileOpen ? 'true' : 'false'}>
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
             <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" />

@@ -8,7 +8,9 @@
 /* The dashboard is a normal document like every marketing page: the nav is
    fixed, so the content clears it by the nav's own height. */
 #admin-shell-main {
-  padding-top: calc(var(--nav-h) + 48px);
+  /* Same clearance the marketing page heroes use, so the oversized paper
+     logo hanging below the band never lands on the first panel. */
+  padding-top: calc(var(--nav-h) + 64px);
   padding-bottom: 64px;
   min-height: 60vh;
 }
@@ -28,7 +30,7 @@
 #admin-page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 #admin-page-header-email { margin: 0; }
 
-#admin-chrome-footer { padding: 0 0 56px; }
+#admin-chrome-footer { padding: 36px 0 44px; }
 #admin-chrome-footer .container { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 #admin-chrome-footer-value { margin: 0; }
 
@@ -44,7 +46,10 @@
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding-top: var(--nav-h);
+  /* Enough to clear the band; the full hero clearance would cost the canvas
+     too much of the viewport, so the paper logo is allowed to overhang here
+     until the first scroll tucks it. */
+  padding-top: calc(var(--nav-h) + 20px);
   padding-bottom: 0;
 }
 
