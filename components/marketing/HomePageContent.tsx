@@ -130,7 +130,7 @@ export default function HomePageContent() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 id="home-contact-sheet-clipping"
-                src="/img/bg_section_graphic_1.png"
+                src="/img/bg-section-graphic-1.webp"
                 alt=""
                 aria-hidden="true"
                 loading="lazy"

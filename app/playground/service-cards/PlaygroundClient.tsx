@@ -841,7 +841,7 @@ export default function ServiceCardsPlayground() {
         // eslint-disable-next-line @next/next/no-img-element -- dev-only playground page, position controlled by tuner sliders
         <img
           id="service-cards-page-background"
-          src="/img/product_background.png"
+          src="/img/product-background.webp"
           alt=""
           style={{
             position: "fixed",

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   GROUP_WALK_PREVIEW,
   GROUP_WALK_SHORT_LABEL,
@@ -60,7 +61,7 @@ const GROUP_WALK_CARD = {
 } as const;
 
 /** Brooklyn Bridge / Manhattan skyline collage — the walk's backdrop. */
-const SKYLINE_IMAGE = '/img/bg_section_graphic_1.png';
+const SKYLINE_IMAGE = '/img/bg-section-graphic-1.webp';
 
 /** Same circular seal as the home page's floating badge. */
 const LOGO_BADGE = '/logos/notRugGreen.png';
@@ -706,11 +707,23 @@ export default function WelcomeWalkModal() {
               }}
             >
               <div id="welcome-walk-modal-art-panel" style={{ gridArea: 'art' }}>
-                <img id="welcome-walk-modal-art-badge" src={LOGO_BADGE} alt="Not The Rug" />
-                <img
+                {/* Both are CSS-sized (rules above): width/height here only
+                    reserve the aspect ratio and pick a srcset candidate. */}
+                <Image
+                  id="welcome-walk-modal-art-badge"
+                  src={LOGO_BADGE}
+                  alt="Not The Rug"
+                  width={1080}
+                  height={1080}
+                  sizes="(max-width: 768px) 120px, 326px"
+                />
+                <Image
                   id="welcome-walk-modal-art-walker"
                   src={GROUP_WALK_CARD.topLayer.src}
                   alt="Illustration of a Not The Rug walker out with three dogs"
+                  width={499}
+                  height={238}
+                  sizes="(max-width: 768px) 100vw, 350px"
                 />
               </div>
 
