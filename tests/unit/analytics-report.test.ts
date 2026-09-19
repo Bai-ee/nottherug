@@ -138,6 +138,12 @@ describe('getAnalyticsReport', () => {
     );
     expect(report.sources[0]).toEqual({ source: 'direct', sessions: 2 });
 
+    // Pages: '/' from sess-a, sess-c (deduped delivery) and sess-live; '/book' from sess-b.
+    expect(report.pages).toEqual([
+      { route: '/', pageviews: 3, sessions: 3 },
+      { route: '/book', pageviews: 1, sessions: 1 },
+    ]);
+
     const heroBook = report.ctaClicks.find((r) => r.cta === 'closing_trust_book');
     expect(heroBook).toEqual({ cta: 'closing_trust_book', clicks: 1 });
     expect(report.ctaClicks.every((r) => r.cta !== 'closing_trust_book' ? r.clicks === 0 : true)).toBe(true);
@@ -182,6 +188,72 @@ describe('getAnalyticsReport', () => {
     const test = await getAnalyticsReport('today', { now, includeTest: true });
     expect(test.pageviews).toBe(1);
     expect(test.meta.testMode).toBe(true);
+  });
+
+  it('builds the page table from page_view events only, counting distinct sessions per route', async () => {
+    const fixtures: RawDoc[] = [
+      // '/' : three views from two sessions.
+      ev({ id: 'p1', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z', route: '/' }),
+      ev({ id: 'p2', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:01:00.000Z', route: '/' }),
+      ev({ id: 'p3', sid: 'sess-b', event: 'page_view', receivedAt: '2026-01-15T12:02:00.000Z', route: '/' }),
+
+      // '/book' : one view, plus a duplicate delivery of the same event id.
+      ev({ id: 'p4', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:03:00.000Z', route: '/book' }),
+      ev({ id: 'p4', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:03:01.000Z', route: '/book' }),
+
+      // '/contact' : one view — ties with '/book' on pageviews, so route order decides.
+      ev({ id: 'p5', sid: 'sess-b', event: 'page_view', receivedAt: '2026-01-15T12:04:00.000Z', route: '/contact' }),
+
+      // Untracked path: stored with route null, so it has no row rather than an invented one.
+      ev({ id: 'p6', sid: 'sess-c', event: 'page_view', receivedAt: '2026-01-15T12:05:00.000Z', route: null }),
+
+      // Non-page_view events never add to the page table, even carrying a route.
+      ev({ id: 'p7', sid: 'sess-d', event: 'engagement', receivedAt: '2026-01-15T12:06:00.000Z', route: '/safety' }),
+      ev({ id: 'p8', sid: 'sess-d', event: 'cta_click', cta: 'nav_book', receivedAt: '2026-01-15T12:07:00.000Z', route: '/safety' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
+    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
+
+    expect(report.pages).toEqual([
+      { route: '/', pageviews: 3, sessions: 2 },
+      { route: '/book', pageviews: 1, sessions: 1 },
+      { route: '/contact', pageviews: 1, sessions: 1 },
+    ]);
+
+    // Page views with a null route still count toward the range total — only the per-route breakdown drops them.
+    expect(report.pageviews).toBe(6); // p1, p2, p3, p4 (deduped), p5, and the null-route p6
+  });
+
+  it('keeps the page table on the same side of the real/test split as every other number', async () => {
+    const fixtures: RawDoc[] = [
+      ev({ id: 'real-1', sid: 'sess-real', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z', route: '/' }),
+      ev({ id: 'test-1', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:05:00.000Z', route: '/book', mode: 'test' }),
+      ev({ id: 'test-2', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:06:00.000Z', route: '/book', mode: 'test' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
+    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const now = new Date('2026-01-15T18:00:00.000Z');
+
+    const real = await getAnalyticsReport('today', { now });
+    expect(real.pages).toEqual([{ route: '/', pageviews: 1, sessions: 1 }]);
+
+    const test = await getAnalyticsReport('today', { now, includeTest: true });
+    expect(test.pages).toEqual([{ route: '/book', pageviews: 2, sessions: 1 }]);
+  });
+
+  it('returns an empty page table (not a fabricated row) when the events query fails', async () => {
+    fsQueryRange.mockRejectedValue(new Error('Firestore RANGE analytics_events: 503 unavailable'));
+    fsQueryRangeCount.mockImplementation(countQueryMock(3));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
+
+    expect(report.pages).toEqual([]);
   });
 
   it('reports a truthful total above the 1,000-record cap that lib/leads/stats.ts imposes elsewhere', async () => {

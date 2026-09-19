@@ -261,6 +261,24 @@ html, body { background: var(--admin-ground); margin: 0; padding: 0; }
 .analytics-range-btn:disabled { opacity: 0.6; cursor: default; }
 .analytics-range-btn-active { color: var(--admin-ground); background: var(--admin-active); border-color: transparent; }
 
+/* Controls row: range selector + real/test data toggle, side by side on
+   wider screens and stacked on a phone. */
+#admin-analytics-controls-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+#admin-analytics-data-mode-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* Test-data mode. Gold (the accent already used for "right now" and for
+   warning callouts) marks the active button and outlines the whole view, so
+   test/preview traffic can never be mistaken at a glance for real business
+   numbers. The two datasets are queried separately and never blended. */
+.analytics-mode-btn-test-active { color: var(--admin-ground); background: var(--admin-accent); border-color: transparent; }
+.analytics-test-mode .analytics-page {
+  border: 1px dashed color-mix(in srgb, var(--admin-accent) 60%, transparent);
+  border-radius: 14px;
+}
+
+/* Two numbers side by side inside one stat panel (visits / page views). */
+.analytics-stat-row { display: flex; gap: 28px; flex-wrap: wrap; }
+
 /* Trend sparkline — plain inline SVG, no charting library. */
 .analytics-legend { display: flex; gap: 14px; }
 .analytics-legend-item {
