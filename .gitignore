@@ -37,3 +37,7 @@ firebase-debug.log
 firestore-debug.log
 storage-debug.log
 ui-debug.log
+
+# Bundle-analyzer evidence (plans/010 P0/P3): local before/after records, not
+# project source.
+/evidence/bundle/
