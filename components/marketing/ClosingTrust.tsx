@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { WILLIAMSBURG } from '@/lib/content/coverage';
 import { EMAIL_HREF } from '@/lib/content/contact';
 import AlwaysIncluded from './AlwaysIncluded';
 import InstagramGrid from './InstagramGrid';
+import TrackedCtaLink from './TrackedCtaLink';
 
 // Closing trust recap — safety credentials + Williamsburg-specific proof
 // combined into one section, positioned right before Reviews as the site's
@@ -33,7 +33,9 @@ export default function ClosingTrust() {
             </div>
             <div className="divider" style={{ margin: '28px 0' }}></div>
             <div id="home-closing-cta-row" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <Link href="/book" className="btn btn-primary btn-accent" id="home-closing-book-luis-cta">Contact Luis, to Get Started</Link>
+              {/* The "Join Our Team" link below stays untracked on purpose:
+                  it is recruiting, not a customer action. */}
+              <TrackedCtaLink href="/book" className="btn btn-primary btn-accent" id="home-closing-book-luis-cta" cta="closing_trust_book" page="home">Contact Luis, to Get Started</TrackedCtaLink>
               {/* Secondary action beside the client CTA — walkers, not clients.
                   There is no careers route, so it opens a mail to Luis with the
                   subject filled in; swap the href if a hiring page lands. */}

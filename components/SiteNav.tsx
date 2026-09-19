@@ -3,6 +3,8 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { INSTAGRAM_URL } from '@/lib/content/site';
+import { track } from '@/lib/analytics/track';
+import type { CtaId } from '@/lib/analytics/events';
 import { usePathname } from 'next/navigation';
 import { useNavScrollShadow } from './marketing/hooks/useNavScrollShadow';
 import { openWelcomeWalkModal } from './marketing/WelcomeWalkModal';
@@ -25,13 +27,29 @@ import { openWelcomeWalkModal } from './marketing/WelcomeWalkModal';
 // Deliberately not in the bar: Safety (its credentials are inside the band
 // "Where We Do It" opens) and Reviews — the footer carries the full list of
 // section links.
-const NAV_LINKS: Array<{ href: string; label: string; dataPage: string }> = [
-  { href: '/#home-personalized-care-section', label: 'What We Do', dataPage: 'services' },
+// `cta` is set only on the two entries the owner reports on (service interest
+// and contact intent); the rest stay untracked on purpose. Exported so the
+// wiring is testable without a DOM renderer — see tests/unit/site-nav-links.test.ts.
+export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; cta?: CtaId }> = [
+  { href: '/#home-personalized-care-section', label: 'What We Do', dataPage: 'services', cta: 'nav_services' },
   { href: '/#home-team-section', label: 'Who Does It', dataPage: 'about' },
   { href: '/#home-closing-parks-row', label: 'Where We Do It', dataPage: 'neighborhoods' },
   { href: '/#home-how-it-works-block', label: 'How It Works', dataPage: 'how-it-works' },
-  { href: '/#home-contact-sheet-section', label: 'Let’s Get Started', dataPage: 'contact' },
+  { href: '/#home-contact-sheet-section', label: 'Let’s Get Started', dataPage: 'contact', cta: 'nav_contact' },
 ];
+
+// SiteNav is already a Client Component and every tracked control in it already
+// owns an onClick (smooth scroll, or opening the welcome modal), so the click is
+// recorded inline instead of through TrackedCtaLink — same one-event-per-click
+// behaviour, without splitting each map() below into two link shapes. Tracking
+// must never break the navigation it is measuring, hence the try/catch.
+function trackNavCta(cta: CtaId) {
+  try {
+    track('cta_click', { cta, page: 'nav' });
+  } catch (err) {
+    console.warn('[analytics] cta_click failed', err);
+  }
+}
 
 // Full site navigation for every marketing route. Real Next.js routes now —
 // no more `?page=`/`?hood=` deep links or window.showPage DOM toggling
@@ -70,7 +88,8 @@ export default function SiteNav() {
    * pre-hydration and no-JS behaviour on home.
    */
   const bookOpensModal = pathname === '/';
-  function handleBookClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  function handleBookClick(e: React.MouseEvent<HTMLAnchorElement>, cta: CtaId) {
+    trackNavCta(cta);
     if (!bookOpensModal) return;
     e.preventDefault();
     setMobileOpen(false);
@@ -115,7 +134,10 @@ export default function SiteNav() {
                 data-page={link.dataPage}
                 className={pathname === link.href ? 'active' : undefined}
                 scroll={isHomeHashLink(link.href) ? false : undefined}
-                onClick={() => handleHashLinkClick(link.href)}
+                onClick={() => {
+                  if (link.cta) trackNavCta(link.cta);
+                  handleHashLinkClick(link.href);
+                }}
               >
                 {link.label}
               </Link>
@@ -130,7 +152,7 @@ export default function SiteNav() {
             >
               <InstagramGlyph />
             </a>
-            <Link href="/book" className="nav-cta btn-accent" data-page="book" onClick={handleBookClick}>Book a Walk</Link>
+            <Link href="/book" id="nav-book-cta" className="nav-cta btn-accent" data-page="book" onClick={(e) => handleBookClick(e, 'nav_book')}>Book a Walk</Link>
           </div>
           <div
             id="nav-hamburger-toggle"
@@ -158,10 +180,13 @@ export default function SiteNav() {
             key={link.href}
             href={link.href}
             scroll={isHomeHashLink(link.href) ? false : undefined}
-            onClick={() => handleHashLinkClick(link.href)}
+            onClick={() => {
+              if (link.cta) trackNavCta(link.cta);
+              handleHashLinkClick(link.href);
+            }}
           >{link.label}</Link>
         ))}
-        <Link href="/book" className="mobile-cta btn-accent" onClick={handleBookClick}>Book a Walk</Link>
+        <Link href="/book" id="mobile-menu-book-cta" className="mobile-cta btn-accent" onClick={(e) => handleBookClick(e, 'mobile_menu_book')}>Book a Walk</Link>
         <Link href="/admin" id="mobile-menu-login-link">Login</Link>
         <a
           id="mobile-menu-instagram-link"

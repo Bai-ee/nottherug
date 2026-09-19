@@ -1,9 +1,10 @@
 'use client';
 
 import { useRef } from 'react';
-import Link from 'next/link';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
 import { openWelcomeWalkModal } from './WelcomeWalkModal';
+import TrackedCtaAnchor from './TrackedCtaAnchor';
+import TrackedCtaLink from './TrackedCtaLink';
 
 export default function HomeHero() {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -39,10 +40,12 @@ export default function HomeHero() {
           {/* Primary action keeps the reader on the page: it scrolls down to
               the services rundown. The href is the real anchor so it still
               works before hydration and with JS off. */}
-          <a
+          <TrackedCtaAnchor
             href="#home-personalized-care-section"
             className="btn btn-primary btn-accent"
             id="hero-cta-primary"
+            cta="hero_view_services"
+            page="home"
             onClick={(e) => {
               const target = document.getElementById('home-personalized-care-section');
               if (!target) return; // no section on this page — let the anchor do its thing
@@ -56,21 +59,23 @@ export default function HomeHero() {
             }}
           >
             View Services
-          </a>
+          </TrackedCtaAnchor>
           {/* Opens the welcome modal (group walk offer + intake). The href
               stays a real link so the button still works before hydration and
               with JS off — /contact carries the same meet & greet form. */}
-          <Link
+          <TrackedCtaLink
             href="/contact"
             className="btn btn-ghost"
             id="hero-cta-secondary"
+            cta="hero_contact"
+            page="home"
             onClick={(e) => {
               e.preventDefault();
               openWelcomeWalkModal();
             }}
           >
             Contact Luis
-          </Link>
+          </TrackedCtaLink>
         </div>
       </div>
       <div className="hero-stats" id="hero-stats-strip">

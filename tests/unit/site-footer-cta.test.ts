@@ -27,49 +27,49 @@ function findByType(node: ReactNode, type: unknown, out: AnyElement[] = []): Any
 }
 
 describe('SiteFooter CTA wiring', () => {
-  // The footer renders two booking links: the CTA banner and the Company
-  // column entry. Both share footer_book, the same way all five Services
-  // column links share footer_services — separate ids would imply the owner
-  // makes a decision from the split, and there is no such decision.
-  it('wires footer_book to both booking links, each pointing at /book', async () => {
+  it('wires footer_book to the one booking link, pointing at /book', async () => {
     const { default: SiteFooter } = await import('@/components/marketing/SiteFooter');
     const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
     const tree = SiteFooter();
 
     const bookLinks = findByType(tree, TrackedCtaLink).filter((el) => el.props.cta === 'footer_book');
-    expect(bookLinks).toHaveLength(2);
-    for (const link of bookLinks) expect(link.props.href).toBe('/book');
-    expect(bookLinks.map((el) => el.props.id)).toContain('footer-company-book-link');
+    expect(bookLinks).toHaveLength(1);
+    expect(bookLinks[0].props.href).toBe('/book');
+    expect(bookLinks[0].props.id).toBe('footer-book-luis-cta');
   });
 
-  it('wires footer_contact to exactly one element, pointing at /contact', async () => {
+  it('wires footer_contact to exactly one element, the Company column entry', async () => {
     const { default: SiteFooter } = await import('@/components/marketing/SiteFooter');
     const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
     const tree = SiteFooter();
 
     const contactLinks = findByType(tree, TrackedCtaLink).filter((el) => el.props.cta === 'footer_contact');
     expect(contactLinks).toHaveLength(1);
-    expect(contactLinks[0].props.href).toBe('/contact');
+    expect(contactLinks[0].props.href).toBe('/#home-contact-sheet-header');
     expect(contactLinks[0].props.id).toBe('footer-company-contact-link');
   });
 
-  it('wires footer_services to all five service deep links, each pointing at /services', async () => {
+  // All six rate links share footer_services on purpose: the id measures
+  // "the footer sent someone to the rates", and a per-rate split would imply
+  // the owner makes a decision from it. There is no such decision.
+  it('wires footer_services to all six rate links, each pointing at its rate card', async () => {
     const { default: SiteFooter } = await import('@/components/marketing/SiteFooter');
     const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
     const tree = SiteFooter();
 
     const serviceLinks = findByType(tree, TrackedCtaLink).filter((el) => el.props.cta === 'footer_services');
-    expect(serviceLinks).toHaveLength(5);
+    expect(serviceLinks).toHaveLength(6);
     for (const link of serviceLinks) {
-      expect(link.props.href).toBe('/services');
+      expect(link.props.href).toMatch(/^\/#home-/);
     }
     const ids = serviceLinks.map((l) => l.props.id).sort();
     expect(ids).toEqual([
-      'footer-services-link-boarding',
-      'footer-services-link-group-walks',
-      'footer-services-link-puppy-visits',
-      'footer-services-link-senior-dog-care',
-      'footer-services-link-walk-training',
+      'footer-rates-link-boarding-sitting',
+      'footer-rates-link-cat-visits',
+      'footer-rates-link-group-walk',
+      'footer-rates-link-puppy-walk',
+      'footer-rates-link-senior-dog-visits',
+      'footer-rates-link-solo-walk',
     ]);
   });
 
@@ -83,5 +83,16 @@ describe('SiteFooter CTA wiring', () => {
     for (const id of stale) {
       expect(ctas).not.toContain(id);
     }
+  });
+
+  it('leaves the outbound social links untracked', async () => {
+    const { default: SiteFooter } = await import('@/components/marketing/SiteFooter');
+    const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
+    const tree = SiteFooter();
+
+    // The Instagram/Yelp/Google buttons are plain <a> elements — plan 004
+    // excludes outbound proof links until they answer a business question.
+    const tracked = findByType(tree, TrackedCtaLink);
+    expect(tracked).toHaveLength(8);
   });
 });

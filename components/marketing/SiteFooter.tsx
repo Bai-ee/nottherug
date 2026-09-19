@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { INSTAGRAM_URL, YELP_URL, GOOGLE_REVIEW_URL } from '@/lib/content/site';
+import TrackedCtaLink from './TrackedCtaLink';
+import type { CtaId } from '@/lib/analytics/events';
 
 // Shared footer for the marketing pages that had it in the source SPA (home,
 // services, how-it-works, about, safety, neighborhoods, reviews). /book and
@@ -19,22 +21,28 @@ import { INSTAGRAM_URL, YELP_URL, GOOGLE_REVIEW_URL } from '@/lib/content/site';
 // Both lists, and the columns themselves, run in page order — the rates in the
 // order the cards are laid out (Group Walk is the featured card and renders
 // below the other five), the company entries in the order their bands appear.
-const FOOTER_RATES: Array<{ href: string; label: string }> = [
-  { href: '/#home-rate-solo-walk', label: 'Solo Walk' },
-  { href: '/#home-rate-senior-dog-visits', label: 'Senior Dog Visits' },
-  { href: '/#home-rate-puppy-walk', label: 'Puppy Walk' },
-  { href: '/#home-rate-boarding-overnight-sitting', label: 'Boarding & Sitting' },
-  { href: '/#home-rate-cat-visits', label: 'Cat Visits' },
-  { href: '/#home-group-walk-feature-card', label: 'Group Walk' },
+// All six rate links report under one id, footer_services: the number the
+// owner acts on is "did the footer send anyone to the rates", not which rate
+// card they landed on. The per-link `id` is a DOM handle for styling and for
+// the wiring test, not a second analytics id.
+const FOOTER_RATES: Array<{ href: string; label: string; id: string }> = [
+  { href: '/#home-rate-solo-walk', label: 'Solo Walk', id: 'footer-rates-link-solo-walk' },
+  { href: '/#home-rate-senior-dog-visits', label: 'Senior Dog Visits', id: 'footer-rates-link-senior-dog-visits' },
+  { href: '/#home-rate-puppy-walk', label: 'Puppy Walk', id: 'footer-rates-link-puppy-walk' },
+  { href: '/#home-rate-boarding-overnight-sitting', label: 'Boarding & Sitting', id: 'footer-rates-link-boarding-sitting' },
+  { href: '/#home-rate-cat-visits', label: 'Cat Visits', id: 'footer-rates-link-cat-visits' },
+  { href: '/#home-group-walk-feature-card', label: 'Group Walk', id: 'footer-rates-link-group-walk' },
 ];
 
-const FOOTER_COMPANY: Array<{ href: string; label: string }> = [
+// Only "Contact" carries a cta id — it is the one company entry that states an
+// intent rather than a reading interest. The rest stay untracked on purpose.
+const FOOTER_COMPANY: Array<{ href: string; label: string; id?: string; cta?: CtaId }> = [
   { href: '/#home-team-section', label: 'The Team' },
   { href: '/#home-closing-trust-section', label: 'Safety & Trust' },
   { href: '/#home-featured-reviews-section', label: 'Reviews' },
   { href: '/#home-instagram-section', label: 'Instagram' },
   { href: '/#home-how-it-works-block', label: 'How It Works' },
-  { href: '/#home-contact-sheet-header', label: 'Contact' },
+  { href: '/#home-contact-sheet-header', label: 'Contact', id: 'footer-company-contact-link', cta: 'footer_contact' },
 ];
 
 export default function SiteFooter() {
@@ -89,7 +97,9 @@ export default function SiteFooter() {
               <h4>Services</h4>
               <ul>
                 {FOOTER_RATES.map((link) => (
-                  <li key={link.href}><Link href={link.href}>{link.label}</Link></li>
+                  <li key={link.href}>
+                    <TrackedCtaLink href={link.href} id={link.id} cta="footer_services" page="site">{link.label}</TrackedCtaLink>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -97,7 +107,13 @@ export default function SiteFooter() {
               <h4>Company</h4>
               <ul>
                 {FOOTER_COMPANY.map((link) => (
-                  <li key={link.href}><Link href={link.href}>{link.label}</Link></li>
+                  <li key={link.href}>
+                    {link.cta ? (
+                      <TrackedCtaLink href={link.href} id={link.id} cta={link.cta} page="site">{link.label}</TrackedCtaLink>
+                    ) : (
+                      <Link href={link.href}>{link.label}</Link>
+                    )}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -112,12 +128,14 @@ export default function SiteFooter() {
               "Brooklyn · Est. 2011" rule under it read as clutter against the
               background artwork. Spacing separates the blocks instead. */}
           <div id="footer-cta-shell" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '20px', paddingTop: '8px', marginBottom: '28px' }}>
-            <Link
+            <TrackedCtaLink
               href="/book"
               id="footer-book-luis-cta"
               className="btn btn-primary btn-sm btn-accent"
               style={{ whiteSpace: 'nowrap' }}
-            >Contact Luis</Link>
+              cta="footer_book"
+              page="site"
+            >Contact Luis</TrackedCtaLink>
           </div>
           <div className="footer-bottom">
             <div className="footer-copy">© 2026 Not The Rug · 281 N 7th St, Ste 13, Brooklyn, NY 11211 · b/t Havemeyer St &amp; Meeker Ave · All rights reserved</div>
