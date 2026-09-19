@@ -30,6 +30,17 @@
 #admin-page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 #admin-page-header-email { margin: 0; }
 
+/* Pre-dashboard states (checking session, signed out, denied, retry). Same
+   paper card as everywhere else, centred in the viewport. */
+.admin-state-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.admin-state-screen .card { max-width: 420px; display: grid; gap: 14px; justify-items: center; }
+
 #admin-chrome-footer { padding: 36px 0 44px; }
 #admin-chrome-footer .container { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 #admin-chrome-footer-value { margin: 0; }
