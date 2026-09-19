@@ -3659,3 +3659,27 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-headline.hero-h1 { font-size: clamp(36px, 10vw, 46px); line-height: 1.02; margin-bottom: 14px; }
   #hero-cta-primary { margin-bottom: 16px; }
 }
+
+/* ── PHONE NAV WORDMARK + TWO-LINE HEADLINE ───────────────────────────────
+   Phones only. The paper wordmark is locked at one in-band size in every
+   nav state (top of page and scrolled) so it never drops, tucks or hangs
+   below the band; the home loading screen is already skipped at this width.
+   The hero headline drops its 1st and 3rd hard break to read as two lines:
+   "Your dog deserves" / "someone they know." */
+@media (max-width: 768px) {
+  #main-nav .nav-logo,
+  #main-nav.nav-scrolled .nav-logo {
+    top: 50%;
+    padding: 5px 8px;
+    transform: translateY(-50%) rotate(-1deg);
+  }
+  #main-nav .nav-logo::before,
+  #main-nav.nav-scrolled .nav-logo::before {
+    width: 64px; height: 17px; top: -7px; margin-left: -32px;
+  }
+  #main-nav #nav-logo-img,
+  #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
+  #hero-headline br:nth-of-type(1),
+  #hero-headline br:nth-of-type(3) { display: none; }
+  #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); }
+}

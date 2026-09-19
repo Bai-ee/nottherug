@@ -238,27 +238,10 @@
   #admin-chrome-footer .container { justify-content: center; text-align: center; }
 }
 
-/* ── ADMIN NAV ON PHONES ──────────────────────────────────────────────────────
-   The marketing nav hangs its paper wordmark below the band on purpose (see
-   .nav-logo in app/globals.css). On the admin pages that overhang crowds the
-   page header on a phone, so the wordmark is sized and centred to sit inside
-   the 72px band instead — same label, same tape, no overhang — in both the
-   top-of-page and scrolled states. Scoped to AdminNav's data-admin-nav
-   attribute (not .admin-shell: the signed-out screen has no shell) so the
-   marketing nav is untouched even after a client-side hop out of /admin. */
+/* ── ADMIN NAV ON PHONES ──────────────────────────────────────────────────
+   The phone nav wordmark is locked at its in-band size for every nav in
+   app/globals.css now, so the admin band needs no rule of its own; only the
+   header clearance stays here since there is no overhang to clear. */
 @media (max-width: 768px) {
-  #main-nav[data-admin-nav] .nav-logo,
-  #main-nav[data-admin-nav].nav-scrolled .nav-logo {
-    top: 50%;
-    padding: 5px 8px;
-    transform: translateY(-50%) rotate(-1deg);
-  }
-  #main-nav[data-admin-nav] .nav-logo::before,
-  #main-nav[data-admin-nav].nav-scrolled .nav-logo::before {
-    width: 64px; height: 17px; top: -7px; margin-left: -32px;
-  }
-  #main-nav[data-admin-nav] #nav-logo-img,
-  #main-nav[data-admin-nav].nav-scrolled #nav-logo-img { width: 150px; }
-  /* No overhang to clear any more: the header can sit closer to the band. */
   .admin-shell #admin-shell-main { padding-top: calc(var(--nav-h) + 28px); }
 }

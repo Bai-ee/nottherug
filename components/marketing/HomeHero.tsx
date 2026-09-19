@@ -105,8 +105,10 @@ export default function HomeHero() {
           {/* Four hard-broken lines, kept at the top level of the h1: the
               hero word-split in useHomeHeroMotion only re-emits <br>s that are
               direct children, so a <br> nested inside <em> would be dropped
-              once the entrance animation rebuilds the markup. */}
-          Your dog<br />deserves<br /><em>someone they</em><br /><em>know.</em>
+              once the entrance animation rebuilds the markup. The spaces
+              before each <br> matter: phones hide the 1st and 3rd break
+              (globals.css) to set the headline on two lines. */}
+          Your dog <br />deserves <br /><em>someone they</em> <br /><em>know.</em>
         </h1>
         <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently.</p>
         <div className="hero-actions" id="hero-actions-row">
