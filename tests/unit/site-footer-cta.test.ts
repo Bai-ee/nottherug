@@ -12,7 +12,15 @@ import type { ReactElement, ReactNode } from 'react';
 
 vi.mock('@/lib/analytics/track', () => ({ track: vi.fn() }));
 
-type AnyElement = ReactElement<any>;
+/** Only the CTA-relevant props these tests read; avoids `any` while still
+ *  letting findByType walk an arbitrary element tree. */
+type CtaElementProps = {
+  cta?: string;
+  href?: string;
+  id?: string;
+  children?: ReactNode;
+};
+type AnyElement = ReactElement<CtaElementProps>;
 
 function findByType(node: ReactNode, type: unknown, out: AnyElement[] = []): AnyElement[] {
   if (node === null || node === undefined || typeof node !== 'object') return out;

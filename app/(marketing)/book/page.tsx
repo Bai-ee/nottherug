@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import BookingOnboardingIntake from '@/components/booking/BookingOnboardingIntake';
 import { parseBookingPrefill } from '@/lib/leads/prefill';
@@ -26,7 +27,19 @@ export default async function BookPage({
       <nav id="main-nav">
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" />
+            {/* Nav wordmark, CSS-sized (#nav-logo-img in app/globals.css sets
+                width: 370/200/190/168px across breakpoints/scroll states,
+                height: auto) — the same responsive-image pattern next/image
+                supports via its own width/height + sizes, not a static box. */}
+            <Image
+              id="nav-logo-img"
+              src="/img/horiz_logo_off_white.png"
+              alt="Not The Rug"
+              width={498}
+              height={88}
+              sizes="(max-width: 767px) 200px, 370px"
+              priority
+            />
           </Link>
           <div className="nav-links">
             <Link

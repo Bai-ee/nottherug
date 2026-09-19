@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -52,7 +53,18 @@ export function AdminNav() {
       <nav id="main-nav" ref={navRef} data-mobile-open={mobileOpen ? 'true' : 'false'}>
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" />
+            {/* Same #nav-logo-img CSS sizing as the marketing nav (see
+                app/globals.css and app/(marketing)/book/page.tsx): CSS-driven
+                width across breakpoints/scroll states, not a static box. */}
+            <Image
+              id="nav-logo-img"
+              src="/img/horiz_logo_off_white.png"
+              alt="Not The Rug"
+              width={498}
+              height={88}
+              sizes="(max-width: 767px) 200px, 370px"
+              priority
+            />
           </Link>
           <div className="nav-links">
             {NAV_LINKS.map((link) => {

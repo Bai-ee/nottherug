@@ -4,7 +4,7 @@ import globals from "globals";
 // Lint for the Node-side tooling: the CommonJS daily-brief pipeline and the
 // copy extraction/apply scripts. These are not Next.js code, so they do not get
 // the Next rule set.
-export default [
+const pipelineLintConfig = [
   {
     files: ["not-the-rug-brief/**/*.js", "scripts/**/*.mjs"],
     ignores: ["not-the-rug-brief/knowledge/**", "not-the-rug-brief/services/**/*.json"],
@@ -26,3 +26,5 @@ export default [
     languageOptions: { sourceType: "commonjs" },
   },
 ];
+
+export default pipelineLintConfig;

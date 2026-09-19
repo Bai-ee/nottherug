@@ -368,15 +368,38 @@ export default function GroupWalkFeatureCard() {
       `}</style>
 
       <div id="home-group-walk-feature-art-panel">
-        <img id="home-group-walk-feature-art-backdrop" ref={backdropRef} src={SKYLINE_IMAGE} alt="" aria-hidden="true" />
+        {/* GSAP-driven: useGroupWalkCardHover imperatively transforms this
+            element via backdropRef (xPercent drift on hover/leave). next/image
+            would still forward the ref, but the hook needs the same raw DOM
+            node identity across the effect and the hover callbacks, so this
+            stays a plain <img>; behavior/ref wiring is unchanged either way. */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- GSAP ref-animated (see useGroupWalkCardHover); box is CSS-driven, not a next/image candidate */}
+        <img
+          id="home-group-walk-feature-art-backdrop"
+          ref={backdropRef}
+          src={SKYLINE_IMAGE}
+          alt=""
+          aria-hidden="true"
+          width={1620}
+          height={971}
+          decoding="async"
+          loading="lazy"
+        />
         <div id="home-group-walk-feature-art-wash" aria-hidden="true" />
         <div id="home-group-walk-feature-promo-ribbon" aria-hidden="true">20% Off</div>
         <div id="home-group-walk-feature-art-figure">
+          {/* Same GSAP ref-animation as the backdrop above (walkerRef: rest/hover
+              xPercent + scale in useGroupWalkCardHover). */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- GSAP ref-animated (see useGroupWalkCardHover); box is CSS-driven, not a next/image candidate */}
           <img
             id="home-group-walk-feature-art-image"
             ref={walkerRef}
             src="/img/3Top.png"
             alt="Illustration of a Not The Rug walker out with three dogs"
+            width={499}
+            height={238}
+            decoding="async"
+            loading="lazy"
           />
         </div>
       </div>

@@ -225,7 +225,18 @@ export default function AlwaysIncluded() {
         <div id="home-included-preview" role="presentation">
           <div id="home-included-preview-frame">
             {active.image ? (
-              <img src={active.image} alt={active.title} />
+              <>
+                {/* No ALWAYS_INCLUDED item (lib/content/services.ts) currently
+                    sets `image`, so this path is unreachable with today's
+                    content — there is no real asset yet to measure
+                    width/height/sizes from. next/image conversion belongs in
+                    P3 (plans/010-production-final-mile-optimization.md) once
+                    real artwork with known intrinsic dimensions ships;
+                    fabricating dimensions now would risk the wrong aspect
+                    ratio for whatever image actually lands here. */}
+                {/* eslint-disable-next-line @next/next/no-img-element -- unreachable with current content (no ALWAYS_INCLUDED item sets `image` yet); next/image conversion deferred to P3 once real artwork/dimensions exist */}
+                <img src={active.image} alt={active.title} decoding="async" loading="lazy" />
+              </>
             ) : (
               <div id="home-included-preview-placeholder">Image coming soon</div>
             )}

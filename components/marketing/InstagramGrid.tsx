@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { INSTAGRAM_POSTS, type InstagramPost } from '@/lib/content/instagram';
 import { INSTAGRAM_URL } from '@/lib/content/site';
 
@@ -86,9 +87,21 @@ export default function InstagramGrid() {
                 rel="noopener noreferrer"
               >
                 <div className="polaroid-window instagram-tile-window">
-                  {/* Plain img: these are fixed local assets sized for the tile,
-                      and the rest of the marketing surface does not use next/image. */}
-                  <img src={post.src} alt={post.alt} loading="lazy" decoding="async" width={900} height={900} />
+                  {/* Fixed local /public assets, square-cropped by CSS
+                      (aspect-ratio: 1/1 + object-fit: cover on
+                      .instagram-tile-window img) regardless of the source
+                      file's own aspect ratio — see lib/content/instagram.ts.
+                      Below the fifth-of-page-width grid column (mobile:
+                      68vw capped at 280px), so lazy is correct here. */}
+                  <Image
+                    src={post.src}
+                    alt={post.alt}
+                    loading="lazy"
+                    decoding="async"
+                    width={900}
+                    height={900}
+                    sizes="(max-width: 900px) 280px, 20vw"
+                  />
                   <TileStats post={post} />
                 </div>
                 <div className="polaroid-caption instagram-tile-caption">{post.caption}</div>

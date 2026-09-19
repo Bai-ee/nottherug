@@ -238,11 +238,10 @@ export function watchEngagement(onEngaged: () => void): () => void {
   if (isEngagementAlreadySent()) return () => {};
 
   let settled = false;
-  let dwellTimer: ReturnType<typeof setTimeout> | undefined;
 
   function cleanup() {
     window.removeEventListener('scroll', handleScroll);
-    if (dwellTimer !== undefined) clearTimeout(dwellTimer);
+    clearTimeout(dwellTimer);
   }
 
   function fire() {
@@ -264,7 +263,10 @@ export function watchEngagement(onEngaged: () => void): () => void {
   }
 
   window.addEventListener('scroll', handleScroll, { passive: true });
-  dwellTimer = setTimeout(fire, ENGAGEMENT_DWELL_MS);
+  // Declared const, assigned at the one place it's set: `cleanup` (defined
+  // above) is only ever called after this line runs, so its closure over
+  // `dwellTimer` always sees the real timer id by the time it clears it.
+  const dwellTimer: ReturnType<typeof setTimeout> = setTimeout(fire, ENGAGEMENT_DWELL_MS);
 
   return cleanup;
 }

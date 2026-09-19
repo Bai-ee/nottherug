@@ -173,11 +173,20 @@ export function useGroupWalkCardHover() {
   const mmRef = useRef<ReturnType<GsapBundle['gsap']['matchMedia']> | null>(null);
 
   useEffect(() => {
+    // Snapshot the nodes this effect (and its cleanup) touch, once, right
+    // here. The effect runs once (mount) — capturing `.current` now and
+    // reading only these local variables afterwards means the cleanup below
+    // can never read a ref that has since changed out from under it.
+    const card = cardRef.current;
+    const backdrop = backdropRef.current;
+    const walker = walkerRef.current;
+    const price = priceRef.current;
+    const cta = ctaRef.current;
+
     if (prefersReducedMotion()) {
       // No motion, but the walker's rest position is a real part of the card's
       // layout now, so it is written once here instead of being skipped with
       // the rest of the choreography.
-      const walker = walkerRef.current;
       if (walker && !isStacked()) {
         walker.style.transform = `translateX(${WALKER.restXPercent}%) scale(${WALKER.restScale})`;
       }
@@ -201,12 +210,12 @@ export function useGroupWalkCardHover() {
         // hook owns the image's own transform, so the two never compose.
         mmRef.current = gsap.matchMedia();
         mmRef.current.add('(min-width: 768px)', () => {
-          gsap.set(walkerRef.current, { xPercent: WALKER.restXPercent, scale: WALKER.restScale });
+          gsap.set(walker, { xPercent: WALKER.restXPercent, scale: WALKER.restScale });
         });
         mmRef.current.add(STACKED_CARD, () => {
-          gsap.set(walkerRef.current, { xPercent: 0, scale: 1 });
+          gsap.set(walker, { xPercent: 0, scale: 1 });
         });
-        gsap.set(backdropRef.current, { xPercent: 0 });
+        gsap.set(backdrop, { xPercent: 0 });
         setPawsStatic(gsap, pawRefs.current);
       })
       .catch((err) => {
@@ -218,7 +227,7 @@ export function useGroupWalkCardHover() {
       mmRef.current?.revert();
       const gsap = gsapRef.current;
       if (!gsap) return;
-      gsap.killTweensOf([cardRef.current, backdropRef.current, walkerRef.current, priceRef.current, ctaRef.current]);
+      gsap.killTweensOf([card, backdrop, walker, price, cta]);
     };
   }, []);
 
