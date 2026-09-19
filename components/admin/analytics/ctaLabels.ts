@@ -13,29 +13,29 @@ export const CTA_LABELS: Record<CtaId, string> = {
   // Booking entry points.
   nav_book: 'Top nav: Book',
   mobile_menu_book: 'Mobile menu: Book',
-  hero_book: 'Homepage hero: Book',
   closing_trust_book: 'Homepage closing section: Book',
   neighborhood_detail_book: 'Williamsburg page: Book',
   footer_book: 'Footer: Book',
+  group_walk_card_submit: 'Homepage group walk card: Get started',
+  welcome_modal_schedule: 'Welcome modal: Pick a time',
+  welcome_modal_details: 'Welcome modal: Answer questions first',
 
-  // Navigation to the contact route — contact intent, not an email action.
-  nav_contact: 'Mobile menu: Contact',
+  // Contact intent — a click toward talking to Luis, not an email or call.
+  nav_contact: 'Top nav: Get started',
   footer_contact: 'Footer: Contact',
-  closing_trust_contact: 'Homepage closing section: Ask about coverage',
+  hero_contact: 'Homepage hero: Contact Luis',
   neighborhood_detail_contact: 'Williamsburg page: Ask about coverage',
 
   // tel: links.
   contact_phone: 'Contact page: Phone tap',
-  services_phone: 'Services page: Phone tap',
 
   // mailto: links.
   contact_email: 'Contact page: Email tap',
-  services_email: 'Services page: Email tap',
 
   // Service discovery — measures interest in what is offered, before booking.
   hero_view_services: 'Homepage hero: View services',
-  nav_services: 'Top nav: Services',
-  footer_services: 'Footer: Services',
+  nav_services: 'Top nav: What we do',
+  footer_services: 'Footer: Rates links',
 };
 
 /**
@@ -55,24 +55,24 @@ function categorize(id: CtaId): CtaCategory {
   switch (id) {
     case 'nav_book':
     case 'mobile_menu_book':
-    case 'hero_book':
     case 'closing_trust_book':
     case 'neighborhood_detail_book':
     case 'footer_book':
+    case 'group_walk_card_submit':
+    case 'welcome_modal_schedule':
+    case 'welcome_modal_details':
       return 'Booking';
 
     case 'nav_contact':
-    case 'closing_trust_contact':
     case 'footer_contact':
+    case 'hero_contact':
     case 'neighborhood_detail_contact':
       return 'Contact';
 
     case 'contact_phone':
-    case 'services_phone':
       return 'Phone';
 
     case 'contact_email':
-    case 'services_email':
       return 'Email';
 
     case 'hero_view_services':

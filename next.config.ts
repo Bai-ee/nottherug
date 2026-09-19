@@ -165,7 +165,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: '/services', destination: '/#home-personalized-care-section', permanent: false },
-      { source: '/how-it-works', destination: '/#home-how-it-works-section', permanent: false },
+      { source: '/how-it-works', destination: '/#home-how-it-works-block', permanent: false },
     ];
   },
   serverExternalPackages: ['sharp', 'firebase-admin'],

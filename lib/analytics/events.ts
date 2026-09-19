@@ -31,42 +31,46 @@ export const TRACKED_ROUTES = [
   '/about',
   '/book',
   '/contact',
-  '/how-it-works',
   '/neighborhoods/williamsburg',
   '/reviews',
   '/safety',
-  '/services',
 ] as const;
 
 export type TrackedRoute = (typeof TRACKED_ROUTES)[number];
 
 /**
- * Stable CTA identifiers. The first three already existed in the tracker's
- * call sites; the rest cover the four click categories the owner selected
- * (decision 6: booking, phone, email, service/pricing links).
+ * Stable CTA identifiers, re-derived from the rendered site in plan 009 P2.
+ * Every id below is wired to a control that exists at some viewport width; the
+ * ids for the retired /services and /how-it-works pages, and for a hero "book"
+ * button that no longer exists, were removed rather than left as permanent
+ * zero rows.
  */
 export const CTA_IDS = [
-  // Booking entry points.
+  // Booking entry points. The homepage ones open the welcome modal instead of
+  // navigating, but the intent measured is the same: someone asked to book.
   'nav_book',
   'mobile_menu_book',
-  'hero_book',
   'closing_trust_book',
   'neighborhood_detail_book',
   'footer_book',
+  'group_walk_card_submit',
+  'welcome_modal_schedule',
+  'welcome_modal_details',
 
-  // Navigation to the contact route. Contact intent, not an email action.
+  // Contact intent. On the homepage these are in-page anchors, not the
+  // /contact route, so the id says where the visitor clicked, not where the
+  // click landed.
   'nav_contact',
   'footer_contact',
-  'closing_trust_contact',
+  'hero_contact',
   'neighborhood_detail_contact',
 
   // tel: links. A tap-to-call is intent — it cannot tell us a call connected.
   'contact_phone',
-  'services_phone',
 
-  // mailto: links.
+  // mailto: links. The "join our team" mailto is recruiting, not a customer
+  // action, so it is deliberately absent.
   'contact_email',
-  'services_email',
 
   // Service discovery. Measures interest in what is offered, before booking.
   'hero_view_services',

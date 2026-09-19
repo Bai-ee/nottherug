@@ -94,7 +94,7 @@ describe('write/read contract against a real emulator', () => {
     const events = [
       { event: 'page_view', id: nextId(), sid, ts, route: '/', src: 'campaign', camp: 'flyer' },
       { event: 'engagement', id: nextId(), sid, ts: ts + 1000 },
-      { event: 'cta_click', id: nextId(), sid, ts: ts + 2000, cta: 'hero_book' },
+      { event: 'cta_click', id: nextId(), sid, ts: ts + 2000, cta: 'closing_trust_book' },
       { event: 'booking_form_start', id: nextId(), sid, ts: ts + 3000 },
       { event: 'booking_step', id: nextId(), sid, ts: ts + 4000, step: 'details' },
       { event: 'booking_step', id: nextId(), sid, ts: ts + 5000, step: 'schedule' },
@@ -116,7 +116,7 @@ describe('write/read contract against a real emulator', () => {
     expect(rep.sessions).toBe(1);
     expect(rep.engagedVisitPct).toBe(100);
     expect(rep.appointmentsScheduled).toBe(1);
-    expect(rep.ctaClicks.find((c) => c.cta === 'hero_book')?.clicks).toBe(1);
+    expect(rep.ctaClicks.find((c) => c.cta === 'closing_trust_book')?.clicks).toBe(1);
     expect(rep.funnel.formStarts).toBe(1);
     expect(rep.funnel.steps.find((s) => s.step === 'details')?.sessions).toBe(1);
     expect(rep.funnel.steps.find((s) => s.step === 'schedule')?.sessions).toBe(1);

@@ -96,7 +96,7 @@ describe('validation', () => {
   });
 
   it('never stores an unrecognized field a crafted payload attaches to the wrong event', async () => {
-    const res = await post([makeEvent({ event: 'page_view', cta: 'hero_book' })]);
+    const res = await post([makeEvent({ event: 'page_view', cta: 'closing_trust_book' })]);
     expect(res.status).toBe(202);
 
     const stored = Array.from(docsByPath.values())[0];

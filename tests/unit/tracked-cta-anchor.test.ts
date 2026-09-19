@@ -55,7 +55,7 @@ describe('TrackedCtaAnchor', () => {
     const { default: TrackedCtaAnchor } = await import('@/components/marketing/TrackedCtaAnchor');
     const callerOnClick = vi.fn();
     const element = TrackedCtaAnchor({
-      cta: 'services_phone',
+      cta: 'contact_phone',
       page: 'services',
       href: 'tel:+13476109676',
       children: 'Call',
@@ -70,7 +70,7 @@ describe('TrackedCtaAnchor', () => {
 
   it('does not double-fire on a modified click (cmd/ctrl/shift/middle-click)', async () => {
     const { default: TrackedCtaAnchor } = await import('@/components/marketing/TrackedCtaAnchor');
-    const element = TrackedCtaAnchor({ cta: 'services_email', page: 'services', href: 'mailto:luis@nottherug.com', children: 'Email' });
+    const element = TrackedCtaAnchor({ cta: 'contact_email', page: 'services', href: 'mailto:luis@nottherug.com', children: 'Email' });
 
     element.props.onClick?.(modifiedClickEvent);
 

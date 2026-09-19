@@ -70,7 +70,7 @@ describe('getAnalyticsReport', () => {
       // Session A: engaged, full funnel, scheduled via Calendly, campaign source.
       ev({ id: 'e1', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z', src: 'campaign', camp: 'flyer' }),
       ev({ id: 'e2', sid: 'sess-a', event: 'engagement', receivedAt: '2026-01-15T12:00:05.000Z' }),
-      ev({ id: 'e3', sid: 'sess-a', event: 'cta_click', cta: 'hero_book', receivedAt: '2026-01-15T12:00:10.000Z' }),
+      ev({ id: 'e3', sid: 'sess-a', event: 'cta_click', cta: 'closing_trust_book', receivedAt: '2026-01-15T12:00:10.000Z' }),
       ev({ id: 'e4', sid: 'sess-a', event: 'booking_form_start', receivedAt: '2026-01-15T12:01:00.000Z' }),
       ev({ id: 'e5', sid: 'sess-a', event: 'booking_step', step: 'details', receivedAt: '2026-01-15T12:01:05.000Z' }),
       ev({ id: 'e6', sid: 'sess-a', event: 'booking_step', step: 'dog', receivedAt: '2026-01-15T12:01:10.000Z' }),
@@ -138,9 +138,9 @@ describe('getAnalyticsReport', () => {
     );
     expect(report.sources[0]).toEqual({ source: 'direct', sessions: 2 });
 
-    const heroBook = report.ctaClicks.find((r) => r.cta === 'hero_book');
-    expect(heroBook).toEqual({ cta: 'hero_book', clicks: 1 });
-    expect(report.ctaClicks.every((r) => r.cta !== 'hero_book' ? r.clicks === 0 : true)).toBe(true);
+    const heroBook = report.ctaClicks.find((r) => r.cta === 'closing_trust_book');
+    expect(heroBook).toEqual({ cta: 'closing_trust_book', clicks: 1 });
+    expect(report.ctaClicks.every((r) => r.cta !== 'closing_trust_book' ? r.clicks === 0 : true)).toBe(true);
 
     expect(report.funnel.formStarts).toBe(2);
     expect(report.funnel.steps).toEqual([

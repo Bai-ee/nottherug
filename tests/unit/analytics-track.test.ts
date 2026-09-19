@@ -58,14 +58,14 @@ describe('sanitize', () => {
   });
 
   it('still allows ordinary, non-sensitive values through unchanged', () => {
-    const result = sanitize({ page: 'home', cta: 'hero_book', source: 'services', step: '2' });
-    expect(result).toEqual({ page: 'home', cta: 'hero_book', source: 'services', step: '2' });
+    const result = sanitize({ page: 'home', cta: 'closing_trust_book', source: 'services', step: '2' });
+    expect(result).toEqual({ page: 'home', cta: 'closing_trust_book', source: 'services', step: '2' });
   });
 });
 
 describe('track', () => {
   it('is a no-op (does not throw, does not require a DOM) with no endpoint configured', () => {
-    expect(() => track('cta_click', { cta: 'hero_book', page: 'home' })).not.toThrow();
+    expect(() => track('cta_click', { cta: 'closing_trust_book', page: 'home' })).not.toThrow();
   });
 
   it('is a no-op even when called with an email-shaped value', () => {
@@ -236,13 +236,13 @@ describe('track — cta_click / booking_step field handling', () => {
     const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
-    track('cta_click', { cta: 'hero_book', page: 'home' });
+    track('cta_click', { cta: 'closing_trust_book', page: 'home' });
 
     expect(sendBeacon).toHaveBeenCalledTimes(2); // cta_click + engagement
     const first = await beaconBody(sendBeacon, 0);
     const second = await beaconBody(sendBeacon, 1);
     expect(first.event).toBe('cta_click');
-    expect(first.cta).toBe('hero_book');
+    expect(first.cta).toBe('closing_trust_book');
     expect(second.event).toBe('engagement');
   });
 
@@ -251,7 +251,7 @@ describe('track — cta_click / booking_step field handling', () => {
     const sendBeacon = vi.fn((_url: string, _data?: BodyInit) => true);
     vi.stubGlobal('navigator', { sendBeacon });
 
-    track('cta_click', { cta: 'hero_book', page: 'home' });
+    track('cta_click', { cta: 'closing_trust_book', page: 'home' });
 
     expect(sendBeacon).toHaveBeenCalledTimes(1); // cta_click only
   });
