@@ -479,3 +479,63 @@ Return a final report with exact commits, files, before/after measurements,
 tests, accepted exceptions, recovery ref, unresolved external gates, and the
 recommended release/no-release decision.
 ```
+
+## Release evidence (executed September 19, 2026)
+
+Executed by one coordinator with parallel Sonnet workers in isolated
+worktrees, on `codex/production-ui-analytics-release` (consolidated from the
+integration branch checkpoint `a003441` plus the main-worktree section-nav
+checkpoint `e5b8baf`). Recovery tags: `recovery/*-20260919-115649`.
+
+| Gate | Baseline (`a003441` + section nav) | Release candidate `371f35c` |
+| --- | --- | --- |
+| `npm run lint` | 15 errors / 63 warnings | **0 errors / 0 warnings** |
+| `npm run lint:pipeline` | clean | clean |
+| `npm run typecheck` | clean (after build) | clean |
+| `npm run test` | 357 passed / 49 skipped (emulator down) | **427 passed** (with emulator) / 372 + 49 skipped without |
+| `npm run test:rules` | 15/15 | 15/15 |
+| `npm run build` | passes | passes (42 routes) |
+| `npm run test:e2e` | 116 passed / 7 failed (welcome-modal scroll race) | **131 passed / 0 failed / 17 skipped** |
+| Tracking-enabled journey (emulator) | not run | 6 passed / 0 failed; 17/17 CTA ids once each; allowlist, `expiresAt`, PII and real/test isolation verified |
+| `npm run verify:assets` | n/a | passes |
+
+Browser measurements (local production server, desktop 1440, DPR 1):
+
+| Route | DOM nodes | Image bytes | Video bytes |
+| --- | --- | --- | --- |
+| `/` | 1313 → 1165 | 14.5 → 4.3 MB | 9.1 → 4.6 MB |
+| `/about` | 316 → 319 | 6.3 → 3.4 MB | — |
+| `/neighborhoods/williamsburg` | 262 → 265 | 4.7 → 1.8 MB | — |
+| `/reviews` | 276 → 279 | 4.6 → 1.7 MB | — |
+| `/safety` | 320 → 323 | 4.6 → 1.7 MB | — |
+| `/admin` (signed out) | 95 → 99 | 2.8 → 0.3 MB | — |
+
+- Paw trail: 320 → 168 `<img>` (measured requirement + buffer; grows only for outliers, capped at 320).
+- Hero video: 1920×1080 12.1 MB MP4 / 9.6 MB WebM, `preload="auto"`, no poster → 1080×1080 center crop 4.4 MB MP4 / 4.7 MB WebM, `preload="metadata"`, 32 KB WebP poster, pauses offscreen and under reduced motion. Masters in `assets-src/video/`.
+- Tracked `public/` bytes: 69.2 MB → 22.9 MB. Source masters (37 MB) live in `assets-src/` (git-tracked, `.vercelignore`d, trace-excluded).
+- Client JS (gzip, per worker C2's scratch builds of `a003441` vs `371f35c`): `/` 248 → 234 KB (−5.6%); other marketing routes +8–12% (`/book` 185 → 208 KB).
+- CSS per route: 85.3 → 83.3 KB.
+- Fonts: unchanged on public routes (Space Mono was unused there and is now admin-only).
+- Bundle isolation: `AnimatedServiceCards`/GSAP experiment only in `/playground/service-cards` (404 in production); Firebase client SDK only in `/admin*`; `sharp`, `firebase-admin`, `resend` absent from all client chunks.
+
+### Accepted exceptions
+
+- **Non-home route JS +8–12% gzip vs baseline.** Recorded reason: the owner's new section navigation (`SectionRail`/`SectionJump`/`useActiveSection`) now mounts in the marketing layout on every route, plus the new error/not-found boundaries; the temporary next/image runtime cost was removed again by worker C2. Homepage decreased as required.
+- **Native `<img>` retained** with local, documented `eslint-disable-next-line` for: nav wordmark (498×88, native size), animation-controlled images (paw trail, group-walk card, intro overlay), admin generated-image previews (signed Storage URLs), and dev-only playground/experiment files.
+- **Breakpoint-specific background crops not shipped.** Backgrounds are same-resolution WebP re-encodes (2.2–2.8 MB PNG → 110–290 KB); mobile still receives the desktop-resolution file. Worker B2's crop/`image-set()` pass was left uncommitted on `codex/release-worker-b` and is backlog.
+- **Replacement masters needed** (from `docs/asset-manifest.json`): `homepage_image` ≥ 2560×1535; `bg_section_1`, `bg_section_2`, `bg5` ≥ 2560×1440; `bg_section_graphic_2` ≥ 2560×1070; `public/dogs/IMAGE 00002–00007` need landscape masters ≥ 2560 px wide; `product_background` and `bg_section_graphic_1` need a re-measure in the pinned scroll state.
+- **CSP / COOP** deferred until verified against live Firebase sign-in and the Calendly embed; only `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and `X-Frame-Options: SAMEORIGIN` ship.
+- **Welcome modal scroll trigger** (owner change, 120 px) can open over a control the visitor is about to tap on a first visit; e2e journeys mark the modal seen. Product decision left to the owner.
+- **`PUBLIC_BASE_URL`** is empty in Vercel; canonicals fall back to `https://nottherug.com`. Domains were out of scope.
+- **`public/logos/ntr_offwhite_horiz.png`** (2.1 MB) is referenced only by `style-guide/` docs; left in place.
+
+### Release sequence
+
+Firestore and Storage rules deployed to `not-the-rug`; TTL on `expiresAt`
+enabled for `analytics_events` and `analyticsRateLimits` (both `ACTIVE`).
+Vercel preview and production carry `NEXT_PUBLIC_ANALYTICS_ENABLED=true` and
+`NEXT_PUBLIC_ANALYTICS_TEST_MODE=true`. Preview
+`nottherug-f4khyapy6-baiees-projects.vercel.app` verified in a browser
+(renders, no console errors, `/api/track` beacons 202). Production deployment
+and the controlled production analytics test are recorded in plan 009's
+tracker.

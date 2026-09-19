@@ -212,7 +212,7 @@ The field is a real Firestore timestamp, which is what a TTL policy needs.
 Nothing deletes the documents until that policy exists — stamping is done in
 code, expiring is a project setting.
 
-**Developer — one-time TTL setup (not yet applied to any deployed project).**
+**Developer — one-time TTL setup.** Applied to project `not-the-rug` on September 19, 2026 (both policies `ACTIVE`; verify with the list command below). For a new project, run once:
 Run these once per Firebase project, replacing `<project-id>` with the value
 of `FIREBASE_ADMIN_PROJECT_ID`:
 
