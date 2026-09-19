@@ -155,6 +155,18 @@ export default function WelcomeWalkModal() {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  // Captured synchronously by handleOpenRequest below, at the moment
+  // openWelcomeWalkModal() is called — not by the focus-trap effect further
+  // down, which only runs after commit. That matters for SiteNav's mobile
+  // "Book a Walk" flow: it closes the hamburger menu (hiding/blurring the
+  // link just clicked) in the same handler that calls openWelcomeWalkModal(),
+  // via a batched setState that isn't in the DOM yet when this synchronous
+  // event listener runs. By the time the focus-trap effect below would read
+  // document.activeElement itself, that link is already display:none and the
+  // browser has already blurred it to <body> — too late to capture. Consumed
+  // (cleared) once read, so the gate<->scheduler visibility transition still
+  // falls back to a live document.activeElement read, same as before.
+  const pendingOpenerRef = useRef<HTMLElement | null>(null);
   // Set by the OPEN_EVENT handler and by every dismissal path below. Guards
   // the first-visit scroll trigger: without this, a visitor who opens the
   // modal manually (hero CTA) and dismisses it before scrolling would see it
@@ -221,6 +233,12 @@ export default function WelcomeWalkModal() {
   useEffect(() => {
     function handleOpenRequest() {
       interactedRef.current = true;
+      // Read before setOpen(true): this listener runs synchronously inside
+      // openWelcomeWalkModal()'s dispatchEvent call, so document.activeElement
+      // here is still whatever the caller had focused (e.g. SiteNav's mobile
+      // "Book a Walk" link) even when that same click handler also closes a
+      // menu that will hide it once React commits.
+      pendingOpenerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setOpen(true);
     }
     window.addEventListener(OPEN_EVENT, handleOpenRequest);
@@ -268,7 +286,14 @@ export default function WelcomeWalkModal() {
   // flipping false (scheduler phase) then true again.
   useEffect(() => {
     if (!welcomeDialogVisible) return;
-    previouslyFocused.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // Prefer the opener captured synchronously at open-request time (see
+    // pendingOpenerRef above); fall back to a live read for every other path
+    // that makes this dialog visible, including the gate<->scheduler
+    // transition this effect already re-runs for.
+    previouslyFocused.current =
+      pendingOpenerRef.current ??
+      (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    pendingOpenerRef.current = null;
     closeButtonRef.current?.focus();
 
     function handleKeyDown(e: KeyboardEvent) {
@@ -299,7 +324,18 @@ export default function WelcomeWalkModal() {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      previouslyFocused.current?.focus();
+      const opener = previouslyFocused.current;
+      // SiteNav's mobile "Book a Walk" flow closes the hamburger menu in the
+      // same handler that opens this modal, so the captured opener can still
+      // be an <a> that is now display:none (offsetParent null) by the time
+      // we get here. .focus() on a hidden element is a silent no-op, which
+      // would otherwise strand focus on <body>. #nav-hamburger-toggle is the
+      // one control guaranteed visible in that state, so fall back to it.
+      if (opener && opener.offsetParent !== null) {
+        opener.focus();
+      } else {
+        document.getElementById('nav-hamburger-toggle')?.focus();
+      }
     };
   }, [welcomeDialogVisible]);
 
@@ -424,7 +460,14 @@ export default function WelcomeWalkModal() {
             id="welcome-walk-modal"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="welcome-walk-modal-title"
+            // The h2 this normally points at is only rendered outside the
+            // confirmation view (see #welcome-walk-modal-heading-panel below),
+            // so a dangling id there would leave the dialog with no
+            // accessible name once a booking completes. Point at the
+            // confirmation heading instead when that view is showing.
+            aria-labelledby={
+              view === 'confirmation' ? 'welcome-walk-modal-confirmation-title' : 'welcome-walk-modal-title'
+            }
             onClick={(e) => {
               if (e.target === e.currentTarget) handleDismiss();
             }}
@@ -445,6 +488,12 @@ export default function WelcomeWalkModal() {
               @keyframes welcomeModalFade { from { opacity: 0; } to { opacity: 1; } }
               @keyframes welcomeModalRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
               #welcome-walk-modal-shell { animation: welcomeModalRise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+              /* Invisible hit-area extension for small buttons that must keep
+                 their visible size (the design's close glyph / condensed CTA
+                 row). Isolated controls only — this is not used where it
+                 would overlap a neighboring control. */
+              .hit-slop-44 { position: relative; }
+              .hit-slop-44::before { content: ''; position: absolute; inset: -9px; }
               /* Home hero headline treatment (.hero-h1), deliberately oversized.
                  Sized in container units against the heading panel — not vw — so the
                  line fits the COLUMN it lives in and never wraps to two lines. */
@@ -515,7 +564,13 @@ export default function WelcomeWalkModal() {
                 border-style: dashed;
               }
               #welcome-walk-modal-sheet .form-note { font-size: 10px; margin-top: 6px; }
-              #welcome-walk-modal-sheet .btn { padding: 8px 16px; font-size: 12px; }
+              #welcome-walk-modal-sheet .btn { padding: 8px 16px; font-size: 12px; position: relative; }
+              /* The condensed popup sizing above shrinks these below a
+                 comfortable mobile tap target; an invisible ::before extends
+                 the actual hit area without changing the visible button.
+                 20px row gap (#welcome-walk-modal-cta-row) is wide enough
+                 that two adjacent 9px extensions never touch. */
+              #welcome-walk-modal-sheet .btn::before { content: ''; position: absolute; inset: -9px; }
               #welcome-walk-modal-sheet .btn-ghost { padding: 8px 0; }
               /* Dismiss, not a forward action: no .btn-ghost arrow, underlined. */
               #welcome-walk-modal-cta-secondary {
@@ -622,7 +677,13 @@ export default function WelcomeWalkModal() {
               }
               @media (prefers-reduced-motion: reduce) {
                 #welcome-walk-modal, #welcome-walk-modal-shell { animation: none !important; }
-                #welcome-walk-modal .welcome-walk-modal-cta { transition: none !important; }
+                /* Was ".welcome-walk-modal-cta", a class no element here
+                   carries (dead selector) — retargeted at the actual CTA
+                   button ids so their hover transitions are actually
+                   suppressed under reduced motion. */
+                #welcome-walk-modal #welcome-walk-modal-cta-primary,
+                #welcome-walk-modal #welcome-walk-modal-cta-secondary,
+                #welcome-walk-modal #welcome-walk-modal-cta-details { transition: none !important; }
               }
             `}</style>
 
@@ -666,6 +727,7 @@ export default function WelcomeWalkModal() {
                     type="button"
                     aria-label="Close"
                     id="welcome-walk-modal-close"
+                    className="hit-slop-44"
                     onClick={handleDismiss}
                     style={{
                       flexShrink: 0,
@@ -702,7 +764,10 @@ export default function WelcomeWalkModal() {
                 {view === 'confirmation' ? (
                   <div id="welcome-walk-modal-confirmation-panel" className="booking-form">
                     <div className="booking-form-body">
-                      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}>
+                      <h3
+                        id="welcome-walk-modal-confirmation-title"
+                        style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
+                      >
                         Your free Meet &amp; Greet is booked
                       </h3>
                       <p className="form-note" style={{ margin: '0 0 16px' }}>
