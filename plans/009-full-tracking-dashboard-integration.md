@@ -402,9 +402,33 @@ The plan is complete only when:
 | P3A Public instrumentation | DONE | `86709b4`. Ten locked ids wired across nav, hero, closing section and footer; two stale unit tests rewritten to the rendered site. PageViewTracker was already mounted in the marketing route group by the merge. 18 focused tests pass. | The nav records its four clicks from a small local helper rather than the TrackedCtaLink wrapper — accepted to avoid branching both nav maps into two link shapes; peer review is checking it keeps the wrapper's guarantees. |
 | P3B Booking funnel | DONE | `e7231e2` (funnel) + `0253b7d` (three homepage CTAs). 35 focused tests pass. Lead events fire only after confirmed persistence and outside the component's network catch; appointment completion keeps the origin and iframe-window checks. | The home page's full-layout form emits no booking_step events by design (its step never advances); the funnel there reads as form start to lead saved. |
 | P3C Dashboard/report | DONE | `4304f92`. Adds per-route page table, visible range totals, and a Real/Test switch that reflects itself in the URL and forwards testMode=1; a report whose mode does not match the request is discarded rather than rendered. 41 focused tests pass. | Admin pages need a signed-in session, so the toggle and page table are type/unit/HTTP-verified, not clicked through in a browser. |
-| P4 Retention/docs/integration | IN PROGRESS | TTL stamps `044d392` (expiresAt on events = +13 months, on rate-limit buckets = +48h, written as real Firestore timestamps; 33 focused tests pass). Docs: retention/TTL runbook `85e12f5`, CTA reference re-synced to the locked contract. | Enabling the TTL policy on a deployed Firebase project is still an external action held for P6. Booking-area disclosure not yet added. |
-| P5 Verification/review | NOT STARTED | — | Emulator and browser evidence must come from final candidate. |
-| P6 Activation | BLOCKED — AUTHORIZATION REQUIRED | — | External deployment/configuration and synthetic data actions. |
+| P4 Retention/docs/integration | DONE | TTL stamps `044d392` (expiresAt on events = +13 months, on rate-limit buckets = +48h, written as real Firestore timestamps; 33 focused tests pass). Docs: retention/TTL runbook `85e12f5`, CTA reference re-synced to the locked contract. | Enabling the TTL policy on a deployed Firebase project is still an external action held for P6. |
+| P5 Verification/review | DONE | Final candidate `37c6f6a`. lint 16 errors / 64 warnings — byte-identical to the pre-P3 baseline at `bcd862f`, no new findings. lint:pipeline clean. typecheck clean. Unit: 43 files / 396 tests, 0 skipped (the Firestore emulator ran on an unlinked Homebrew openjdk@21). Production build succeeded. Playwright against a tracking-enabled build: 125 passed / 5 skipped (viewport-gated) / 0 failed, desktop and 400px mobile. Browser-to-Firestore-to-report round trip reconciled on the emulator: all 7 tracked routes in the page table, 7 CTA ids from real clicks, funnel in contract order, test mode reporting inquiries as not measured, real mode still empty. | Admin pages need a signed-in session, so the dashboard's new controls are verified by unit test, HTTP status and report-level reconciliation, not by a signed-in click-through. Two component behaviors (second-attempt reset, second booking from one mount) have no render harness in this repo and are read-verified only. |
+| P6 Activation | BLOCKED — AUTHORIZATION REQUIRED | — | Nothing was deployed, no Firebase configuration was changed, no TTL policy was enabled, no real appointment, lead or customer email was created. All verification ran against a local build and a local emulator project (`demo-verify009`). |
+
+## Findings fixed during review (P5)
+
+Peer review of the three workstreams found, and this branch fixed:
+
+- A test-mode dashboard showed the **real** inquiry total under the banner
+  saying the data was not real. Leads carry no mode, so test mode now reports
+  inquiries as not measured instead of borrowing the real number.
+- Test mode could claim tracking had never started while showing non-zero
+  tiles, because the "first event" sample was read across both modes. Status
+  is now derived from the range being reported.
+- `lead_saved` fired for dedupe-suppressed resubmissions, where the API
+  answers `ok` but writes nothing.
+- The funnel printed `schedule` above `review` although the scheduler opens
+  last, so the table read as going back up.
+- A superseded mode/range switch could land on a silent all-zero dashboard.
+- A cmd/ctrl/shift-click on the hero and nav booking controls opened the
+  welcome modal instead of the link.
+- `TrackedCtaLink`/`TrackedCtaAnchor` required a `page` value the tracker
+  never stores.
+
+One unrelated defect was found by the browser suite and fixed: the booking
+form's progress dots had lost their forward-validation gate in the redesign,
+so a visitor could skip required steps.
 
 ## Master execution prompt for a multi-agent Codex coordinator
 
