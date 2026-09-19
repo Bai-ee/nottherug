@@ -113,3 +113,70 @@
 @media (min-width: 900px) {
   #admin-analytics-dashboard-grid { gap: 28px; }
 }
+
+/* ── REFINEMENT PASS ────────────────────────────────────────────────────────
+   Owner direction: primary actions are the site's terracotta button that goes
+   olive on hover (.btn-accent, already in globals.css); secondary actions are
+   its mirror — olive that goes terracotta. Labels, data and the sentences
+   explaining them read centered, with more air between a label and the number
+   it belongs to. On a phone everything stacks and centers. */
+
+/* The mirror of .btn-accent. Same tokens, swapped: olive at rest, terracotta
+   on hover. Admin-only, so the marketing buttons keep their own pairing. */
+#admin-shell-main .btn.admin-btn-secondary {
+  background-color: var(--olive);
+  background-image: none;
+  color: var(--paper);
+  outline-color: rgba(243, 236, 217, 0.45);
+}
+#admin-shell-main .btn.admin-btn-secondary:hover {
+  background-color: var(--terracotta);
+  color: var(--paper);
+}
+
+/* Labels, data and explanations centre inside every panel. */
+#admin-shell-main .card { text-align: center; }
+#admin-shell-main .admin-analytics-panel-head { justify-content: center; }
+#admin-shell-main .admin-analytics-hero-stats-row { justify-content: center; }
+#admin-shell-main .card .form-note { margin-left: auto; margin-right: auto; }
+
+/* Air between a label and the thing it labels. */
+#admin-shell-main .card .stamp-label { margin-bottom: 18px; }
+#admin-shell-main .admin-analytics-panel-body { gap: 20px; }
+#admin-shell-main .hero-stat-num { margin-bottom: 10px; }
+#admin-shell-main .admin-analytics-hero-stats-row { gap: 32px; }
+
+/* A label/value row keeps its two edges on wide screens — that is what makes
+   a column of numbers scannable — so it opts out of the centring above. */
+#admin-shell-main .rc-row { text-align: left; }
+
+@media (max-width: 768px) {
+  /* Phone: one column, everything centred on top of everything else. */
+  #admin-shell-main .rc-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+  }
+  #admin-page-header,
+  #admin-page-header-heading,
+  #admin-page-header-controls,
+  #admin-page-header-actions {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+  #admin-analytics-controls-row,
+  #admin-analytics-range-selector,
+  #admin-analytics-data-mode-toggle,
+  #admin-analytics-error-banner,
+  .admin-analytics-hero-stats-row {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  #admin-analytics-trend-axis { justify-content: center; gap: 12px; }
+  #admin-chrome-footer .container { justify-content: center; text-align: center; }
+}
