@@ -942,7 +942,7 @@ export default function ServiceCardsPlayground() {
                   // eslint-disable-next-line @next/next/no-img-element -- dev-only playground page, animation-controlled (GSAP opacity/scale/rotation)
                   <img
                     id={`service-card-bg-${i}`}
-                    src="/img/card_bg.png"
+                    src="/img/card-bg.webp"
                     alt=""
                     style={{
                       position: "absolute",

@@ -1062,7 +1062,7 @@ export default function AnimatedServiceCards() {
                 // eslint-disable-next-line @next/next/no-img-element -- dev-only playground component, animation-controlled (GSAP opacity/scale/rotation)
                 <img
                   id={`home-product-card-bg-${i}`}
-                  src="/img/card_bg.png"
+                  src="/img/card-bg.webp"
                   alt=""
                   style={{
                     position: "absolute", top: -32, left: -28, right: -28, bottom: -32,
