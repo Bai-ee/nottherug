@@ -125,7 +125,7 @@ export function createStepFunnelTracker(source: string) {
  * visitor actually fell off. Full-layout progress is read from
  * booking_form_start -> lead_saved instead.
  */
-const NO_STEP_TRACKING = (_step: BookingStep) => {};
+const NO_STEP_TRACKING: (step: BookingStep) => void = () => {};
 
 /**
  * Whether a successful save should open the Calendly scheduler. A
@@ -188,9 +188,8 @@ export default function BookingForm({
   const [trackH, setTrackH] = useState<number | undefined>(undefined);
   const hasTrackedFormStart = useRef(false);
   // Created once per mount ("per attempt") and never reset — see createStepFunnelTracker.
-  const stepTrackerRef = useRef<ReturnType<typeof createStepFunnelTracker> | null>(null);
-  if (!stepTrackerRef.current) stepTrackerRef.current = createStepFunnelTracker(source);
-  const reachStep = fullLayout ? NO_STEP_TRACKING : stepTrackerRef.current;
+  const [stepTracker] = useState(() => createStepFunnelTracker(source));
+  const reachStep = fullLayout ? NO_STEP_TRACKING : stepTracker;
 
   const alertId = `${paneId}-step-alert`;
   const stepAlertMessage = Object.values(fieldErrors).find((m): m is string => Boolean(m)) ?? '';
