@@ -6,14 +6,23 @@ import { test, expect, type Page } from '@playwright/test';
 // no `alert()` ships anywhere, the playground is prod-gated, and disabled
 // homepage sections never render.
 
+// Every headline is set as display lines separated by <br> and upper-cased in
+// CSS, so `textContent` runs the words together ("Your dogdeserves…"). These
+// patterns are matched against the normalized innerText (see expectH1) — the
+// sentence a visitor actually reads — hence the /i flag.
+const HOME_H1 = /^Your dog deserves someone they know\.$/i;
+const ABOUT_H1 = /^15 years of walks, one neighborhood$/i;
+const SAFETY_H1 = /^Why trust matters more than price$/i;
+
 const ROUTES: Array<{ path: string; h1: RegExp }> = [
-  { path: '/', h1: /Your dog deserves/ },
-  { path: '/about', h1: /15 years of walks/ },
-  { path: '/safety', h1: /Why trust matters/ },
-  { path: '/neighborhoods/williamsburg', h1: /Williamsburg is our/ },
-  { path: '/reviews', h1: /What Brooklyn/ },
-  { path: '/book', h1: /Book your free/ },
-  { path: '/contact', h1: /real people/ },
+  { path: '/', h1: HOME_H1 },
+  { path: '/about', h1: ABOUT_H1 },
+  { path: '/safety', h1: SAFETY_H1 },
+  { path: '/neighborhoods/williamsburg', h1: /^Williamsburg is our backyard$/i },
+  { path: '/reviews', h1: /^What Brooklyn dog owners say$/i },
+  { path: '/book', h1: /^Book your free Meet & Greet$/i },
+  // `.` stands in for the apostrophe: the copy uses a typographic one.
+  { path: '/contact', h1: /^We.re real people with a real number$/i },
 ];
 
 // The standalone /services and /how-it-works routes were folded into the home
@@ -43,48 +52,71 @@ function failOnDialog(page: Page) {
   });
 }
 
+// Asserts the page's own headline. innerText (not textContent) so the <br>
+// display line breaks come back as whitespace instead of being dropped, then
+// collapsed to single spaces — the full sentence, not a fragment of it.
+async function expectH1(page: Page, expected: RegExp) {
+  await expect
+    .poll(async () => (await page.locator('h1').first().innerText()).replace(/\s+/g, ' ').trim())
+    .toMatch(expected);
+}
+
+// The home route opens behind a full-screen loading wipe: HomeIntroOverlay
+// sets `data-home-intro` on <html> before first paint and globals.css hides
+// #main-nav and #page-home until it is 'done'. Nothing on home can be clicked
+// or focused before that, so every home navigation here waits the wipe out.
+// Other routes never set the attribute and fall straight through.
+async function gotoSettled(page: Page, path: string) {
+  const response = await page.goto(path);
+  await page.waitForFunction(() => {
+    const state = document.documentElement.dataset.homeIntro;
+    return state === undefined || state === 'done';
+  });
+  return response;
+}
+
 test.describe('public routes', () => {
   test.beforeEach(({ page }) => failOnDialog(page));
 
   for (const route of ROUTES) {
     test(`${route.path} loads directly with a 200 and its own <h1>`, async ({ page }) => {
-      const response = await page.goto(route.path);
+      const response = await gotoSettled(page, route.path);
       expect(response?.status()).toBe(200);
-      await expect(page.locator('h1').first()).toContainText(route.h1);
+      await expectH1(page, route.h1);
     });
   }
 
   test('refresh preserves the page (no client-side-only routing)', async ({ page }) => {
     await page.goto('/safety');
-    await expect(page.locator('h1')).toContainText(/Why trust matters/);
+    await expectH1(page, SAFETY_H1);
     await page.reload();
-    await expect(page.locator('h1')).toContainText(/Why trust matters/);
+    await expectH1(page, SAFETY_H1);
   });
 
   test('browser back/forward restores the right page', async ({ page }) => {
     // Navigates via goto() rather than clicking nav links, so this exercises
     // real-route back/forward on both the desktop nav-links row and the
     // mobile layout (where the nav-links row is hidden behind the hamburger).
-    await page.goto('/');
+    await gotoSettled(page, '/');
     await page.goto('/safety');
     await expect(page).toHaveURL(/\/safety$/);
-    await expect(page.locator('h1')).toContainText(/Why trust matters/);
+    await expectH1(page, SAFETY_H1);
 
     await page.goto('/about');
     await expect(page).toHaveURL(/\/about$/);
-    await expect(page.locator('h1')).toContainText(/15 years of walks/);
+    await expectH1(page, ABOUT_H1);
 
     await page.goBack();
     await expect(page).toHaveURL(/\/safety$/);
-    await expect(page.locator('h1')).toContainText(/Why trust matters/);
+    await expectH1(page, SAFETY_H1);
 
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.locator('h1')).toContainText(/Your dog deserves/);
+    await expectH1(page, HOME_H1);
 
     await page.goForward();
     await expect(page).toHaveURL(/\/safety$/);
-    await expect(page.locator('h1')).toContainText(/Why trust matters/);
+    await expectH1(page, SAFETY_H1);
   });
 
   for (const redirect of LEGACY_REDIRECTS) {
@@ -95,9 +127,9 @@ test.describe('public routes', () => {
   }
 
   test('retired /services redirects to the home rates panel', async ({ page }) => {
-    await page.goto('/services');
+    await gotoSettled(page, '/services');
     await expect(page).toHaveURL(new RegExp(`${SERVICES_ANCHOR.replace(/[/]/g, '\\/')}$`));
-    await expect(page.locator('h1')).toContainText(/Your dog deserves/);
+    await expectH1(page, HOME_H1);
   });
 
   test('legacy ?page=services lands on the home rates panel', async ({ page }) => {
@@ -106,29 +138,31 @@ test.describe('public routes', () => {
   });
 
   test('legacy ?page=home stays on the homepage (no redirect loop)', async ({ page }) => {
-    const response = await page.goto('/?page=home');
+    const response = await gotoSettled(page, '/?page=home');
     expect(response?.status()).toBe(200);
-    await expect(page.locator('h1')).toContainText(/Your dog deserves/);
+    await expectH1(page, HOME_H1);
   });
 
   test('unknown legacy params fall back to the homepage', async ({ page }) => {
-    const response = await page.goto('/?page=does-not-exist');
+    const response = await gotoSettled(page, '/?page=does-not-exist');
     expect(response?.status()).toBe(200);
-    await expect(page.locator('h1')).toContainText(/Your dog deserves/);
+    await expectH1(page, HOME_H1);
   });
 
-  // The bar carries four plain-language entries; each still lands on the band
-  // that answers it. Scoped to .nav-links because the footer links to the same
-  // anchors under its own labels. Safety, Reviews and Contact are footer-only
-  // now; the standalone routes they used to point at are still live.
+  // The bar carries five plain-language entries (SiteNav.NAV_LINKS); each
+  // still lands on the band that answers it. Scoped to .nav-links because the
+  // footer links to the same anchors under its own labels. Safety, Reviews and
+  // Contact are footer-only now; the standalone routes they used to point at
+  // are still live.
   test('desktop nav links reach their home-page band', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
-    await page.goto('/');
+    await gotoSettled(page, '/');
     for (const [label, expectedPath] of [
       ['What We Do', '/#home-personalized-care-section'],
-      ['Who We Are', '/#home-team-section'],
+      ['Who Does It', '/#home-team-section'],
       ['Where We Do It', WILLIAMSBURG_ANCHOR],
-      ['How to Get Started', HOW_IT_WORKS_ANCHOR],
+      ['How It Works', HOW_IT_WORKS_ANCHOR],
+      ['Let’s Get Started', '/#home-contact-sheet-section'],
     ] as const) {
       await page.locator('.nav-links').getByRole('link', { name: label }).click();
       await expect(page).toHaveURL(new RegExp(`${expectedPath.replace(/[/]/g, '\\/')}$`));
@@ -138,7 +172,7 @@ test.describe('public routes', () => {
 
   test('the nav "Where We Do It" entry scrolls to the home parks list', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
-    await page.goto('/');
+    await gotoSettled(page, '/');
     await page.locator('.nav-links').getByRole('link', { name: 'Where We Do It' }).click();
     await expect(page).toHaveURL(new RegExp(`${WILLIAMSBURG_ANCHOR.replace(/[/]/g, '\\/')}$`));
     await expect(page.locator('#home-closing-parks-row')).toBeInViewport();
@@ -146,27 +180,53 @@ test.describe('public routes', () => {
 
   test('mobile hamburger menu opens and its links navigate', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'mobile-menu-only interaction');
-    await page.goto('/');
+    await gotoSettled(page, '/');
     await page.locator('#nav-hamburger-toggle').click();
     const mobileMenu = page.locator('#mobile-menu');
     await expect(mobileMenu).toBeVisible();
-    await mobileMenu.getByRole('link', { name: 'About Us' }).click();
-    await expect(page).toHaveURL(/\/about$/);
+
+    // The menu's five plain-language entries are home-page anchors now, so on
+    // home they scroll to their band and close the menu behind them.
+    await mobileMenu.getByRole('link', { name: 'Who Does It' }).click();
+    await expect(page).toHaveURL(/\/#home-team-section$/);
+    await expect(mobileMenu).toBeHidden();
+
+    // "Login" is the one entry pointing at a separate route, so it is what
+    // proves the menu still navigates rather than toggling DOM on the spot.
+    await page.locator('#nav-hamburger-toggle').click();
+    await mobileMenu.getByRole('link', { name: 'Login' }).click();
+    await expect(page).toHaveURL(/\/admin$/);
   });
 
   test('every "book" CTA reaches /book', async ({ page, isMobile }) => {
-    await page.goto('/');
+    // The nav-links row is behind the hamburger on mobile, so the nav CTA is
+    // reached through the menu there. Same control, same handler either way.
+    async function clickNavBookCta() {
+      if (!isMobile) {
+        await page.locator('#nav-book-cta').click();
+        return;
+      }
+      await page.locator('#nav-hamburger-toggle').click();
+      await page.locator('#mobile-menu-book-cta').click();
+    }
+
+    await gotoSettled(page, '/');
     await page.getByRole('link', { name: /Contact Luis, to Get Started/ }).first().click();
     await expect(page).toHaveURL(/\/book$/);
 
-    // The only exact "Book a Walk" link left on home is the nav CTA, and the
-    // nav-links row is behind the hamburger on mobile. (The footer entry was
-    // dropped: it pointed at a route, not a band on the page.)
-    if (!isMobile) {
-      await page.goto('/');
-      await page.getByRole('link', { name: 'Book a Walk', exact: true }).first().click();
-      await expect(page).toHaveURL(/\/book$/);
-    }
+    // The nav "Book a Walk" is the one booking control that deliberately does
+    // not navigate on home: SiteNav.handleBookClick pops the welcome-walk
+    // modal there instead, and the URL stays on the home page.
+    await gotoSettled(page, '/');
+    await clickNavBookCta();
+    await expect(page.locator('#welcome-walk-modal')).toBeVisible();
+    await expect(page).toHaveURL(/\/$/);
+
+    // Off home — the only page that renders the modal — the same control is a
+    // plain link to /book, which is also home's pre-hydration behaviour.
+    await page.goto('/about');
+    await clickNavBookCta();
+    await expect(page).toHaveURL(/\/book$/);
 
     await page.goto('/neighborhoods/williamsburg');
     await page.getByRole('link', { name: /Book a Walk in Williamsburg/ }).click();
@@ -231,7 +291,18 @@ test.describe('no horizontal overflow at any checked width', () => {
 test.describe('keyboard access', () => {
   test('desktop nav is reachable and operable by keyboard', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
-    await page.goto('/');
+    // On home the nav CTA opens the welcome-walk modal rather than leaving the
+    // page, so keyboard operability is proved on both of its outcomes: the
+    // modal here, and the /book navigation the same control does off home.
+    await gotoSettled(page, '/');
+    const homeBookCta = page.locator('#main-nav .nav-cta');
+    await homeBookCta.focus();
+    await expect(homeBookCta).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#welcome-walk-modal')).toBeVisible();
+    await expect(page).toHaveURL(/\/$/);
+
+    await page.goto('/about');
     const bookCta = page.locator('#main-nav .nav-cta');
     await bookCta.focus();
     await expect(bookCta).toBeFocused();
@@ -241,7 +312,7 @@ test.describe('keyboard access', () => {
 
   test('mobile hamburger toggle opens the menu on Enter, not just click', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'mobile-menu-only interaction');
-    await page.goto('/');
+    await gotoSettled(page, '/');
     const toggle = page.locator('#nav-hamburger-toggle');
     await toggle.focus();
     await expect(toggle).toBeFocused();
