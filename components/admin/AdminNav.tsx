@@ -49,7 +49,7 @@ export function AdminNav() {
           reusing them is what makes this bar identical to the site's without
           a line of admin-only nav CSS. SiteNav never renders on these pages,
           so the ids stay unique. */}
-      <nav id="main-nav" ref={navRef} data-mobile-open={mobileOpen ? 'true' : 'false'}>
+      <nav id="main-nav" data-admin-nav="" ref={navRef} data-mobile-open={mobileOpen ? 'true' : 'false'}>
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
             {/* Same #nav-logo-img CSS sizing as the marketing nav (see

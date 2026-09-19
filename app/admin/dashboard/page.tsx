@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminShell } from '@/components/admin/AdminShell';
@@ -11,7 +11,6 @@ import { adminFetch, useAbortSignal, isAbortError, type GetIdToken } from '@/com
 import { isAnalyticsEnabled } from '@/lib/analytics/track';
 import type { AnalyticsReport, ReportRange } from '@/lib/analytics/report';
 import { RangeSelector } from '@/components/admin/analytics/RangeSelector';
-import { DataModeToggle } from '@/components/admin/analytics/DataModeToggle';
 import { InquiryHeadline } from '@/components/admin/analytics/InquiryHeadline';
 import { LiveTile } from '@/components/admin/analytics/LiveTile';
 import { TrendSparkline } from '@/components/admin/analytics/TrendSparkline';
@@ -42,14 +41,12 @@ function AdminAnalyticsDashboardContent({
   getToken,
   signOut,
   testMode,
-  onTestModeChange,
 }: {
   email: string;
   getToken: GetIdToken;
   signOut: () => Promise<void>;
   /** True when the URL carries ?testMode=1 — show test/preview traffic only, never blended with real data. */
   testMode: boolean;
-  onTestModeChange: (testMode: boolean) => void;
 }) {
   const [range, setRange] = useState<ReportRange>('7d');
   const [report, setReport] = useState<AnalyticsReport | null>(null);
@@ -150,9 +147,11 @@ function AdminAnalyticsDashboardContent({
 
         <LiveTile live={view.live} />
 
+        {/* Test/preview traffic is a developer view: it is reached only by
+            adding ?testMode=1 to the URL (see docs/analytics-operations.md),
+            so the owner-facing controls are just the range. */}
         <div id="admin-analytics-controls-row">
           <RangeSelector value={range} onChange={setRange} disabled={loading} />
-          <DataModeToggle testMode={testMode} onChange={onTestModeChange} disabled={loading} />
         </div>
 
         <TrendSparkline points={view.dailyTrend} />
@@ -180,10 +179,9 @@ function AdminAnalyticsDashboardContent({
 }
 
 /**
- * Owns the one piece of dashboard state that lives in the URL: ?testMode=1.
- * Keeping it in the URL (rather than component state) means a reload or a
- * shared link reopens the same data mode, so nobody reads test traffic as
- * real business numbers after a refresh.
+ * Reads the one piece of dashboard state that lives in the URL: ?testMode=1,
+ * a developer-only view of test/preview traffic. Nothing on the page sets it;
+ * the owner-facing dashboard always shows real data.
  *
  * Split out from the default export purely so useSearchParams sits below a
  * <Suspense> boundary, as next/navigation requires — see
@@ -192,19 +190,8 @@ function AdminAnalyticsDashboardContent({
  * this param.
  */
 function AdminAnalyticsDashboardRoute() {
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const testMode = searchParams.get('testMode') === '1';
-
-  const setTestMode = useCallback(
-    (next: boolean) => {
-      // scroll: false keeps the owner where they were; the page content is
-      // replaced in place, not navigated to.
-      router.replace(next ? `${pathname}?testMode=1` : pathname, { scroll: false });
-    },
-    [router, pathname],
-  );
 
   return (
     <AdminSessionProvider>
@@ -215,7 +202,6 @@ function AdminAnalyticsDashboardRoute() {
             getToken={session.getToken}
             signOut={session.signOut}
             testMode={testMode}
-            onTestModeChange={setTestMode}
           />
         )}
       </AdminGuard>

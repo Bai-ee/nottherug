@@ -108,7 +108,7 @@ server-side, so it works immediately without a rebuild.
 4. Visit the live site yourself a few times — home page, a service page,
    click a "Book" button.
 5. In the admin dashboard, add `?testMode=1` to the analytics report URL (or
-   use the dashboard's test-mode toggle, if one is wired in) to see that test
+   there is no toggle on the page — the URL is the switch) to see that test
    traffic. Confirm the pageviews and clicks you just made show up.
 6. Once you're confident it's working, redeploy with
    `NEXT_PUBLIC_ANALYTICS_TEST_MODE=false` (or remove it) to switch to

@@ -82,11 +82,11 @@
    side — they should start on the same line. */
 #admin-analytics-tables-row { align-items: stretch; }
 
-/* Controls row: range selector + real/test toggle, side by side on wider
-   screens and stacked on a phone. */
+/* Controls row: the range selector. Test/preview traffic is a developer
+   view reached only through ?testMode=1 in the URL — there is no owner
+   facing toggle. */
 #admin-analytics-controls-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; width: 100%; }
 #admin-analytics-range-selector { display: flex; gap: 6px; flex: 1 1 320px; }
-#admin-analytics-data-mode-toggle { display: flex; gap: 6px; flex: 1 1 240px; align-items: stretch; }
 
 /* Shared panel-head row — a stamp-label heading plus an optional badge or
    legend on the right — reused by every card panel that needs one. */
@@ -217,7 +217,6 @@
   #admin-shell-main .btn { width: 100%; flex: 0 0 auto; }
   #admin-analytics-controls-row,
   #admin-analytics-range-selector,
-  #admin-analytics-data-mode-toggle,
   #admin-analytics-error-banner,
   .admin-analytics-hero-stats-row {
     flex-direction: column;
@@ -237,4 +236,29 @@
     text-align: center;
   }
   #admin-chrome-footer .container { justify-content: center; text-align: center; }
+}
+
+/* ── ADMIN NAV ON PHONES ──────────────────────────────────────────────────────
+   The marketing nav hangs its paper wordmark below the band on purpose (see
+   .nav-logo in app/globals.css). On the admin pages that overhang crowds the
+   page header on a phone, so the wordmark is sized and centred to sit inside
+   the 72px band instead — same label, same tape, no overhang — in both the
+   top-of-page and scrolled states. Scoped to AdminNav's data-admin-nav
+   attribute (not .admin-shell: the signed-out screen has no shell) so the
+   marketing nav is untouched even after a client-side hop out of /admin. */
+@media (max-width: 768px) {
+  #main-nav[data-admin-nav] .nav-logo,
+  #main-nav[data-admin-nav].nav-scrolled .nav-logo {
+    top: 50%;
+    padding: 5px 8px;
+    transform: translateY(-50%) rotate(-1deg);
+  }
+  #main-nav[data-admin-nav] .nav-logo::before,
+  #main-nav[data-admin-nav].nav-scrolled .nav-logo::before {
+    width: 64px; height: 17px; top: -7px; margin-left: -32px;
+  }
+  #main-nav[data-admin-nav] #nav-logo-img,
+  #main-nav[data-admin-nav].nav-scrolled #nav-logo-img { width: 150px; }
+  /* No overhang to clear any more: the header can sit closer to the band. */
+  .admin-shell #admin-shell-main { padding-top: calc(var(--nav-h) + 28px); }
 }
