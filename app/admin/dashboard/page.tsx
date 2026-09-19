@@ -24,6 +24,11 @@ import { CtaTable } from '@/components/admin/analytics/CtaTable';
 import { FunnelPanel } from '@/components/admin/analytics/FunnelPanel';
 import { TrackingDisabledBanner, LoadingBanner, ErrorBanner, ReportMetaBanner } from '@/components/admin/analytics/StatusBanner';
 import { buildEmptyReport } from '@/components/admin/analytics/emptyReport';
+import {
+  buildDashboardRequestKey,
+  deriveDashboardRequestState,
+  type DashboardErrorState,
+} from '@/lib/analytics/dashboardRequestState';
 
 /**
  * Owner-facing site-performance dashboard — plan A5
@@ -48,8 +53,7 @@ function AdminAnalyticsDashboardContent({
 }) {
   const [range, setRange] = useState<ReportRange>('7d');
   const [report, setReport] = useState<AnalyticsReport | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [errorState, setErrorState] = useState<DashboardErrorState>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   // Bumped by the Retry button to re-run the effect below without
   // duplicating the fetch body in a second callback (see leads page for the
@@ -59,16 +63,19 @@ function AdminAnalyticsDashboardContent({
 
   const abortSignal = useAbortSignal();
 
+  const requestKey = buildDashboardRequestKey({ range, testMode, retryKey });
+  const [settledKey, setSettledKey] = useState<string | null>(null);
+  const { loading, error } = deriveDashboardRequestState(requestKey, settledKey, errorState);
+
   useEffect(() => {
     // Cancellation flag: when the range or the data mode changes mid-flight,
     // the superseded request must not write any state. Without it, a late
     // response could land after the new request started and leave the page
     // with loading already false, no banner, and a fresh "last refreshed"
     // stamp above a report the render below then discards for mode mismatch —
-    // a silent all-zero dashboard. The replacement effect run owns loading.
+    // a silent all-zero dashboard. Guarding every write below with `cancelled`
+    // means a stale request can never mark the current requestKey settled.
     let cancelled = false;
-    setLoading(true);
-    setError('');
     (async () => {
       try {
         // testMode=1 makes the API ask the report for mode:'test' events
@@ -81,17 +88,18 @@ function AdminAnalyticsDashboardContent({
         if (cancelled) return;
         setReport(data);
         setLastRefreshed(new Date());
+        setErrorState(null);
       } catch (err) {
         if (cancelled || isAbortError(err)) return;
-        setError(err instanceof Error ? err.message : 'Could not load analytics.');
+        setErrorState({ key: requestKey, message: err instanceof Error ? err.message : 'Could not load analytics.' });
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setSettledKey(requestKey);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [range, testMode, getToken, abortSignal, retryKey]);
+  }, [range, testMode, getToken, abortSignal, requestKey]);
 
   const retry = useCallback(() => setRetryKey((k) => k + 1), []);
 
