@@ -54,11 +54,11 @@ export function LeadFilterBar({
       </div>
 
       <div id="admin-leads-filter-meta-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
-        <span id="admin-leads-result-count" className="form-note" style={{ margin: 0, textAlign: 'left' }}>
+        <span id="admin-leads-result-count" className="form-note" style={{ margin: 0 }}>
           {loading ? 'Loading…' : `${filteredCount} of ${totalCount} lead${totalCount === 1 ? '' : 's'}`}
         </span>
         {!loading && cap !== null && totalCount >= cap ? (
-          <span id="admin-leads-cap-notice" className="form-note text-terra" style={{ margin: 0, textAlign: 'left' }}>
+          <span id="admin-leads-cap-notice" className="form-note text-terra" style={{ margin: 0 }}>
             Showing the most recent {cap} leads. Older leads are not included.
           </span>
         ) : null}

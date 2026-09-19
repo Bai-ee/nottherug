@@ -60,7 +60,7 @@ function FieldRow({ lead, field }: { lead: LeadRecord; field: LeadDisplayField }
   }
 
   return (
-    <div className="rc-row" id={`admin-lead-field-${field.key}`} style={isNotes ? { alignItems: 'flex-start', flexDirection: 'column', gap: 4 } : undefined}>
+    <div className="rc-row" id={`admin-lead-field-${field.key}`} style={isNotes ? { alignItems: 'flex-start', flexDirection: 'column', gap: 8 } : { gap: 16 }}>
       <span className="rc-label" style={{ minWidth: isNotes ? undefined : 150 }}>{field.label}</span>
       {valueNode}
     </div>
@@ -120,7 +120,7 @@ export function LeadTable({
 
             <button
               type="button"
-              className="btn btn-ghost btn-sm"
+              className="btn btn-sm admin-btn-secondary"
               id={`admin-lead-card-toggle-${rowKey}`}
               style={{ marginTop: 12, padding: '10px 0' }}
               onClick={(e) => {
