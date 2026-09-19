@@ -229,7 +229,15 @@ const nextConfig: NextConfig = {
   // - Strict-Transport-Security: Vercel already sets this at the platform
   //   edge for the production domain; adding it here would be redundant and
   //   risks a mismatched max-age/preload configuration.
-  serverExternalPackages: ['sharp', 'firebase-admin'],
+  // firebase-admin is bundled, not externalized: Vercel's Next launcher runs
+  // Node with --no-experimental-require-module, so an externalized
+  // firebase-admin/auth dies at jwks-rsa's require('jose') (jose 6 is
+  // ESM-only) with ERR_REQUIRE_ESM on every Firestore-backed route. Listing
+  // the three in transpilePackages overrides Next's built-in external list
+  // and lets Turbopack resolve the CJS/ESM interop at build time. Verified on
+  // preview 2026-09-19; sharp stays external (native binaries).
+  serverExternalPackages: ['sharp'],
+  transpilePackages: ['firebase-admin', 'jwks-rsa', 'jose'],
 
   outputFileTracingExcludes: {
     '/api/admin/generator/render':              GENERATOR_TRACE_EXCLUDES,
