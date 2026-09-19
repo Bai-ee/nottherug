@@ -11,6 +11,7 @@ import {
   FIRST_WALK_PROMO_BADGE,
   FIRST_WALK_TAX_NOTE,
 } from '@/lib/content/services';
+import { SERVICE_AREA_LABEL } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
 import {
   createOnboardingHandoff,
@@ -25,7 +26,7 @@ import SchedulingDialog from '@/components/booking/SchedulingDialog';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import {
-  WELCOME_MODAL_DELAY_MS,
+  hasScrolledPastTrigger,
   hasSeenWelcomeModal,
   markWelcomeModalSeen,
   type WelcomeModalStorage,
@@ -65,7 +66,8 @@ const SKYLINE_IMAGE = '/img/bg_section_graphic_1.png';
 const LOGO_BADGE = '/logos/notRugGreen.png';
 
 /** The one area served — shown locked, never asked. */
-const SERVICE_AREA_LABEL = 'Williamsburg, Brooklyn only';
+// SERVICE_AREA_LABEL lives in lib/leads/contract.ts: the home intake locks
+// the same row, and the two must always name the same area.
 
 /**
  * `?welcome=1` forces the modal open immediately and does NOT mark it seen —
@@ -154,12 +156,12 @@ export default function WelcomeWalkModal() {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   // Set by the OPEN_EVENT handler and by every dismissal path below. Guards
-  // the delayed first-visit timer: without this, a visitor who opens the
-  // modal manually (hero CTA) and dismisses it before WELCOME_MODAL_DELAY_MS
-  // elapses would see it pop back open uninvited when the timer fires —
-  // acceptance scenario 15 requires the reopen to stay deliberate. Never
-  // read by the once-per-browser localStorage gate or the `?welcome=1` force
-  // path, which are unaffected by anything that happens within a session.
+  // the first-visit scroll trigger: without this, a visitor who opens the
+  // modal manually (hero CTA) and dismisses it before scrolling would see it
+  // pop back open uninvited on their first scroll down — acceptance scenario
+  // 15 requires the reopen to stay deliberate. Never read by the
+  // once-per-browser localStorage gate or the `?welcome=1` force path, which
+  // are unaffected by anything that happens within a session.
   const interactedRef = useRef(false);
 
   const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
@@ -168,22 +170,46 @@ export default function WelcomeWalkModal() {
   // the two is ever active, per plans/005 "one active dialog at a time".
   const welcomeDialogVisible = open && view !== 'scheduler';
 
+  /**
+   * First-visit auto-open, triggered by the visitor starting to scroll DOWN
+   * the page rather than by a timer: the popup answers engagement instead of
+   * interrupting the fold. Fires at most once — the listener removes itself
+   * the first time the threshold is crossed, and the once-per-browser
+   * localStorage flag stops it on every later visit.
+   *
+   * `?welcome=1` still opens it immediately and without marking it seen, so
+   * the modal stays reviewable in a production build.
+   */
   useEffect(() => {
     const forced = isForced();
     const storage = readStorage();
-    if (!forced && hasSeenWelcomeModal(storage)) return;
-    const timer = window.setTimeout(
-      () => {
-        // Only the natural delayed auto-open is guarded — a visitor who
-        // already opened (or dismissed) the modal this session made a
-        // deliberate choice the timer must not override.
-        if (!forced && interactedRef.current) return;
-        if (!forced) markWelcomeModalSeen(storage);
-        setOpen(true);
-      },
-      forced ? 0 : WELCOME_MODAL_DELAY_MS
-    );
-    return () => window.clearTimeout(timer);
+    if (forced) {
+      // Deferred a tick rather than set synchronously: a setState inside an
+      // effect body cascades an extra render. The scroll path below is
+      // already async, so only this branch needs it.
+      const timer = window.setTimeout(() => setOpen(true), 0);
+      return () => window.clearTimeout(timer);
+    }
+    if (hasSeenWelcomeModal(storage)) return;
+
+    // Baseline, not 0: a reload can restore a mid-page offset and a visitor
+    // can land on a #section link, neither of which is "started scrolling".
+    const startY = window.scrollY;
+    let fired = false;
+
+    function handleScroll() {
+      if (fired || !hasScrolledPastTrigger(window.scrollY, startY)) return;
+      fired = true;
+      window.removeEventListener('scroll', handleScroll);
+      // A visitor who already opened (or dismissed) the modal this session
+      // made a deliberate choice the scroll trigger must not override.
+      if (interactedRef.current) return;
+      markWelcomeModalSeen(storage);
+      setOpen(true);
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   /**

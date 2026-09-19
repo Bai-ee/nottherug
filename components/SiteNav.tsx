@@ -124,7 +124,7 @@ export default function SiteNav() {
 
   return (
     <>
-      <nav id="main-nav" ref={navRef}>
+      <nav id="main-nav" ref={navRef} data-mobile-open={mobileOpen ? 'true' : 'false'}>
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
             <img id="nav-logo-img" src="/img/horiz_logo_off_white.png" alt="Not The Rug" />
@@ -160,6 +160,7 @@ export default function SiteNav() {
           <div
             id="nav-hamburger-toggle"
             className="nav-hamburger"
+            data-open={mobileOpen ? 'true' : 'false'}
             role="button"
             tabIndex={0}
             aria-expanded={mobileOpen}
@@ -177,7 +178,8 @@ export default function SiteNav() {
         </div>
       </nav>
 
-      <div className="mobile-menu" id="mobile-menu" style={{ display: mobileOpen ? 'block' : 'none' }}>
+      <div className="mobile-menu" id="mobile-menu" data-open={mobileOpen ? 'true' : 'false'}>
+        <div id="mobile-menu-links-list">
         {NAV_LINKS.map((link) => (
           <Link
             key={link.href}
@@ -189,17 +191,21 @@ export default function SiteNav() {
             }}
           >{link.label}</Link>
         ))}
+        </div>
         <Link href="/book" id="mobile-menu-book-cta" className="mobile-cta btn-accent" onClick={(e) => handleBookClick(e, 'mobile_menu_book')}>Book a Walk</Link>
-        <Link href="/admin" id="mobile-menu-login-link">Login</Link>
-        <a
-          id="mobile-menu-instagram-link"
-          href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => setMobileOpen(false)}
-        >
-          <InstagramGlyph /> Instagram
-        </a>
+        <div id="mobile-menu-utility-row">
+          <Link href="/admin" id="mobile-menu-login-link">Login</Link>
+          <a
+            id="mobile-menu-instagram-link"
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Not The Rug on Instagram"
+            onClick={() => setMobileOpen(false)}
+          >
+            <InstagramGlyph /> Instagram
+          </a>
+        </div>
       </div>
     </>
   );

@@ -118,8 +118,24 @@ export default function HomePageContent() {
                 above the form they lead to — the strip dropped its own section
                 chrome so the green runs unbroken. */}
             <div id="home-contact-sheet-header">
-              <div className="stamp-label stamp-label-dark stamp-label-heading">Sign Up 05 · Let’s Get Started</div>
-              <h2>What We&apos;d Like to Know....</h2>
+              <div id="home-contact-sheet-header-copy">
+                <div className="stamp-label stamp-label-dark stamp-label-heading">Sign Up 05 · Let’s Get Started</div>
+                <h2>What We&apos;d Like to Know....</h2>
+              </div>
+              {/* Decorative: the halftone bridge clipping fills the empty half
+                  of this row on wide screens. Alt is empty on purpose — it
+                  carries no information the headline doesn't already give. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                id="home-contact-sheet-clipping"
+                src="/img/bg_section_graphic_1.png"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+                width={1620}
+                height={971}
+              />
             </div>
             <div id="home-book-form-wrap" className="booking-form-wrap">
               <div className="booking-form" id="home-contact-sheet-form-sheet">

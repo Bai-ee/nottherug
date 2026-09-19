@@ -477,7 +477,9 @@ export default function BookingForm({
         id={`${paneId}-group-${BOOKING_STEPS[index].key}-header`}
         data-section="meetgreet-group-header"
       >
-        <span className="stamp-label">{BOOKING_STEPS[index].label}</span>
+        <span className="stamp-label booking-group-stamp">
+          {`${String(index + 1).padStart(2, '0')} · ${BOOKING_STEPS[index].label}`}
+        </span>
         <h3>{BOOKING_STEPS[index].title}</h3>
       </div>
     ) : null;
@@ -490,13 +492,36 @@ export default function BookingForm({
            system as the welcome modal (.form-group / .form-control), so the
            only new chrome is the header per group and the hairline that
            separates one group from the next, in the sheet's own printed rule. */
-        [data-section="meetgreet-group-header"] { margin: 0 0 14px; }
-        [data-section="meetgreet-group-header"] .stamp-label { margin-bottom: 8px; }
+        [data-section="meetgreet-group-header"] { margin: 0 0 18px; }
+        /* Inked, not outlined: five outlined stamps down one sheet read as
+           faint repeated boxes. Filled olive gives each group a hard marker the
+           eye can count, and the number makes the questionnaire's length
+           legible at a glance — you can see there are five. */
+        .booking-group-stamp {
+          display: inline-block;
+          margin-bottom: 10px;
+          background: var(--olive);
+          color: var(--paper);
+          border-color: var(--olive);
+          box-shadow: 2px 2px 0 rgba(36, 35, 33, 0.18);
+        }
         [data-section="meetgreet-group-header"] h3 {
           font-family: var(--font-display);
-          font-size: clamp(19px, 2vw, 25px);
-          line-height: 1.15;
+          font-size: clamp(22px, 2.5vw, 31px);
+          line-height: 1.1;
           margin: 0;
+        }
+        /* Locked coverage row — same treatment as the welcome modal's
+           #welcome-walk-modal-neighborhood-display, so the two intakes state
+           the served area identically. Qualified by the pane id (1,2,0) to beat
+           globals.css's #home-contact-sheet-section .form-control (1,1,0),
+           which owns the solid border and white fill every other field wants —
+           the same specificity dance the modal's locked row does. */
+        #${paneId} #${paneId}-neighborhood-display {
+          cursor: default;
+          color: var(--muted-ink);
+          background: rgba(36, 35, 33, 0.05);
+          border-style: dashed;
         }
         [data-section="meetgreet-carousel-track"][data-layout="full"] > div + div {
           margin-top: clamp(28px, 3.4vw, 44px);
@@ -591,7 +616,7 @@ export default function BookingForm({
           >
             <div {...groupProps(0)}>
               <GroupHeader index={0} />
-              <StepAboutYou {...stepProps} />
+              <StepAboutYou {...stepProps} lockNeighborhood={fullLayout} />
             </div>
 
             <div {...groupProps(1)}>

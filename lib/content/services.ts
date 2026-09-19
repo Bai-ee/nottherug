@@ -74,16 +74,6 @@ export const FIRST_WALK_TAX_NOTE = '+ sales tax · first walk only';
 
 export const HOME_SERVICE_PREVIEW_ROW_1: ServicePreviewItem[] = [
   {
-    title: 'Solo Walk',
-    copy: 'A private 60-minute walk.',
-    price: '$60',
-    priceUnit: 'per walk',
-    serviceInterest: 'Solo Visits',
-    nameLines: ['Solo', 'Walk'],
-    fineprint: '60 minutes, one-on-one',
-  },
-  GROUP_WALK_PREVIEW,
-  {
     title: 'Senior Dog Visits',
     copy: 'Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs.',
     price: '$35',
@@ -91,6 +81,16 @@ export const HOME_SERVICE_PREVIEW_ROW_1: ServicePreviewItem[] = [
     serviceInterest: 'Senior Dog Care',
     nameLines: ['Senior Dog', 'Visits'],
     fineprint: '20+ minutes, gentle pace',
+  },
+  GROUP_WALK_PREVIEW,
+  {
+    title: 'Solo Walk',
+    copy: 'A private 60-minute walk.',
+    price: '$60',
+    priceUnit: 'per walk',
+    serviceInterest: 'Solo Visits',
+    nameLines: ['Solo', 'Walk'],
+    fineprint: '60 minutes, one-on-one',
   },
 ];
 

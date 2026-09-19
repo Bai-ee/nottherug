@@ -152,6 +152,19 @@ nav {
   width: 64px; height: 16px; top: -8px; margin-left: -48px;
 }
 #main-nav.nav-scrolled #nav-logo-img { width: 190px; }
+/* Open sheet = the same tucked label the scrolled bar uses. At rest the logo
+   is a 370px (200px on phones) paper label hanging below the band on purpose;
+   with the sheet open that oversized label landed on top of the first menu
+   row. Higher specificity than both the base rules and the <=768px block, so
+   it holds at every width the hamburger is shown at. */
+#main-nav[data-mobile-open='true'] .nav-logo {
+  transform: translateY(-50%) rotate(-1deg) translateY(4px);
+  padding: 6px 10px;
+}
+#main-nav[data-mobile-open='true'] .nav-logo::before {
+  width: 64px; height: 16px; top: -8px; left: 50%; margin-left: -48px;
+}
+#main-nav[data-mobile-open='true'] #nav-logo-img { width: 168px; }
 .nav-logo-main {
   font-family: var(--font-display);
   font-size: 20px; letter-spacing: -0.3px;
@@ -244,34 +257,81 @@ nav {
 }
 .nav-hamburger span {
   display: block; width: 22px; height: 2px;
-  background: white; border-radius: 2px;
-  transition: all .3s;
+  background: var(--paper); border-radius: 2px;
+  transition: transform .25s ease, opacity .2s ease;
 }
+/* Open: top and bottom bars cross, middle fades — the toggle reads as "close"
+   without swapping the markup for an icon. */
+.nav-hamburger[data-open='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger[data-open='true'] span:nth-child(2) { opacity: 0; }
+.nav-hamburger[data-open='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* The sheet the hamburger opens. Same olive-stock-with-grain surface as the
+   inverted panels in the page body (#home-rates-intake-sheet), stamp-type
+   rows, and the paper-ticket CTA the bar uses — so it reads as this site's
+   nav rather than a default drawer. */
 .mobile-menu {
   display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
-  background: var(--sage-dark); z-index: 99;
-  padding: 16px 24px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  background: var(--olive) url('/textures/paper-grain.png');
+  background-size: 300px 300px;
+  background-blend-mode: soft-light;
+  z-index: 99;
+  padding: 14px 20px 20px;
+  border-bottom: 2px solid var(--ink);
+  box-shadow: 0 10px 28px var(--shadow-paper);
+  /* Never taller than the screen below the bar: on short viewports the rows
+     plus CTA used to run off the bottom with no way to reach them. */
+  max-height: calc(100dvh - var(--nav-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
+.mobile-menu[data-open='true'] { display: block; }
 .mobile-menu a {
-  display: block; padding: 12px 0;
-  font-size: 16px; font-weight: 500;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.8);
+  display: block; padding: 13px 2px;
+  font-family: var(--font-stamp);
+  font-size: 15px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  /* Dashed hairline instead of a solid rule — the perforated-ticket edge the
+     paper components use, not a list divider. */
+  border-bottom: 1px dashed rgba(243, 236, 217, 0.22);
+  color: rgba(243, 236, 217, 0.82);
+  transition: color .2s ease, padding-left .2s ease;
 }
+.mobile-menu a:hover,
+.mobile-menu a:active {
+  color: var(--paper);
+  padding-left: 8px;
+}
+#mobile-menu-links-list a:last-child { border-bottom: none; }
+/* Paper-ticket CTA, full width: the nav's Book a Walk treatment (inset rule,
+   stamp type) with .btn-accent's terracotta fill. Tilt is dropped here per
+   the mobile rules in docs/design.md. */
 .mobile-menu .mobile-cta {
-  display: block; margin-top: 16px;
-  background: white; color: var(--sage-dark);
-  text-align: center; padding: 14px;
-  border-radius: 6px; font-weight: 600;
+  display: block; margin-top: 18px;
+  text-align: center; padding: 15px 18px;
+  border-radius: 2px;
+  outline: 1px solid rgba(243, 236, 217, 0.5);
+  outline-offset: -4px;
+  border-bottom: none;
+  font-family: var(--font-stamp);
+  font-size: 16px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  transform: none;
 }
-#mobile-menu-login-link {
-  font-size: 13px !important;
-  opacity: 0.5;
+.mobile-menu .mobile-cta:hover { padding-left: 18px; }
+/* Login and Instagram share the closing row: secondary weight, no rules. */
+#mobile-menu-utility-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-top: 16px; padding-top: 14px;
+  border-top: 1px dashed rgba(243, 236, 217, 0.22);
+}
+#mobile-menu-utility-row a {
   border-bottom: none !important;
-  padding-top: 8px !important;
+  padding: 4px 2px !important;
+  font-size: 12px !important;
+  letter-spacing: 0.1em;
+  color: rgba(243, 236, 217, 0.62) !important;
 }
+#mobile-menu-utility-row a:hover { color: var(--paper) !important; padding-left: 2px !important; }
 
 /* =============================================
    LAYOUT HELPERS
@@ -1870,6 +1930,14 @@ footer {
   .reviews-masonry { columns: 2; }
 }
 
+/* Above the hamburger breakpoint the sheet is never shown, whatever its open
+   state says: widening the window past 1100px with the menu open used to
+   leave the sheet hanging under the full desktop bar. */
+@media (min-width: 1101px) {
+  .mobile-menu,
+  .mobile-menu[data-open='true'] { display: none; }
+}
+
 /* Nav collapses to hamburger before links wrap to two lines (~990px single-line need) */
 @media (max-width: 1100px) {
   .nav-links { display: none; }
@@ -1983,6 +2051,7 @@ footer {
 @media (max-width: 560px) {
   .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
 }
+
 
 
 /* ============================================================
@@ -2705,6 +2774,44 @@ footer {
   #home-team-preview { animation: none; }
   .home-team-chip-trigger .home-team-chip-photo { transition: none; }
 }
+/* Small screens: the roster stops trying to fit and becomes a swipe strip,
+   the same treatment #home-instagram-grid gets at this breakpoint — at six
+   across, chips on a phone are thumbnails and the faces stop reading. The
+   first chip sits flush with the heading and fully on screen; the rest run
+   off the right edge, which is what says the row scrolls. */
+@media (max-width: 900px) {
+  #home-team-scroller {
+    /* The scroll container is this element, not the track: its padding-inline
+       already holds the container gutter, so the first chip lines up with the
+       heading above it without any extra maths. */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* pan-x added: the row is hand-scrolled here, and pan-y alone blocks it. */
+    touch-action: pan-x pan-y;
+    /* Snap positions have to clear the gutter, or mandatory snapping resolves
+       the first chip to the viewport edge the moment the strip appears and
+       eats the padding that lines it up with the heading. Same value as the
+       padding above, so the resting position IS the aligned one. */
+    scroll-padding-inline: max(32px, calc((100% - var(--max-w)) / 2 + 32px));
+    /* Trailing room so the last chip can scroll clear of the right gutter. */
+    padding-right: 28%;
+  }
+  #home-team-scroller-track {
+    display: flex;
+    /* Chips size themselves below; a flex track must not stretch them. */
+    grid-template-columns: none;
+  }
+  .home-team-chip {
+    flex: 0 0 68%;
+    max-width: 280px;
+    scroll-snap-align: start;
+  }
+  /* Bigger frame, bigger caption: at this width the chip is a portrait, not a
+     thumbnail in a contact sheet. */
+  .home-team-chip .polaroid-caption { font-size: 13px; }
+}
+
 .home-team-chip-role {
   font-family: var(--font-type);
   font-size: 11px;
@@ -2736,10 +2843,54 @@ footer {
 }
 
 /* ---------- Section 2: meet & greet intake sheet ---------- */
+/* Stamp + headline on the left, halftone bridge clipping on the right: the
+   headline only ever filled half this row, and the green ran empty beside it
+   down to the form. The hairline still runs the container's full width. */
 #home-contact-sheet-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(24px, 4vw, 64px);
   padding-bottom: 20px;
   margin-bottom: 56px;
   border-bottom: 1px solid var(--zine-rule-dark);
+}
+#home-contact-sheet-header-copy { min-width: 0; }
+/* The clipping is a torn paper scan with its own tape and halftone, so it
+   needs no tape layer of its own — just the paste angle and a paper shadow.
+   width/height:auto override the global `img` rule (100%/100% + cover), which
+   would otherwise stretch it to the flex line's height. */
+#home-contact-sheet-clipping {
+  flex: 0 0 auto;
+  /* Roughly double its old size at the widest screens (was 280/32vw/440), and
+     it keeps scaling with the viewport in between rather than snapping. */
+  width: clamp(360px, 46vw, 880px);
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 6px;
+  transform: rotate(-1.2deg);
+  filter: drop-shadow(0 6px 14px var(--shadow-paper));
+  opacity: 0.94;
+  pointer-events: none;
+}
+/* Intake header: below this width the clipping and the headline are fighting
+   for the same line, so the row stacks and the artwork straightens out. */
+@media (max-width: 900px) {
+  #home-contact-sheet-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+  }
+  #home-contact-sheet-clipping {
+    /* Stacked above the headline, so it can take the full column. */
+    width: min(100%, 560px);
+    margin: 0 auto;
+    transform: none;
+  }
+}
+/* Phones: the column is tight enough without a decorative band in it. */
+@media (max-width: 640px) {
+  #home-contact-sheet-clipping { display: none; }
 }
 /* The steps open this band (see HomePageContent), so the form's own stamp
    needs the gap a section break used to give it. */
@@ -2930,6 +3081,8 @@ footer {
    display-only value with no form control to point at — so it is named here
    to get the same inked stamp treatment as the real field labels. */
 #welcome-walk-modal-sheet .form-group .welcome-walk-modal-field-caption,
+/* Same span, same reason, on the home intake's locked coverage row. */
+#home-contact-sheet-section .form-group .booking-field-caption,
 #home-group-walk-feature-card .form-group label,
 #home-rates-intake .form-group label {
   font-family: var(--font-stamp);
@@ -3110,9 +3263,9 @@ footer {
    gives the length to dash with. */
 #home-paw-walk-path {
   fill: none;
-  /* Drawn while the route is being dialled in; set --paw-route-stroke to none
-     on #home-paw-walk-layer (or swap this default back) to hide it again. */
-  stroke: var(--paw-route-stroke, rgba(120, 128, 96, 0.55));
+  /* Geometry only — the route never paints. Set --paw-route-stroke on
+     #home-paw-walk-layer to draw it while dialling the trail in. */
+  stroke: var(--paw-route-stroke, none);
   stroke-width: var(--paw-route-width, 2);
   stroke-linecap: round;
   /* The 1000x1000 box is stretched over the whole page, so without this the

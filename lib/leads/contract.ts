@@ -14,6 +14,13 @@ export const LEAD_SCHEMA_VERSION = 2;
 
 export const HONEYPOT_FIELD_NAME = 'website';
 
+/**
+ * The one area served, as shown to visitors. Surfaces that lock the field
+ * (the welcome modal, the home page's full intake) display this instead of
+ * offering NEIGHBORHOOD_OPTIONS — it is copy, never a submitted value.
+ */
+export const SERVICE_AREA_LABEL = 'Williamsburg, Brooklyn only';
+
 export const NEIGHBORHOOD_OPTIONS = [
   'North Williamsburg',
   'South Williamsburg',

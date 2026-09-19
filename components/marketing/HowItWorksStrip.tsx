@@ -86,7 +86,7 @@ export default function HowItWorksStrip() {
           other file blocks (see .home-band-block-header), so it reads as one
           more page of the same printed document. */}
       <div className="home-band-block-header" id="home-how-it-works-header">
-        <div className="stamp-label stamp-label-heading">File 04 · How It Works</div>
+        <div className="stamp-label stamp-label-heading">NTR 04 · How It Works</div>
         <h2 id="home-how-it-works-headline">
           From the first hello to your dog&apos;s{' '}
           <em style={{ fontStyle: 'normal', color: 'var(--sage-dark)' }}>daily routine</em>

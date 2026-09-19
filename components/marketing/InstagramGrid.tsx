@@ -71,7 +71,7 @@ export default function InstagramGrid() {
     <section className="section" id="home-instagram-section">
       <div className="container">
         <div id="home-instagram-header">
-          <div className="stamp-label stamp-label-dark stamp-label-heading">Roll 03 · Instagram</div>
+          <div className="stamp-label stamp-label-dark stamp-label-heading">Roll 02 · Instagram</div>
           <h2 id="home-instagram-headline">Find us on <em style={{ fontStyle: 'normal', color: 'var(--gold-light)' }}>Instagram</em></h2>
         </div>
 

@@ -46,7 +46,7 @@ export default function FeaturedReviews() {
       <div className="container">
         <div id="home-featured-reviews-header-row">
           <div id="home-featured-reviews-header">
-            <div className="stamp-label stamp-label-heading">File 02 · Voices</div>
+            <div className="stamp-label stamp-label-heading">NTR 03 · Voices</div>
             <h2>What our <em style={{ fontStyle: 'normal', color: 'var(--sage-dark)' }}>clients</em> say</h2>
           </div>
         </div>

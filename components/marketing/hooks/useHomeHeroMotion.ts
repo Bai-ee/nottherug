@@ -6,9 +6,6 @@ import { waitForHomeIntro } from './homeIntroGate';
 
 type GsapContext = ReturnType<GsapBundle['gsap']['context']>;
 
-const STAT_TARGETS = [5, 5, 79, 15];
-const STAT_SUFFIXES = ['★', '★', '', '+'];
-
 function splitIntoWords(el: HTMLElement) {
   // Idempotency guard: gsap.context().revert() undoes the inline styles this
   // hook sets, but it does not undo splitIntoWords' own DOM rewrite — it's
@@ -62,7 +59,7 @@ function splitIntoWords(el: HTMLElement) {
 
 /**
  * Home hero: headline word-in entrance, background clip-path reveal, hero
- * image scroll parallax, and the animated stat counters. Scoped to the hero
+ * image scroll parallax. Scoped to the hero
  * section ref — reverting on unmount only tears down this section's timeline
  * and ScrollTriggers. The entrance waits on the home loading screen (see
  * homeIntroGate): it plays as the overlay wipes away, not behind it. Under prefers-reduced-motion, or if gsap fails to load,
@@ -78,12 +75,12 @@ export function useHomeHeroMotion(heroRef: RefObject<HTMLElement | null>) {
     let ctx: GsapContext | undefined;
 
     Promise.all([loadGsap(), waitForHomeIntro()])
-      .then(([{ gsap, ScrollTrigger }]) => {
+      .then(([{ gsap }]) => {
         if (cancelled) return;
 
         ctx = gsap.context(() => {
           gsap.defaults({ ease: 'power3.out', duration: 0.8 });
-          gsap.set('.hero-eyebrow, .hero-p, .hero-actions, .hero-stats', { autoAlpha: 0, y: 30 });
+          gsap.set('.hero-eyebrow, .hero-p, .hero-actions', { autoAlpha: 0, y: 30 });
 
           const heroH1 = hero.querySelector<HTMLElement>('.hero-h1');
           if (heroH1) {
@@ -109,8 +106,7 @@ export function useHomeHeroMotion(heroRef: RefObject<HTMLElement | null>) {
               .to(words, { y: '0%', duration: 0.88, stagger: 0.065 }, '-=0.35')
               .addLabel('afterHeadline')
               .to('.hero-p', { autoAlpha: 1, y: 0, duration: 0.7 }, '-=0.65')
-              .to('.hero-actions', { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.5')
-              .to('.hero-stats', { autoAlpha: 1, y: 0, duration: 0.7 }, 'afterHeadline+=0.25');
+              .to('.hero-actions', { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.5');
           }
 
           const heroImg = hero.querySelector('#hero-bg-video') || hero.querySelector('.hero-visual .hero-img');
@@ -122,31 +118,11 @@ export function useHomeHeroMotion(heroRef: RefObject<HTMLElement | null>) {
             });
           }
 
-          const statEls = hero.querySelectorAll('.hero-stat-num');
-          if (statEls.length) {
-            let statsAnimated = false;
-            ScrollTrigger.create({
-              trigger: '.hero-stats',
-              start: 'top 90%',
-              once: true,
-              onEnter: () => {
-                if (statsAnimated) return;
-                statsAnimated = true;
-                statEls.forEach((el, i) => {
-                  const obj = { val: 0 };
-                  gsap.to(obj, {
-                    val: STAT_TARGETS[i],
-                    duration: 1.9,
-                    delay: 0.6 + i * 0.07,
-                    ease: 'power2.out',
-                    onUpdate() {
-                      el.textContent = Math.round(obj.val) + STAT_SUFFIXES[i];
-                    },
-                  });
-                });
-              },
-            });
-          }
+          /* The proof band renders static. Its figures used to count up from
+             zero on a 1.9s stagger, which read as the digits scrambling, and
+             the band itself used to fade and rise with the rest of the hero —
+             both are gone: the numbers are already correct in the markup
+             (HomeHero), so there is nothing to animate toward. */
         }, hero);
       })
       .catch((err) => {

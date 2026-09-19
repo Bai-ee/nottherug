@@ -54,9 +54,8 @@ export function pawWalkDevFlags(): { tune: boolean; path: boolean } {
     if (value === null) return true;
     return !['0', 'false', 'off'].includes(value.toLowerCase());
   };
-  // Panel is opt-in (`?pawtune`); the path editor stays up unless a run turns
-  // it off with `?pawpath=0`.
-  return { tune: q.has('pawtune') && on('pawtune'), path: on('pawpath') };
+  // Both opt-in: the page ships with no route line and no panel.
+  return { tune: q.has('pawtune') && on('pawtune'), path: q.has('pawpath') && on('pawpath') };
 }
 
 export const PAW_WALK_PATH_KEY = 'nottherug:paw-walk-path';

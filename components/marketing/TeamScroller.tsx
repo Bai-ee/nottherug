@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { TEAM } from '@/lib/content/team';
 
 /** Same alternation the Instagram tiles use (InstagramGrid). */
 const TILT_CLASSES = ['polaroid-tilt-left', 'polaroid-tilt-right'];
-import { loadGsap, prefersReducedMotion } from './hooks/gsapLoader';
 
 /**
  * Compact team roster for the homepage green band.
@@ -14,12 +13,16 @@ import { loadGsap, prefersReducedMotion } from './hooks/gsapLoader';
  * and role only, no bios — the roster is proof that the team is real and
  * local, and the bios live on /about.
  *
- * The track scrolls itself horizontally from the page's own vertical scroll,
- * forward on the way down and back on the way up, so the row reads as part of
- * the page's motion rather than a carousel asking to be operated. It is a
- * real overflow container, not a transform, so a trackpad swipe, a drag or a
- * keyboard focus still moves it, and it degrades to an ordinary scrollable
- * row with no JS and under prefers-reduced-motion.
+ * Two layouts, one markup. Above 900px the roster is a grid that fits the
+ * band edge to edge and never scrolls. Below it the row becomes a swipe strip
+ * (globals.css), matching the Instagram tiles at the same breakpoint: the
+ * first chip sits flush with the heading, the rest run off the right edge.
+ *
+ * That strip is hand-scrolled, deliberately. It used to be driven from the
+ * page's own vertical scroll via ScrollTrigger, which was inert once the
+ * desktop row became a wrapping grid with nothing to scroll — and on the
+ * strip it would have fought the viewer's thumb, snapping the row back on
+ * every page scroll. The scrub is gone rather than gated.
  *
  * Hovering a face opens a centred preview of that photo at full size — the
  * same interaction the "Always Included" icons use (see AlwaysIncluded:
@@ -31,42 +34,6 @@ export default function TeamScroller() {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [activeName, setActiveName] = useState<string | null>(null);
   const active = TEAM.find((member) => member.name === activeName) ?? null;
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track || prefersReducedMotion()) return;
-
-    let cancelled = false;
-    let ctx: ReturnType<typeof import('gsap').gsap.context> | undefined;
-
-    loadGsap()
-      .then(({ gsap, ScrollTrigger }) => {
-        if (cancelled) return;
-        ctx = gsap.context(() => {
-          ScrollTrigger.create({
-            trigger: track,
-            // Travel starts as the row enters and finishes as it leaves, so
-            // the whole roster has passed by the time the block is read.
-            start: 'top 92%',
-            end: 'bottom 8%',
-            scrub: 0.6,
-            onUpdate: (self) => {
-              const distance = track.scrollWidth - track.clientWidth;
-              if (distance <= 0) return; // row already fits: nothing to travel
-              track.scrollLeft = distance * self.progress;
-            },
-          });
-        }, track);
-      })
-      .catch(() => {
-        // Motion is an enhancement; the row stays scrollable by hand.
-      });
-
-    return () => {
-      cancelled = true;
-      ctx?.revert();
-    };
-  }, []);
 
   return (
     <div id="home-team-scroller" ref={trackRef}>

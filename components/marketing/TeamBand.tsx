@@ -1,6 +1,6 @@
 import TeamScroller from './TeamScroller';
 
-// The team roster band — File 01 stamp, headline, then the full-bleed roster.
+// The team roster band — NTR 01 stamp, headline, then the full-bleed roster.
 // The headline names the roster itself; it used to read "From the first hello
 // to your dog's daily routine", which is the process strip's headline (and
 // still is) — one line cannot introduce two different bands.
@@ -13,7 +13,7 @@ export default function TeamBand() {
       <div className="container">
         <div id="home-team-block">
           <div className="home-band-block-header">
-            <div className="stamp-label stamp-label-dark stamp-label-heading">File 01 · The Team</div>
+            <div className="stamp-label stamp-label-dark stamp-label-heading">NTR 01 · The Team</div>
             <h2 id="home-team-band-headline">Meet our team of <em style={{ fontStyle: 'normal', color: 'var(--gold-light)' }}>professionals</em></h2>
           </div>
         </div>
