@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
-import { openWelcomeWalkModal } from './WelcomeWalkModal';
+import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import TrackedCtaAnchor from './TrackedCtaAnchor';
 import TrackedCtaLink from './TrackedCtaLink';
 

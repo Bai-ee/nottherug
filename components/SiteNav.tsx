@@ -2,13 +2,12 @@
 
 import { useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { INSTAGRAM_URL } from '@/lib/content/site';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { usePathname } from 'next/navigation';
 import { useNavScrollShadow } from './marketing/hooks/useNavScrollShadow';
-import { openWelcomeWalkModal } from './marketing/WelcomeWalkModal';
+import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 
 /**
  * Every nav item now points at a section of the home page: the standalone

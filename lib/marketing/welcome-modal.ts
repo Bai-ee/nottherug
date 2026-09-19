@@ -1,8 +1,9 @@
 /**
  * Pure helpers for the first-visit walk-signup modal.
  *
- * No React and no direct `window` access: the component passes its storage in,
- * so this stays unit-testable in the node-environment vitest setup and the
+ * No React, and no direct `window` access except in `openWelcomeWalkModal`
+ * below: the rest of this file's exports take the caller's storage in, so
+ * they stay unit-testable in the node-environment vitest setup and the
  * "have they already seen it?" rule lives in one place.
  */
 
@@ -17,6 +18,24 @@ export const WELCOME_MODAL_STORAGE_KEY = 'ntr:welcome-walk-modal:v1';
 export const WELCOME_MODAL_SCROLL_TRIGGER_PX = 120;
 
 export type WelcomeModalStorage = Pick<Storage, 'getItem' | 'setItem'>;
+
+/**
+ * Any element on the page can open the welcome modal by dispatching this
+ * event — SiteNav's "Book a Walk" and the home hero's primary CTA both do.
+ * Kept as a DOM event, and split into this dependency-free module, so that
+ * opening the modal never requires importing the modal component itself:
+ * WelcomeWalkModal.tsx (and everything it imports — SchedulingDialog,
+ * onboarding-handoff, next/image, ...) then only has to load on the one
+ * route that renders it (home), not on every route that merely offers a way
+ * to open it.
+ */
+export const WELCOME_MODAL_OPEN_EVENT = 'ntr:open-welcome-modal';
+
+/** Opens the welcome modal from anywhere on the page. No-op on the server. */
+export function openWelcomeWalkModal(): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(WELCOME_MODAL_OPEN_EVENT));
+}
 
 /**
  * Fails CLOSED: if storage is unavailable (private mode, blocked cookies) we
