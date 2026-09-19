@@ -9,7 +9,7 @@ export default function HomeHero() {
   useHomeHeroMotion(heroRef);
 
   return (
-    <section className="hero" ref={heroRef}>
+    <section className="hero" id="home-hero-section" ref={heroRef}>
       <div className="hero-visual" id="hero-visual-video-shell">
         <figure className="polaroid polaroid-tilt-right taped taped-center" id="hero-polaroid-frame">
           <div className="polaroid-window" id="hero-polaroid-window">

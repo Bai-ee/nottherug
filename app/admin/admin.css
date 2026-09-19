@@ -235,8 +235,18 @@ html, body { background: var(--admin-ground); margin: 0; padding: 0; }
 /* Live tile: rolling 60 minutes, always present, refreshed only on load —
    the gold dot is the one place this view uses the accent color to mean
    "right now" rather than decoration. */
-.analytics-live-tile { gap: 8px; }
+.analytics-live-tile { gap: 8px; position: relative; }
+/* Centered in the panel: the dot is out of the text flow (see LiveTile.tsx),
+   and the text-indent cancels the trailing letter-space the 0.1em tracking
+   leaves after the last character, which would otherwise sit the line a
+   hair left of true center. */
+#admin-analytics-live-label { justify-content: center; text-indent: 0.1em; }
 .analytics-live-dot {
+  /* Top-right of the tile, sat on the label's line center; `right` counts the
+     3px glow ring so the ring — not the dot — lines up with the panel's 18px
+     padding edge. */
+  position: absolute;
+  top: 22px; right: 21px;
   width: 6px; height: 6px; border-radius: 50%;
   background: var(--admin-accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 25%, transparent);

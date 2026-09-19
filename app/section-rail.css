@@ -1,0 +1,140 @@
+/* =============================================
+   DESKTOP SECTION RAIL (components/marketing/SectionRail.tsx)
+   Paper-palette dot rail in the left gutter: a pencil rule, one dot per
+   section, and an olive fill that tracks page scroll.
+   ============================================= */
+
+/* Desktop-only by construction: hidden by default, revealed at 1280px. The
+   content column is 1240px wide with 32px of inner padding, so text starts at
+   52px from the viewport edge at 1280 — the first width where the 24px rail
+   clears it instead of sitting on the copy. The component never branches on
+   viewport width, so this rule is the only breakpoint. */
+#section-rail-shell { display: none; }
+
+@media (min-width: 1280px) {
+  /* globals.css styles the bare `nav` element as the fixed green site bar, so
+     the shell has to unset that band before it can be a rail. */
+  #section-rail-shell {
+    display: block;
+    position: fixed;
+    left: 20px; top: 50%; right: auto; bottom: auto;
+    transform: translateY(-50%);
+    height: auto;
+    /* A soft paper capsule instead of the nav band. The site alternates paper
+       and deep-green sections, and an olive-on-olive rule is invisible over
+       the green ones — the capsule gives the rule, the fill and the dots one
+       constant surface to sit on at every scroll position. */
+    background: rgba(243, 236, 217, 0.55);
+    border: 1px solid rgba(79, 90, 61, 0.14);
+    border-radius: 999px;
+    padding: 8px 4px;
+    backdrop-filter: none;
+    border-bottom: 1px solid rgba(79, 90, 61, 0.14);
+    /* Under #main-nav (100) and the mobile menu (99) so the nav always wins;
+       above ordinary page content. */
+    z-index: 40;
+  }
+}
+
+/* 24px column: every dot, the rule and the fill share the same center line
+   (x = 12px), so nothing needs nudging when marker sizes change. */
+#section-rail-track {
+  position: relative;
+  width: 24px;
+}
+
+/* The unfilled rule and the progress fill are the same 2px column; the rule
+   spans first-dot-center to last-dot-center (12px = half a marker row) so it
+   never overshoots the end dots. */
+#section-rail-track::before,
+#section-rail-fill {
+  position: absolute;
+  left: 11px; top: 12px; bottom: 12px;
+  width: 2px;
+  border-radius: 1px;
+}
+#section-rail-track::before {
+  content: '';
+  background: rgba(79, 90, 61, 0.2);
+}
+#section-rail-fill {
+  background: var(--olive);
+  transform-origin: top center;
+  /* SectionRail writes scaleY() on every scroll frame; this is the pre-hydration
+     resting state. The short linear transition only covers frames the browser
+     skips during momentum scrolling — long enough to smooth, too short to lag. */
+  transform: scaleY(0);
+  transition: transform 120ms linear;
+}
+
+/* Positioned so the dots paint over the rule rather than under it. */
+#section-rail-marker-list {
+  position: relative;
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+
+/* 24px button box for a real click/tap target while the visible dot stays
+   small — the resting rail should read as pencil marks, not controls. */
+.section-rail-marker {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+}
+.section-rail-marker:focus-visible {
+  outline: 2px solid var(--olive);
+  outline-offset: 2px;
+}
+
+.section-rail-marker-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.5px solid rgba(79, 90, 61, 0.45);
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.section-rail-marker:hover .section-rail-marker-dot { border-color: var(--olive); }
+.section-rail-marker[aria-current='true'] .section-rail-marker-dot {
+  /* Gold, not olive: the filled dot has to stay legible against both the
+     capsule and the olive rule running behind it. */
+  background: var(--gold);
+  border-color: var(--olive);
+  transform: scale(1.3);
+}
+
+/* Absolute so the hidden label never widens the button box — at rest the rail
+   is dot-width, and pointer-events stay off it so the invisible label can't
+   swallow clicks meant for the page underneath. The paper chip keeps the text
+   legible where the rail overlaps content at narrower desktop widths. */
+.section-rail-marker-label {
+  position: absolute;
+  left: 26px; top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: var(--font-stamp);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted-ink);
+  background: rgba(243, 236, 217, 0.92);
+  padding: 3px 7px 2px;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.section-rail-marker:hover .section-rail-marker-label,
+.section-rail-marker:focus-visible .section-rail-marker-label,
+.section-rail-marker[aria-current='true'] .section-rail-marker-label {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+.section-rail-marker[aria-current='true'] .section-rail-marker-label { color: var(--olive); }
+
+/* Reduced motion keeps every state — the fill still tracks scroll and labels
+   still appear — it just drops the easing between them. */
+@media (prefers-reduced-motion: reduce) {
+  #section-rail-fill,
+  .section-rail-marker-dot,
+  .section-rail-marker-label { transition: none; }
+}

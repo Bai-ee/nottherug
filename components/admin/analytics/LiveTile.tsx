@@ -15,9 +15,11 @@ export function LiveTile({ live }: { live: LiveTileData }) {
 
   return (
     <section id="admin-analytics-live-tile" className="analytics-panel analytics-live-tile">
-      <div className="analytics-label">
+      {/* Pinned to the tile corner rather than trailing the label: in the
+          flow its width pushed the label off the panel's center line. */}
+      <span className="analytics-live-dot" aria-hidden="true" />
+      <div id="admin-analytics-live-label" className="analytics-label">
         Live — Last {live.windowMinutes} Minutes
-        <span className="analytics-live-dot" aria-hidden="true" />
       </div>
       <div className="analytics-live-row">
         <div>
