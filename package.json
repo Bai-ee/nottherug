@@ -18,7 +18,8 @@
     "copy:extract": "node scripts/copy/extract-copy.mjs",
     "copy:apply": "node scripts/copy/apply-copy.mjs",
     "emulators": "firebase emulators:start --only firestore,storage --project demo-not-the-rug",
-    "test:rules": "vitest run tests/unit/rules-firestore.test.ts tests/unit/rules-storage.test.ts"
+    "test:rules": "vitest run tests/unit/rules-firestore.test.ts tests/unit/rules-storage.test.ts",
+    "verify:assets": "node scripts/verify-asset-manifest.mjs"
   },
   "dependencies": {
     "dotenv": "^17.4.0",

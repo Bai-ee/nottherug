@@ -12,6 +12,7 @@ const SHARED_TRACE_EXCLUDES = [
   './data/**/*',
   './ignore/**/*',
   './updated_images/**/*',
+  './assets-src/**/*',
   './app-assets/**/*',
   './plans/**/*',
   './README.md',

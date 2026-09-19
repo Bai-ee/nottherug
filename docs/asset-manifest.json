@@ -58,7 +58,7 @@
       "bytes": 208604,
       "loading": "css background, eager",
       "exception": "Undersized for a 2560px 1x cover target (source tops out at 1672px wide); see replacement-master backlog. Format/metadata win only, not a resize.",
-      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg5.png, 2825477 bytes)"
+      "pendingPatch": null, "replaced": "/img/bg5.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-1-cover.webp",
@@ -70,7 +70,7 @@
       "bytes": 136054,
       "loading": "css background, eager",
       "exception": "Reported maxCssBox height (2578) is the crawler's element rect, not the cover-image's own render height; background-size:cover means the effective demand is width-bound at 2560 with the image's own aspect (1672:941), i.e. ~2560x1440. Undersized source; replacement-master backlog.",
-      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_1.png, 2549594 bytes)"
+      "pendingPatch": null, "replaced": "/img/bg_section_1.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-2-cover.webp",
@@ -82,7 +82,7 @@
       "bytes": 114202,
       "loading": "css background, eager",
       "exception": "Same cover-sizing note as bg-section-1-cover. Undersized source; replacement-master backlog.",
-      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_2.png, 2469297 bytes)"
+      "pendingPatch": null, "replaced": "/img/bg_section_2.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-graphic-1.webp",
@@ -94,7 +94,7 @@
       "bytes": 292020,
       "loading": "css background, eager",
       "exception": "background-size: auto 130% scales by the section's own height, not by viewport width directly; source undersized for very wide/tall viewports. Replacement-master backlog.",
-      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_graphic_1.png, 2342028 bytes)"
+      "pendingPatch": null, "replaced": "/img/bg_section_graphic_1.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-graphic-2.webp",
@@ -106,7 +106,7 @@
       "bytes": 138820,
       "loading": "css background, eager, opacity 0.17 (decorative)",
       "exception": "background-size: 100% auto scales to full section width (up to 2560); source is 1446px wide, so this is upscaled today at wide viewports even before this pass. Replacement-master backlog.",
-      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_graphic_2.png, 1121972 bytes)"
+      "pendingPatch": null, "replaced": "/img/bg_section_graphic_2.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/hero-walker-strip.webp",
@@ -118,7 +118,7 @@
       "bytes": 199572,
       "loading": "css background, eager (hero, above the fold)",
       "exception": "background-size: 100% auto: this layer is deliberately stretched to the hero's full width at every viewport, so it is upscaled today above ~1620px CSS width regardless of format. Highest-priority replacement-master backlog item (see report).",
-      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/homepage_image.png, 2204558 bytes)"
+      "pendingPatch": null, "replaced": "/img/homepage_image.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/product-background.webp",
@@ -130,7 +130,7 @@
       "bytes": 187812,
       "loading": "css background, eager",
       "exception": "Box unverified live (see note). Format/metadata win only.",
-      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/product_background.png, 1118725 bytes)"
+      "pendingPatch": null, "replaced": "/img/product_background.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/card-bg.webp",

@@ -23,3 +23,7 @@ skills-lock.json
 tests/
 playwright-report/
 test-results/
+
+# Source masters for public/ derivatives (see docs/asset-manifest.json); never shipped.
+assets-src/
+.DS_Store
