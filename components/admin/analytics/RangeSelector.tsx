@@ -15,9 +15,11 @@ const RANGES: ReportRange[] = ['today', '7d', '30d'];
  *  bounded Firestore query (see lib/analytics/report.ts).
  *
  * Presentation: homepage paper-ticket buttons (.btn/.btn-sm), the active
- * range using .btn-primary — the same "active" treatment DataModeToggle
- * uses, so the two controls in #admin-analytics-controls-row read as one
- * consistent button system. */
+ * range using .btn-accent (terracotta, olive on hover) and the unselected
+ * ranges using its mirror .admin-btn-secondary (olive, terracotta on hover)
+ * — the same primary/secondary split DataModeToggle uses, so the two
+ * controls in #admin-analytics-controls-row read as one consistent button
+ * system. */
 export function RangeSelector({
   value,
   onChange,
@@ -33,7 +35,7 @@ export function RangeSelector({
         <button
           key={range}
           type="button"
-          className={range === value ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline'}
+          className={range === value ? 'btn btn-sm btn-accent' : 'btn btn-sm admin-btn-secondary'}
           onClick={() => onChange(range)}
           disabled={disabled}
           aria-pressed={range === value}

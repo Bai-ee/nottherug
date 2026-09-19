@@ -10,11 +10,12 @@
  * bookmark keeps showing the same mode instead of silently snapping back to
  * real data.
  *
- * Presentation: same .btn/.btn-sm/.btn-primary "active" treatment as
- * RangeSelector, so both controls in the row read as one button system.
- * Test mode also gets its own badge-gold marker next to the buttons — the
- * one piece of "this is not real data" chrome that isn't just button color,
- * per the hard requirement that test mode stay visually unmistakable.
+ * Presentation: same .btn/.btn-sm/.btn-accent (selected) and
+ * .admin-btn-secondary (unselected) treatment as RangeSelector, so both
+ * controls in the row read as one button system. Test mode also gets its
+ * own badge-gold marker next to the buttons — the one piece of "this is not
+ * real data" chrome that isn't just button color, per the hard requirement
+ * that test mode stay visually unmistakable.
  */
 export function DataModeToggle({
   testMode,
@@ -29,7 +30,7 @@ export function DataModeToggle({
     <div id="admin-analytics-data-mode-toggle" role="group" aria-label="Data mode">
       <button
         type="button"
-        className={testMode ? 'btn btn-sm btn-outline' : 'btn btn-sm btn-primary'}
+        className={testMode ? 'btn btn-sm admin-btn-secondary' : 'btn btn-sm btn-accent'}
         onClick={() => onChange(false)}
         disabled={disabled}
         aria-pressed={!testMode}
@@ -38,7 +39,7 @@ export function DataModeToggle({
       </button>
       <button
         type="button"
-        className={testMode ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline'}
+        className={testMode ? 'btn btn-sm btn-accent' : 'btn btn-sm admin-btn-secondary'}
         onClick={() => onChange(true)}
         disabled={disabled}
         aria-pressed={testMode}
