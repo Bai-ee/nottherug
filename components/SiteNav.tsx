@@ -170,24 +170,24 @@ export default function SiteNav() {
             </a>
             <Link href="/book" id="nav-book-cta" className="nav-cta btn-accent" data-page="book" onClick={(e) => handleBookClick(e, 'nav_book')}>Book a Walk</Link>
           </div>
-          <div
+          {/* Real <button>, not a div role="button": every selector below is
+              class/attribute-based (.nav-hamburger, [data-open]), not tag-based,
+              so this keeps its styling. aria-label gives it the accessible
+              name it never had (the three bars are unlabeled decoration) — the
+              browser's native Enter/Space activation replaces the old
+              hand-rolled onKeyDown. */}
+          <button
+            type="button"
             id="nav-hamburger-toggle"
             className="nav-hamburger"
             data-open={mobileOpen ? 'true' : 'false'}
-            role="button"
-            tabIndex={0}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             onClick={() => setMobileOpen((v) => !v)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setMobileOpen((v) => !v);
-              }
-            }}
           >
             <span></span><span></span><span></span>
-          </div>
+          </button>
         </div>
       </nav>
 

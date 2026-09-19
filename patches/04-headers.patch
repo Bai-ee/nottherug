@@ -1,0 +1,71 @@
+diff --git a/next.config.ts b/next.config.ts
+index 21b4376..d059546 100644
+--- a/next.config.ts
++++ b/next.config.ts
+@@ -169,6 +169,66 @@ const nextConfig: NextConfig = {
+       { source: '/how-it-works', destination: '/#home-how-it-works-block', permanent: false },
+     ];
+   },
++
++  // plans/010-production-final-mile-optimization.md P5 header review. This is
++  // deliberately the SAFE subset only — headers with no plausible interaction
++  // with Firebase Auth, the Calendly iframe, or Next's own scripts, so they
++  // can ship without a live preview check. See the comment below for what is
++  // intentionally NOT here and why.
++  async headers() {
++    return [
++      {
++        source: '/:path*',
++        headers: [
++          // Stops a browser from MIME-sniffing a response into executing it
++          // as something other than its declared Content-Type. No route
++          // relies on sniffing; safe everywhere.
++          { key: 'X-Content-Type-Options', value: 'nosniff' },
++          // Sends the full path to same-origin navigations/requests (so
++          // internal analytics/referrer logic keeps working) but only the
++          // origin cross-site, instead of the previous default of sending the
++          // full URL everywhere. Booking/admin URLs never carry PII in the
++          // path itself (lead data is POSTed, not query-stringed), so this
++          // has nothing sensitive to leak either way.
++          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
++          // Denies APIs this app never calls (verified via a repo-wide grep
++          // for navigator.geolocation / getUserMedia / mediaDevices — no
++          // hits). Firebase Auth's popup flow doesn't need any of these.
++          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()' },
++          // No route in this app is meant to be framed by another origin
++          // (the booking flow embeds Calendly, nothing embeds us), so
++          // same-origin framing is the only case to allow.
++          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
++        ],
++      },
++    ];
++  },
++  // NOT included above, and why:
++  //
++  // - Content-Security-Policy: a real one needs to allowlist, at minimum,
++  //   Firebase Auth's popup/redirect domains (accounts.google.com,
++  //   apis.google.com, *.firebaseapp.com), Firestore/Storage REST endpoints
++  //   (firestore.googleapis.com, firebasestorage.googleapis.com — see
++  //   lib/server/firestoreRest.ts / firebaseStorage.ts), Calendly's iframe
++  //   and its postMessage origin (assets.calendly.com, calendly.com — see
++  //   lib/analytics/verifiedOrigin.ts), Google Fonts, and Next's own
++  //   inline/hash-based scripts and styles. Getting any one of those wrong
++  //   silently breaks admin sign-in or the booking scheduler rather than
++  //   failing loudly, so this needs a page-by-page pass verified against a
++  //   real preview deploy, not a global rule shipped from a read of the
++  //   source. lib/not-the-rug-brief/security.ts already has the pattern this
++  //   app uses for a narrow, single-route CSP (BRIEF_HTML_CSP) — the safest
++  //   next step is more routes adopting that per-route approach, or a
++  //   verified global policy built the same way, not a guessed one here.
++  // - Cross-Origin-Opener-Policy: `same-origin` (the common "secure by
++  //   default" value) breaks `signInWithPopup` (app/admin/page.tsx) — the
++  //   popup can no longer report back to the opener. `same-origin-allow-
++  //   popups` is the compatible value, but it still needs to be verified
++  //   against the live Google sign-in popup before shipping, so it is
++  //   recommended, not applied.
++  // - Strict-Transport-Security: Vercel already sets this at the platform
++  //   edge for the production domain; adding it here would be redundant and
++  //   risks a mismatched max-age/preload configuration.
+   serverExternalPackages: ['sharp', 'firebase-admin'],
+ 
+   outputFileTracingExcludes: {
