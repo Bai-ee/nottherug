@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { suppressWelcomeModal } from './helpers/welcomeModal';
 
 // Covers plans/002-production-readiness.md P2A acceptance: every new marketing
 // route is directly loadable with a real <h1>, refresh/back/forward work,
@@ -156,6 +157,7 @@ test.describe('public routes', () => {
   // are still live.
   test('desktop nav links reach their home-page band', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
+    await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
     for (const [label, expectedPath] of [
       ['What We Do', '/#home-personalized-care-section'],
@@ -172,6 +174,7 @@ test.describe('public routes', () => {
 
   test('the nav "Where We Do It" entry scrolls to the home parks list', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
+    await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
     await page.locator('.nav-links').getByRole('link', { name: 'Where We Do It' }).click();
     await expect(page).toHaveURL(new RegExp(`${WILLIAMSBURG_ANCHOR.replace(/[/]/g, '\\/')}$`));
@@ -180,6 +183,7 @@ test.describe('public routes', () => {
 
   test('mobile hamburger menu opens and its links navigate', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'mobile-menu-only interaction');
+    await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
     await page.locator('#nav-hamburger-toggle').click();
     const mobileMenu = page.locator('#mobile-menu');
@@ -210,6 +214,7 @@ test.describe('public routes', () => {
       await page.locator('#mobile-menu-book-cta').click();
     }
 
+    await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
     await page.getByRole('link', { name: /Contact Luis, to Get Started/ }).first().click();
     await expect(page).toHaveURL(/\/book$/);

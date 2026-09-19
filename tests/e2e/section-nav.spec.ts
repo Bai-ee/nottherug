@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { suppressWelcomeModal } from './helpers/welcomeModal';
 
 // Coverage for the in-page section nav: the desktop left rail (SectionRail)
 // and the mobile jump control (SectionJump), both driven by the registry in
@@ -30,6 +31,7 @@ test.describe('desktop section rail', () => {
 
   test('lands a clicked section flush under the fixed nav', async ({ page }) => {
     test.skip(!isWide(page), 'rail is desktop-only');
+    await suppressWelcomeModal(page);
     await page.goto('/');
 
     const rail = page.locator('#section-rail-shell');
@@ -63,6 +65,7 @@ test.describe('desktop section rail', () => {
 test.describe('mobile section jump', () => {
   test('stays out of the way over the hero, then jumps to a section', async ({ page }) => {
     test.skip(isWide(page), 'jump control is mobile-only');
+    await suppressWelcomeModal(page);
     await page.goto('/');
 
     const root = page.locator('#section-jump-root');
@@ -97,6 +100,7 @@ test.describe('mobile section jump', () => {
 
   test('closes on Escape and returns focus to the trigger', async ({ page }) => {
     test.skip(isWide(page), 'jump control is mobile-only');
+    await suppressWelcomeModal(page);
     await page.goto('/');
     await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.2));
 
