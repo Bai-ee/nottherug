@@ -140,6 +140,35 @@ export function createStepFunnelTracker(source: string) {
 const NO_STEP_TRACKING: (step: BookingStep) => void = () => {};
 
 /**
+ * Printed header per group — the sheet's stamp over the group's question.
+ * Module scope (not declared inside BookingForm's render) so its identity is
+ * stable across renders; it previously closed over `fullLayout`/`paneId`,
+ * which both come in as explicit props instead.
+ */
+function GroupHeader({
+  index,
+  paneId,
+  fullLayout,
+}: {
+  index: number;
+  paneId: string;
+  fullLayout: boolean;
+}) {
+  if (!fullLayout) return null;
+  return (
+    <div
+      id={`${paneId}-group-${BOOKING_STEPS[index].key}-header`}
+      data-section="meetgreet-group-header"
+    >
+      <span className="stamp-label booking-group-stamp">
+        {`${String(index + 1).padStart(2, '0')} · ${BOOKING_STEPS[index].label}`}
+      </span>
+      <h3>{BOOKING_STEPS[index].title}</h3>
+    </div>
+  );
+}
+
+/**
  * Whether a successful save should open the Calendly scheduler. A
  * bookedDetailsMode visitor already has an appointment, so reopening it here
  * would offer them a second booking. Governs both the auto-open after save
@@ -457,32 +486,18 @@ export default function BookingForm({
   const stepProps = { paneId, values: form, update, errors: fieldErrors, alertId, registerField };
 
   /**
-   * One group's wrapper. In the carousel each is a full-width slide and only
-   * the active one is reachable; in the full layout they stack, all live, each
-   * under its own printed header.
+   * One group's non-ref wrapper props. In the carousel each is a full-width
+   * slide and only the active one is reachable; in the full layout they
+   * stack, all live, each under its own printed header. `ref` is applied
+   * separately (see `setPanelRef` above) rather than spread from here.
    */
   const groupProps = (index: number) => ({
-    ref: (el: HTMLDivElement | null) => { panelRefs.current[index] = el; },
     inert: fullLayout ? undefined : step !== index,
     'aria-hidden': fullLayout ? undefined : step !== index,
     style: fullLayout
       ? { minWidth: 0, padding: '4px' }
       : { flex: '0 0 100%', minWidth: 0, padding: '4px' },
   });
-
-  /** Printed header per group — the sheet's stamp over the group's question. */
-  const GroupHeader = ({ index }: { index: number }) =>
-    fullLayout ? (
-      <div
-        id={`${paneId}-group-${BOOKING_STEPS[index].key}-header`}
-        data-section="meetgreet-group-header"
-      >
-        <span className="stamp-label booking-group-stamp">
-          {`${String(index + 1).padStart(2, '0')} · ${BOOKING_STEPS[index].label}`}
-        </span>
-        <h3>{BOOKING_STEPS[index].title}</h3>
-      </div>
-    ) : null;
 
   return (
     <div id={paneId} data-section={`meetgreet-${source}`} style={hidden ? { display: 'none' } : undefined}>
@@ -614,23 +629,23 @@ export default function BookingForm({
               ? { display: 'flex', flexDirection: 'column' }
               : { display: 'flex', alignItems: 'flex-start', transform: `translateX(-${step * 100}%)`, transition: 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)' }}
           >
-            <div {...groupProps(0)}>
-              <GroupHeader index={0} />
+            <div ref={(el: HTMLDivElement | null) => { panelRefs.current[0] = el; }} {...groupProps(0)}>
+              <GroupHeader index={0} paneId={paneId} fullLayout={fullLayout} />
               <StepAboutYou {...stepProps} lockNeighborhood={fullLayout} />
             </div>
 
-            <div {...groupProps(1)}>
-              <GroupHeader index={1} />
+            <div ref={(el: HTMLDivElement | null) => { panelRefs.current[1] = el; }} {...groupProps(1)}>
+              <GroupHeader index={1} paneId={paneId} fullLayout={fullLayout} />
               <StepYourDog {...stepProps} />
             </div>
 
-            <div {...groupProps(2)}>
-              <GroupHeader index={2} />
+            <div ref={(el: HTMLDivElement | null) => { panelRefs.current[2] = el; }} {...groupProps(2)}>
+              <GroupHeader index={2} paneId={paneId} fullLayout={fullLayout} />
               <StepCare {...stepProps} />
             </div>
 
-            <div {...groupProps(3)}>
-              <GroupHeader index={3} />
+            <div ref={(el: HTMLDivElement | null) => { panelRefs.current[3] = el; }} {...groupProps(3)}>
+              <GroupHeader index={3} paneId={paneId} fullLayout={fullLayout} />
               <StepQuirks
                 paneId={paneId}
                 reactivity={reactivity}
@@ -645,8 +660,8 @@ export default function BookingForm({
               />
             </div>
 
-            <div {...groupProps(4)}>
-              <GroupHeader index={4} />
+            <div ref={(el: HTMLDivElement | null) => { panelRefs.current[4] = el; }} {...groupProps(4)}>
+              <GroupHeader index={4} paneId={paneId} fullLayout={fullLayout} />
               <StepWrapUp
                 paneId={paneId}
                 notes={form.notes}
