@@ -22,6 +22,8 @@ import {
   ONBOARDING_SCOPE_VALUE,
 } from '@/lib/booking/onboarding-handoff';
 import SchedulingDialog from '@/components/booking/SchedulingDialog';
+import { track } from '@/lib/analytics/track';
+import type { CtaId } from '@/lib/analytics/events';
 import {
   WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
@@ -33,6 +35,19 @@ const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 const MODAL_SOURCE = 'welcome-modal';
+
+/**
+ * cta_click, best effort. track() is documented as never throwing, but a
+ * violation of that contract must never block the navigation or view change
+ * this fires alongside. Only the locked id travels — never a typed value.
+ */
+function trackCta(cta: CtaId) {
+  try {
+    track('cta_click', { cta });
+  } catch (err) {
+    console.warn('[analytics] cta_click failed', err);
+  }
+}
 
 /**
  * The Group Walk illustration from the product carousel in
@@ -285,6 +300,7 @@ export default function WelcomeWalkModal() {
     // Best-effort: a storage failure here must never block opening the
     // scheduler (plans/005 handoff rules).
     if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
+    trackCta('welcome_modal_schedule');
     setView('scheduler');
   }
 
@@ -338,6 +354,7 @@ export default function WelcomeWalkModal() {
     if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
     interactedRef.current = true;
     setOpen(false);
+    trackCta('welcome_modal_details');
     router.push(ONBOARDING_BOOK_HREF);
   }
 

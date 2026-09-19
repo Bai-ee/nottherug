@@ -11,9 +11,24 @@ import {
 } from '@/lib/content/services';
 import { buildBookingPrefillHref } from '@/lib/leads/prefill';
 import { isValidEmail } from '@/lib/leads/validation';
+import { track } from '@/lib/analytics/track';
+import type { CtaId } from '@/lib/analytics/events';
 import { PAW_TRAIL, useGroupWalkCardHover } from './hooks/useGroupWalkCardHover';
 
 const FEATURE_SOURCE = 'services-preview';
+
+/**
+ * cta_click, best effort. track() is documented as never throwing, but a
+ * violation of that contract must never block the navigation or view change
+ * this fires alongside. Only the locked id travels — never a typed value.
+ */
+function trackCta(cta: CtaId) {
+  try {
+    track('cta_click', { cta });
+  } catch (err) {
+    console.warn('[analytics] cta_click failed', err);
+  }
+}
 
 /** Brooklyn Bridge / Manhattan skyline collage — same backdrop WelcomeWalkModal.tsx uses. */
 const SKYLINE_IMAGE = '/img/bg_section_graphic_1.png';
@@ -58,6 +73,10 @@ export default function GroupWalkFeatureCard() {
       return;
     }
     setError('');
+    // Only after BOTH fields validate, so an abandoned or rejected attempt is
+    // never counted. The entered email/phone stay in the prefill href and
+    // never enter the event payload.
+    trackCta('group_walk_card_submit');
     router.push(
       buildBookingPrefillHref(
         { email: mail, phone: tel, serviceInterest: GROUP_WALK_PREVIEW.serviceInterest ?? 'Daily Group Walks' },
