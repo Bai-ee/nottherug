@@ -126,7 +126,11 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
     const prevTop = document.body.style.top;
     const prevWidth = document.body.style.width;
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Matches the reduced-motion branch SiteNav's hash-scroll already uses:
+    // an instant jump still needs to happen (the dialog renders at the top of
+    // the viewport), it just shouldn't animate there.
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'instant' : 'smooth' } as ScrollToOptions);
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.top = '0';
@@ -293,6 +297,14 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
               cursor: 'pointer',
               color: '#EDF3DB',
               padding: '8px 14px',
+              // 44px is the minimum comfortable mobile tap target; the visible
+              // label/padding stay as designed and this just adds the
+              // remaining hit area via min-height/min-width.
+              minHeight: '44px',
+              minWidth: '44px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               flexShrink: 0,
             }}
           >

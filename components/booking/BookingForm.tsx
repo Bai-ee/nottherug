@@ -503,6 +503,16 @@ export default function BookingForm({
     <div id={paneId} data-section={`meetgreet-${source}`} style={hidden ? { display: 'none' } : undefined}>
       <style>{`
         @keyframes mgStepTitleIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        /* Step-dot tap target: the dots stay their small 8px/22px visual size
+           (a row of full 44px buttons would overlap), but an invisible
+           ::before extends the actual hit area to ~44px on every side so
+           mobile taps still land reliably. */
+        .step-dot-hit-slop { position: relative; }
+        .step-dot-hit-slop::before {
+          content: '';
+          position: absolute;
+          inset: -18px;
+        }
         /* Full layout — the five groups printed down one sheet. Same field
            system as the welcome modal (.form-group / .form-control), so the
            only new chrome is the header per group and the hairline that
@@ -590,6 +600,7 @@ export default function BookingForm({
                 <button
                   key={s.key}
                   type="button"
+                  className="step-dot-hit-slop"
                   aria-label={`Go to step ${i + 1}: ${s.label}`}
                   aria-current={i === step ? 'step' : undefined}
                   onClick={() => goToStep(i)}
@@ -768,7 +779,7 @@ export default function BookingForm({
       </form>
 
       {status === 'success' && submittedSummary && (
-        <p className="form-note" style={{ color: 'var(--sage-light, #6b8e6b)' }}>
+        <p className="form-note" role="status" style={{ color: 'var(--sage-light, #6b8e6b)' }}>
           ✅ {bookedDetailsMode
             ? "Got it, thanks! Your Meet & Greet is already booked, so check your Calendly confirmation email for the time and details."
             : submittedSummary.phoneConsult
@@ -777,7 +788,7 @@ export default function BookingForm({
         </p>
       )}
       {status === 'error' && (
-        <p className="form-note" style={{ color: '#c0392b' }}>⚠️ {errorMsg}</p>
+        <p className="form-note" role="alert" style={{ color: '#c0392b' }}>⚠️ {errorMsg}</p>
       )}
       {status === 'success' && submittedSummary && !showCalendly &&
         shouldOpenSchedulerAfterSave({ calendlyUrl, phoneConsult: submittedSummary.phoneConsult, bookedDetailsMode }) && (
