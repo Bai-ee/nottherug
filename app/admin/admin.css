@@ -66,6 +66,10 @@
 /* Replaces the old .analytics-page: stacks every panel with even spacing.
    Width/side-gutter already come from AdminShell's .container. */
 #admin-analytics-dashboard-grid { display: grid; gap: 24px; }
+/* .grid-2 centers its items, which is right for the homepage's text-beside-
+   image bands and wrong for two panels of different heights sitting side by
+   side — they should start on the same line. */
+#admin-analytics-tables-row { align-items: stretch; }
 
 /* Controls row: range selector + real/test toggle, side by side on wider
    screens and stacked on a phone. */
