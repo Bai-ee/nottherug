@@ -56,7 +56,7 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
     Object.defineProperty(window.navigator, 'sendBeacon', { value: undefined, configurable: true });
   });
 
-    // The scroll-triggered welcome modal would land on the footer CTA mid-click.
+    // The timed welcome modal must not land on the footer CTA mid-click.
     await suppressWelcomeModal(page);
     await page.goto('/');
     await expect

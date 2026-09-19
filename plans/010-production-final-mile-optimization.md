@@ -525,7 +525,7 @@ Browser measurements (local production server, desktop 1440, DPR 1):
 - **Breakpoint-specific background crops not shipped.** Backgrounds are same-resolution WebP re-encodes (2.2–2.8 MB PNG → 110–290 KB); mobile still receives the desktop-resolution file. Worker B2's crop/`image-set()` pass was left uncommitted on `codex/release-worker-b` and is backlog.
 - **Replacement masters needed** (from `docs/asset-manifest.json`): `homepage_image` ≥ 2560×1535; `bg_section_1`, `bg_section_2`, `bg5` ≥ 2560×1440; `bg_section_graphic_2` ≥ 2560×1070; `public/dogs/IMAGE 00002–00007` need landscape masters ≥ 2560 px wide; `product_background` and `bg_section_graphic_1` need a re-measure in the pinned scroll state.
 - **CSP / COOP** deferred until verified against live Firebase sign-in and the Calendly embed; only `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and `X-Frame-Options: SAMEORIGIN` ship.
-- **Welcome modal scroll trigger** (owner change, 120 px) can open over a control the visitor is about to tap on a first visit; e2e journeys mark the modal seen. Product decision left to the owner.
+- **Welcome modal trigger**: the 120 px scroll trigger could open over a control the visitor was about to tap; replaced on September 19 (owner decision) with a 20-second first-visit timer. E2e journeys still mark the modal seen.
 - **`PUBLIC_BASE_URL`** is empty in Vercel; canonicals fall back to `https://nottherug.com`. Domains were out of scope.
 - **`public/logos/ntr_offwhite_horiz.png`** (2.1 MB) is referenced only by `style-guide/` docs; left in place.
 

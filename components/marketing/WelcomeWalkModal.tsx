@@ -27,7 +27,7 @@ import SchedulingDialog from '@/components/booking/SchedulingDialog';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import {
-  hasScrolledPastTrigger,
+  WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
   markWelcomeModalSeen,
   WELCOME_MODAL_OPEN_EVENT,
@@ -187,31 +187,23 @@ export default function WelcomeWalkModal() {
     const storage = readStorage();
     if (forced) {
       // Deferred a tick rather than set synchronously: a setState inside an
-      // effect body cascades an extra render. The scroll path below is
+      // effect body cascades an extra render. The timed path below is
       // already async, so only this branch needs it.
       const timer = window.setTimeout(() => setOpen(true), 0);
       return () => window.clearTimeout(timer);
     }
     if (hasSeenWelcomeModal(storage)) return;
 
-    // Baseline, not 0: a reload can restore a mid-page offset and a visitor
-    // can land on a #section link, neither of which is "started scrolling".
-    const startY = window.scrollY;
-    let fired = false;
-
-    function handleScroll() {
-      if (fired || !hasScrolledPastTrigger(window.scrollY, startY)) return;
-      fired = true;
-      window.removeEventListener('scroll', handleScroll);
-      // A visitor who already opened (or dismissed) the modal this session
-      // made a deliberate choice the scroll trigger must not override.
+    // First visit: open once the visitor has been on the page for the delay.
+    // A visitor who already opened (or dismissed) the modal in the meantime
+    // (hero CTA, nav Book) made a deliberate choice the timer must not
+    // override, so that is re-checked when it fires.
+    const timer = window.setTimeout(() => {
       if (interactedRef.current) return;
       markWelcomeModalSeen(storage);
       setOpen(true);
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    }, WELCOME_MODAL_DELAY_MS);
+    return () => window.clearTimeout(timer);
   }, []);
 
   /**

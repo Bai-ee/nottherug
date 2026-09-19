@@ -11,11 +11,12 @@
 export const WELCOME_MODAL_STORAGE_KEY = 'ntr:welcome-walk-modal:v1';
 
 /**
- * How far the visitor must scroll DOWN the home page before the modal opens.
- * The popup is a response to engagement, not a timer: it waits for the reader
- * to start moving down the page, and never interrupts the first paint.
+ * How long a first-time visitor has been on the home page before the modal
+ * opens. A timer, not a scroll trigger: the popup must never land on a
+ * control the visitor is about to tap, and it never interrupts the first
+ * paint.
  */
-export const WELCOME_MODAL_SCROLL_TRIGGER_PX = 120;
+export const WELCOME_MODAL_DELAY_MS = 20_000;
 
 export type WelcomeModalStorage = Pick<Storage, 'getItem' | 'setItem'>;
 
@@ -59,21 +60,4 @@ export function markWelcomeModalSeen(storage: WelcomeModalStorage | null | undef
   } catch {
     // Ignored: the visitor simply sees the modal again on a later visit.
   }
-}
-
-/**
- * True once the visitor has scrolled DOWN past the trigger distance from
- * wherever they started.
- *
- * Measured against `startY` rather than 0 for two reasons: a reload can
- * restore a mid-page offset, which must not count as scrolling, and a
- * visitor who lands on a `#section` link starts partway down. The subtraction
- * also means scrolling UP never reaches the threshold.
- */
-export function hasScrolledPastTrigger(
-  currentY: number,
-  startY: number,
-  threshold: number = WELCOME_MODAL_SCROLL_TRIGGER_PX,
-): boolean {
-  return currentY - startY >= threshold;
 }
