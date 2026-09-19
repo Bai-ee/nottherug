@@ -94,3 +94,19 @@ export const PAW_WALK_WINDOWS: ReadonlyArray<PawWalkWindow> = [
  */
 export const DARK_SECTION_SELECTOR =
   '.trust-bar, #home-team-section, #home-closing-trust-section, #home-contact-sheet-section';
+
+/**
+ * Pure arithmetic half of the paw-print DOM-count estimate: given the route's
+ * on-screen pixel length and the current stride, how many `.home-paw-step`
+ * prints are needed to walk the whole thing. Kept separate from the
+ * DOM-measuring half (components/marketing/hooks/useHomePawWalk.ts,
+ * `estimateRequiredPawSteps`) so this part — the part a unit test can exercise
+ * without a real SVG layout engine — is covered directly.
+ */
+export function pawStepsForRouteLength(routeLength: number, pawSize: number, strideRatio: number): number {
+  const stride = pawSize * strideRatio;
+  if (!Number.isFinite(routeLength) || routeLength <= 0 || !Number.isFinite(stride) || stride <= 0) {
+    return 0;
+  }
+  return Math.ceil(routeLength / stride);
+}

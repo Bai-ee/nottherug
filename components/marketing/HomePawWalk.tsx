@@ -12,12 +12,23 @@ import {
 } from '@/lib/marketing/paw-walk-tuning';
 
 /**
- * Upper bound on prints. useHomePawWalk walks the route at a fixed stride and
- * hides whatever is left over, so the number you actually see depends on how
- * long the route is on screen — this is only the ceiling. It has to cover the
- * tuner's smallest paw size, which packs the most steps onto the route.
+ * Rendered print count. Grows on demand rather than always mounting a fixed
+ * worst-case number of `<img>` elements: `useHomePawWalk` measures the actual
+ * route length against the page's real size and stride (see
+ * `estimateRequiredPawSteps` / `pawStepsForRouteLength`) and reports back
+ * through `growStepCount` whenever more prints are needed than are currently
+ * mounted — on first layout, and again on a resize that makes the page
+ * taller. Count only ever grows during a session (never shrinks, so an
+ * already-tweened print is never unmounted mid-walk) and is capped at
+ * `ABSOLUTE_MAX_STEPS`, the previous fixed allocation, as a safety net if a
+ * dev-tuner size setting ever demands more steps than the estimate expects.
  */
-const MAX_STEPS = 320;
+const INITIAL_STEP_ESTIMATE = 56;
+/** Extra prints mounted past the measured requirement, so a small measurement
+    variance (a font swap, a late-loading image nudging page height) doesn't
+    leave a visible gap before the next layout/resize pass catches up. */
+const SAFETY_BUFFER_STEPS = 16;
+const ABSOLUTE_MAX_STEPS = 320;
 
 const PAW_SRC = { left: '/img/pawl.png', right: '/img/pawr.png' } as const;
 
@@ -44,13 +55,20 @@ export default function HomePawWalk() {
   // hook after mount and never appears in this component's markup.
   const [tuning, setTuning] = useState<PawWalkTuning>(readStoredTuning);
   const [measuredSize, setMeasuredSize] = useState(44);
+  const [stepCount, setStepCount] = useState(INITIAL_STEP_ESTIMATE);
 
   const applyTuning = useCallback((next: PawWalkTuning) => {
     setTuning(next);
     writeStoredTuning(next);
   }, []);
 
-  useHomePawWalk(layerRef, tuning, setMeasuredSize);
+  // Only ever grows: a measured requirement plus a small buffer, capped at
+  // the old fixed allocation. See useHomePawWalk's onRequireSteps contract.
+  const growStepCount = useCallback((required: number) => {
+    setStepCount((prev) => Math.min(ABSOLUTE_MAX_STEPS, Math.max(prev, required + SAFETY_BUFFER_STEPS)));
+  }, []);
+
+  useHomePawWalk(layerRef, tuning, stepCount, setMeasuredSize, growStepCount);
 
   return (
     <>
@@ -63,7 +81,14 @@ export default function HomePawWalk() {
         >
           <path id="home-paw-walk-path" d={HOME_PAW_WALK_PATH} />
         </svg>
-        {Array.from({ length: MAX_STEPS }, (_, i) => (
+        {/* Animation-controlled: useHomePawWalk positions and tweens each
+            print by direct style/GSAP transform writes on the mounted <img>
+            node, keyed off its DOM identity (id/className), not through
+            next/image's own layout; width/height/decoding/loading are set
+            explicitly below so this still behaves like a sized, deferred
+            image. */}
+        {Array.from({ length: stepCount }, (_, i) => (
+          // eslint-disable-next-line @next/next/no-img-element -- see comment above
           <img
             key={i}
             id={`home-paw-step-${i}`}
