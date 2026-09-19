@@ -25,7 +25,7 @@ below simply isn't on the site, and a dashboard row never appears for it.
 | Engagement | The visitor did something meaningful on the page: scrolled through about half of it, stayed 15+ seconds, or clicked a tracked button. | "Engaged Visits" percentage — replaces the usual "bounce rate." |
 | CTA click | The visitor clicked one of the 16 specific buttons/links listed in the CTA reference below. | CTA Clicks table, grouped by Booking / Contact / Phone / Email / Service discovery. |
 | Booking form start | The visitor began filling out the booking form for real (not just loading the page). | "Form Started" row in the Booking Funnel. |
-| Booking step reached | The visitor reached a new step of the booking form (Details, Dog, Schedule, Review) for the first time in that attempt. | Step rows in the Booking Funnel. |
+| Booking step reached | The visitor reached a new step of the booking questionnaire (Details, Dog, Review, then Schedule when the scheduler opens) for the first time in that attempt. The home page's single-screen form has no steps, so it never appears in these rows. | Step rows in the Booking Funnel. |
 | Lead saved | The booking form was submitted and the inquiry was actually saved to the Leads system. | Funnel only — see note below. The **Inquiries** headline number comes from the Leads system directly, not from this event. |
 | Scheduling dialog opened | The visitor opened the scheduling (Calendly) dialog. | "Scheduling Dialog Opened" row in the Booking Funnel. |
 | Appointment completed | The scheduling provider confirmed a booked appointment. | "Appointments Scheduled" (its own number, never added to Inquiries) and "Scheduled via Calendly" in the funnel. |
