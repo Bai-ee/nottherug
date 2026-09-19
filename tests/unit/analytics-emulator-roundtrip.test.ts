@@ -316,7 +316,11 @@ describe('privacy: hostile payloads never reach storage', () => {
     expect(stored.data).not.toHaveProperty('dogName');
     expect(stored.data).not.toHaveProperty('notes');
     expect(stored.data).not.toHaveProperty('customerName');
-    expect(Object.keys(stored.data!).sort()).toEqual(['clientTs', 'event', 'id', 'receivedAt', 'route', 'sid'].sort());
+    // expiresAt is the TTL stamp written at ingestion (plan 009 P4) — a
+    // timestamp derived from receivedAt, never anything the visitor supplied.
+    expect(Object.keys(stored.data!).sort()).toEqual(
+      ['clientTs', 'event', 'expiresAt', 'id', 'receivedAt', 'route', 'sid'].sort()
+    );
   });
 
   it('strips a full referrer URL with a query string down to nothing (never stores host+path+query)', async (ctx) => {
