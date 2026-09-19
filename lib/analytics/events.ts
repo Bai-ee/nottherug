@@ -103,8 +103,14 @@ export type CtaId = (typeof CTA_IDS)[number];
 export const LIVE_CTA_IDS = CTA_IDS;
 
 
-/** Named steps in the booking flow, in order. Used for the funnel. */
-export const BOOKING_STEPS = ['details', 'dog', 'schedule', 'review'] as const;
+/**
+ * Named steps in the booking flow, in the order a visitor actually reaches
+ * them, because the dashboard prints the funnel in this order. Scheduling
+ * comes last: the questionnaire is reviewed and submitted first, and the
+ * scheduler opens afterwards. A visitor who books from the welcome modal
+ * skips the questionnaire entirely, so the rows are not a strict cascade.
+ */
+export const BOOKING_STEPS = ['details', 'dog', 'review', 'schedule'] as const;
 
 export type BookingStep = (typeof BOOKING_STEPS)[number];
 
