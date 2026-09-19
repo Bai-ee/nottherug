@@ -167,6 +167,9 @@
   align-items: center;
   gap: 10px;
   padding: 11px 16px 10px;
+  /* Visible pill is ~34px tall; ::before below extends the real hit area
+     toward the 44px mobile tap-target guideline without resizing it. */
+  position: relative;
   border-radius: 999px;
   background: var(--paper);
   color: var(--ink);
@@ -187,6 +190,13 @@
 #section-jump-root[data-open='true'] .section-jump-item {
   opacity: 1;
   transform: none;
+}
+/* -4px keeps the vertical extension inside #section-jump-list's own 8px row
+   gap, so two stacked items' hit areas meet without overlapping. */
+.section-jump-item::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
 }
 
 /* Stagger outward from the trigger on open only — the close reads better as a

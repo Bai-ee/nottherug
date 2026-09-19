@@ -6,6 +6,12 @@ import { getSectionLinks } from '@/lib/navigation/sections';
 import { scrollToSectionId } from '@/lib/navigation/scrollToSection';
 import { useActiveSection } from './hooks/useActiveSection';
 
+// Same selector WelcomeWalkModal.tsx and SchedulingDialog.tsx use for their
+// own focus traps (not centralized in this codebase; matching the existing
+// duplication rather than introducing a new shared module for one line).
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 /**
  * Mobile in-page section nav: a floating button pinned bottom-left that fans a
  * short stack of destination pills up and out of itself. Desktop gets the left
@@ -87,14 +93,35 @@ export default function SectionJump() {
     };
   }, [open]);
 
-  // Escape closes, and focus moves into the menu on open so a keyboard or
-  // screen-reader user lands on the destinations rather than behind them.
+  // Escape closes, Tab is trapped inside the menu, and focus moves into it on
+  // open so a keyboard or screen-reader user lands on the destinations rather
+  // than behind them. The trap matters here specifically because this menu is
+  // mounted in normal DOM order after the page content (see
+  // app/(marketing)/layout.tsx), not portaled — without it, Shift+Tab from the
+  // first item would walk focus backward into the dimmed-but-still-interactive
+  // page behind the scrim.
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      event.preventDefault();
-      closeMenu();
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const menu = menuRef.current;
+      if (!menu) return;
+      const focusable = Array.from(menu.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener('keydown', onKeyDown);
     const menu = menuRef.current;
