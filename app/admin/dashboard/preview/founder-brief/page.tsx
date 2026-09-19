@@ -5,6 +5,25 @@ import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
 
+// Presentation runs on the site's marketing skin (app/globals.css) — the
+// same `.card` paper panels, `.stamp-label` stamped headings, `.btn` paper
+// buttons and `.form-note` meta text every other restyled admin page uses —
+// in place of the former standalone dark theme built from inline styles.
+// This page does not mount the shared AdminShell (it never did; its own
+// identity bar + tab row are kept as-is, just restyled), so it wraps its own
+// content in `.container` directly. The rendered brief HTML inside the
+// iframe is untouched — only the chrome around it (the frame's own
+// layout-only sizing rule, `#founder-brief-preview-frame`) belongs to this
+// restyle.
+const css = `
+#founder-brief-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#founder-brief-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#founder-brief-actions-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+#founder-brief-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+#founder-brief-preview-frame { width: 100%; height: calc(100vh - 260px); min-height: 480px; border: 0; display: block; }
+.card-pad > * + * { margin-top: 10px; }
+`;
+
 function FounderBriefPreviewPageContent({
   email,
   getToken,
@@ -102,124 +121,82 @@ function FounderBriefPreviewPageContent({
   }
 
   return (
-    <div id="founder-brief-preview-shell" style={{ minHeight: '100vh', background: '#55624C', color: '#EDF3DB', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: '1px solid rgba(237,243,219,0.12)', background: 'rgba(50,60,38,0.96)', flexWrap: 'wrap', gap: 12 }}>
-        <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          NTR Admin · Founder Brief Preview
-        </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, opacity: 0.6 }}>{email}</span>
-          <a
-            href="/admin/dashboard"
-            style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, padding: '8px 14px', borderRadius: 6, border: '1px solid rgba(237,243,219,0.25)', color: '#EDF3DB', textDecoration: 'none' }}
-          >
-            Back
-          </a>
-        </div>
-      </div>
+    <div id="founder-brief-preview-shell">
+      <style>{css}</style>
+      <div className="section-sm">
+        <div className="container" id="founder-brief-preview-container">
 
-      {/* Prominent send-action row */}
-      <div
-        id="founder-brief-actions"
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 12,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '18px 24px',
-          background: '#1c1c1a',
-          borderBottom: '1px solid rgba(237,243,219,0.12)',
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(237,243,219,0.55)' }}>
-            Send brief email
-          </div>
-          <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, color: '#EDF3DB', letterSpacing: '-0.005em' }}>
-            Trigger the founder brief now
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <button
-            onClick={() => send({ runFirst: false })}
-            disabled={sending}
-            style={{
-              fontFamily: 'Space Mono, monospace',
-              fontSize: 13,
-              padding: '12px 22px',
-              borderRadius: 6,
-              border: '1px solid #EDF3DB',
-              background: '#EDF3DB',
-              color: '#1c1c1a',
-              cursor: sending ? 'wait' : 'pointer',
-              opacity: sending ? 0.5 : 1,
-              fontWeight: 700,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-            }}
-          >
-            {sending ? 'Sending…' : 'Send current →'}
-          </button>
-          <button
-            onClick={() => send({ runFirst: true })}
-            disabled={sending}
-            style={{
-              fontFamily: 'Space Mono, monospace',
-              fontSize: 13,
-              padding: '12px 22px',
-              borderRadius: 6,
-              border: '1px solid rgba(237,243,219,0.45)',
-              background: 'transparent',
-              color: '#EDF3DB',
-              cursor: sending ? 'wait' : 'pointer',
-              opacity: sending ? 0.5 : 1,
-              fontWeight: 600,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Run brief + send
-          </button>
-        </div>
-      </div>
-
-      <nav style={{ display: 'flex', padding: '0 20px', borderBottom: '1px solid rgba(237,243,219,0.12)', background: 'rgba(50,60,38,0.96)' }}>
-        <a href="/admin/dashboard" style={{ display: 'block', padding: '12px 16px', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(237,243,219,0.5)', fontFamily: 'Space Mono, monospace', textDecoration: 'none' }}>Overview</a>
-        <a href="/admin/dashboard/generator" style={{ display: 'block', padding: '12px 16px', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(237,243,219,0.5)', fontFamily: 'Space Mono, monospace', textDecoration: 'none' }}>Generator</a>
-        <a href="/admin/dashboard/leads" style={{ display: 'block', padding: '12px 16px', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(237,243,219,0.5)', fontFamily: 'Space Mono, monospace', textDecoration: 'none' }}>Leads</a>
-        <a href="/admin/dashboard/preview/founder-brief" style={{ display: 'block', padding: '12px 16px', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#EDF3DB', borderBottom: '2px solid rgba(237,243,219,0.7)', fontFamily: 'Space Mono, monospace', textDecoration: 'none' }}>Founder Brief</a>
-      </nav>
-
-      {sendStatus ? (
-        <div style={{ padding: '10px 24px', fontFamily: 'Space Mono, monospace', fontSize: 12, color: sendStatus.startsWith('Error') ? '#ffb4a2' : '#cfe1c5', borderBottom: '1px solid rgba(237,243,219,0.12)' }}>
-          {sendStatus}
-        </div>
-      ) : null}
-
-      <div style={{ padding: '20px 24px' }}>
-        {loading ? (
-          <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, opacity: 0.7 }}>Loading preview…</div>
-        ) : error ? (
-          <div style={{ color: '#ffb4a2', fontFamily: 'Space Mono, monospace', fontSize: 13 }}>{error}</div>
-        ) : (
-          <>
-            <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, opacity: 0.7, marginBottom: 12 }}>
-              Subject: <strong style={{ color: '#EDF3DB' }}>{subject}</strong>
+          <div className="card card-pad" id="founder-brief-topbar">
+            <div>
+              <div className="stamp-label stamp-label-heading">NTR Admin · Founder Brief Preview</div>
             </div>
-            <iframe
-              id="founder-brief-preview-frame"
-              title="Founder brief email preview"
-              srcDoc={html}
-              // Fixture/generated report HTML is untrusted: no scripts, and never
-              // paired with allow-same-origin (that combination would let sandboxed
-              // script escape the sandbox). allow-popups lets source links in the
-              // report open in a new tab instead of silently doing nothing.
-              sandbox="allow-popups"
-              style={{ width: '100%', height: 'calc(100vh - 200px)', border: '1px solid rgba(237,243,219,0.2)', borderRadius: 8, background: '#fff' }}
-            />
-          </>
-        )}
+            <div id="founder-brief-topbar-right">
+              <span className="form-note">{email}</span>{' '}
+              <a href="/admin/dashboard" className="btn btn-outline btn-sm">Back</a>
+            </div>
+          </div>
+
+          <div className="card card-pad" id="founder-brief-actions">
+            <div>
+              <div className="label">Send brief email</div>
+              <h2>Trigger the founder brief now</h2>
+            </div>
+            <div id="founder-brief-actions-buttons">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => send({ runFirst: false })}
+                disabled={sending}
+              >
+                {sending ? 'Sending…' : 'Send current →'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => send({ runFirst: true })}
+                disabled={sending}
+              >
+                Run brief + send
+              </button>
+            </div>
+          </div>
+
+          <nav className="card card-pad" id="founder-brief-tabs">
+            <a href="/admin/dashboard">Overview</a>
+            <a href="/admin/dashboard/generator">Generator</a>
+            <a href="/admin/dashboard/leads">Leads</a>
+            <a href="/admin/dashboard/preview/founder-brief" className="text-sage" aria-current="page">Founder Brief</a>
+          </nav>
+
+          {sendStatus ? (
+            <div className={sendStatus.startsWith('Error') ? 'form-note text-terra' : 'form-note text-sage'} id="founder-brief-send-status">
+              {sendStatus}
+            </div>
+          ) : null}
+
+          <div className="card card-pad" id="founder-brief-preview-panel">
+            {loading ? (
+              <div className="form-note">Loading preview…</div>
+            ) : error ? (
+              <div className="form-note text-terra">{error}</div>
+            ) : (
+              <>
+                <div className="form-note">Subject: <strong>{subject}</strong></div>
+                <iframe
+                  id="founder-brief-preview-frame"
+                  title="Founder brief email preview"
+                  srcDoc={html}
+                  // Fixture/generated report HTML is untrusted: no scripts, and never
+                  // paired with allow-same-origin (that combination would let sandboxed
+                  // script escape the sandbox). allow-popups lets source links in the
+                  // report open in a new tab instead of silently doing nothing.
+                  sandbox="allow-popups"
+                />
+              </>
+            )}
+          </div>
+
+        </div>
       </div>
     </div>
   );
