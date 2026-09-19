@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
 
 /**
@@ -54,4 +55,23 @@ export function errorResponse(err: unknown): NextResponse {
 
   console.error('[UnhandledError]', err instanceof Error ? err.stack ?? err.message : String(err));
   return NextResponse.json({ error: 'A server error occurred. Please try again.' }, { status: 500 });
+}
+
+/**
+ * Constant-time comparison for shared secrets (e.g. the cron bearer token).
+ *
+ * `===` on strings short-circuits at the first differing byte, which leaks the
+ * length of a correct prefix across repeated requests. Low severity for a single
+ * fixed secret, but there is no reason to hand it out.
+ */
+export function timingSafeEquals(a: string, b: string): boolean {
+  const left = Buffer.from(a, 'utf8');
+  const right = Buffer.from(b, 'utf8');
+  // timingSafeEqual throws on a length mismatch, which would itself be a signal.
+  if (left.length !== right.length) {
+    // Still burn a comparison of equal length so the failure path costs the same.
+    timingSafeEqual(left, left);
+    return false;
+  }
+  return timingSafeEqual(left, right);
 }

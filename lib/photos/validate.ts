@@ -25,6 +25,14 @@ export interface DecodedImage {
   width: number;
   height: number;
   extension: 'jpg' | 'png' | 'webp';
+  /**
+   * Re-encoded from the decoded pixel data — never the original upload
+   * bytes. A header that decodes cleanly says nothing about what, if
+   * anything, follows the end-of-image marker; storing the original bytes
+   * verbatim would store that too. Callers must upload this buffer, not the
+   * one they passed in.
+   */
+  buffer: Buffer;
 }
 
 /**
@@ -36,15 +44,21 @@ export async function decodeAndValidateImage(buffer: Buffer): Promise<DecodedIma
     throw new ImageTooLargeError(`Image exceeds the ${MAX_UPLOAD_BYTES} byte limit`);
   }
 
+  // .rotate() with no args bakes any EXIF orientation into the pixel data
+  // (matching lib/generator/server.ts's convention) before it's stripped by
+  // re-encoding below — otherwise a photo relying on EXIF orientation would
+  // come out sideways once that tag is gone. One pipeline instance for both
+  // metadata() and the eventual toBuffer() so width/height below describe
+  // the same, already-rotated pixels that end up in the returned buffer.
+  const pipeline = sharp(buffer).rotate();
+
   // No limitInputPixels here: sharp's own pixel-limit check can itself throw
   // during metadata() before we can classify the failure, which would
   // misreport an oversized image as "undecodable" rather than "too large".
   // The explicit width*height check below is the authoritative guard.
-  const metadata = await sharp(buffer)
-    .metadata()
-    .catch(() => {
-      throw new UndecodableImageError('Could not decode image bytes');
-    });
+  const metadata = await pipeline.metadata().catch(() => {
+    throw new UndecodableImageError('Could not decode image bytes');
+  });
 
   const { format, width, height } = metadata;
   if (!format || !SUPPORTED_FORMATS.has(format)) {
@@ -57,5 +71,18 @@ export async function decodeAndValidateImage(buffer: Buffer): Promise<DecodedIma
     throw new ImageTooLargeError(`Image dimensions ${width}x${height} exceed the pixel limit`);
   }
 
-  return { format: format as SupportedImageFormat, width, height, extension: EXTENSION_BY_FORMAT[format as SupportedImageFormat] };
+  const reencoded = await pipeline
+    .toFormat(format as SupportedImageFormat)
+    .toBuffer()
+    .catch(() => {
+      throw new UndecodableImageError('Could not re-encode image bytes');
+    });
+
+  return {
+    format: format as SupportedImageFormat,
+    width,
+    height,
+    extension: EXTENSION_BY_FORMAT[format as SupportedImageFormat],
+    buffer: reencoded,
+  };
 }

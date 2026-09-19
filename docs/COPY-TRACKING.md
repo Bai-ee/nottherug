@@ -1,5 +1,9 @@
 # Not The Rug — Copy Tracking Document
 
+> **Historical — not wired to the current site.** Superseded by the founder copy-review
+> tool (`docs/copy/README.md`, `scripts/copy/**`). Do not use this file to drive a copy
+> change; see `README.md`'s "Historical documents" section.
+
 This document tracks all copy/text content on the nottherug-boilerplate.html website. Update this file to update website copy.
 
 ---

@@ -72,6 +72,15 @@ export interface LatestBriefResponse {
     sourcePhotoId: string;
     sourceStoragePath: string;
   } | null;
+  // Present on the wire response; only the brief workspace (not the
+  // analytics dashboard) surfaces these paths, so this was previously typed
+  // only on that page's own local copy of this interface.
+  artifacts?: {
+    latestBriefJsonPath: string;
+    latestContentJsonPath: string;
+    latestMarkdownPath: string;
+    latestHtmlPath: string;
+  };
   latestBrief: {
     timestamp?: string;
     status?: string;

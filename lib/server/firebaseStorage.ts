@@ -7,7 +7,6 @@
  * which works with both old and new bucket types.
  */
 
-import { adminApp } from '@/lib/firebase-admin';
 import { getStorageBucket } from '@/lib/server/env';
 
 const BUCKET = getStorageBucket();
@@ -17,6 +16,11 @@ const FS_BASE = `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponen
 export const PRIVATE_STORAGE_PREFIX = 'private';
 
 async function getAccessToken(): Promise<string> {
+  // Imported lazily: lib/firebase-admin.ts initialises at module scope and throws
+  // on a malformed key, so a static import would make merely loading this module
+  // require valid service-account credentials — including in tests that never
+  // reach Storage at all.
+  const { adminApp } = await import('@/lib/firebase-admin');
   const token = await adminApp.options.credential!.getAccessToken();
   return token.access_token;
 }
@@ -112,7 +116,22 @@ export async function storageUploadPrivate(
 
   if (!clearRes.ok) {
     console.error('[storage] failed to clear public token, status:', clearRes.status, 'path:', storagePath);
-    throw new Error(`Failed to secure private upload (${clearRes.status})`);
+    // The object is already written with its auto-issued token still live —
+    // Storage evaluates a token-bearing read independently of security rules,
+    // so leaving it in place means anyone holding that token can read it.
+    // Best-effort delete it rather than leaving a publicly-readable object
+    // behind with no remediation; either way, surface exactly what happened.
+    const cleanup = await storageDelete(storagePath).then(
+      () => 'removed',
+      (deleteErr) => {
+        console.error('[storage] cleanup delete also failed, path:', storagePath, deleteErr instanceof Error ? deleteErr.message : deleteErr);
+        return 'FAILED to remove';
+      },
+    );
+    throw new Error(
+      `Failed to secure private upload for "${storagePath}" (${clearRes.status}); cleanup ${cleanup} the object` +
+      (cleanup === 'removed' ? '.' : ' — it may still be readable via its auto-issued token.'),
+    );
   }
 }
 

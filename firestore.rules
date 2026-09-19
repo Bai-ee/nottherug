@@ -45,6 +45,23 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Analytics. Public visitors never touch Firestore directly — the browser
+    // POSTs to /api/track, which validates against the shared allowlist in
+    // lib/analytics/events.ts and writes with the service account. Denying the
+    // client SDK here is what stops a visitor forging events or reading the
+    // whole traffic history; the default-deny below would cover it, but this
+    // collection is the one a future contributor is most likely to assume is
+    // "just counters" and open up.
+    match /analytics_events/{id} {
+      allow read, write: if false;
+    }
+
+    // Rate-limit counters for the public ingestion endpoint. Readable only by
+    // the server; a client that could read these could measure its own budget.
+    match /analyticsRateLimits/{id} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

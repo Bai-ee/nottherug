@@ -17,7 +17,7 @@ export default function SafetyPageContent() {
     <div id="safety-page-shell" ref={pageRef}>
       <SiteNav />
 
-      <div className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.png') center 20%/cover no-repeat" }}>
+      <div className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Safety &amp; Trust</div>
           <h1>Why trust matters<br />more than price</h1>

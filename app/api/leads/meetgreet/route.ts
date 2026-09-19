@@ -4,9 +4,13 @@ import { fsCreateDoc, fsGetDoc, fsIncrementField, fsSetDoc } from '@/lib/server/
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
 import { parseLeadSubmission } from '@/lib/leads/validation';
-import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput } from '@/lib/leads/contract';
+import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput, type NotificationOutcome } from '@/lib/leads/contract';
 
 export const runtime = 'nodejs';
+// Every other email-sending route here declares a budget; this one is the fast
+// path a customer waits on, so it gets a tighter one. Worst case is two bounded
+// sends (now concurrent) plus a few Firestore round trips.
+export const maxDuration = 20;
 
 // Well under Vercel's 4.5MB request limit — this route only ever carries short
 // form fields, never a file.
@@ -15,10 +19,16 @@ const MAX_BODY_BYTES = 20_000;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_PER_WINDOW = 5;
 
-// The idempotency guard only needs to cover a client retrying after a timeout,
-// not a genuine second inquiry weeks later — so the hash includes a coarse
-// time bucket. Same payload inside the same 1-hour bucket -> one lead. Same
-// payload in the next bucket -> a new lead (see lead-intake.test.ts).
+// The idempotency guard only needs to cover a client retrying after a
+// timeout, not a genuine second inquiry weeks later — so the hash includes a
+// coarse time bucket. A fixed bucket alone has a boundary problem: an
+// identical retry a few seconds apart can land in different buckets (e.g.
+// 12:59:58 then 13:00:02) and would otherwise be treated as a new lead. To
+// close that, every submission is also checked against the immediately
+// preceding bucket (see the lookback below) before creating — so a retry
+// anywhere within roughly this window of the original is treated as one
+// lead, while the same payload roughly two windows later creates a new one
+// (see lead-intake.test.ts).
 const SUBMISSION_DEDUPE_WINDOW_MS = 60 * 60 * 1000;
 
 const EMAIL_TIMEOUT_MS = 8_000;
@@ -54,6 +64,14 @@ async function readCappedBody(req: Request, maxBytes: number): Promise<{ ok: tru
   return { ok: true, text: Buffer.concat(chunks.map((c) => Buffer.from(c))).toString('utf8') };
 }
 
+/**
+ * Trusts the first `x-forwarded-for` entry. That is only safe because Vercel's
+ * edge overwrites this header rather than appending to a client-supplied one.
+ * If this ever runs behind a different proxy, or a verified-proxy config is
+ * added, re-check this first — the rate limit is keyed entirely on it, and the
+ * rate limit plus the honeypot are what stop this form being used to send
+ * confirmation mail to arbitrary addresses.
+ */
 function clientIp(req: Request): string {
   const forwardedFor = req.headers.get('x-forwarded-for');
   const first = forwardedFor?.split(',')[0]?.trim();
@@ -124,6 +142,16 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): P
   }
 }
 
+/**
+ * A provider (Resend) error message can embed the recipient's address (e.g.
+ * "Invalid `to` field: name@example.com") — that must not land verbatim in
+ * server logs. Scrubs anything email-shaped and caps length.
+ */
+function redactProviderError(message: string): string {
+  const scrubbed = message.replace(/[^\s@]+@[^\s@]+\.[^\s@]+/g, '[redacted-email]');
+  return scrubbed.length > 200 ? `${scrubbed.slice(0, 200)}…` : scrubbed;
+}
+
 async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotifications> {
   const notifications: LeadNotifications = { founder: 'skipped', customer: 'skipped' };
 
@@ -141,30 +169,36 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
 
   const sandbox = from.endsWith('@resend.dev');
 
-  try {
-    const founderMail = founderMeetGreetEmail(lead);
-    const result = await withTimeout(
-      resend.emails.send({
-        from,
-        to: founderEmail,
-        replyTo: lead.email,
-        subject: founderMail.subject,
-        html: founderMail.html,
-        text: founderMail.text,
-      }),
-      EMAIL_TIMEOUT_MS,
-      'founder email'
-    );
-    notifications.founder = result.error ? 'failed' : 'sent';
-    if (result.error) console.error('[lead:meetgreet] founder email failed', result.error.message);
-  } catch (err) {
-    notifications.founder = 'failed';
-    console.error('[lead:meetgreet] founder email error', err instanceof Error ? err.message : 'unknown');
-  }
+  const sendFounder = async (): Promise<NotificationOutcome> => {
+    try {
+      const founderMail = founderMeetGreetEmail(lead);
+      const result = await withTimeout(
+        resend.emails.send({
+          from,
+          to: founderEmail,
+          replyTo: lead.email,
+          subject: founderMail.subject,
+          html: founderMail.html,
+          text: founderMail.text,
+        }),
+        EMAIL_TIMEOUT_MS,
+        'founder email'
+      );
+      if (result.error) {
+        console.error('[lead:meetgreet] founder email failed', redactProviderError(result.error.message));
+        return 'failed';
+      }
+      return 'sent';
+    } catch (err) {
+      console.error('[lead:meetgreet] founder email error', err instanceof Error ? redactProviderError(err.message) : 'unknown');
+      return 'failed';
+    }
+  };
 
-  if (sandbox) {
-    notifications.customer = 'skipped';
-  } else {
+  const sendCustomer = async (): Promise<NotificationOutcome> => {
+    // A @resend.dev sender only delivers to the account's own verified address,
+    // so a customer confirmation would bounce rather than arrive.
+    if (sandbox) return 'skipped';
     try {
       const customerMail = customerMeetGreetEmail(lead);
       const result = await withTimeout(
@@ -178,13 +212,22 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
         EMAIL_TIMEOUT_MS,
         'customer email'
       );
-      notifications.customer = result.error ? 'failed' : 'sent';
-      if (result.error) console.error('[lead:meetgreet] customer email failed', result.error.message);
+      if (result.error) {
+        console.error('[lead:meetgreet] customer email failed', redactProviderError(result.error.message));
+        return 'failed';
+      }
+      return 'sent';
     } catch (err) {
-      notifications.customer = 'failed';
-      console.error('[lead:meetgreet] customer email error', err instanceof Error ? err.message : 'unknown');
+      console.error('[lead:meetgreet] customer email error', err instanceof Error ? redactProviderError(err.message) : 'unknown');
+      return 'failed';
     }
-  }
+  };
+
+  // Concurrent, not sequential: two 8s timeouts in series put the worst case at
+  // 16s of email on a route a customer is waiting on.
+  const [founder, customer] = await Promise.all([sendFounder(), sendCustomer()]);
+  notifications.founder = founder;
+  notifications.customer = customer;
 
   return notifications;
 }
@@ -217,6 +260,31 @@ export async function POST(req: Request) {
   const id = computeSubmissionKey(validation.data, dedupeWindowStart);
   const submittedAt = new Date().toISOString();
   const lead = buildLeadRecord(id, submittedAt, validation.data);
+
+  // Bucket-boundary lookback: an identical retry that straddles the current
+  // Known limitation, deliberately not fixed with a transaction: this closes the
+  // boundary for a *sequential* retry, which is the real-world case (client times
+  // out, person taps submit again). Two genuinely simultaneous requests landing on
+  // opposite sides of the hour boundary can each complete their lookback before
+  // the other's create commits, and both would be saved. That needs
+  // millisecond-scale double submission at the exact top of an hour; the cost of a
+  // read-write transaction on every booking is not worth closing it.
+
+  // bucket's start hashes to a different id than the original, so a plain
+  // fsCreateDoc race on `id` alone would miss it. Check the previous bucket's
+  // id first — if that document exists, this is the same submission.
+  const previousWindowId = computeSubmissionKey(validation.data, dedupeWindowStart - SUBMISSION_DEDUPE_WINDOW_MS);
+  try {
+    const previous = await fsGetDoc(`leads/${previousWindowId}`);
+    if (previous.exists && previous.data) {
+      const existingNotifications = (previous.data.notifications as LeadNotifications | undefined)
+        ?? { founder: 'skipped', customer: 'skipped' };
+      return NextResponse.json({ ok: true, id: previousWindowId, duplicate: true, notifications: existingNotifications });
+    }
+  } catch (err) {
+    console.error('[lead:meetgreet] previous-window duplicate lookup failed', err instanceof Error ? err.message : 'unknown');
+    // Fall through — a lookback failure should not block a legitimate submission.
+  }
 
   let created: boolean;
   try {

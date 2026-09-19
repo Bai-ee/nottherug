@@ -5,6 +5,7 @@ import {
   Oswald,
   Bebas_Neue,
   Courier_Prime,
+  Space_Mono,
 } from "next/font/google";
 import "./globals.css";
 
@@ -33,6 +34,14 @@ const bebas = Bebas_Neue({
 
 const courierPrime = Courier_Prime({
   variable: "--font-courier",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+// Dense numeric/tabular text in the admin dashboard. Loaded here with the rest
+// so admin chrome never pays for a render-blocking stylesheet import.
+const spaceMono = Space_Mono({
+  variable: "--font-mono-data",
   subsets: ["latin"],
   weight: ["400", "700"],
 });
@@ -78,7 +87,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable}`}
+      className={`${fraunces.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable} ${spaceMono.variable}`}
     >
       <body>
         {children}

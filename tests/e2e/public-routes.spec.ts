@@ -207,3 +207,73 @@ test.describe('public routes', () => {
     }
   });
 });
+
+// P4: 375/768/1440 responsive check. `document.body.scrollWidth` exceeding
+// the viewport is exactly the class of bug the /contact grid-item overflow
+// was (scrollWidth 1884px at a 1440px viewport, 720px at 375px) — this would
+// have caught it on every route, not just the one a screenshot happened to
+// catch.
+test.describe('no horizontal overflow at any checked width', () => {
+  for (const width of [375, 768, 1440] as const) {
+    for (const route of ROUTES) {
+      test(`${route.path} at ${width}px has no horizontal overflow`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(route.path);
+        await page.waitForLoadState('networkidle');
+        const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
+        // +1px tolerance for sub-pixel layout rounding, not for real overflow.
+        expect(scrollWidth).toBeLessThanOrEqual(width + 1);
+      });
+    }
+  }
+});
+
+test.describe('keyboard access', () => {
+  test('desktop nav is reachable and operable by keyboard', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
+    await page.goto('/');
+    const bookCta = page.locator('#main-nav .nav-cta');
+    await bookCta.focus();
+    await expect(bookCta).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/\/book$/);
+  });
+
+  test('mobile hamburger toggle opens the menu on Enter, not just click', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'mobile-menu-only interaction');
+    await page.goto('/');
+    const toggle = page.locator('#nav-hamburger-toggle');
+    await toggle.focus();
+    await expect(toggle).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#mobile-menu')).toBeVisible();
+  });
+
+  test('booking form fields are reachable by Tab', async ({ page }) => {
+    await page.goto('/book');
+    await page.locator('body').click({ position: { x: 1, y: 1 } });
+    let reachedFormField = false;
+    for (let i = 0; i < 25 && !reachedFormField; i++) {
+      await page.keyboard.press('Tab');
+      reachedFormField = await page.evaluate(() => {
+        const el = document.activeElement;
+        return !!el && ['INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) && el.closest('#book-form-body') !== null;
+      });
+    }
+    expect(reachedFormField).toBe(true);
+  });
+});
+
+test.describe('prefers-reduced-motion', () => {
+  test('home hero content is visible immediately, not waiting on an animation', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    // useHomeHeroMotion (components/marketing/hooks) skips its entrance
+    // timeline entirely under reduced motion — nothing here is ever hidden
+    // via CSS pending a GSAP tween, so all of this should already be visible.
+    await expect(page.locator('.hero-h1')).toBeVisible();
+    await expect(page.locator('.hero-eyebrow')).toBeVisible();
+    await expect(page.locator('.hero-actions')).toBeVisible();
+    await expect(page.locator('.hero-stats')).toBeVisible();
+  });
+});

@@ -15,7 +15,7 @@ export default function ReviewsPageContent() {
     <div id="reviews-page-shell" ref={pageRef}>
       <SiteNav />
 
-      <div className="page-hero bg-charcoal" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00006.png') center 20%/cover no-repeat" }}>
+      <div className="page-hero bg-charcoal" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00006.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Client Reviews</div>
           <h1 style={{ color: 'white' }}>What Brooklyn<br />dog owners say</h1>

@@ -16,7 +16,9 @@
     "brief:not-the-rug": "node not-the-rug-brief/run.js --client not-the-rug",
     "brief:not-the-rug:fresh": "node not-the-rug-brief/run.js --client not-the-rug --fresh",
     "copy:extract": "node scripts/copy/extract-copy.mjs",
-    "copy:apply": "node scripts/copy/apply-copy.mjs"
+    "copy:apply": "node scripts/copy/apply-copy.mjs",
+    "emulators": "firebase emulators:start --only firestore,storage --project demo-not-the-rug",
+    "test:rules": "vitest run tests/unit/rules-firestore.test.ts tests/unit/rules-storage.test.ts"
   },
   "dependencies": {
     "dotenv": "^17.4.0",

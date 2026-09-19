@@ -4,7 +4,7 @@ import { buildPageMetadata } from '@/lib/content/site';
 
 export const metadata: Metadata = buildPageMetadata({
   path: '/neighborhoods/williamsburg',
-  title: 'Dog Walking in Williamsburg, Brooklyn — Not The Rug',
+  title: 'Dog Walking in Williamsburg, Brooklyn',
   description: "We're a Williamsburg service through and through — we know every park, shortcut, and puddle to avoid.",
 });
 

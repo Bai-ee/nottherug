@@ -40,10 +40,10 @@ const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 // garbage "text" items). Each range below was picked by hand against the
 // actual file.
 const JSX_SOURCES = [
-  { file: 'components/SiteNav.tsx', page: 'global', jsxRange: [36, 999], skipRanges: [] },
-  { file: 'components/marketing/SiteFooter.tsx', page: 'global', jsxRange: [7, 999], skipRanges: [] },
+  { file: 'components/SiteNav.tsx', page: 'global', jsxRange: [37, 999], skipRanges: [] },
+  { file: 'components/marketing/SiteFooter.tsx', page: 'global', jsxRange: [8, 999], skipRanges: [] },
 
-  { file: 'components/marketing/HomeHero.tsx', page: 'home', jsxRange: [11, 999], skipRanges: [] },
+  { file: 'components/marketing/HomeHero.tsx', page: 'home', jsxRange: [12, 999], skipRanges: [] },
   { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', jsxRange: [49, 999], skipRanges: [] },
   { file: 'components/marketing/TrustBar.tsx', page: 'home', jsxRange: [4, 999], skipRanges: [] },
   // Two entries, not one [4, 999] range with a skipRange over the gap: the
@@ -60,7 +60,7 @@ const JSX_SOURCES = [
   // `{`, avoid the gap entirely.
   { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [4, 11], skipRanges: [] },
   { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [19, 999], skipRanges: [] },
-  { file: 'components/marketing/ClosingTrust.tsx', page: 'home', jsxRange: [10, 999], skipRanges: [] },
+  { file: 'components/marketing/ClosingTrust.tsx', page: 'home', jsxRange: [11, 999], skipRanges: [] },
   { file: 'components/marketing/FeaturedReviews.tsx', page: 'home', jsxRange: [7, 999], skipRanges: [] },
   { file: 'components/marketing/HomePageContent.tsx', page: 'home', jsxRange: [28, 999], skipRanges: [] },
 
@@ -80,16 +80,19 @@ const JSX_SOURCES = [
 
   { file: 'components/marketing/NeighborhoodsPageContent.tsx', page: 'neighborhoods', jsxRange: [16, 999], skipRanges: [] },
   { file: 'components/marketing/NeighborhoodCard.tsx', page: 'neighborhoods', jsxRange: [19, 999], skipRanges: [] },
-  { file: 'components/marketing/NeighborhoodDetail.tsx', page: 'neighborhoods', jsxRange: [8, 999], skipRanges: [] },
+  { file: 'components/marketing/NeighborhoodDetail.tsx', page: 'neighborhoods', jsxRange: [9, 999], skipRanges: [] },
 
   { file: 'components/marketing/ReviewsPageContent.tsx', page: 'reviews', jsxRange: [14, 999], skipRanges: [] },
 
-  // components/MeetGreetForm.tsx is now a re-export shim (Worker A moved the
-  // real form to components/booking/**, in progress concurrently with this
-  // extraction — see the P2A report). This range covers only BookingForm.tsx's
-  // own JSX; BookingSteps.tsx and SchedulingDialog.tsx are not yet mapped and
-  // should be added once that rewrite lands.
-  { file: 'components/booking/BookingForm.tsx', page: 'MeetGreetForm', jsxRange: [185, 358], skipRanges: [] },
+  // components/MeetGreetForm.tsx is now a re-export shim; the real form is
+  // components/booking/** (Worker A). These three files' line numbers are
+  // NOT stable the way most of this list is — Worker A's own edits have
+  // already shifted BookingForm.tsx's and SchedulingDialog.tsx's `return`
+  // line twice. Re-run `node scripts/copy/extract-copy.mjs` and check for
+  // code-like garbage in docs/copy/copy-inventory.json (import/export/
+  // function/useState/useEffect text instead of real copy) after any change
+  // to these three files, and update the ranges below if it appears.
+  { file: 'components/booking/BookingForm.tsx', page: 'MeetGreetForm', jsxRange: [253, 426], skipRanges: [] },
   // BookingSteps.tsx exports five separate step components, each with its
   // own `return (` — five disjoint ranges, not one [42, 999] range, for the
   // same reason as ServicesPreview.tsx above: the next step's own
@@ -100,7 +103,7 @@ const JSX_SOURCES = [
   { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [162, 195], skipRanges: [] },
   { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [222, 298], skipRanges: [] },
   { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [321, 361], skipRanges: [] },
-  { file: 'components/booking/SchedulingDialog.tsx', page: 'MeetGreetForm', jsxRange: [83, 211], skipRanges: [] },
+  { file: 'components/booking/SchedulingDialog.tsx', page: 'MeetGreetForm', jsxRange: [93, 221], skipRanges: [] },
   { file: 'app/(marketing)/book/page.tsx', page: 'book', jsxRange: [13, 999], skipRanges: [] },
   { file: 'app/(marketing)/contact/page.tsx', page: 'contact', jsxRange: [21, 999], skipRanges: [] },
   { file: 'components/marketing/ContactInfoCard.tsx', page: 'contact', jsxRange: [19, 999], skipRanges: [] },

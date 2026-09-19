@@ -11,9 +11,10 @@ const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.
 const STORAGE_EMULATOR_HOST = process.env.FIREBASE_STORAGE_EMULATOR_HOST ?? '127.0.0.1:9199';
 
 export const EMULATOR_SKIP_REASON =
-  'Firebase emulator unreachable. The Firestore emulator requires a Java runtime, which is ' +
-  'not installed in this environment (`java -version` fails), so `firebase emulators:start` ' +
-  'cannot come up here. See plans/002-production-readiness.md P1B pending gates.';
+  'Firebase emulator unreachable. These suites need a running emulator, which needs a Java ' +
+  'runtime: install one (e.g. `brew install openjdk@21`, then put its bin on PATH) and start ' +
+  'the emulator with `npm run emulators`. A skip here is not a pass — the rules are unverified ' +
+  'until these run.';
 
 async function isReachable(hostAndPort: string): Promise<boolean> {
   const [host, port] = hostAndPort.split(':');

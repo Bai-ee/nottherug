@@ -11,14 +11,23 @@ import { HONEYPOT_FIELD_NAME, LEAD_FIELD_LIMITS } from '@/lib/leads/contract';
 type CreateDocResult = { created: boolean };
 
 let createdPaths: Set<string>;
+// Backs fsGetDoc/fsSetDoc so the previous-bucket lookback in route.ts can see
+// what fsCreateDoc actually stored, instead of the old always-empty stub.
+let docsByPath: Map<string, Record<string, unknown>>;
 
-const fsCreateDoc = vi.fn(async (path: string): Promise<CreateDocResult> => {
+const fsCreateDoc = vi.fn(async (path: string, data: Record<string, unknown> = {}): Promise<CreateDocResult> => {
   if (createdPaths.has(path)) return { created: false };
   createdPaths.add(path);
+  docsByPath.set(path, data);
   return { created: true };
 });
-const fsGetDoc = vi.fn(async () => ({ exists: false }) as { exists: boolean; data?: Record<string, unknown> });
-const fsSetDoc = vi.fn(async () => {});
+const fsGetDoc = vi.fn(async (path: string) => {
+  const data = docsByPath.get(path);
+  return data ? { exists: true, data } : { exists: false };
+});
+const fsSetDoc = vi.fn(async (path: string, data: Record<string, unknown> = {}) => {
+  docsByPath.set(path, data);
+});
 const fsDeleteDoc = vi.fn(async () => {});
 const fsQueryCollection = vi.fn(async () => [] as unknown[]);
 const fsIncrementField = vi.fn(async () => 1);
@@ -96,6 +105,7 @@ async function postText(text: string) {
 beforeEach(() => {
   vi.clearAllMocks();
   createdPaths = new Set();
+  docsByPath = new Map();
 });
 
 afterEach(() => {
@@ -255,7 +265,7 @@ describe('R05 — idempotency and notification status', () => {
 });
 
 describe('idempotency dedupe window', () => {
-  it('collapses an identical retry inside the window, but treats the next window as a new inquiry', async () => {
+  it('collapses a same-bucket retry and a retry one bucket later, but treats a submission genuinely two buckets on as a new inquiry', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
     const payload = currentFormPayload();
@@ -268,11 +278,46 @@ describe('idempotency dedupe window', () => {
     expect(fsCreateDoc.mock.calls[0][0]).toBe(fsCreateDoc.mock.calls[1][0]);
     expect(createdPaths.size).toBe(1);
 
-    vi.setSystemTime(new Date('2026-01-01T01:00:00.001Z')); // next hour bucket
+    // One bucket later: a current-bucket-only hash would treat this as a
+    // different id and create a second lead. The previous-bucket lookback is
+    // exactly what closes that gap, so this is still the same submission.
+    vi.setSystemTime(new Date('2026-01-01T01:00:00.001Z'));
+    const stillDuplicate = await post(payload);
+    const stillDuplicateJson = await stillDuplicate.json();
+    expect(stillDuplicateJson.duplicate).toBe(true);
+    expect(fsCreateDoc).toHaveBeenCalledTimes(2); // no third create
+    expect(createdPaths.size).toBe(1);
+
+    // Two buckets on from the original — outside even the lookback — is a
+    // genuinely new inquiry.
+    vi.setSystemTime(new Date('2026-01-01T02:00:00.001Z'));
     await post(payload);
 
     expect(fsCreateDoc).toHaveBeenCalledTimes(3);
     expect(fsCreateDoc.mock.calls[2][0]).not.toBe(fsCreateDoc.mock.calls[0][0]);
     expect(createdPaths.size).toBe(2);
+  });
+
+  it('closes the exact boundary a fixed-bucket hash misses: a retry a few seconds after :00 is one lead and one round of notifications', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T12:59:58.000Z')); // just before the 13:00 bucket boundary
+    const payload = currentFormPayload();
+
+    const first = await post(payload);
+    const firstJson = await first.json();
+    expect(firstJson.ok).toBe(true);
+    expect(firstJson.duplicate).toBeUndefined();
+
+    vi.setSystemTime(new Date('2026-01-01T13:00:02.000Z')); // 4s later, across the boundary — the ordinary "tap submit again" gap
+    const retry = await post(payload);
+    const retryJson = await retry.json();
+
+    expect(retry.status).toBe(200);
+    expect(retryJson.ok).toBe(true);
+    expect(retryJson.duplicate).toBe(true);
+    expect(retryJson.id).toBe(firstJson.id);
+    expect(createdPaths.size).toBe(1);
+    expect(fsCreateDoc).toHaveBeenCalledTimes(1); // the retry never attempts a second create
+    expect(sendEmail).toHaveBeenCalledTimes(1); // exactly one round of notifications
   });
 });

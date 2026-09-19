@@ -6,7 +6,7 @@ import { buildPageMetadata } from '@/lib/content/site';
 
 export const metadata: Metadata = buildPageMetadata({
   path: '/book',
-  title: 'Book a Walk — Free Meet & Greet · Not The Rug',
+  title: 'Book a Walk — Free Meet & Greet',
   description: 'No commitment, no charge. We come to you, meet your dog, and answer every question.',
 });
 
@@ -56,7 +56,7 @@ export default async function BookPage({
         className="book-hero"
         style={{
           background:
-            "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.png') center 20%/cover no-repeat",
+            "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.webp') center 20%/cover no-repeat",
         }}
       >
         <div className="container">

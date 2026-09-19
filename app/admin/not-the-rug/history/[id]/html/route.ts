@@ -1,6 +1,7 @@
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
+import { errorResponse } from '@/lib/server/errors';
 import { getNotTheRugBriefRunHtml } from '@/lib/not-the-rug-brief/read';
 import { briefHtmlHeaders } from '@/lib/not-the-rug-brief/security';
 
@@ -13,7 +14,7 @@ export async function GET(
   try {
     await verifyAdmin(req);
   } catch (error) {
-    return new NextResponse(error instanceof Error ? error.message : 'Unauthorized', { status: 401 });
+    return errorResponse(error);
   }
 
   try {
@@ -26,6 +27,7 @@ export async function GET(
       headers: briefHtmlHeaders({ 'Content-Disposition': `attachment; filename="${fileName}"` }),
     });
   } catch (error) {
-    return new NextResponse(error instanceof Error ? error.message : 'HTML brief not found', { status: 404 });
+    console.error('[brief:html] read failed', error instanceof Error ? error.message : error);
+    return new NextResponse('HTML brief not found', { status: 404 });
   }
 }

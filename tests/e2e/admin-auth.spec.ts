@@ -6,7 +6,14 @@ import { test, expect } from '@playwright/test';
 // real Google sign-in; Firebase resolves onAuthStateChanged to "no user" on
 // its own in a fresh browser context, which is the path asserted here.
 
-const ADMIN_ROUTES = ['/admin/dashboard', '/admin/dashboard/leads', '/admin/dashboard/photos', '/admin/dashboard/generator'];
+const ADMIN_ROUTES = [
+  '/admin/dashboard',
+  '/admin/dashboard/leads',
+  '/admin/dashboard/photos',
+  '/admin/dashboard/generator',
+  '/admin/dashboard/brief',
+  '/admin/dashboard/preview/founder-brief',
+];
 
 test.describe('admin auth gate', () => {
   for (const path of ADMIN_ROUTES) {
@@ -23,6 +30,8 @@ test.describe('admin auth gate', () => {
       await expect(page.locator('#leads-page-shell')).toHaveCount(0);
       await expect(page.locator('#admin-photos-shell')).toHaveCount(0);
       await expect(page.locator('#admin-gen-shell')).toHaveCount(0);
+      await expect(page.locator('#admin-brief-shell')).toHaveCount(0);
+      await expect(page.locator('#founder-brief-preview-shell')).toHaveCount(0);
     });
   }
 

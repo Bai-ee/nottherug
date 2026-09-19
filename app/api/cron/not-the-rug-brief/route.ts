@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runNotTheRugBrief } from '@/lib/not-the-rug-brief/run';
+import { timingSafeEquals } from '@/lib/server/errors';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -9,7 +10,7 @@ function isAuthorizedCronRequest(req: NextRequest): boolean {
   if (!secret) return false;
 
   const authHeader = req.headers.get('authorization');
-  return authHeader === `Bearer ${secret}`;
+  return authHeader !== null && timingSafeEquals(authHeader, `Bearer ${secret}`);
 }
 
 export async function GET(req: NextRequest): Promise<NextResponse> {

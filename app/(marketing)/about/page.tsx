@@ -4,7 +4,7 @@ import { buildPageMetadata } from '@/lib/content/site';
 
 export const metadata: Metadata = buildPageMetadata({
   path: '/about',
-  title: 'About Us — Not The Rug',
+  title: 'About Us',
   description: 'Not The Rug was born in Williamsburg and has never left. 15 years of walks, one neighborhood.',
 });
 

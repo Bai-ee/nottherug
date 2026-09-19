@@ -1,6 +1,6 @@
 # Not The Rug — Website Copy Review
 
-Generated 2026-09-15 from the live site code · **380 pieces of copy**
+Generated 2026-09-15 from the live site code · **379 pieces of copy**
 
 This file lists **every word currently on the Not The Rug website**, organised page by page.
 It exists so you can read the site as a document, confirm that everything it says is accurate,
@@ -34,9 +34,8 @@ Those carry the pricing, the claims and the contact details — the things most 
 7. **Williamsburg** — 29 items
 8. **Reviews** — 24 items
 9. **Book a Walk** — 6 items
-10. **Contact** — 21 items
+10. **Contact** — 22 items
 11. **Meet & Greet form** — 29 items
-12. **Search engine + social previews (site-wide fallback)** — 2 items
 
 ---
 
@@ -316,11 +315,15 @@ Company
 About Us
 ```
 
+_The same wording is used elsewhere: `about.about-meta.about-us`. Those are separate slots — change them too if they should stay consistent._
+
 **`global.footer.how-it-works`** — Text
 
 ```text
 How It Works
 ```
+
+_The same wording is used elsewhere: `how-it-works.hiw-meta.how-it-works`. Those are separate slots — change them too if they should stay consistent._
 
 **`global.footer.safety-trust`** — Text
 
@@ -1410,10 +1413,10 @@ Text or call your walker directly — no support tickets, no bots.
 
 ### /services — search engine + link preview
 
-**`services.services-meta.services-rates-not-the-rug`** — Heading
+**`services.services-meta.services-rates`** — Heading
 
 ```text
-Services & Rates — Not The Rug
+Services & Rates
 ```
 
 **`services.services-meta.every-service-includes-a-free`** — Paragraph
@@ -1548,11 +1551,13 @@ Reads as: "Bruno was in great spirits today! He made a new friend at the park �
 
 ### /how-it-works — search engine + link preview
 
-**`how-it-works.hiw-meta.how-it-works-not-the`** — Heading
+**`how-it-works.hiw-meta.how-it-works`** — Heading
 
 ```text
-How It Works — Not The Rug
+How It Works
 ```
+
+_The same wording is used elsewhere: `global.footer.how-it-works`. Those are separate slots — change them too if they should stay consistent._
 
 **`how-it-works.hiw-meta.from-first-contact-to-daily`** — Paragraph
 
@@ -1866,11 +1871,13 @@ Luis's personal number is on the website, and you can text or call your walker d
 
 ### /about — search engine + link preview
 
-**`about.about-meta.about-us-not-the-rug`** — Heading
+**`about.about-meta.about-us`** — Heading
 
 ```text
-About Us — Not The Rug
+About Us
 ```
+
+_The same wording is used elsewhere: `global.footer.about-us`. Those are separate slots — change them too if they should stay consistent._
 
 **`about.about-meta.not-the-rug-was-born`** — Paragraph
 
@@ -2108,10 +2115,10 @@ We cap every group walk at three dogs. This is a safety standard and a quality s
 
 ### /safety — search engine + link preview
 
-**`safety.safety-meta.safety-trust-not-the-rug`** — Heading
+**`safety.safety-meta.safety-trust`** — Heading
 
 ```text
-Safety & Trust — Not The Rug
+Safety & Trust
 ```
 
 **`safety.safety-meta.every-trust-and-safety-standard`** — Paragraph
@@ -2309,7 +2316,7 @@ Dog walker Williamsburg Brooklyn
 **`neighborhoods.hoods-meta.dog-walking-in-williamsburg-brooklyn`** — Heading
 
 ```text
-Dog Walking in Williamsburg, Brooklyn — Not The Rug
+Dog Walking in Williamsburg, Brooklyn
 ```
 
 **`neighborhoods.hoods-meta.we-re-a-williamsburg-service`** — Paragraph
@@ -2331,6 +2338,8 @@ _24 items_
 ```text
 Client Reviews
 ```
+
+_The same wording is used elsewhere: `reviews.reviews-meta.client-reviews`. Those are separate slots — change them too if they should stay consistent._
 
 **`reviews.reviews-hero.what-brooklyn-dog-owners-say`** — Heading
 
@@ -2476,11 +2485,13 @@ They were so awesome with my dog and super patient with me. Daily updates on how
 
 ### /reviews — search engine + link preview
 
-**`reviews.reviews-meta.client-reviews-not-the-rug`** — Heading
+**`reviews.reviews-meta.client-reviews`** — Heading
 
 ```text
-Client Reviews — Not The Rug
+Client Reviews
 ```
+
+_The same wording is used elsewhere: `reviews.reviews-hero.client-reviews`. Those are separate slots — change them too if they should stay consistent._
 
 **`reviews.reviews-meta.what-brooklyn-dog-owners-say`** — Paragraph
 
@@ -2524,7 +2535,7 @@ Reads as: Book your free ⏎ Meet & Greet
 No commitment, no charge. We come to you, meet your dog, and answer every question.
 ```
 
-_The same wording is used elsewhere: `book.book-meta.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `book.book-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
 
 ### /book — search engine + link preview
 
@@ -2533,10 +2544,8 @@ _The same wording is used elsewhere: `book.book-meta.no-commitment-no-charge-we`
 **`book.book-meta.book-a-walk-free-meet`** — Heading
 
 ```text
-Book a Walk — Free Meet & Greet · Not The Rug
+Book a Walk — Free Meet & Greet
 ```
-
-_The same wording is used elsewhere: `layout.site-meta.book-a-walk-free-meet`. Those are separate slots — change them too if they should stay consistent._
 
 **`book.book-meta.no-commitment-no-charge-we`** — Paragraph
 
@@ -2544,13 +2553,13 @@ _The same wording is used elsewhere: `layout.site-meta.book-a-walk-free-meet`. T
 No commitment, no charge. We come to you, meet your dog, and answer every question.
 ```
 
-_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `layout.site-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
+_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
 
 ---
 
 ## 10. Contact
 
-_21 items_
+_22 items_
 
 ### /contact — hero
 
@@ -2575,6 +2584,12 @@ No chatbots, no ticket queues. Text us, call us, or fill out the form.
 ```
 
 _The same wording is used elsewhere: `contact.contact-meta.no-chatbots-no-ticket-queues`. Those are separate slots — change them too if they should stay consistent._
+
+**`contact.contactpage-hero.archie-archie-bklyn`** — Link
+
+```text
+Archie · @archie_bklyn
+```
 
 **`contact.contactpage-hero.send-a-message`** — Small label
 
@@ -2683,7 +2698,7 @@ We're based in Williamsburg and serve North Williamsburg and much of South Willi
 **`contact.contact-meta.we-re-real-people-with`** — Heading
 
 ```text
-We're real people with a real number — Not The Rug
+We're real people with a real number
 ```
 
 **`contact.contact-meta.no-chatbots-no-ticket-queues`** — Paragraph
@@ -2891,32 +2906,6 @@ Close ×
 ```text
 Calendly scheduling
 ```
-
----
-
-## 12. Search engine + social previews (site-wide fallback)
-
-_2 items_
-
-### Site-wide search engine + link preview (root fallback)
-
-> Every page now sets its own title/description; this is only the fallback if one is ever missing.
-
-**`layout.site-meta.book-a-walk-free-meet`** — Browser tab + Google result title
-
-```text
-Book a Walk — Free Meet & Greet · Not The Rug
-```
-
-_The same wording is used elsewhere: `book.book-meta.book-a-walk-free-meet`. Those are separate slots — change them too if they should stay consistent._
-
-**`layout.site-meta.no-commitment-no-charge-we`** — Google result description
-
-```text
-No commitment, no charge. We come to you, meet your dog, and answer every question.
-```
-
-_The same wording is used elsewhere: `book.bookpage-hero.no-commitment-no-charge-we`, `book.book-meta.no-commitment-no-charge-we`. Those are separate slots — change them too if they should stay consistent._
 
 ---
 

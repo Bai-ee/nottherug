@@ -1,31 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { onAuthStateChanged, getIdToken, User } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { AdminSessionProvider } from '@/components/admin/AdminSession';
+import { AdminGuard } from '@/components/admin/AdminGuard';
+import { useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
 
-export default function FounderBriefPreviewPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+function FounderBriefPreviewPageContent({
+  email,
+  getToken,
+}: {
+  email: string;
+  getToken: GetIdToken;
+}) {
   const [html, setHtml] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState<string>('');
+
+  const abortSignal = useAbortSignal();
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser?.email) { router.push('/admin'); return; }
-      const snap = await getDoc(doc(db, 'admins', firebaseUser.email));
-      if (!snap.exists()) { router.push('/admin'); return; }
-      setUser(firebaseUser);
-
+    (async () => {
       try {
-        const token = await getIdToken(firebaseUser, true);
+        const token = await getToken();
         const res = await fetch('/admin/preview/founder-brief?format=json', {
           headers: { Authorization: `Bearer ${token}` },
           cache: 'no-store',
+          signal: abortSignal,
         });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
@@ -35,19 +38,16 @@ export default function FounderBriefPreviewPage() {
         setSubject(data.subject);
         setHtml(data.html);
       } catch (e) {
+        if (isAbortError(e)) return;
         setError(e instanceof Error ? e.message : 'Preview load failed');
       } finally {
         setLoading(false);
       }
-    });
-    return () => unsub();
-  }, [router]);
-
-  const [sending, setSending] = useState(false);
-  const [sendStatus, setSendStatus] = useState<string>('');
+    })();
+  }, [getToken, abortSignal]);
 
   async function send(opts: { runFirst: boolean }) {
-    if (!user || sending) return;
+    if (sending) return;
     const msg = opts.runFirst
       ? 'Run a fresh brief AND send the founder brief email?\n\nNote: on Vercel Hobby, requests time out at 60s. The brief regen often takes longer — if it times out, the cached brief will still be sent and the daily 8am ET cron will refresh the data on its next run.'
       : 'Send the current founder brief email to the configured FOUNDER_EMAIL right now?';
@@ -55,24 +55,37 @@ export default function FounderBriefPreviewPage() {
     setSending(true);
     setSendStatus(opts.runFirst ? 'Running brief + sending…' : 'Sending…');
     try {
-      const token = await getIdToken(user, true);
+      const token = await getToken();
       const url = '/admin/founder-brief/run-and-send' + (opts.runFirst ? '' : '?skipRun=1');
       const res = await fetch(url, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
+        signal: abortSignal,
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.ok) {
         setSendStatus(`Error: ${data.error || data.sendError || `HTTP ${res.status}`}`);
         return;
       }
+      // A skip is the per-day send guard working correctly, not a failure —
+      // but it is also not a send, so it must never fall through to the
+      // "Sent to ..." success message below (both fields would be undefined).
+      if (data.skipped) {
+        setSendStatus(
+          data.reason
+            ? `${data.reason}${data.day ? ` (${data.day})` : ''}`
+            : `Already sent today${data.day ? ` (${data.day})` : ''} — no email sent just now.`,
+        );
+        return;
+      }
       setSendStatus(`Sent to ${data.sentTo} · email id ${data.emailId}`);
       // Refresh preview after a successful run
       if (opts.runFirst) {
-        const tok = await getIdToken(user, true);
+        const tok = await getToken();
         const r = await fetch('/admin/preview/founder-brief?format=json', {
           headers: { Authorization: `Bearer ${tok}` },
           cache: 'no-store',
+          signal: abortSignal,
         });
         if (r.ok) {
           const d = (await r.json()) as { subject: string; html: string };
@@ -81,6 +94,7 @@ export default function FounderBriefPreviewPage() {
         }
       }
     } catch (e) {
+      if (isAbortError(e)) return;
       setSendStatus(`Error: ${e instanceof Error ? e.message : 'Send failed'}`);
     } finally {
       setSending(false);
@@ -88,13 +102,13 @@ export default function FounderBriefPreviewPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#55624C', color: '#EDF3DB', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
+    <div id="founder-brief-preview-shell" style={{ minHeight: '100vh', background: '#55624C', color: '#EDF3DB', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: '1px solid rgba(237,243,219,0.12)', background: 'rgba(50,60,38,0.96)', flexWrap: 'wrap', gap: 12 }}>
         <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           NTR Admin · Founder Brief Preview
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, opacity: 0.6 }}>{user?.email}</span>
+          <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, opacity: 0.6 }}>{email}</span>
           <a
             href="/admin/dashboard"
             style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, padding: '8px 14px', borderRadius: 6, border: '1px solid rgba(237,243,219,0.25)', color: '#EDF3DB', textDecoration: 'none' }}
@@ -208,5 +222,13 @@ export default function FounderBriefPreviewPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function FounderBriefPreviewPage() {
+  return (
+    <AdminSessionProvider>
+      <AdminGuard>{(session) => <FounderBriefPreviewPageContent email={session.email} getToken={session.getToken} />}</AdminGuard>
+    </AdminSessionProvider>
   );
 }

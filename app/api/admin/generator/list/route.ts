@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
+import { errorResponse } from '@/lib/server/errors';
 import { fsQueryCollection } from '@/lib/server/firestoreRest';
 import { GENERATOR_COLLECTIONS } from '@/lib/generator/types';
 import type { GeneratorRender } from '@/lib/generator/types';
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     await verifyAdmin(req);
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Unauthorized' }, { status: 401 });
+    return errorResponse(err);
   }
 
   const docs = await fsQueryCollection(GENERATOR_COLLECTIONS.generatorRenders, 'createdAt', 'DESCENDING', 50);

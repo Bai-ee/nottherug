@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { LeadRecord } from '@/lib/leads/contract';
 import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { adminFetch, useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
 import { LeadFilterBar } from '@/components/admin/leads/LeadFilterBar';
 import { LeadTable } from '@/components/admin/leads/LeadTable';
@@ -78,43 +79,40 @@ function LeadsPageContent({
   }, [leads, query, sourceFilter]);
 
   return (
-    <div className="db" id="leads-page-shell" style={{ minHeight: '100vh', background: '#55624C', color: '#EDF3DB' }}>
+    <>
       <style>{leadsPageCss}</style>
+      <AdminShell
+        title="Leads"
+        email={email}
+        onSignOut={signOut}
+        actions={
+          <>
+            <button className="leads-btn" onClick={refresh}>Refresh</button>
+            <button className="leads-btn" onClick={() => exportLeadsCsv(filtered)} disabled={!filtered.length}>Export CSV</button>
+          </>
+        }
+      >
+        <div className="db" id="leads-page-shell" style={{ background: '#55624C', color: '#EDF3DB' }}>
+          {error ? <div className="leads-error" id="leads-load-error">{error}</div> : null}
 
-      <div className="leads-top" id="leads-topbar">
-        <div className="leads-brand">NTR Admin · Leads</div>
-        <div className="leads-actions">
-          <span style={{ fontFamily: 'Space Mono,monospace', fontSize: 12, opacity: 0.6 }}>{email}</span>
-          <button className="leads-btn" onClick={refresh}>Refresh</button>
-          <button className="leads-btn" onClick={() => exportLeadsCsv(filtered)} disabled={!filtered.length}>Export CSV</button>
-          <button className="leads-btn" onClick={() => void signOut()}>Sign out</button>
+          <LeadFilterBar
+            query={query}
+            onQueryChange={setQuery}
+            sourceFilter={sourceFilter}
+            onSourceFilterChange={setSourceFilter}
+            sources={sources}
+            loading={loading}
+            filteredCount={filtered.length}
+            totalCount={leads.length}
+            cap={cap}
+          />
+
+          <div className="leads-table-wrap" id="leads-table-shell">
+            <LeadTable leads={filtered} expandedId={expandedId} onToggleExpand={(rowKey) => setExpandedId((current) => (current === rowKey ? null : rowKey))} />
+          </div>
         </div>
-      </div>
-
-      <nav className="leads-nav" id="leads-topnav">
-        <a href="/admin/dashboard">Overview</a>
-        <a href="/admin/dashboard/generator">Generator</a>
-        <a href="/admin/dashboard/leads" className="active">Leads</a>
-      </nav>
-
-      {error ? <div className="leads-error" id="leads-load-error">{error}</div> : null}
-
-      <LeadFilterBar
-        query={query}
-        onQueryChange={setQuery}
-        sourceFilter={sourceFilter}
-        onSourceFilterChange={setSourceFilter}
-        sources={sources}
-        loading={loading}
-        filteredCount={filtered.length}
-        totalCount={leads.length}
-        cap={cap}
-      />
-
-      <div className="leads-table-wrap" id="leads-table-shell">
-        <LeadTable leads={filtered} expandedId={expandedId} onToggleExpand={(rowKey) => setExpandedId((current) => (current === rowKey ? null : rowKey))} />
-      </div>
-    </div>
+      </AdminShell>
+    </>
   );
 }
 
@@ -127,14 +125,8 @@ export default function LeadsPage() {
 }
 
 const leadsPageCss = `
-  .leads-top { display:flex; align-items:center; justify-content:space-between; padding: 14px 24px; border-bottom:1px solid rgba(237,243,219,0.12); background: rgba(50,60,38,0.96); }
-  .leads-brand { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.1em; text-transform:uppercase; }
-  .leads-actions { display:flex; gap:10px; align-items:center; }
   .leads-btn { font-family:'Space Mono',monospace; font-size:12px; padding:8px 14px; border-radius:6px; border:1px solid rgba(237,243,219,0.25); background:transparent; color:#EDF3DB; cursor:pointer; text-decoration:none; }
   .leads-btn:hover { background:rgba(237,243,219,0.08); }
-  .leads-nav { display:flex; gap:0; padding:0 20px; border-bottom:1px solid rgba(237,243,219,0.12); background: rgba(50,60,38,0.96); position:sticky; top:0; z-index:5; }
-  .leads-nav a { display:block; padding:12px 16px; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:rgba(237,243,219,0.5); border-bottom:2px solid transparent; font-family:'Space Mono',monospace; }
-  .leads-nav a.active { color:#EDF3DB; border-bottom-color:rgba(237,243,219,0.7); }
   .leads-toolbar { display:flex; gap:12px; align-items:center; padding:18px 24px; flex-wrap:wrap; }
   .leads-input, .leads-select { font-family:'Space Mono',monospace; font-size:12px; padding:8px 12px; border-radius:6px; border:1px solid rgba(237,243,219,0.25); background:rgba(50,60,38,0.5); color:#EDF3DB; }
   .leads-count { font-family:'Space Mono',monospace; font-size:12px; color:rgba(237,243,219,0.65); margin-left:auto; }

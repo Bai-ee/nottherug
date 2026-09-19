@@ -5,6 +5,7 @@ import { errorResponse } from '@/lib/server/errors';
 import { fsSetDoc } from '@/lib/server/firestoreRest';
 import { storageDownload, storageUpload } from '@/lib/server/firebaseStorage';
 import { STORAGE_PATHS, COLLECTIONS } from '@/lib/photos/types';
+import { assertUnderPrefix, InvalidStoragePathError } from '@/lib/photos/storagePaths';
 import type { PhotoRender } from '@/lib/photos/types';
 import { createRenderer } from '@/lib/media/createRenderer';
 import type { LogoPlacement } from '@/lib/media/types';
@@ -40,17 +41,33 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
+  // Being a verified admin does not make an arbitrary bucket path fair game:
+  // storageDownload uses Admin credentials and bypasses storage.rules entirely,
+  // so without this an admin request could read anything in the bucket — the
+  // private/ prefix included, defeating the invariant those rules describe.
+  let safeSourcePath: string;
+  let safeLogoPath: string;
+  try {
+    safeSourcePath = assertUnderPrefix(sourceStoragePath, STORAGE_PATHS.originals);
+    safeLogoPath = assertUnderPrefix(logoStoragePath, STORAGE_PATHS.logos);
+  } catch (err) {
+    if (err instanceof InvalidStoragePathError) {
+      return NextResponse.json({ error: 'Storage path is outside the permitted prefix' }, { status: 400 });
+    }
+    throw err;
+  }
+
   let sourceBuffer: Buffer;
   let logoBuffer: Buffer;
 
   try {
-    sourceBuffer = await storageDownload(sourceStoragePath);
+    sourceBuffer = await storageDownload(safeSourcePath);
   } catch {
     return NextResponse.json({ error: 'Could not load source image from Storage' }, { status: 404 });
   }
 
   try {
-    logoBuffer = await storageDownload(logoStoragePath);
+    logoBuffer = await storageDownload(safeLogoPath);
   } catch {
     return NextResponse.json({ error: 'Could not load logo from Storage' }, { status: 404 });
   }
@@ -61,7 +78,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     renderOutput = await rendererInstance.render({ sourceImageBuffer: sourceBuffer, logoBuffer, placement });
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Render failed' }, { status: 500 });
+    console.error('[photos:render] render failed', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Render failed' }, { status: 500 });
   }
 
   const id = randomUUID();
@@ -78,8 +96,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const record: PhotoRender = {
     id,
     sourcePhotoId,
-    sourceStoragePath,
-    logoStoragePath,
+    sourceStoragePath: safeSourcePath,
+    logoStoragePath: safeLogoPath,
     renderStoragePath,
     renderDownloadURL,
     placement,

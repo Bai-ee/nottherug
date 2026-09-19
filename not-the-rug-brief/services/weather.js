@@ -75,9 +75,12 @@ function buildOperationalWindow(config = {}, now = new Date()) {
 }
 
 function buildRequestHeaders() {
+  // Matches not-the-rug-brief/.env.example's documented NWS_USER_AGENT value —
+  // identifies this project to NWS's API, not an unrelated one, when neither
+  // env var is set.
   const userAgent = process.env.NWS_USER_AGENT
     || process.env.WEATHER_USER_AGENT
-    || 'ScoutCrittersQuest/1.0 (contact required)';
+    || 'NotTheRugScout/1.0 (+https://nottherug.com)';
   return {
     ...DEFAULT_HEADERS,
     'User-Agent': userAgent,

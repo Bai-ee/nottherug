@@ -4,15 +4,30 @@
 | --- | --- | --- | --- |
 | [001](001-reversible-section-reveals.md) | Make section reveal animations reverse on scroll-up (play in, play out) | MEDIUM | DONE |
 | [002](002-production-readiness.md) | Production readiness, code cleanup, and Claude execution plan | HIGH | PLANNED |
+| [003](003-admin-dashboard-and-tracking.md) | Admin dashboard, shared styling, and first-party website tracking | FEATURE | SUPERSEDED BY 009 FOR SEQUENCING |
+| [004](004-frontend-tracking-coverage.md) | Frontend instrumentation coverage for the analytics dashboard | FEATURE | SUPERSEDED BY 009 FOR SEQUENCING |
 | [006](006-homepage-ui-merge-handoff.md) | Homepage UI merge handoff (two trees, uncommitted) | HIGH | OPEN |
 | [007](007-homepage-instagram-section-2026-09-18.md) | Homepage Instagram section — session record, 2026-09-18 | MEDIUM | BUILT, UNCOMMITTED |
 | [008](008-2026-09-18-paw-walk-and-band-session.md) | Paw walk + band layout session, 2026-09-18 | MEDIUM | UNCOMMITTED |
+| [009](009-full-tracking-dashboard-integration.md) | Full tracking and custom dashboard integration | HIGH | IN PROGRESS |
 
 ## Execution order
 
 001 is complete. For production cleanup, follow the phases in 002 and update
 [its tracker](002-production-tracker.md). Use [the Claude handoff](002-claude-handoff.md)
 to coordinate Sonnet workers with separate file ownership.
+
+003 extends the current system. Its implementation is uncommitted and locally
+verified; preview and production activation remain pending. It does not replace
+or complete the remaining production gates in 002. Refer to the 002 tracker for
+current release status.
+
+Use [the analytics preview handoff](003-analytics-preview-handoff.md) to give a
+new agent the current state, constraints and remaining work.
+
+004 is the focused implementation plan for turning existing public-site actions
+into the meaningful dashboard events defined in 003. It must be completed and
+verified in test mode before 003's preview and production activation steps.
 
 ## Notes
 
