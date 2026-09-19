@@ -1,0 +1,211 @@
+{
+  "$schema": "plans/010-asset-optimization-spec.md#asset-manifest-and-enforcement",
+  "generatedBy": "scripts/audit-public-assets.mjs + scripts/build-assets.mjs",
+  "generatedAt": "2026-09-19",
+  "note": "One record per DELIVERY source shipped from public/. Sources still awaiting a CSS/component patch (see patches/) list both their current live URL and the pending derivative under `pendingPatch`. Every raster records dimensions so the verifier can check budget ratios.",
+  "assets": [
+    {
+      "source": "/video/hero-mccarren-1080.mp4",
+      "consumers": ["/ #hero-bg-video"],
+      "maxCssBox": { "width": 1161, "height": 1161 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1080, "height": 1080 },
+      "format": "mp4",
+      "bytes": 4468914,
+      "loading": "preload=metadata,autoplay-when-visible",
+      "exception": "Video is exempt from still-image 2x DPR rule per spec (motion, not stills). Cropped 1:1 from the 1920x1080 master at native height (no upscale)."
+    },
+    {
+      "source": "/video/hero-mccarren-1080.webm",
+      "consumers": ["/ #hero-bg-video"],
+      "maxCssBox": { "width": 1161, "height": 1161 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1080, "height": 1080 },
+      "format": "webm",
+      "bytes": 4773718,
+      "loading": "preload=metadata,autoplay-when-visible",
+      "exception": "Same crop as the MP4 sibling; VP9 fallback source."
+    },
+    {
+      "source": "/video/hero-mccarren-poster.webp",
+      "consumers": ["/ #hero-bg-video[poster]"],
+      "maxCssBox": { "width": 1161, "height": 1161 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1080, "height": 1080 },
+      "format": "webp",
+      "bytes": 31994,
+      "loading": "eager (native poster attribute)",
+      "exception": null
+    },
+    {
+      "source": "/logos/notRugGreen.png",
+      "consumers": ["/ #hero-polaroid-badge (next/image)"],
+      "maxCssBox": { "width": 288, "height": 288 },
+      "targetDpr": 2,
+      "intrinsic": { "width": 1080, "height": 1080 },
+      "format": "png (source; next/image re-encodes to webp/avif per-request)",
+      "bytes": 270756,
+      "loading": "lazy (next/image default, below hero LCP text)",
+      "exception": "Delivered bytes are next/image's resized output (observed ~11.5KB at w=384), not this source file's bytes; source kept at native res since next/image needs the true intrinsic size."
+    },
+    {
+      "source": "/img/bg5-cover.webp",
+      "consumers": ["/admin #admin-signin-page"],
+      "maxCssBox": { "width": 2560, "height": 1440 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1672, "height": 941 },
+      "format": "webp",
+      "bytes": 208604,
+      "loading": "css background, eager",
+      "exception": "Undersized for a 2560px 1x cover target (source tops out at 1672px wide); see replacement-master backlog. Format/metadata win only, not a resize.",
+      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg5.png, 2825477 bytes)"
+    },
+    {
+      "source": "/img/bg-section-1-cover.webp",
+      "consumers": ["/ #home-team-section", "/ #home-closing-trust-section", "/ #home-how-it-works-section"],
+      "maxCssBox": { "width": 2560, "height": 2578 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1672, "height": 941 },
+      "format": "webp",
+      "bytes": 136054,
+      "loading": "css background, eager",
+      "exception": "Reported maxCssBox height (2578) is the crawler's element rect, not the cover-image's own render height; background-size:cover means the effective demand is width-bound at 2560 with the image's own aspect (1672:941), i.e. ~2560x1440. Undersized source; replacement-master backlog.",
+      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_1.png, 2549594 bytes)"
+    },
+    {
+      "source": "/img/bg-section-2-cover.webp",
+      "consumers": ["/ #home-closing-band-shell", "/ footer", "/about #main-footer", "/neighborhoods/williamsburg #main-footer"],
+      "maxCssBox": { "width": 2560, "height": 4240 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1672, "height": 941 },
+      "format": "webp",
+      "bytes": 114202,
+      "loading": "css background, eager",
+      "exception": "Same cover-sizing note as bg-section-1-cover. Undersized source; replacement-master backlog.",
+      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_2.png, 2469297 bytes)"
+    },
+    {
+      "source": "/img/bg-section-graphic-1.webp",
+      "consumers": ["/ #home-personalized-care-section (auto 130% no-repeat)"],
+      "maxCssBox": { "width": 2560, "height": 1823 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1620, "height": 971 },
+      "format": "webp",
+      "bytes": 292020,
+      "loading": "css background, eager",
+      "exception": "background-size: auto 130% scales by the section's own height, not by viewport width directly; source undersized for very wide/tall viewports. Replacement-master backlog.",
+      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_graphic_1.png, 2342028 bytes)"
+    },
+    {
+      "source": "/img/bg-section-graphic-2.webp",
+      "consumers": ["/ #home-process-section::before"],
+      "maxCssBox": { "width": 2560, "height": 1594 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1446, "height": 636 },
+      "format": "webp",
+      "bytes": 138820,
+      "loading": "css background, eager, opacity 0.17 (decorative)",
+      "exception": "background-size: 100% auto scales to full section width (up to 2560); source is 1446px wide, so this is upscaled today at wide viewports even before this pass. Replacement-master backlog.",
+      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/bg_section_graphic_2.png, 1121972 bytes)"
+    },
+    {
+      "source": "/img/hero-walker-strip.webp",
+      "consumers": ["/ .hero (bottom-center, 100% auto)"],
+      "maxCssBox": { "width": 2560, "height": 1585 },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1620, "height": 971 },
+      "format": "webp",
+      "bytes": 199572,
+      "loading": "css background, eager (hero, above the fold)",
+      "exception": "background-size: 100% auto: this layer is deliberately stretched to the hero's full width at every viewport, so it is upscaled today above ~1620px CSS width regardless of format. Highest-priority replacement-master backlog item (see report).",
+      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/homepage_image.png, 2204558 bytes)"
+    },
+    {
+      "source": "/img/product-background.webp",
+      "consumers": ["/ #home-personalized-care-pin-stage (bottom-center, 100% auto)"],
+      "maxCssBox": { "width": 1240, "height": 731, "note": "not captured live by the crawler (pin-stage content did not render in the crawl session); estimated from the container's 1240px max-width and the source's own aspect ratio. Re-verify before trusting as a budget ceiling." },
+      "targetDpr": 1,
+      "intrinsic": { "width": 1513, "height": 590 },
+      "format": "webp",
+      "bytes": 187812,
+      "loading": "css background, eager",
+      "exception": "Box unverified live (see note). Format/metadata win only.",
+      "pendingPatch": "patches/01-globals-css-background-webp.patch (currently still live as /img/product_background.png, 1118725 bytes)"
+    },
+    {
+      "source": "/img/card-bg.webp",
+      "consumers": ["components/AnimatedServiceCards.tsx (disabled/non-production)", "app/playground/service-cards (dev-only route)"],
+      "maxCssBox": { "width": 460, "height": 460, "note": "card art, not captured live; both consumers are excluded from the production homepage per plans/010-production-final-mile-optimization.md P2" },
+      "targetDpr": 2,
+      "intrinsic": { "width": 1596, "height": 898 },
+      "format": "webp",
+      "bytes": 155292,
+      "loading": "native <img>, eager",
+      "exception": "Low priority: both consumers are dev-only/disabled experiments, not the shipped homepage graph.",
+      "pendingPatch": "patches/02-card-bg-webp.patch (currently still live as /img/card_bg.png, 2311572 bytes)"
+    }
+  ],
+  "publicFileClassification": {
+    "note": "Full per-file list is scripts/audit-public-assets.mjs output (evidence/assets/public-file-classification.json, gitignored/regenerable). Summary of non-'referenced' classes below.",
+    "removedThisPass": [
+      "public/img/bg3.png (zero references)",
+      "public/img/bg4.png (only mentioned in a CSS comment, no url())",
+      "public/img/footer_image.png", "public/img/footer_image2.png",
+      "public/img/visits_card.png", "public/img/1dog.png", "public/img/1dog.webp",
+      "public/img/3dog.png", "public/img/3dog.webp", "public/img/multi_dog_walk.png",
+      "public/img/SeniorTop.png", "public/img/cta band.png", "public/img/service cards.png",
+      "public/img/review cards.png", "public/img/pricing cards.png", "public/img/hero_polaroid.png",
+      "public/img/featured review.png", "public/img/visit-report.jpg",
+      "public/dogs/IMAGE 00001.webp", "public/dogs/IMAGE 00008.png", "public/dogs/IMAGE 00009.png", "public/dogs/IMAGE 00010.png",
+      "public/logos/Screenshot 2026-03-23 at 8.33.46 AM.png",
+      "public/textures/paper-grain-light.png", "public/textures/torn-edge-top.svg",
+      "public/window.svg", "public/vercel.svg", "public/next.svg", "public/globe.svg", "public/file.svg",
+      "public/misc/nottherug-boilerplate copy.html", "public/misc/download_video.py",
+      "public/logos/Not_The_Rug_2023_clipped_web.mp4 (moved to assets-src/video/hero-mccarren-master.mp4)",
+      "public/logos/Not_The_Rug_2023_clipped_web.webm (moved to assets-src/video/hero-mccarren-master.webm)"
+    ],
+    "sourceOnlyNotDeployed": [
+      "public/logos/ntr_offwhite_horiz.png (1536x1024, 2.1MB) — zero consumers in app/ or components/; referenced only from style-guide/boilerplate.html and style-guide/*.md, which Next.js does not serve. Recommend deleting from public/ and, if still wanted for design reference, moving into style-guide/ itself or assets-src/. Not removed in this pass because a doc still points at its current path and worker-b's scope does not include editing that doc's surrounding content beyond a path swap."
+    ],
+    "removableButNotTouched": [
+      "public/dogs/IMAGE 00002-00007.webp (1474-1848px wide, portrait) are used as ultra-wide page-hero cover backgrounds (up to 2560x505). Cover-fit on those boxes upscales the source ~1.7x at 2560 CSS width — see replacement-master backlog. Not reformatted this pass: they are already WebP, so the win here is a higher-resolution master, not a codec change."
+    ]
+  },
+  "replacementMasterBacklog": [
+    {
+      "asset": "/img/homepage_image.png -> hero-walker-strip",
+      "issue": "background-size: 100% auto stretches to the full hero width at every viewport. Current master is 1620px wide; already upscaled above ~1620px CSS width.",
+      "neededDimensions": "≥2560px wide at the same ~1.668:1 aspect ratio (≥2560x1535) to cover the largest supported viewport without upscaling."
+    },
+    {
+      "asset": "/img/bg_section_1.png and /img/bg_section_2.png -> bg-section-{1,2}-cover",
+      "issue": "background-size: cover on full-bleed sections up to 2560px wide. Current master is 1672px wide (1.53x short of 2560).",
+      "neededDimensions": "≥2560x1440 (same 1.777:1 aspect) for a sharp 1x cover at the widest supported viewport."
+    },
+    {
+      "asset": "/img/bg5.png -> bg5-cover",
+      "issue": "Same cover-on-2560px-viewport shortfall as above, used on the admin sign-in page.",
+      "neededDimensions": "≥2560x1440."
+    },
+    {
+      "asset": "/img/bg_section_graphic_1.png -> bg-section-graphic-1",
+      "issue": "background-size: auto 130% (scales to the section's own height). Current master 1620x971.",
+      "neededDimensions": "Re-verify against the section's actual max rendered height across the viewport matrix (not captured cleanly by the crawler here); as a floor, ≥2100px tall to cover a ~1600px section height at 130% with margin."
+    },
+    {
+      "asset": "/img/bg_section_graphic_2.png -> bg-section-graphic-2",
+      "issue": "background-size: 100% auto on a full-width decorative band. Current master 1446px wide.",
+      "neededDimensions": "≥2560px wide at the documented 1536:642 (~2.393:1) aspect ratio, i.e. ≥2560x1070."
+    },
+    {
+      "asset": "/dogs/IMAGE 00002.webp .. IMAGE 00007.webp",
+      "issue": "Portrait 1474-1848px-wide sources used as ultra-wide (~5:1) page-hero cover crops. object-fit/background cover scales by width to fill 2560px viewports, upscaling ~1.7x.",
+      "neededDimensions": "New landscape or square exports ≥2560px on the shorter side needed to cover a 2560-wide, ~505px-tall crop without upscaling; ideally re-shot/re-cropped landscape masters rather than upscaling the existing portraits."
+    },
+    {
+      "asset": "/img/product_background.png -> product-background",
+      "issue": "Box not verified live this pass (pin-stage content didn't render in the crawl). Re-run the audit against the pinned scroll state before sizing a replacement.",
+      "neededDimensions": "TBD — re-measure first."
+    }
+  ]
+}
