@@ -398,11 +398,11 @@ The plan is complete only when:
 | --- | --- | --- | --- |
 | P0 Preserve and baseline | DONE | main-worktree checkpoint `0cfde87`; integration checkpoint `9d08ed2` on `codex/full-analytics-dashboard-integration`; `main` still `f77e3d2`, `feat/welcome-modal` still `41bdf95`. Baseline: integration typecheck clean, main focused analytics 12 files / 128 tests passed. | Both original dirty trees are now recoverable from those two commits; do not delete them before P6 acceptance. |
 | P1 Merge foundation | DONE | merge `bcd862f` (156 files, +10196/-1510). 11 conflicts: 3 intentional route deletions kept deleted, 7 UI/booking files resolved to the live redesign, plans/README merged by hand. Post-merge: 6 test files / 34 tests fail, 302 pass, 49 skip — all missing-instrumentation, scoped to P3. | Live marketing and booking components carry no tracking calls yet; main's scheduler hardening must be re-implemented in P3B from the `codex/booking-first-analytics-checkpoint` reference, not assumed present. |
-| P2 Lock contract | NOT STARTED | — | Final rendered CTA inventory must be re-audited. |
+| P2 Lock contract | DONE | contract commit `cc19549`. Three read-only audits (routes/CTAs, funnel, dashboard) fed one lock: TRACKED_ROUTES = /, /about, /book, /contact, /neighborhoods/williamsburg, /reviews, /safety. CTA_IDS = 17 ids, 4 retired, 4 added (group_walk_card_submit, welcome_modal_schedule, welcome_modal_details, hero_contact). Labels/categories and the docs CTA table follow the same list. | The three homepage modal/card ids are locked but not yet wired — they are P3A/P3B work, so they read as zero rows until then. |
 | P3A Public instrumentation | NOT STARTED | — | Hash navigation and modal handlers must remain intact. |
 | P3B Booking funnel | NOT STARTED | — | Booking-first ordering differs from the old linear funnel. |
 | P3C Dashboard/report | NOT STARTED | — | Test-mode URL state and page table are missing today. |
-| P4 Retention/docs/integration | NOT STARTED | — | TTL configuration is an external project change. |
+| P4 Retention/docs/integration | IN PROGRESS | TTL stamps `044d392` (expiresAt on events = +13 months, on rate-limit buckets = +48h, written as real Firestore timestamps; 33 focused tests pass). Docs: retention/TTL runbook `85e12f5`, CTA reference re-synced to the locked contract. | Enabling the TTL policy on a deployed Firebase project is still an external action held for P6. Booking-area disclosure not yet added. |
 | P5 Verification/review | NOT STARTED | — | Emulator and browser evidence must come from final candidate. |
 | P6 Activation | BLOCKED — AUTHORIZATION REQUIRED | — | External deployment/configuration and synthetic data actions. |
 

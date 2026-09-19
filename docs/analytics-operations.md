@@ -43,22 +43,30 @@ on the CTA Clicks table:
 
 | Group | ID | Label shown on dashboard | Where it lives | What it does |
 | --- | --- | --- | --- | --- |
-| Booking | `nav_book` | Top nav: Book | Desktop top navigation | Goes to `/book` |
-| Booking | `mobile_menu_book` | Mobile menu: Book | Mobile navigation menu | Goes to `/book` |
-| Booking | `hero_book` | Homepage hero: Book | Homepage, hero section | Goes to `/book` |
+| Booking | `nav_book` | Top nav: Book | Desktop top navigation | Opens the welcome modal on the home page, goes to `/book` elsewhere |
+| Booking | `mobile_menu_book` | Mobile menu: Book | Mobile navigation menu | Same as above |
 | Booking | `closing_trust_book` | Homepage closing section: Book | Homepage, closing/trust section | Goes to `/book` |
 | Booking | `neighborhood_detail_book` | Williamsburg page: Book | Williamsburg neighborhood page | Goes to `/book` |
 | Booking | `footer_book` | Footer: Book | Site footer | Goes to `/book` |
-| Contact | `nav_contact` | Mobile menu: Contact | Mobile navigation menu | Goes to `/contact` |
-| Contact | `footer_contact` | Footer: Contact | Site footer | Goes to `/contact` |
+| Booking | `group_walk_card_submit` | Homepage group walk card: Get started | Homepage group-walk card | Counted only after the email and phone pass validation, then goes to `/book` with the form prefilled. The entered email and phone are never sent to analytics. |
+| Booking | `welcome_modal_schedule` | Welcome modal: Pick a time | Homepage welcome modal | Opens the scheduler step |
+| Booking | `welcome_modal_details` | Welcome modal: Answer questions first | Homepage welcome modal | Goes to the questionnaire at `/book` |
+| Contact | `nav_contact` | Top nav: Get started | Top navigation (both widths) | Scrolls to the homepage contact section |
+| Contact | `footer_contact` | Footer: Contact | Site footer | Scrolls to the homepage contact section |
+| Contact | `hero_contact` | Homepage hero: Contact Luis | Homepage, hero section | Opens the welcome modal |
 | Contact | `neighborhood_detail_contact` | Williamsburg page: Ask about coverage | Williamsburg neighborhood page | Goes to `/contact` |
 | Phone | `contact_phone` | Contact page: Phone tap | Contact page, contact card | Taps a phone number (`tel:` link) |
-| Phone | `services_phone` | Services page: Phone tap | Services page | Taps a phone number (`tel:` link) |
 | Email | `contact_email` | Contact page: Email tap | Contact page, contact card | Taps an email address (`mailto:` link) |
-| Email | `services_email` | Services page: Email tap | Services page | Taps an email address (`mailto:` link) |
-| Service discovery | `hero_view_services` | Homepage hero: View services | Homepage, hero section | Goes to `/services` |
-| Service discovery | `nav_services` | Top nav: Services | Desktop top navigation | Goes to `/services` |
-| Service discovery | `footer_services` | Footer: Services | Site footer | Goes to `/services` |
+| Service discovery | `hero_view_services` | Homepage hero: View services | Homepage, hero section | Scrolls to the homepage rates section |
+| Service discovery | `nav_services` | Top nav: What we do | Top navigation (both widths) | Scrolls to the homepage rates section |
+| Service discovery | `footer_services` | Footer: Rates links | Site footer, Rates column | One shared ID for all six rate links — the row answers "did anyone use the footer rates," not which rate |
+
+Removed in this release because the control no longer exists: `hero_book`
+(the hero's second button now opens the welcome modal), `closing_trust_contact`
+(that button is now a recruiting email), and `services_phone` /
+`services_email` (the `/services` page is gone). The "Join Our Team" and
+"Learn More" recruiting links are deliberately not measured — they are not
+customer conversions.
 
 A tap-to-call or tap-to-email is intent to reach out, not proof the call or
 email actually happened — there's no way to measure that from the website.
