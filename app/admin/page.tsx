@@ -7,7 +7,19 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db, googleProvider } from '@/lib/firebase';
+import SiteNav from '@/components/SiteNav';
 
+/**
+ * Client Access sign-in (the admin door; founder-only for now). Presentation
+ * runs on the marketing design system in
+ * app/globals.css — paper page, taped card, stamp label, .btn-primary paper
+ * ticket — so this screen reads as the same site as the home page. Its rules
+ * live in the #admin-signin-* block at the end of globals.css; nothing here
+ * carries inline styles or its own font import any more.
+ *
+ * The auth flow is unchanged: Google popup -> `admins/{email}` lookup ->
+ * /admin/dashboard, with a denied panel for accounts off the whitelist.
+ */
 export default function AdminLoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -71,9 +83,9 @@ export default function AdminLoginPage() {
   if (checking) {
     return (
       <>
-        <style>{fonts}</style>
-        <div style={styles.page}>
-          <p style={styles.loadingLabel}>CHECKING SESSION...</p>
+        <SiteNav />
+        <div id="admin-signin-page">
+          <p className="stamp-label">Checking session…</p>
         </div>
       </>
     );
@@ -81,187 +93,47 @@ export default function AdminLoginPage() {
 
   return (
     <>
-      <style>{fonts}</style>
-      <div style={styles.page}>
-        <div style={styles.card}>
-          <p style={styles.eyebrow}>NOT THE RUG</p>
-          <h1 style={styles.heading}>Admin</h1>
-          <p style={styles.subtext}>Secure founder access only.</p>
+      {/* Same bar as the marketing pages. Off the home route SiteNav's
+          "Book a Walk" navigates to /book instead of popping the welcome
+          modal, which this page does not mount. */}
+      <SiteNav />
 
-          {notAuthorized ? (
-            <div style={styles.deniedBlock}>
-              <p style={styles.deniedTitle}>ACCESS DENIED</p>
-              <p style={styles.deniedBody}>This account is not on the admin whitelist.</p>
-              <button onClick={handleSignOut} style={styles.signOutLink}>
-                Sign out
-              </button>
-            </div>
-          ) : (
-            <>
-              <button
-                onClick={handleSignIn}
-                disabled={loading}
-                style={styles.googleButton}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget;
-                  el.style.borderColor = '#7A9068';
-                  el.style.background = 'rgba(122,144,104,0.06)';
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget;
-                  el.style.borderColor = '#4E5A42';
-                  el.style.background = 'transparent';
-                }}
-              >
-                {loading ? (
-                  <span style={styles.loadingButtonText}>[SIGNING IN...]</span>
-                ) : (
-                  <>
-                    <span style={styles.gLetter}>G</span>
-                    <span>Sign in with Google</span>
-                  </>
-                )}
-              </button>
-
-              {error && (
-                <p style={styles.errorText}>{error}</p>
-              )}
-            </>
-          )}
-
-          <p style={styles.bottomLabel}>SECURE ACCESS · NOT THE RUG</p>
+      <div id="admin-signin-page">
+      <div id="admin-signin-card" className="card card-pad">
+        <div id="admin-signin-header">
+          {/* Same stamped form label the home page uses over its sections. */}
+          <div className="stamp-label stamp-label-heading">Form 00 · Sign In</div>
+          <h1>Client Access</h1>
+          <p id="admin-signin-subtext">Secure founder access only.</p>
         </div>
+
+        {notAuthorized ? (
+          <div id="admin-signin-denied-panel">
+            <p id="admin-signin-denied-title">Access denied</p>
+            <p id="admin-signin-denied-body">This account is not on the admin whitelist.</p>
+            <button type="button" id="admin-signin-denied-signout" onClick={handleSignOut}>
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* .booking-forward-btn keeps the paper ticket upright, the same
+                way the booking form's forward action drops the tilt. */}
+            <button
+              type="button"
+              id="admin-signin-google-btn"
+              className="btn btn-primary booking-forward-btn"
+              onClick={handleSignIn}
+              disabled={loading}
+            >
+              {loading ? 'Signing in…' : 'Sign in with Google'}
+            </button>
+
+            {error && <p id="admin-signin-error">{error}</p>}
+          </>
+        )}
+      </div>
       </div>
     </>
   );
 }
-
-const fonts = `
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300..700&family=Outfit:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #1F2318; }
-`;
-
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: '100vh',
-    background: '#1F2318',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Outfit, sans-serif',
-    padding: '24px',
-  },
-  card: {
-    width: '100%',
-    maxWidth: '420px',
-    background: '#232B1E',
-    border: '1px solid #2E3828',
-    borderRadius: '16px',
-    padding: '48px 40px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
-  eyebrow: {
-    fontFamily: 'Space Mono, monospace',
-    fontSize: '11px',
-    letterSpacing: '0.12em',
-    color: '#7A9068',
-    textTransform: 'uppercase' as const,
-    marginBottom: '16px',
-  },
-  heading: {
-    fontFamily: 'Fraunces, serif',
-    fontSize: '42px',
-    fontWeight: 400,
-    color: '#EEF4DB',
-    lineHeight: 1.0,
-  },
-  subtext: {
-    fontFamily: 'Outfit, sans-serif',
-    fontSize: '14px',
-    color: '#7A9068',
-    marginTop: '8px',
-    marginBottom: '32px',
-  },
-  googleButton: {
-    width: '100%',
-    height: '48px',
-    background: 'transparent',
-    border: '1px solid #4E5A42',
-    borderRadius: '8px',
-    fontFamily: 'Outfit, sans-serif',
-    fontSize: '14px',
-    fontWeight: 500,
-    color: '#EEF4DB',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '10px',
-    transition: 'border-color 0.15s, background 0.15s',
-  },
-  gLetter: {
-    fontFamily: 'Outfit, sans-serif',
-    fontSize: '15px',
-    fontWeight: 600,
-    color: '#EEF4DB',
-    lineHeight: 1,
-  },
-  loadingButtonText: {
-    fontFamily: 'Space Mono, monospace',
-    fontSize: '12px',
-    color: '#7A9068',
-    letterSpacing: '0.04em',
-  },
-  errorText: {
-    fontFamily: 'Space Mono, monospace',
-    fontSize: '12px',
-    color: '#C4674B',
-    textTransform: 'uppercase' as const,
-    marginTop: '12px',
-    lineHeight: 1.5,
-  },
-  deniedBlock: {
-    width: '100%',
-    marginBottom: '8px',
-  },
-  deniedTitle: {
-    fontFamily: 'Space Mono, monospace',
-    fontSize: '13px',
-    color: '#C4674B',
-    letterSpacing: '0.08em',
-    marginBottom: '8px',
-  },
-  deniedBody: {
-    fontFamily: 'Outfit, sans-serif',
-    fontSize: '14px',
-    color: '#7A9068',
-    marginBottom: '16px',
-  },
-  signOutLink: {
-    fontFamily: 'Outfit, sans-serif',
-    fontSize: '14px',
-    color: '#7A9068',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    padding: 0,
-  },
-  bottomLabel: {
-    fontFamily: 'Space Mono, monospace',
-    fontSize: '11px',
-    color: '#4E5A42',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.06em',
-    marginTop: '40px',
-  },
-  loadingLabel: {
-    fontFamily: 'Space Mono, monospace',
-    fontSize: '12px',
-    color: '#4E5A42',
-    letterSpacing: '0.06em',
-  },
-};

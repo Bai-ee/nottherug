@@ -8,8 +8,6 @@ import { test, expect, type Page } from '@playwright/test';
 
 const ROUTES: Array<{ path: string; h1: RegExp }> = [
   { path: '/', h1: /Your dog deserves/ },
-  { path: '/services', h1: /Transparent pricing/ },
-  { path: '/how-it-works', h1: /How it works/ },
   { path: '/about', h1: /15 years of walks/ },
   { path: '/safety', h1: /Why trust matters/ },
   { path: '/neighborhoods/williamsburg', h1: /Williamsburg is our/ },
@@ -18,9 +16,17 @@ const ROUTES: Array<{ path: string; h1: RegExp }> = [
   { path: '/contact', h1: /real people/ },
 ];
 
+// The standalone /services and /how-it-works routes were folded into the home
+// page; the old routes and their legacy `?page=` links land on those anchors.
+const SERVICES_ANCHOR = '/#home-personalized-care-section';
+const HOW_IT_WORKS_ANCHOR = '/#home-how-it-works-block';
+// The Williamsburg route's content also runs on the home page — the parks
+// list under the neighborhood claim in the closing trust band — and the nav
+// entry scrolls there instead of leaving the page (the route still exists).
+const WILLIAMSBURG_ANCHOR = '/#home-closing-parks-row';
+
 const LEGACY_REDIRECTS: Array<{ from: string; to: string }> = [
-  { from: '/?page=services', to: '/services' },
-  { from: '/?page=how-it-works', to: '/how-it-works' },
+  { from: '/?page=how-it-works', to: HOW_IT_WORKS_ANCHOR },
   { from: '/?page=about', to: '/about' },
   { from: '/?page=safety', to: '/safety' },
   { from: '/?page=reviews', to: '/reviews' },
@@ -49,10 +55,10 @@ test.describe('public routes', () => {
   }
 
   test('refresh preserves the page (no client-side-only routing)', async ({ page }) => {
-    await page.goto('/services');
-    await expect(page.locator('h1')).toContainText(/Transparent pricing/);
+    await page.goto('/safety');
+    await expect(page.locator('h1')).toContainText(/Why trust matters/);
     await page.reload();
-    await expect(page.locator('h1')).toContainText(/Transparent pricing/);
+    await expect(page.locator('h1')).toContainText(/Why trust matters/);
   });
 
   test('browser back/forward restores the right page', async ({ page }) => {
@@ -60,25 +66,25 @@ test.describe('public routes', () => {
     // real-route back/forward on both the desktop nav-links row and the
     // mobile layout (where the nav-links row is hidden behind the hamburger).
     await page.goto('/');
-    await page.goto('/services');
-    await expect(page).toHaveURL(/\/services$/);
-    await expect(page.locator('h1')).toContainText(/Transparent pricing/);
+    await page.goto('/safety');
+    await expect(page).toHaveURL(/\/safety$/);
+    await expect(page.locator('h1')).toContainText(/Why trust matters/);
 
     await page.goto('/about');
     await expect(page).toHaveURL(/\/about$/);
     await expect(page.locator('h1')).toContainText(/15 years of walks/);
 
     await page.goBack();
-    await expect(page).toHaveURL(/\/services$/);
-    await expect(page.locator('h1')).toContainText(/Transparent pricing/);
+    await expect(page).toHaveURL(/\/safety$/);
+    await expect(page.locator('h1')).toContainText(/Why trust matters/);
 
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator('h1')).toContainText(/Your dog deserves/);
 
     await page.goForward();
-    await expect(page).toHaveURL(/\/services$/);
-    await expect(page.locator('h1')).toContainText(/Transparent pricing/);
+    await expect(page).toHaveURL(/\/safety$/);
+    await expect(page.locator('h1')).toContainText(/Why trust matters/);
   });
 
   for (const redirect of LEGACY_REDIRECTS) {
@@ -87,6 +93,17 @@ test.describe('public routes', () => {
       await expect(page).toHaveURL(new RegExp(`${redirect.to.replace(/[/]/g, '\\/')}$`));
     });
   }
+
+  test('retired /services redirects to the home rates panel', async ({ page }) => {
+    await page.goto('/services');
+    await expect(page).toHaveURL(new RegExp(`${SERVICES_ANCHOR.replace(/[/]/g, '\\/')}$`));
+    await expect(page.locator('h1')).toContainText(/Your dog deserves/);
+  });
+
+  test('legacy ?page=services lands on the home rates panel', async ({ page }) => {
+    await page.goto('/?page=services');
+    await expect(page).toHaveURL(new RegExp(`${SERVICES_ANCHOR.replace(/[/]/g, '\\/')}$`));
+  });
 
   test('legacy ?page=home stays on the homepage (no redirect loop)', async ({ page }) => {
     const response = await page.goto('/?page=home');
@@ -100,19 +117,31 @@ test.describe('public routes', () => {
     await expect(page.locator('h1')).toContainText(/Your dog deserves/);
   });
 
-  test('desktop nav links navigate to real routes', async ({ page, isMobile }) => {
+  // The bar carries four plain-language entries; each still lands on the band
+  // that answers it. Scoped to .nav-links because the footer links to the same
+  // anchors under its own labels. Safety, Reviews and Contact are footer-only
+  // now; the standalone routes they used to point at are still live.
+  test('desktop nav links reach their home-page band', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
     await page.goto('/');
     for (const [label, expectedPath] of [
-      ['How It Works', '/how-it-works'],
-      ['Safety & Trust', '/safety'],
-      ['Williamsburg', '/neighborhoods/williamsburg'],
-      ['Reviews', '/reviews'],
+      ['What We Do', '/#home-personalized-care-section'],
+      ['Who We Are', '/#home-team-section'],
+      ['Where We Do It', WILLIAMSBURG_ANCHOR],
+      ['How to Get Started', HOW_IT_WORKS_ANCHOR],
     ] as const) {
-      await page.getByRole('link', { name: label }).first().click();
+      await page.locator('.nav-links').getByRole('link', { name: label }).click();
       await expect(page).toHaveURL(new RegExp(`${expectedPath.replace(/[/]/g, '\\/')}$`));
       await page.goBack();
     }
+  });
+
+  test('the nav "Where We Do It" entry scrolls to the home parks list', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
+    await page.goto('/');
+    await page.locator('.nav-links').getByRole('link', { name: 'Where We Do It' }).click();
+    await expect(page).toHaveURL(new RegExp(`${WILLIAMSBURG_ANCHOR.replace(/[/]/g, '\\/')}$`));
+    await expect(page.locator('#home-closing-parks-row')).toBeInViewport();
   });
 
   test('mobile hamburger menu opens and its links navigate', async ({ page, isMobile }) => {
@@ -125,14 +154,19 @@ test.describe('public routes', () => {
     await expect(page).toHaveURL(/\/about$/);
   });
 
-  test('every "book" CTA reaches /book', async ({ page }) => {
+  test('every "book" CTA reaches /book', async ({ page, isMobile }) => {
     await page.goto('/');
-    await page.getByRole('link', { name: /Book Luis, for a Meet & Greet/ }).first().click();
+    await page.getByRole('link', { name: /Contact Luis, to Get Started/ }).first().click();
     await expect(page).toHaveURL(/\/book$/);
 
-    await page.goto('/');
-    await page.getByRole('link', { name: 'Book a Walk', exact: true }).first().click();
-    await expect(page).toHaveURL(/\/book$/);
+    // The only exact "Book a Walk" link left on home is the nav CTA, and the
+    // nav-links row is behind the hamburger on mobile. (The footer entry was
+    // dropped: it pointed at a route, not a band on the page.)
+    if (!isMobile) {
+      await page.goto('/');
+      await page.getByRole('link', { name: 'Book a Walk', exact: true }).first().click();
+      await expect(page).toHaveURL(/\/book$/);
+    }
 
     await page.goto('/neighborhoods/williamsburg');
     await page.getByRole('link', { name: /Book a Walk in Williamsburg/ }).click();
@@ -140,7 +174,7 @@ test.describe('public routes', () => {
   });
 
   test('no alert() fires while browsing the former fake-form pages', async ({ page }) => {
-    await page.goto('/services');
+    await page.goto(SERVICES_ANCHOR);
     await page.goto('/book');
     await page.goto('/contact');
     // failOnDialog (registered in beforeEach) would have thrown by now if any

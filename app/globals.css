@@ -84,21 +84,40 @@ nav {
 }
 .nav-inner {
   max-width: var(--max-w); width: 100%; margin: 0 auto; padding: 0 32px;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center;
+  /* Not space-between: the logo's box narrows from 370px to 190px when the
+     label tucks into the band on scroll, and with space-between that slack
+     was redistributed — every link and the CTA slid left and back. The links
+     and the hamburger pin themselves to the right edge with an auto margin
+     instead, so the right-hand side holds its position whatever the logo is
+     doing. */
+  justify-content: flex-start;
 }
+.nav-links { margin-left: auto; }
+/* Mobile: the links are hidden, so the toggle takes over the auto margin. */
+.nav-hamburger { margin-left: auto; }
 /* Oversized collage logo — paper label pasted over the nav band, breaking
    out of the green onto the page like the polaroid/tape system */
 .nav-logo {
   display: flex; flex-direction: column; gap: 0;
   cursor: pointer;
-  position: relative;
+  /* Out of the flex row entirely. In flow, its box went 398px -> 210px when
+     the label tucked on scroll, and the row is wider than the container, so
+     that slack pushed every link and the CTA 40px left and back again. As an
+     absolutely positioned layer it can resize freely without the rest of the
+     bar knowing. Centred on the bar with top:50% + the translateY(-50%) that
+     leads both transforms below. */
+  position: absolute;
+  top: 50%;
+  /* The container's own content edge: 32px gutter inside a centred --max-w. */
+  left: max(32px, calc((100% - var(--max-w)) / 2 + 32px));
   /* frame matches the nav band so the label reads taped flat, not floating */
   background: rgb(78, 90, 66);
   padding: 10px 14px;
   /* X shift keeps the label's top-left on the headline column edge: the nav
      container is 1240px centered while the headline sits at 50vw - 660px,
      a gap that grows to a constant 40px above 1320px viewports. */
-  transform: rotate(-2deg) translate(clamp(-40px, calc((1240px - 100vw) / 2), 0px), 46px);
+  transform: translateY(-50%) rotate(-2deg) translate(clamp(-40px, calc((1240px - 100vw) / 2), 0px), 46px);
   transform-origin: left top;
 }
 .nav-logo::before {
@@ -116,16 +135,15 @@ nav {
 #nav-logo-img {
   height: auto; width: 370px; display: block;
 }
-/* Tuck the label back into the band once the reader scrolls past the hero */
+/* Tuck the label back into the band once the reader scrolls past the hero.
+   The swap is instant on purpose — the label snaps between its two states
+   instead of easing, so no transition is declared here. */
 .nav-logo,
 #nav-logo-img {
-  transition:
-    transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    padding 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: none;
 }
 #main-nav.nav-scrolled .nav-logo {
-  transform: rotate(-1deg) translateY(6px);
+  transform: translateY(-50%) rotate(-1deg) translateY(6px);
   padding: 6px 10px;
 }
 /* scroll shrinks the logo (370→190px) — scale the tape down to match so it
@@ -154,6 +172,22 @@ nav {
   white-space: nowrap;
   color: rgba(255,255,255,0.7);
   transition: all .2s;
+}
+/* Icon-only entry: an inline <svg> sits on the text baseline, which left the
+   glyph riding high next to the word links. Flex centres it inside the same
+   box the text links get, and the symmetric padding keeps that box square. */
+#nav-instagram-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  line-height: 0;
+}
+/* Same fix in the sheet, where the glyph sits beside its label. */
+#mobile-menu-instagram-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .nav-links a:hover, .nav-links a.active {
   color: white;
@@ -316,6 +350,45 @@ h3 { font-size: clamp(22px, 2vw, 30px); }
   background-color: var(--cream);
   transform: rotate(-1.2deg) translateY(-1px);
 }
+/* Primary CTA inverts against the paper page: olive fill, paper text. The
+   outline variants keep the cream paper-ticket look, so primary and secondary
+   actions read apart at a glance. Declared after the shared block above so it
+   wins without !important. */
+.btn-primary {
+  background-color: var(--olive);
+  background-image: none;
+  color: var(--paper);
+  outline-color: rgba(243, 236, 217, 0.45);
+}
+.btn-primary:hover {
+  background-color: var(--sage);
+  color: var(--paper);
+}
+/* Booking-modal CTAs — the buttons that pop the welcome modal (hero primary,
+   nav "Book a Walk", mobile menu "Book a Walk"). Terracotta fill so the one
+   booking action reads apart from every other paper-ticket button on the
+   page, olive on hover. `!important` only where .nav-cta already uses it. */
+.btn-accent,
+.nav-cta.btn-accent,
+.mobile-menu .mobile-cta.btn-accent {
+  background-color: var(--terracotta) !important;
+  background-image: none !important;
+  color: var(--paper) !important;
+  outline-color: rgba(243, 236, 217, 0.45);
+}
+.btn-accent:hover,
+.nav-cta.btn-accent:hover,
+.mobile-menu .mobile-cta.btn-accent:hover {
+  background-color: var(--olive) !important;
+  color: var(--paper) !important;
+}
+
+/* Footer's terracotta CTA. It needs its own hover: .btn-accent:hover goes
+   olive, which disappears against the green footer. */
+#footer-book-luis-cta:hover {
+  background-color: var(--terracotta-light) !important;
+  color: var(--ink) !important;
+}
 .btn-ghost { color: var(--charcoal); padding: 14px 0; }
 .btn-ghost:hover { color: var(--sage-dark); }
 .btn-ghost::after { content: ' →'; }
@@ -324,6 +397,15 @@ h3 { font-size: clamp(22px, 2vw, 30px); }
 .btn-primary:active,
 .btn-outline:active,
 .btn-outline-white:active { transform: rotate(-1.2deg) scale(0.97); }
+
+/* The booking form's forward action sits upright: it is the one control the
+   visitor must hit on every step, and the paper-ticket tilt reads as a
+   misprint inside a form. Hover and press feedback keep working without it —
+   these override the tilt in the .btn-primary rules above. */
+.booking-forward-btn,
+.booking-forward-btn:hover { transform: none; }
+.booking-forward-btn:hover { transform: translateY(-1px); }
+.booking-forward-btn:active { transform: scale(0.97); }
 
 .btn-sm { padding: 10px 20px; font-size: 13px; }
 
@@ -427,13 +509,21 @@ hr { border: none; border-top: 1px solid var(--light-gray); margin: 0; }
 .trust-bar {
   background: var(--charcoal); color: white;
   padding: 14px 0;
+  overflow: hidden;
 }
-.trust-bar-inner {
-  display: flex; align-items: center; justify-content: center;
-  gap: 40px; flex-wrap: wrap;
+/* Infinite single-line marquee: the track holds the item set twice and slides
+   by half its width, so the second set lands exactly where the first began. */
+.trust-bar-track {
+  display: flex; align-items: center;
+  gap: 40px; flex-wrap: nowrap;
+  width: max-content;
+  animation: scrollTrack 38s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trust-bar-track { animation: none; }
 }
 .trust-item {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
   font-size: 13px; font-weight: 500; letter-spacing: 0.3px;
   opacity: .85;
 }
@@ -443,23 +533,80 @@ hr { border: none; border-top: 1px solid var(--light-gray); margin: 0; }
    FOOTER
    ============================================= */
 footer {
-  /* Same sage-dark green as .cta-band / #home-contact-sheet-section, so the
-     green runs unbroken from that section straight through the footer. */
-  background: var(--sage-dark);
+  /* Exactly the stack #home-contact-sheet-section paints — same 0.85 olive
+     veil over the same bg_section_2 photo — so the green runs unbroken from
+     that section straight through the footer. A flat --sage-dark base under a
+     veil read noticeably darker than the section above, where the photo lifts
+     the green by ~15%.
+
+     The dog collage is no longer in this stack; it is an overlay layer on
+     #main-footer::after below. */
+  background:
+    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    linear-gradient(rgba(79, 90, 61, 0.85), rgba(79, 90, 61, 0.85)),
+    url('/img/bg_section_2.png') center / cover no-repeat,
+    var(--sage-dark);
   color: white;
   padding: 76px 0 40px;
   position: relative;
 }
-#footer-content-zone { max-width: 820px; position: relative; }
-.footer-grid {
-  display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 1.15fr;
-  gap: 40px; padding-bottom: 48px; align-items: start;
+/* Dog collage — an overlay pinned to the footer's bottom-right corner, sitting
+   above the olive veil so it reads as pasted onto the green rather than sunk
+   into it. It is its own layer, not a background image on the footer, for two
+   reasons: the home page's closing band clears the footer background outright
+   (#home-closing-band-shell #main-footer), which used to take the dogs with
+   it, and a real element can carry an opacity the copy stays readable over.
+   Height-locked to 78% of the footer, so it scales with the band instead of
+   with the viewport. */
+#main-footer::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: min(1080px, 82%);
+  height: 78%;
+  background: url('/img/backgorund_dogs.png') right bottom / contain no-repeat;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
 }
-.footer-brand { max-width: 300px; }
-.footer-logo {
-  font-family: var(--font-display);
-  font-size: 24px; margin-bottom: 16px;
-  color: white;
+
+/* Full container width (it used to sit in an 820px box). The link row spans
+   all of it; everything under the row is held to the left half, clear of the
+   dog collage in the bottom-right corner. z-index keeps the copy over the
+   collage overlay, which is a later sibling in paint order. */
+#footer-content-zone { max-width: none; position: relative; z-index: 1; }
+.footer-grid {
+  display: grid; grid-template-columns: 1.7fr 1fr 0.85fr 1fr;
+  gap: clamp(32px, 4vw, 72px); padding-bottom: 56px; align-items: start;
+}
+.footer-brand { max-width: 340px; }
+/* The art-safe column: the CTA, the Est. rule and the legal line all stop
+   before the artwork starts. */
+#footer-cta-shell,
+.footer-bottom { max-width: min(660px, 58%); }
+/* Declared here rather than inline on the element, so the phone tier's
+   `center` can win. */
+#footer-cta-shell { justify-content: flex-start; }
+/* Tablet: the 20vw push carries the dogs off the right edge and drags the
+   paper scrap in behind the copy, so the collage anchors right and shrinks
+   instead. The link grid is two columns at this width (below), which leaves
+   the bottom-right corner free. */
+@media (max-width: 1100px) {
+  #main-footer::after { height: 58%; }
+  #footer-cta-shell,
+  .footer-bottom { max-width: min(560px, 64%); }
+}
+/* Circle brand badge, cream disc on the olive footer (was a 24px display-serif
+   wordmark). Same asset the hero polaroid and the welcome modal use in their
+   green variant. */
+#footer-logo-badge {
+  display: block;
+  /* Twice the old clamp (84-112px): the disc is the footer's only lockup, and
+     at the old size it read as a bullet next to the tagline. */
+  width: clamp(168px, 14vw, 224px);
+  height: auto;
+  margin-bottom: 20px;
 }
 .footer-tagline {
   font-family: var(--font-type);
@@ -501,19 +648,42 @@ footer {
    so each image reads at the same faint (~20%) opacity. Personalized-care
    keeps its own slot in the rotation but renders the standalone product-card
    page's background image instead of drawing from the pool. */
-#home-williamsburg-trust-section,
-#home-other-services-section {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-/* Solid sage-dark green, same as .cta-band and the footer — ties this section
-   into the same green used elsewhere. #home-closing-trust-section and
-   #home-contact-sheet-section get their own photo-backed version below. */
+
+/* Transparent, not its own green: this strip renders inside
+   #home-featured-reviews-section (see FeaturedReviews), so the parent band's
+   paper grain + olive veil + logo imprint runs straight through it and the
+   team roster above shares one continuous surface. A flat var(--sage-dark)
+   fill here painted over that texture and left a visible seam — the colour
+   matched (--olive, rgb(79 90 61), the same value the veil uses) but the
+   grain and imprint stopped dead at the section edge. */
+/* Standalone sage-dark band. It used to render inside
+   #home-featured-reviews-section and sat on that band's surface, so
+   `transparent` was enough; now it follows the rates on its own and carries
+   the same veil-over-photo stack and hairlines as the other dark bands. */
 #home-how-it-works-section {
-  background: var(--sage-dark);
+  background:
+    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    linear-gradient(rgba(79, 90, 61, 0.90), rgba(79, 90, 61, 0.90)),
+    url('/img/bg_section_1.png') center / cover no-repeat;
+  border-top: 1px solid rgba(243,236,217,0.14);
+  border-bottom: 1px solid rgba(243,236,217,0.14);
+  scroll-margin-top: var(--nav-h);
 }
+/* Team roster band — identical surface to the strip directly below it so the
+   roster and the process steps read as one continuous green band. Hairline on
+   the top edge only: the strip supplies its own border-top, and two adjacent
+   1px rules would render as a double line at the seam. */
+#home-team-section {
+  background:
+    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    linear-gradient(rgba(79, 90, 61, 0.90), rgba(79, 90, 61, 0.90)),
+    url('/img/bg_section_1.png') center / cover no-repeat;
+  border-top: 1px solid rgba(243,236,217,0.14);
+  padding-bottom: clamp(36px, 5vw, 64px);
+}
+#home-how-it-works-section { border-top: none; }
 #home-how-it-works-section h2,
+#home-team-section h2,
 #home-closing-trust-section h2,
 #home-contact-sheet-section h2 { color: var(--cream); }
 #home-closing-trust-section .label { color: var(--gold-light); }
@@ -529,6 +699,37 @@ footer {
    context, so the paw trail's z-index:-1 escapes to a higher ancestor and
    paints behind the entire page instead of just behind this section. */
 #home-how-it-works-section { position: relative; z-index: 0; overflow: hidden; }
+/* Seam blender for the closing-trust / how-it-works boundary. Both bands paint
+   bg_section_1 with `cover`, and the two boxes are very different heights
+   (~500px vs ~1300px), so the photo lands at two different scales and the
+   artwork was cut dead across the border — a visible crease. Each side fades
+   its own edge down to flat olive, so by the time the boundary arrives there
+   is no artwork left to mismatch and the hairline reads as a deliberate rule.
+
+   Both overlays sit inside their own section: one hanging past the edge would
+   be clipped by the strip's overflow:hidden and painted over by the later
+   sibling's background. z-index:-1 against the section's own stacking context
+   keeps them above the band's background and below its content (same trick the
+   paw trail uses above). */
+#home-closing-trust-section { position: relative; z-index: 0; }
+#home-closing-trust-section::after,
+#home-how-it-works-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 180px;
+  z-index: -1;
+  pointer-events: none;
+}
+#home-closing-trust-section::after {
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(79, 90, 61, 0) 0%, rgba(79, 90, 61, 0.55) 55%, rgba(79, 90, 61, 0.92) 100%);
+}
+#home-how-it-works-section::before {
+  top: 0;
+  background: linear-gradient(to top, rgba(79, 90, 61, 0) 0%, rgba(79, 90, 61, 0.55) 55%, rgba(79, 90, 61, 0.92) 100%);
+}
 /* Homepage meet-and-greet form runs full container width (no sidebar), unlike
    the 700px-capped .booking-form-wrap on the standalone /book page. */
 #home-book-form-wrap {
@@ -557,12 +758,6 @@ footer {
 /* The homepage form card's paper-sheet treatment (previously a taped card
    here) now lives with the rest of the zine poster rules — see
    "ZINE POSTER TREATMENT" at the bottom of this file. */
-#home-williamsburg-trust-section {
-  background:
-    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    url('/img/bg_section_graphic_2.png') center / cover no-repeat;
-}
 #home-other-services-section {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
@@ -570,46 +765,105 @@ footer {
     url('/img/bg_section_2.png') center / cover no-repeat;
 }
 /* Closing trust recap — sage-dark veil over a photo (not flat color), same
-   layered technique as the light sections but tinted dark instead of cream,
-   plus top/bottom hairlines (same banding as .social-proof-strip) so it still
-   reads as a distinct band sitting between two other treatments. */
+   layered technique as the light sections but tinted dark instead of cream.
+   No hairline on either edge: it continues the team band above it and runs
+   straight into the process strip below. */
 #home-closing-trust-section {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.88), rgba(79, 90, 61, 0.88)),
     url('/img/bg_section_1.png') center / cover no-repeat;
-  border-top: 1px solid rgba(243,236,217,0.14);
-  border-bottom: 1px solid rgba(243,236,217,0.14);
+  /* Continues the team band directly beneath the roster: no rule and no top
+     pad at that seam, so the faces and the credentials read as one band. The
+     bottom hairline still separates it from the process strip below, which is
+     why that strip carries border-top: none. */
+  border-top: none;
+  padding-top: 0;
+  /* The seam runs with no rule — the green continues unbroken into whatever
+     follows. It does carry its own bottom pad: with the hairline gone, the
+     last line of copy would otherwise sit flush against the proof marquee
+     below it. */
+  padding-bottom: clamp(48px, 6vw, 88px);
+  border-bottom: none;
 }
-/* Same dark-veil-over-photo treatment for the closing form section — reuses
-   bg_section_2.png (otherwise only assigned to the disabled
-   #home-other-services-section, so no visual clash) instead of flat color. */
-#home-contact-sheet-section {
+/* Same dark-veil-over-photo treatment for the closing form section, instead of
+   flat colour. The photo is bg4.png — a leashed dog, right-anchored: the only
+   one of the candidates whose subject survives the 0.85 veil, and it lands
+   behind the Service Area column, which is a single short link. */
+/* Closing band shell — the How It Works / Meet & Greet sheet plus the footer
+   (see HomePageContent). The surface lives here, once, so the artwork runs the
+   full height of both with no crease where they meet. It is the recipe the
+   contact sheet used to carry on its own, sized to cover the taller box. */
+/* bg_section_2 under a lighter veil than the other green bands (0.80 vs 0.85):
+   bg4 read as flat olive at this strength, which left the sheet floating on an
+   empty field. The photo gives the band something to sit against. */
+#home-closing-band-shell {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(79, 90, 61, 0.85), rgba(79, 90, 61, 0.85)),
+    linear-gradient(rgba(79, 90, 61, 0.80), rgba(79, 90, 61, 0.80)),
     url('/img/bg_section_2.png') center / cover no-repeat;
 }
-/* Reviews now takes the photo background that used to sit on the trust
-   section above it (last unused image in the section-bg pool) — alternates
-   the rhythm as light-photo (Williamsburg) / dark (closing trust) /
-   light-photo (reviews) / dark (contact) instead of two dark bands in a row. */
+/* Members paint nothing of their own: a second surface over the shared one is
+   exactly the crease this shell removes. Scoped to the shell so the footer
+   keeps its own treatment on every other route. */
+#home-closing-band-shell #home-contact-sheet-section,
+#home-closing-band-shell #main-footer {
+  background: none;
+}
+/* Reviews runs on cream, continuing the marquee directly above it (which is
+   already --warm-white): the quotes scroll past on paper, then the band they
+   come from stays on paper. Grain over flat cream with no photo layer — the
+   poster treatment here is typographic, and the two textured bands on either
+   side read better against a plain sheet. Type colours are the light-band
+   defaults, so this section carries no colour overrides of its own. */
 #home-featured-reviews-section {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    url('/img/bg_section_1.png') center / cover no-repeat;
+    linear-gradient(var(--cream), var(--cream));
+  /* Opens straight on the marquee: no top pad and no rule of its own. The
+     strip above already carries a border-bottom, and two adjacent 1px rules
+     render as a double line at the seam. */
+  padding-top: 0;
+  border-top: none;
+  /* No bottom rule either: the Instagram strip below runs on the same cream
+     and the two read as one continuous sheet. */
+  border-bottom: none;
 }
-/* Same bridge-photo background as #home-williamsburg-trust-section, now that
-   this section's own headline is "Williamsburg is our backyard" — reuses the
-   image directly on the section itself. #home-personalized-care-pin-stage's
+/* Brooklyn Bridge / Manhattan skyline collage behind the rates block — the
+   one image in the section-bg pool nothing else was using, and the only
+   literal cityscape. Same cream-veil stack as every other light section, so
+   it reads at the established ~20%. #home-personalized-care-pin-stage's
    background below is dead weight while the pinned carousel is disabled
    ({false && ...} in app/page.tsx) — left in place in case it comes back. */
+/* Every band the nav or the footer links to clears the fixed nav when the
+   browser jumps to it. */
+#home-team-section,
+/* Every nav/footer anchor target clears the fixed nav. .home-rate-item covers
+   the five secondary rates the footer's Rates column links at, and
+   #home-closing-parks-row is the "Williamsburg" target in both nav and
+   footer — without this they land behind the bar. */
+#home-closing-trust-section,
+#home-featured-reviews-section,
+#home-contact-sheet-section,
+#home-group-walk-feature-card,
+#home-team-section,
+#home-closing-parks-row,
+.home-rate-item,
+#home-how-it-works-block,
+/* Contact links target the form header, not the section: the How It Works
+   block renders inside that section above the form. */
+#home-contact-sheet-header { scroll-margin-top: var(--nav-h); }
 #home-personalized-care-section {
+  scroll-margin-top: var(--nav-h);
+  padding-top: clamp(20px, 3vw, 36px);
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    url('/img/bg_section_graphic_2.png') center / cover no-repeat;
+    /* `cover` scaled this collage to exactly the section height, so a
+       background-position percentage had no slack to move it. Overscaling the
+       height and anchoring at the top is what actually drops the artwork —
+       130% = roughly 30% of the section height lower. */
+    url('/img/bg_section_graphic_1.png') center top / auto 130% no-repeat;
 }
 #home-personalized-care-pin-stage {
   background:
@@ -627,12 +881,39 @@ footer {
   padding-top: var(--nav-h);
   overflow: hidden;
   /* Background collage bottom-aligned to the hero's bottom edge = top of the scrolling marquee.
-     Full screen width, ratio retained; cream veil keeps it faint (~20%) for legibility. */
+     Full screen width, ratio retained; cream veil keeps it faint (~20%) for legibility.
+     The walker + three dogs illustration is the Group Walk feature card's
+     /img/3Top.png, mirrored (3Top-flipped.png — a background layer can't be
+     flipped in CSS, so the mirrored copy is a separate asset). It sits ABOVE
+     the cream veil so it reads at full strength, and always paints behind the
+     hero content, the polaroid video included. */
+  /* Ramps the walker layer below: 0 at >=1714px (wide screens keep their
+     original treatment), growing to 822px at ~890px. */
+  --hero-walker-ramp: clamp(0px, calc(1714px - 100vw), 822px);
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    url('/img/3Top-flipped.png')
+      calc(60% + (var(--hero-walker-ramp) * 0.089))
+      calc(12% - (var(--hero-walker-ramp) * 0.022))
+      / clamp(420px, calc(42vw + (var(--hero-walker-ramp) * 0.27)), 720px) auto
+      no-repeat,
     linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
     url('/img/homepage_image.png') bottom center / 100% auto no-repeat;
 }
+/* Hero walker across mid widths — the illustration is tuned for the widest
+   viewports (720px wide at 60% 12%). Its old 42vw ramp only reached that 720px
+   ceiling at 1714px, so every width between the stacked mobile layout and a
+   very wide desktop rendered it near its 420px floor: too small for the space,
+   and pinned too high. The hero also gets tight in that range — the headline
+   column and the polaroid leave only a narrow band of clear cream between
+   them — so the walker has to grow toward the right edge, not into the middle.
+   --hero-walker-ramp drives all three values off one 0 -> 822px curve, so
+   nothing jumps at a breakpoint and every value lands back on the original
+   wide-desktop number at 1714px:
+     size — 42vw + 0.27 of the ramp, still capped at 720px (reached ~1075px)
+     x    — 60% + 0.089 of the ramp, pushing it right, clear of the headline
+     y    — 12% - 0.022 of the ramp, lifting it above the headline's first line
+   The <=768px stacked layout overrides this whole background and is untouched. */
 .hero-content {
   display: flex; flex-direction: column; justify-content: center;
   /* top padding clears the oversized nav label's drop into the column */
@@ -660,7 +941,9 @@ footer {
   font-weight: 400;
   text-transform: uppercase;
   font-size: clamp(54px, 6.5vw, 98px);
-  text-wrap: balance;
+  /* Hard <br>s in #hero-headline fix the split at four lines at every width;
+     balancing would let the browser re-flow them, so it stays off. */
+  text-wrap: nowrap;
 }
 .hero-h1 em {
   font-style: normal;
@@ -679,10 +962,24 @@ footer {
   position: relative;
   display: flex; align-items: flex-start; gap: 0;
   padding: 32px 28px;
-  background: var(--cream);
+  /* Grain over charcoal — same recipe as the reviews green band
+     (#home-featured-reviews-section) minus its photo layer, on ink. */
+  background:
+    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    linear-gradient(var(--ink), var(--ink));
   border-radius: var(--radius);
   margin-top: 48px;
 }
+/* Inverted proof band: charcoal surface, cream figures, gold stars. The hero
+   is now the only place this strip appears — the reviews band's copy of it was
+   replaced by its two platform clickouts. */
+#hero-stats-strip .hero-stat-num { color: var(--cream); }
+#hero-stats-strip [data-variant="star"] .hero-stat-num { color: var(--gold); }
+#hero-stats-strip .hero-stat-label { color: rgba(243,236,217,0.62); }
+#hero-stats-strip .hero-stat-divider {
+  background: linear-gradient(to bottom, rgba(243,236,217,0.28) 0%, transparent 100%);
+}
+#hero-stats-strip .hero-stat-link:hover { opacity: 1; color: var(--gold-light); }
 .hero-stats::before {
   display: none;
 }
@@ -702,9 +999,13 @@ footer {
   grid-column: 1 / -1;
   grid-row: 2;
   align-self: end;
-  width: 100%;
-  max-width: var(--max-w);
-  margin: 0 auto 56px;
+  /* The band's own edges sit on the site gutter (32px, matching .container),
+     so it lines up with every other section instead of bleeding to the grid
+     column edge. The max-width subtracts the same gutter for the case where
+     the viewport is wider than --max-w. */
+  width: calc(100% - 64px);
+  max-width: calc(var(--max-w) - 64px);
+  margin: 0 auto;
   padding-left: 32px; padding-right: 32px;
 }
 .hero-stat-item {
@@ -1081,13 +1382,9 @@ footer {
 }
 .review-name { font-weight: 600; font-size: 14px; }
 .review-meta { font-size: 12px; color: var(--mid-gray); }
-/* Featured review + two compact reviews + rating strip, instead of three
-   identical cards — the featured card already had its own corner-tab tape
-   treatment (#home-featured-review-card below) with nothing to set it apart
-   size-wise; this finally gives it the prominence the tape implies. */
-#home-featured-reviews-grid { grid-template-columns: 1.15fr 1fr; gap: 28px; }
-#home-featured-reviews-stat-strip { padding: 20px 4px 4px; }
-#home-featured-reviews-stat-strip .hero-stat-divider { margin: 0 20px; }
+/* Four equal review columns + a rating strip under them. Column widths and
+   the hairline separators live with the poster treatment further down; only
+   the strip's own spacing is set here. */
 
 /* CTA band */
 .cta-band {
@@ -1265,25 +1562,86 @@ footer {
 .trust-card h4 { font-family: var(--font-display); font-size: 20px; margin-bottom: 8px; }
 .trust-card p { font-family: var(--font-type); font-size: 14px; color: var(--mid-gray); line-height: 1.65; }
 
-/* Homepage-only treatment for the three "why Williamsburg" cards. They sit on
-   the Brooklyn-bridge photo background, where the shared .trust-card styling
-   (opaque #f7f1e3, a 7%-black hairline, no shadow) gave almost no separation —
-   that cream is nearly the same value as the section's cream-veiled backdrop,
-   so the cards read as flat patches and got visually lost. A real shadow plus
-   a stronger border lifts them off the photo; the tighter padding and slightly
-   denser copy bring the card height down so the row stops looming. Scoped to
-   this row so the Safety & Trust page's own .trust-card usage is untouched. */
-#home-williamsburg-trust-features .trust-card {
-  padding: 28px;
-  gap: 16px;
-  border-color: rgba(36, 35, 33, 0.14);
-  box-shadow: 0 6px 20px rgba(35, 31, 24, 0.13);
+/* Coverage points — columns divided by hairlines, not cards. No fill, no
+   radius, no shadow: the band's own paper carries them, the same way the
+   credential list in ClosingTrust sits on its band. */
+/* Coverage points — their own group under the How It Works steps (they used to
+   close the service-area band). That block runs on the olive surface, so the
+   rule and the copy take the band's cream ink. One rule for the group
+   boundary, none between the columns: the gap separates them on its own. */
+#home-how-it-works-coverage-points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 48px);
+  margin-top: clamp(48px, 6vw, 80px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 1px solid var(--zine-rule-dark);
+  /* Each column centres its own title and copy on the column axis, same as
+     the process steps above it and the principles block below. */
+  text-align: center;
 }
-#home-williamsburg-trust-features .trust-card h4 { font-size: 19px; }
-#home-williamsburg-trust-features .trust-card p { font-size: 13.5px; line-height: 1.6; }
-#home-williamsburg-trust-features .trust-icon-box {
-  width: 46px; height: 46px;
-  border-color: rgba(36, 35, 33, 0.12);
+.home-coverage-point {
+  padding: 0;
+}
+.home-coverage-point h4 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  /* Tight: the title and its line belong to each other. */
+  margin-bottom: 6px;
+  color: var(--cream);
+}
+.home-coverage-point p {
+  font-family: var(--font-type);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(243, 236, 217, 0.72);
+}
+@media (max-width: 767px) {
+  #home-how-it-works-coverage-points {
+    grid-template-columns: 1fr;
+    gap: clamp(28px, 7vw, 36px);
+  }
+  .home-coverage-point { padding: 0; }
+}
+
+/* Parks — a full-width list under the claim, behind a hairline. No panel. */
+/* Parks list under the Williamsburg claim in the closing trust band (moved
+   there from the service-area band). Everything here is the dark-band
+   counterpart of the chip treatment: the section runs olive, so the stamp
+   label, the rule and the chips all invert to cream/gold. */
+#home-closing-parks-row {
+  /* Nav + footer "Williamsburg" land here now that the service-area band is
+     gone, so the row clears the fixed nav. */
+  scroll-margin-top: calc(var(--nav-h) + 24px);
+  margin-top: clamp(24px, 3vw, 32px);
+  padding-top: clamp(20px, 2.5vw, 28px);
+  border-top: 1px solid rgba(243, 236, 217, 0.2);
+}
+#home-closing-parks-label {
+  font-family: var(--font-stamp);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+#home-closing-parks-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+#home-closing-trust-section .trust-park-tag {
+  background: rgba(243, 236, 217, 0.10);
+  border-color: rgba(243, 236, 217, 0.28);
+  color: var(--cream);
+}
+#home-closing-parks-note {
+  margin-top: 16px;
+  font-family: var(--font-type);
+  font-size: 13px;
+}
+@media (max-width: 900px) {
 }
 
 
@@ -1503,7 +1861,10 @@ footer {
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
-  .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  /* Below the four-across row the brand block takes a row of its own and the
+     three link columns stay side by side — Rates and Company never stack. */
+  .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+  .footer-brand { grid-column: 1 / -1; max-width: 420px; }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .hiw-steps { grid-template-columns: repeat(2, 1fr); gap: 40px; }
   .reviews-masonry { columns: 2; }
@@ -1539,7 +1900,17 @@ footer {
   h1 { font-size: clamp(30px, 8vw, 44px); }
   .hero-h1 { font-size: clamp(44px, 12vw, 60px); }
   .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; height: auto; min-height: auto; }
-  #hero-stats-strip { grid-column: 1; grid-row: 3; padding-left: 20px; padding-right: 20px; margin-bottom: 40px; }
+  /* Stacked layout puts the headline over the walker illustration, so on
+     mobile it moves under the cream veil (faint) instead of sitting at full
+     strength above it like it does on desktop. */
+  .hero {
+    background:
+      url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+      linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
+      url('/img/3Top-flipped.png') 60% 12% / clamp(300px, 86vw, 460px) auto no-repeat,
+      url('/img/homepage_image.png') bottom center / 100% auto no-repeat;
+  }
+  #hero-stats-strip { grid-column: 1; grid-row: 3; width: calc(100% - 40px); padding-left: 20px; padding-right: 20px; margin-bottom: 40px; }
   .hero-visual { grid-column: 1; grid-row: 1; height: auto; width: 100%; position: static; padding-bottom: 0; }
   .nav-logo { padding: 7px 10px; transform: rotate(-2deg) translateY(22px); }
   .nav-logo::before { width: 84px; height: 22px; top: -9px; left: 50%; margin-left: -42px; }
@@ -1553,18 +1924,43 @@ footer {
   #hero-polaroid-frame .polaroid-window { aspect-ratio: 4 / 3; }
   .hero-content { grid-column: 1; grid-row: 2; padding: 0 20px 48px; max-width: 100%; width: 100%; margin: 0; }
   .hero-p { max-width: 100%; font-size: 16px; }
-  .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps, #home-featured-reviews-grid { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps { grid-template-columns: 1fr; }
   .cta-band { flex-direction: column; padding: 40px 28px; }
   .cta-band h2 { max-width: 100%; }
-  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-  #footer-content-zone { max-width: 100%; }
-  /* Narrow screens: photo anchored bottom so the dogs peek through, same
-     paper-grain texture as desktop, no dark scrim over the image. */
-  #main-footer {
-    background:
-      url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-      url('/img/footer_image2.png') center bottom / cover no-repeat,
-      var(--cream);
+  /* Phone footer: centred and edge to edge. The desktop layout ranges
+     everything left and caps the CTA/legal rows so they clear the dog collage
+     on the right — at this width the collage is centred behind the content,
+     so those caps only produced a column of empty paper. */
+  #footer-content-zone { max-width: 100%; text-align: center; }
+  .footer-grid { gap: 28px; justify-items: center; }
+  .footer-brand { max-width: 100%; }
+  #footer-logo-badge { margin-left: auto; margin-right: auto; }
+  .footer-tagline { max-width: 42ch; margin-left: auto; margin-right: auto; }
+  .footer-social { justify-content: center; }
+  #footer-cta-shell {
+    max-width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  .footer-bottom {
+    max-width: 100%;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  /* Narrow screens: same collage as desktop, but height-locked and centred
+     instead of offset — at this width a 20vw push would carry the dogs off
+     the edge, and full-width scaling leaves them a sliver along the bottom. */
+  /* Phone: the collage centres (a right-justified push would carry the dogs
+     off a 375px screen) and the legal line is full width here, so it runs
+     over the artwork. Held back to a watermark at this tier so the copy
+     stays readable; the desktop tier keeps the stronger read, where the
+     CTA and legal rows are capped clear of the right-hand artwork. */
+  #main-footer::after {
+    width: 100%;
+    height: 280px;
+    background-position: center bottom;
+    opacity: 0.28;
   }
   .form-row { grid-template-columns: 1fr; }
   .reviews-masonry { columns: 1; }
@@ -1581,6 +1977,13 @@ footer {
   #standard-of-care-grid > div { text-align: center; }
   .services-grid .service-card { align-items: center; text-align: center; }
 }
+/* Phones: two columns is all that fits. Service Area is last in the source
+   order, so Rates and Company — the two long lists — share the first row and
+   it drops to the second on its own. */
+@media (max-width: 560px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
+}
+
 
 /* ============================================================
    UTILITY ANIMATIONS (legacy compat)
@@ -1657,33 +2060,6 @@ footer {
   transform: rotate(6deg);
   z-index: 4;
 }
-/* Fixed brand seal, bottom-right of the viewport — stays put while the
-   homepage scrolls. Below #main-nav (z-index:100) so the nav always wins;
-   above ordinary page content. Rendered unconditionally in the DOM (it's a
-   sibling of #page-home, not nested in it — see the JSX comment for why);
-   this :has() rule is what actually limits it to the homepage, matching
-   #page-home's own .active toggle instead of DOM nesting. */
-body:not(:has(#page-home.active)) #home-floating-logo-badge {
-  display: none;
-}
-#home-floating-logo-badge {
-  position: fixed;
-  right: 20px; bottom: 20px;
-  width: clamp(64px, 6vw, 92px); height: clamp(64px, 6vw, 92px);
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 4px 14px rgba(35, 31, 24, 0.3);
-  transform: rotate(-4deg);
-  z-index: 40;
-  pointer-events: none;
-}
-@media (max-width: 768px) {
-  #home-floating-logo-badge {
-    width: 56px; height: 56px;
-    right: 14px; bottom: 14px;
-  }
-}
-
 /* Masking tape (variants: default corner-ish strip, centered top, corner tab) */
 .taped { position: relative; }
 .taped::before {
@@ -1757,19 +2133,9 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
    Geometry (width/height/left) stays inherited from .taped-center so the
    mobile resize at the responsive breakpoint still applies. */
 #hero-polaroid-frame::before {
-  background: transparent url("/img/tape/tape-hero.webp") center / 100% 100% no-repeat;
-  box-shadow: none;
-  filter: drop-shadow(0 2px 4px rgba(35, 31, 24, 0.16));
-  opacity: 0.96;
-}
-
-/* Featured review corner tab — double-id beats #page-home .review-card::before
-   so this card gets the corner-tab scan instead of the top strip. */
-#page-home #home-featured-review-card::before {
-  top: -10px; left: -26px;
-  width: 96px; height: 26px;
-  background: transparent url("/img/tape/tape-featured.webp") center / 100% 100% no-repeat;
-  transform: rotate(-38deg);
+  /* Kraft-brown strip (the review-card scan) instead of the grey tape-hero
+     one — warmer against the polaroid's cream border. */
+  background: transparent url("/img/tape/tape-review.webp") center / 100% 100% no-repeat;
   box-shadow: none;
   filter: drop-shadow(0 2px 4px rgba(35, 31, 24, 0.16));
   opacity: 0.96;
@@ -1860,7 +2226,10 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
 /* ============================================================
    PROOF STRIP — fade edges
    ============================================================ */
-.social-proof-strip { position: relative; z-index: 3; flex: 0 0 auto; }
+.social-proof-strip { position: relative; z-index: 5; flex: 0 0 auto; }
+/* The trail runs under the black marquee bars rather than over their text
+   (#home-paw-walk-layer is z-index 4). */
+.trust-bar { position: relative; z-index: 5; }
 .social-proof-strip::before,
 .social-proof-strip::after {
   content: '';
@@ -1906,16 +2275,26 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
   letter-spacing: 0.8px;
 }
 
+/* Review source links — each featured quote points back to its Yelp listing. */
+.review-source-link {
+  font-family: var(--font-type);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--olive);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+}
+.review-source-link:hover { color: var(--ink); }
+
 /* ============================================================
-   TRUST BAR ITEM HOVER
+   TRUST BAR ITEMS — static
+   Now a structural divider between the hero and the rates section, so the
+   items carry no hover lift or fade; they are labels, not controls.
    ============================================================ */
 .trust-item {
-  transition: opacity 0.2s, transform 0.25s ease;
   cursor: default;
-}
-.trust-item:hover {
-  opacity: 1 !important;
-  transform: translateY(-2px);
 }
 
 /* ============================================================
@@ -2043,58 +2422,56 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
 #home-featured-reviews-header-row {
   display: flex; justify-content: space-between; align-items: flex-end;
   flex-wrap: wrap; gap: 20px;
-  padding-bottom: 20px;
+  /* No rule under the file heading — the gap below carries the separation. */
   margin-bottom: 64px;
-  border-bottom: 1px solid var(--zine-rule);
 }
 #home-featured-reviews-grid {
-  grid-template-columns: 1.2fr 0.9fr;
-  gap: 64px;
-  align-items: start;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  /* No gap: the hairline between two columns is the separator, so the cells
+     meet and the padding on each card supplies the breathing room. */
+  gap: 0;
+  align-items: stretch;
 }
-/* Strip the card chrome: paper carries the type, rules carry the structure */
+/* Strip the card chrome: paper carries the type, rules carry the structure.
+   Every review is the same column — same width, same type, byline pinned to
+   the bottom edge so the four cards line up however long the quote runs. */
 #home-featured-reviews-section .review-card {
+  display: flex;
+  flex-direction: column;
   background: none;
   border-radius: 0;
   box-shadow: none;
-  padding: 0;
+  padding: 0 clamp(20px, 2vw, 32px);
+  border-left: 1px solid var(--zine-rule);
   transition: none;
 }
+#home-featured-reviews-section .review-card:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+#home-featured-reviews-section .review-card:last-child { padding-right: 0; }
 #home-featured-reviews-section .review-card:hover {
   transform: none;
   box-shadow: none;
 }
-/* Two ids + a class beats #page-home #home-featured-review-card::before */
+/* No tape scan on these: the poster treatment has no card to tape down. */
 #page-home #home-featured-reviews-section .review-card::before { content: none; }
 #home-featured-reviews-section .stars { letter-spacing: 3px; }
-/* Pull quote in the display serif the rest of the page uses for h3-scale
-   type; the supporting reviews stay on the Courier body face (.review-text). */
-#home-featured-review-card .zine-quote-stamp { margin-bottom: 22px; }
-#home-featured-review-card .review-text {
-  font-family: var(--font-display);
-  font-size: clamp(21px, 2.2vw, 30px);
-  line-height: 1.42;
-  color: var(--ink);
-  max-width: 100%;
-  margin: 16px 0 26px;
-}
-#home-featured-reviews-secondary {
-  display: flex; flex-direction: column;
-  border-left: 1px solid var(--zine-rule);
-  padding-left: 40px;
-}
-#home-featured-reviews-secondary .review-card {
-  padding: 28px 0;
-  border-top: 1px solid var(--zine-rule);
-}
-#home-featured-reviews-secondary .review-card:first-child {
-  padding-top: 0;
-  border-top: none;
-}
-#home-featured-reviews-secondary .review-text {
+#home-featured-reviews-section .review-text {
   color: var(--muted-ink);
   line-height: 1.8;
-  margin: 12px 0 16px;
+  margin: 14px 0 24px;
+}
+#home-featured-reviews-section .review-author {
+  /* Pushes the byline to the bottom of the column — the quotes are different
+     lengths, the attribution lines still read as one row across the four. */
+  margin-top: auto;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--zine-rule);
 }
 /* Attribution reads like the hero proof strip: condensed stamp caps over a
    small uppercase meta line. */
@@ -2109,12 +2486,253 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
   letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--mid-gray);
   margin-top: 5px;
+  white-space: nowrap;
 }
-#home-featured-reviews-stat-strip {
+/* Rating strip: its own full-width row under the grid, centred so it reads as
+   the band's footer rather than the last column's tail. */
+/* Replaced the rating stat strip (stars + hairline) — the row now carries two
+   equal-weight clickouts to the platforms that host the reviews. No rule above
+   it: the gap does that work. */
+#home-featured-reviews-clickout-row {
+  /* Above the seam art, which bleeds up into this band from the process
+     section below (#home-process-section::before, z-index 0). */
+  position: relative;
+  z-index: 1;
+  /* Centred pair at the page's standard button size — auto-width tracks, not
+     fixed 320px columns, so each one is as wide as its own label. */
   display: flex;
-  margin-top: 28px;
-  padding: 24px 0 0;
-  border-top: 1px solid var(--zine-rule);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(14px, 1.6vw, 22px);
+  margin-top: clamp(40px, 4vw, 64px);
+}
+.home-reviews-clickout {
+  /* Default .btn metrics — no size overrides, so these match every other
+     button on the page. */
+  text-align: center;
+  justify-content: center;
+  /* Upright: the shared .btn-primary paper-ticket tilt reads as a misprint on
+     a pair of buttons sitting side by side. */
+  transform: none;
+}
+/* Olive at rest (from .btn-primary), terracotta on hover — the same two brand
+   colours the nav CTA moves between, in the opposite order. */
+/* Colour is .btn-accent's pair: terracotta at rest, olive on hover. Only the
+   lift is declared here, since .btn-accent leaves transform alone. */
+.home-reviews-clickout:hover { transform: translateY(-1px); }
+.home-reviews-clickout:active { transform: scale(0.97); }
+@media (max-width: 600px) {
+  #home-featured-reviews-clickout-row { flex-direction: column; align-items: stretch; }
+}
+
+/* ---------- Reviews band, light ----------
+   The band used to run green, so every ink colour in here was swapped for a
+   cream/gold counterpart; on cream the light defaults are correct again and
+   that whole inversion block is gone. The stat strip still needs its own
+   rules: .hero-stat-* defaults are written for the hero's charcoal panel, and
+   this strip is a bare row on paper. */
+
+/* ---------- Green band, blocks 02-04: the About story on the same surface ----
+   Each block opens with the same stamp + headline + hairline the reviews
+   header uses, so the four files read as one printed document rather than
+   four stacked sections. Team and values keep their own components; the card
+   chrome is stripped here only, leaving /about untouched. */
+.home-band-block-header {
+  padding-bottom: 20px;
+  margin-bottom: clamp(36px, 4vw, 56px);
+  border-bottom: 1px solid var(--zine-rule-dark);
+}
+/* One gap between consecutive files. The team block opens the band, so the
+   spacing lands on the reviews header instead of above it. */
+#home-featured-reviews-header-row,
+#home-principles-block {
+  margin-top: clamp(64px, 8vw, 112px);
+}
+#home-team-block { margin-top: 0; }
+/* No descendant of the home page may widen the document. clip rather than
+   hidden: clip does not create a scroll container, so the hero's sticky
+   visual column still resolves against the viewport. */
+#page-home { overflow-x: clip; }
+/* The strip is a section-level row; the reviews header below it carries the
+   gap, so it only needs to clear the heading above. */
+#home-team-scroller { margin-top: 0; }
+#home-principles-intro {
+  font-family: var(--font-type);
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(243,236,217,0.78);
+  max-width: 620px;
+  margin: 0 0 clamp(32px, 4vw, 48px);
+}
+/* Team roster: one horizontal strip of small chips. The track is a real
+   overflow container — TeamScroller drives its scrollLeft from page scroll,
+   and hand scrolling still works. scrollbar-width:none hides the bar without
+   locking the scroll. */
+#home-team-scroller {
+  /* hidden, not auto: the page drives this row. scrollLeft still moves it
+     programmatically, but a sideways trackpad swipe or drag does nothing, so
+     the strip cannot feel like the page sliding under the viewer. */
+  /* Was hidden to stop the old max-content row being pannable. The grid wraps
+     instead of overflowing, so nothing needs clipping — and visible is what
+     lets the taped chips' tape hang above the first row. */
+  overflow: visible;
+  touch-action: pan-y;
+  /* x only: `overscroll-behavior: none` also blocked vertical scroll chaining,
+     so the page froze while the pointer sat over the strip. */
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
+  scrollbar-width: none;
+  /* The page drives this; smooth would fight it frame by frame. */
+  scroll-behavior: auto;
+  /* Full width already — the element is a direct child of the section, not of
+     .container. The padding reproduces .container's own gutter so the first
+     and last chip line up with the heading, while chips in between run past
+     both edges. No vw here on purpose: 100vw includes the scrollbar, which
+     made the page itself pannable. */
+  padding-inline: max(32px, calc((100% - var(--max-w)) / 2 + 32px));
+  padding-top: 14px;
+}
+#home-team-scroller::-webkit-scrollbar { display: none; }
+/* Grid, not a max-content flex track: the whole roster is meant to be visible
+   at once and to span the full width of the band. auto-fit lays as many 80px
+   tracks as fit and collapses the empty ones, so the six walkers always share
+   the row edge to edge — and the row wraps by itself under ~640px with no
+   breakpoint. */
+#home-team-scroller-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  /* Gap and row padding match #home-instagram-grid: the tilts push each print
+     past its cell, so the row needs room for the lean, the lift on hover and
+     the shadow under it. */
+  gap: clamp(16px, 2vw, 28px);
+  list-style: none;
+  margin: 0;
+  padding: 8px 0 12px;
+}
+/* Each walker is a polaroid print on the green band, same frame, paper and
+   caption spacing as the hero (.polaroid / .polaroid-window /
+   .polaroid-caption). No tilt: six side by side read as a contact sheet, and
+   rotation at this size clips into the neighbouring frame. */
+.home-team-chip {
+  min-width: 0;
+}
+/* Caption at tile scale, as on the Instagram prints. */
+.home-team-chip .polaroid-caption { font-size: 12px; }
+.home-team-chip-photo {
+  /* Square, like the Instagram tiles (.instagram-tile-window): six equal
+     squares hold the row flat whatever the source crop is. */
+  aspect-ratio: 1 / 1;
+  /* The window is a background-image div, not an <img>, so it needs the
+     print treatment .polaroid-window applies to its own media children. */
+  filter: contrast(0.96) saturate(0.9);
+}
+.home-team-chip-name {
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.1;
+  color: var(--ink);
+}
+/* Photo trigger — the button wrapper must not change the polaroid's box, so
+   it resets to a plain block. Hovering it opens #home-team-preview below. */
+.home-team-chip-trigger {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.home-team-chip-trigger .home-team-chip-photo {
+  transition: filter 0.2s ease;
+}
+.home-team-chip-trigger[data-active='true'] .home-team-chip-photo {
+  filter: contrast(1) saturate(1);
+}
+/* Centred preview while a face is hovered, focused or tapped — the same
+   treatment AlwaysIncluded uses for its icon previews (#home-included-preview),
+   so the two hover behaviours on this page read as one. */
+#home-team-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: none;
+  background: rgba(28, 28, 26, 0.55);
+  /* Own keyframes, not AlwaysIncluded's: that component defines its copy in
+     an inline <style>, so borrowing the name would tie this to that section
+     rendering on the page. */
+  animation: teamPreviewIn 0.18s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@keyframes teamPreviewIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+#home-team-preview-frame {
+  max-width: min(420px, 82vw);
+  width: 100%;
+  background: var(--warm-white) url('/textures/paper-grain.png');
+  background-size: 300px 300px;
+  border: 1px solid var(--ink);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  padding: 14px;
+}
+#home-team-preview-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* The roster photos are portrait; cap them so a short viewport never pushes
+     the caption off screen. */
+  max-height: 70vh;
+  object-fit: contain;
+  filter: contrast(0.96) saturate(0.9);
+}
+#home-team-preview-caption {
+  font-family: var(--font-stamp);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-ink);
+  margin: 10px 0 0;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  #home-team-preview { animation: none; }
+  .home-team-chip-trigger .home-team-chip-photo { transition: none; }
+}
+.home-team-chip-role {
+  font-family: var(--font-type);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--muted-ink);
+  margin-top: 4px;
+}
+/* The outline button keeps its own paper fill and olive ink — inheriting the
+   band's cream type here would print cream on cream. */
+/* Values: the 2px gap that draws the light grid would print as dark seams
+   here, so the cells carry hairlines instead of fills. */
+#home-principles-block .values-grid {
+  gap: 0;
+  border-top: 1px solid var(--zine-rule-dark);
+  border-left: 1px solid var(--zine-rule-dark);
+}
+#home-principles-block .value-cell {
+  background: none !important;
+  padding: clamp(24px, 3vw, 40px);
+  border-right: 1px solid var(--zine-rule-dark);
+  border-bottom: 1px solid var(--zine-rule-dark);
+}
+#home-principles-block .value-num { color: rgba(243,236,217,0.3); }
+#home-principles-block .value-cell h4 { color: var(--cream); }
+#home-principles-block .value-cell p { color: rgba(243,236,217,0.72); }
+
+@media (max-width: 900px) {
 }
 
 /* ---------- Section 2: meet & greet intake sheet ---------- */
@@ -2123,10 +2741,64 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
   margin-bottom: 56px;
   border-bottom: 1px solid var(--zine-rule-dark);
 }
+/* The steps open this band (see HomePageContent), so the form's own stamp
+   needs the gap a section break used to give it. */
+/* Process block on cream (HomePageContent: #home-process-section). The step
+   and coverage type is written for the green band it used to sit in, so every
+   cream/gold ink is re-pointed at the light-band token here. */
+#home-process-section {
+  position: relative;
+  background:
+    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    linear-gradient(var(--cream), var(--cream));
+  scroll-margin-top: var(--nav-h);
+}
+/* Seam art between the voices band and this one. It rides 30% of its own
+   height above the section's top edge, so it is a positioned box rather than a
+   background layer — a background is clipped to its own element no matter what
+   `overflow` says. Absolutely positioned, so it adds no height to either
+   section, and `aspect-ratio` gives it the artwork's proportions at whatever
+   width the breakpoint hands it. The opacity stands in for the paper veil it
+   used to sit under. */
+#home-process-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* 30% of the art's own height: it is 1536x642, so at full page width its
+     height is 0.418 x that width, and 0.3 of that is 12.54vw. */
+  top: -12.54vw;
+  aspect-ratio: 1536 / 642;
+  background: url('/img/bg_section_graphic_2.png') center top / 100% auto no-repeat;
+  opacity: 0.17;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Content clears the art. */
+#home-process-section > * { position: relative; z-index: 1; }
+#home-process-section .hiw-step h4,
+#home-process-section .home-coverage-point h4 { color: var(--ink); }
+#home-process-section .hiw-step p { color: var(--mid-gray); }
+#home-process-section .home-coverage-point p { color: var(--mid-gray); }
+/* The numeral disc is a cream circle on green; on paper it needs its own
+   edge. */
+#home-process-section .hiw-step-number {
+  background: var(--warm-white);
+  border-color: var(--zine-rule);
+}
+#home-process-section #home-how-it-works-coverage-points { border-top-color: var(--zine-rule); }
+#home-how-it-works-block + #home-contact-sheet-header {
+  margin-top: clamp(44px, 5vw, 72px);
+}
+/* Stamp and headline hang off the right edge of the container; the block's
+   hairline still runs the full width. */
+#home-how-it-works-header { text-align: right; }
 /* Cream sheet pasted flat on the green field — printed rule, no radius,
    no shadow, slight paste angle. overflow:visible so the corner stamp
    (::before) is not clipped by .booking-form's overflow:hidden. */
-#home-book-form-wrap #home-contact-sheet-form-sheet {
+#home-book-form-wrap #home-contact-sheet-form-sheet,
+#welcome-walk-modal-sheet,
+#home-rates-intake-sheet {
   background: #faf6ec url('/textures/paper-grain.png');
   background-size: 300px 300px;
   border: 1px solid rgba(36, 35, 33, 0.5);
@@ -2135,6 +2807,17 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
   overflow: visible;
   position: relative;
   transform: rotate(-0.4deg);
+}
+/* The closing sheet reads as the page's last card, so it carries the featured
+   rate card's chrome rather than the pasted-flat treatment the modal keeps:
+   the same hairline and corner radius, sat square to the grid, and a real drop
+   shadow — the card's 0 2px 10px is tuned for cream, and this sheet has to
+   lift off a dark olive band. */
+#home-book-form-wrap #home-contact-sheet-form-sheet {
+  border-color: rgba(36, 35, 33, 0.18);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 44px rgba(28, 28, 26, 0.3);
+  transform: none;
 }
 /* Intake stamp on the sheet's top edge — same inked condensed-caps mark as
    .stamp-label, sized up and pressed across the paper edge. Paper fill keeps
@@ -2156,37 +2839,653 @@ body:not(:has(#page-home.active)) #home-floating-logo-badge {
   transform: rotate(-2.5deg);
   z-index: 2;
 }
+/* The band's opening stamp, inked rather than outlined: gold-light on olive is
+   the faintest mark on the page, and this one has to start the closing section.
+   Same solid-terracotta-on-paper accent the featured card's corner ribbon and
+   the nav CTA use, so the page's three loudest marks agree. */
+#home-contact-sheet-header .stamp-label {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+  color: var(--paper);
+}
 #home-contact-sheet-section .booking-form-body { padding: clamp(28px, 4vw, 52px); }
-#home-contact-sheet-section .form-group label {
+/* Rates-section intake: same pasted-sheet surface, sat upright (the home
+   contact sheet's -0.4deg tilt would fight the card grid above it) and capped
+   so it does not run the full container width. */
+#home-rates-intake {
+  margin-top: clamp(32px, 4.5vw, 64px);
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#home-rates-intake-sheet {
+  transform: none;
+  /* Inverted surface: olive stock with the same grain, cream type. Several
+     of BookingForm's colours are inline styles, so the overrides below need
+     !important to reach them — they are scoped to this one sheet. */
+  background: var(--olive) url('/textures/paper-grain.png');
+  background-size: 300px 300px;
+  background-blend-mode: soft-light;
+  border-color: var(--ink);
+}
+#home-rates-intake .booking-form-body { padding: clamp(22px, 3vw, 40px); }
+#home-rates-intake-headline {
+  font-family: var(--font-headline);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 0.98;
+  font-size: clamp(44px, 6vw, 84px);
+  color: var(--paper);
+  text-align: center;
+  margin: 0 0 clamp(16px, 2.4vw, 28px);
+}
+#home-rates-intake h3 { color: var(--paper) !important; }
+/* The step title's fade-up is dropped on this instance — the headline above it
+   already carries the entrance, and the form sits mid-page, not in a modal. */
+#home-rates-intake [data-section$="progress-row"] h3 { animation: none !important; }
+#home-rates-intake p { color: rgba(243, 236, 217, 0.78) !important; }
+#home-rates-intake .form-note { color: rgba(243, 236, 217, 0.7) !important; }
+#home-rates-intake .form-group label { color: var(--paper) !important; }
+#home-rates-intake [data-section$="progress-row"] span { color: var(--sage-light) !important; }
+/* Step dots */
+#home-rates-intake [aria-label^="Go to step"] { background: rgba(243, 236, 217, 0.35) !important; }
+#home-rates-intake [aria-current="step"] { background: var(--paper) !important; }
+/* Rules between rows */
+#home-rates-intake [data-section$="nav-row"] { border-top-color: rgba(243, 236, 217, 0.3) !important; }
+/* Fields read as paper laid on the green sheet: cream stock, olive ink. A
+   translucent fill here washed out against the olive and left the placeholder
+   barely legible — these are opaque on purpose. Declared after the shared
+   field block below is NOT possible (it is later in the file), so that block
+   deliberately omits #home-rates-intake. */
+#home-rates-intake .form-control {
+  background: #faf6ec;
+  border: 1px solid rgba(36, 35, 33, 0.45);
+  color: var(--olive);
+}
+#home-rates-intake .form-control::placeholder { color: rgba(79, 90, 61, 0.65); }
+#home-rates-intake .form-control:focus {
+  background: #fff;
+  border-color: var(--olive);
+  box-shadow: inset 0 0 0 1px rgba(79, 90, 61, 0.5);
+}
+#home-rates-intake .form-select {
+  /* Chevron in the same olive ink as the field's text */
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%234F5A3D' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+#home-rates-intake .form-control option { color: var(--ink); }
+/* Next / submit centres in the nav row */
+#home-rates-intake [data-section$="nav-row"] { justify-content: center !important; }
+/* Primary CTA inverts again on the green: paper fill, olive text */
+#home-rates-intake .btn-primary {
+  background-color: var(--paper);
+  color: var(--olive);
+  outline-color: rgba(28, 28, 26, 0.35);
+}
+#home-rates-intake .btn-primary:hover { background-color: #fff; color: var(--olive); }
+#home-rates-intake .btn:not(.btn-primary) { color: rgba(243, 236, 217, 0.8) !important; }
+#home-contact-sheet-section .form-group label,
+#welcome-walk-modal-sheet .form-group label,
+/* The locked coverage row's caption is a <span>, not a <label> — it labels a
+   display-only value with no form control to point at — so it is named here
+   to get the same inked stamp treatment as the real field labels. */
+#welcome-walk-modal-sheet .form-group .welcome-walk-modal-field-caption,
+#home-group-walk-feature-card .form-group label,
+#home-rates-intake .form-group label {
   font-family: var(--font-stamp);
   font-size: 12px; font-weight: 500;
   letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--muted-ink);
 }
-#home-contact-sheet-section .form-control {
-  border: 1px solid rgba(36, 35, 33, 0.42);
+/* #home-rates-intake is absent on purpose: its fields are opaque cream on the
+   olive sheet, set above. A translucent white here would wash them out. */
+/* Opaque paper, not a 55%-white wash: the fields sat on a cream sheet at half
+   strength, so the input box and the sheet behind it read as nearly the same
+   value and the typed answer had no field to sit in. Solid white gives the
+   text a real surface; the ink border holds the edge against the cream. */
+#home-contact-sheet-section .form-control,
+#welcome-walk-modal-sheet .form-control,
+#home-group-walk-feature-card .form-control {
+  border: 1px solid rgba(36, 35, 33, 0.45);
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.55);
-}
-#home-contact-sheet-section .form-control:focus {
-  border-color: var(--olive);
-  box-shadow: inset 0 0 0 1px rgba(79, 90, 61, 0.55);
   background: #fff;
+  color: var(--ink);
+  /* Named properties, never `all` — only these three ever change. */
+  transition: border-color 160ms ease-out, box-shadow 160ms ease-out, background-color 160ms ease-out;
+}
+/* Placeholders were the browser default, which on the old translucent fill was
+   barely legible. Muted ink at 55% reads as a hint without competing with a
+   real answer. */
+#home-contact-sheet-section .form-control::placeholder,
+#welcome-walk-modal-sheet .form-control::placeholder,
+#home-group-walk-feature-card .form-control::placeholder {
+  color: rgba(36, 35, 33, 0.5);
+}
+/* Pointer-only: a touch device fires hover on tap, which would flash the
+   border a moment before focus takes over. */
+@media (hover: hover) and (pointer: fine) {
+  #home-contact-sheet-section .form-control:hover:not(:focus),
+  #welcome-walk-modal-sheet .form-control:hover:not(:focus),
+  #home-group-walk-feature-card .form-control:hover:not(:focus) {
+    border-color: rgba(36, 35, 33, 0.65);
+  }
+}
+/* One explicit height across all three intake surfaces. They are the same
+   component to a visitor — the pop-up gate, the group-walk card's short form,
+   and the Form 02 sheet — so their fields must not differ by the few pixels
+   that differing font metrics were producing on their own (46 vs 48 vs 51).
+   Single-line controls only: a textarea must stay free to grow. */
+#home-contact-sheet-section .form-control:not(textarea),
+#welcome-walk-modal-sheet .form-control:not(textarea),
+#home-group-walk-feature-card .form-control:not(textarea) {
+  height: 48px;
+}
+#home-rates-intake .form-control { border-radius: 2px; }
+/* Focus is the one state that should be unmistakable: olive edge, an inset
+   line that thickens it without shifting layout, and a soft ring outside so
+   the active field reads from across the sheet. */
+#home-contact-sheet-section .form-control:focus,
+#welcome-walk-modal-sheet .form-control:focus,
+#home-group-walk-feature-card .form-control:focus {
+  border-color: var(--olive);
+  box-shadow:
+    inset 0 0 0 1px rgba(79, 90, 61, 0.55),
+    0 0 0 3px rgba(79, 90, 61, 0.14);
+  background: #fff;
+}
+
+/* Closing sheet's action row: the accented submit and a quiet secondary for
+   anyone who only wants to ask something. Centred as a pair, wrapping to two
+   full-width buttons on a phone rather than shrinking to fit. */
+#home-meetgreet-submit-row,
+[data-section='meetgreet-submit-row'] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px dashed var(--light-gray);
+}
+[data-section='meetgreet-submit-row'] .btn { padding: 15px 30px; }
+[data-section='meetgreet-submit-row'] .btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+@media (max-width: 560px) {
+  [data-section='meetgreet-submit-row'] .btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+/* Four across only while the columns stay readable; below that the grid steps
+   down to two and then one, and the separator moves from the left edge to the
+   top edge so the hairlines still describe the rows. */
+@media (max-width: 1100px) {
+  #home-featured-reviews-grid { grid-template-columns: repeat(2, 1fr); }
+  #home-featured-reviews-section .review-card:nth-child(-n+2) { padding-top: 0; }
+  #home-featured-reviews-section .review-card:nth-child(n+3) {
+    border-top: 1px solid var(--zine-rule);
+    margin-top: 36px;
+    padding-top: 36px;
+  }
+  #home-featured-reviews-section .review-card:nth-child(odd) {
+    border-left: none;
+    padding-left: 0;
+  }
+  #home-featured-reviews-section .review-card:nth-child(even) { padding-right: 0; }
+}
+@media (max-width: 700px) {
+  #home-featured-reviews-grid { grid-template-columns: 1fr; }
+  #home-featured-reviews-section .review-card {
+    border-left: none;
+    padding: 0;
+  }
+  #home-featured-reviews-section .review-card:nth-child(n+2) {
+    border-top: 1px solid var(--zine-rule);
+    margin-top: 32px;
+    padding-top: 32px;
+  }
 }
 
 @media (max-width: 768px) {
   #home-featured-reviews-header-row { margin-bottom: 40px; }
-  #home-featured-reviews-grid { gap: 36px; }
-  #home-featured-reviews-secondary {
-    border-left: none;
-    padding-left: 0;
-    border-top: 1px solid var(--zine-rule);
-    padding-top: 28px;
-  }
   #home-book-form-wrap #home-contact-sheet-form-sheet { transform: none; }
   #home-book-form-wrap #home-contact-sheet-form-sheet::before {
     left: 16px; top: -15px;
     padding: 6px 12px 5px;
     font-size: 11px; letter-spacing: 0.14em;
   }
+}
+
+
+/* ============================================================
+   HOME PAW WALK — scroll-scrubbed trail down the whole page
+   ============================================================ */
+/* #page-home is the trail's positioning context. No z-index here on purpose:
+   it must not become a stacking context, or the layer below would be trapped
+   behind the sections it is meant to cross. */
+#page-home { position: relative; }
+
+/* Full-page overlay holding the route and every print. Above the sections it
+   crosses, and click-through everywhere except while the dev path editor is
+   on. */
+#home-paw-walk-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* The trail rides the page's backgrounds and passes UNDER everything on top of
+   them. The layer is z-index 4, so every content wrapper that can be crossed is
+   raised past it in one place rather than element by element: section
+   containers, the full-bleed rows that sit outside a container, and the black
+   marquee bars (.trust-bar, below). Anything new that the route crosses and
+   should not be drawn over belongs in this list. */
+#page-home section > .container,
+#home-rates-preview-row,
+#home-team-scroller,
+#home-instagram-section > .container,
+/* The hero's stats bar overhangs the section boundary the trail starts at, so
+   the first prints cross it. */
+#hero-stats-strip { position: relative; z-index: 5; }
+/* The route itself: geometry only, never painted in production. Stretched
+   over the page (preserveAspectRatio="none"), which is what lets the path be
+   authored in a layout-stable 1000x1000 box. */
+#home-paw-walk-path-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+/* The route the prints walk. It used to be geometry only (stroke: none) and
+   visible solely under the ?pawpath editor; it now draws in the page so the
+   line itself can be styled and animated. The two custom properties are the
+   knobs — set them on #home-paw-walk-layer, or per band, to retune. Dash the
+   stroke and tween stroke-dashoffset for a draw-on; path.getTotalLength()
+   gives the length to dash with. */
+#home-paw-walk-path {
+  fill: none;
+  /* Drawn while the route is being dialled in; set --paw-route-stroke to none
+     on #home-paw-walk-layer (or swap this default back) to hide it again. */
+  stroke: var(--paw-route-stroke, rgba(120, 128, 96, 0.55));
+  stroke-width: var(--paw-route-width, 2);
+  stroke-linecap: round;
+  /* The 1000x1000 box is stretched over the whole page, so without this the
+     stroke would be squashed to a sliver horizontally. */
+  vector-effect: non-scaling-stroke;
+}
+
+
+/* Each print stays hidden until gsap reveals it (or until the reduced-motion
+   branch flips the layer to static). Decoration: if gsap never loads, the
+   trail simply doesn't appear. No will-change — there are up to 220 of these
+   and promoting them all costs more than it buys. */
+/* --home-paw-size is only set by the dev tuner; the clamp is the shipped size. */
+.home-paw-step {
+  position: absolute;
+  width: var(--home-paw-size, clamp(34px, 4vw, 52px));
+  height: auto;
+  opacity: 0;
+  visibility: hidden;
+}
+/* Prints crossing a dark section (see DARK_SECTION_SELECTOR) invert to chalk so
+   they stay readable against it. */
+.home-paw-step[data-paw-tone='dark'] { filter: invert(1); }
+
+#home-paw-walk-layer[data-paw-walk-state='static'] .home-paw-step {
+  opacity: 0.2;
+  visibility: visible;
+}
+
+/* Dev only (`?pawpath`): show the route and let MotionPathHelper's handles
+   take pointer events. */
+/* Editing only. The anchors have to clear the page content (which is raised to
+   z-index 5 so the trail passes under it), but the PRINTS must not come with
+   them — lifting the whole layer put paws over the group walk card.
+   So the layer stops being a stacking context (z-index: auto), which drops the
+   prints back under the raised content, and only the route's SVG comes
+   forward and takes pointer events. */
+#home-paw-walk-layer[data-paw-path-edit='on'] { pointer-events: none; z-index: auto; }
+#home-paw-walk-layer[data-paw-path-edit='on'] #home-paw-walk-path-svg {
+  z-index: 50;
+  pointer-events: auto;
+}
+/* While the editor is open, MotionPathHelper draws its own stroke over this
+   same path — showing both read as two routes. Hand the line to the editor. */
+#home-paw-walk-layer[data-paw-path-edit='on'] #home-paw-walk-path { stroke: none; }
+
+/* ============================================================
+   HOME — INSTAGRAM STRIP (#home-instagram-section)
+   Five curated posts as taped polaroids. Sits between the service-area band
+   and the contact sheet, on plain grain so the photos carry the surface.
+   ============================================================ */
+#home-instagram-section {
+  /* The walk-to-the-bridge collage now works as the seam between the voices
+     band and this strip: top-anchored, `100% auto` so it spans the full width
+     of whatever breakpoint the page is on and scales its own height from
+     that. It is a background layer, so it adds no height to either section —
+     it paints over the top of this one. The paper veil sits above it in the
+     stack, keeping it faint enough for the polaroids to stay the subject. */
+  background:
+    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    /* Cream, not warm-white: this strip continues the voices band directly
+       above it, and the lighter fill plus a hairline read as a seam between
+       two sheets instead of one. No border-top for the same reason — the
+       band above drops its border-bottom to match. */
+    linear-gradient(rgba(243, 236, 217, 0.86), rgba(243, 236, 217, 0.80)),
+    var(--cream);
+  scroll-margin-top: var(--nav-h);
+  position: relative;
+}
+/* Nested in the green closing-trust band (ClosingTrust): the band owns the
+   surface, so the strip paints none of its own and drops the seam art that
+   belonged to its old position between two separate sections. Its container
+   is inside that band's container, so the gutter comes off too. */
+#home-closing-trust-section #home-instagram-section {
+  background: none;
+  padding: clamp(48px, 6vw, 80px) 0 0;
+}
+#home-closing-trust-section #home-instagram-section > .container {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+}
+#home-instagram-header { margin-bottom: clamp(36px, 4vw, 56px); }
+#home-instagram-headline { max-width: 18ch; }
+
+#home-instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(16px, 2vw, 28px);
+  list-style: none;
+  /* The tilts push each polaroid past its cell; the row needs room for the
+     lift on hover and the shadow underneath it. */
+  padding: 8px 0 12px;
+}
+.instagram-tile { min-width: 0; }
+.instagram-tile .polaroid { height: 100%; }
+/* Square window: Instagram crops square, and five equal squares hold the row
+   flat regardless of the source aspect ratio. */
+.instagram-tile-window { aspect-ratio: 1 / 1; }
+.instagram-tile-window img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.instagram-tile-caption {
+  font-size: 12px;
+  /* Two lines max, and the box is held at two lines high so a one-line
+     caption does not make its tile shorter than the rest of the row. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(2 * 1.4em);
+  line-height: 1.4;
+}
+
+#home-instagram-follow-row {
+  margin-top: clamp(28px, 3vw, 40px);
+  display: flex; justify-content: center;
+}
+/* Terracotta at rest, olive on hover — the .btn-accent pair, run in that
+   order. The strip now sits on the green band, where an olive-at-rest button
+   would barely separate from its own surface. */
+
+/* ---------- Hover: the post's own counts ---------- */
+/* Gated on a real pointer: on touch there is no hover, and an overlay that
+   only appears mid-tap would hide the photo it belongs to. Touch users get
+   the photo and the caption, and the whole tile is still the link. */
+@media (hover: hover) {
+  .instagram-tile-stats {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    /* Ink, not black: the veil belongs to the paper palette like every other
+       dark surface on the page. */
+    background: rgba(36, 35, 33, 0.62);
+    color: var(--cream);
+    opacity: 0;
+    transition: opacity .22s ease;
+  }
+  .instagram-tile .polaroid:hover .instagram-tile-stats,
+  /* Keyboard parity: the tile is a link, so focus reveals what hover does. */
+  .instagram-tile .polaroid:focus-visible .instagram-tile-stats { opacity: 1; }
+
+  .instagram-tile-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .instagram-tile-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-stamp);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+  }
+  .instagram-tile-stat svg {
+    width: 15px; height: 15px;
+    display: block;
+  }
+  .instagram-tile-stats-cue {
+    font-family: var(--font-type);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(243, 236, 217, 0.72);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .instagram-tile-stats { transition: none; }
+}
+
+@media (max-width: 900px) {
+  /* Below five-across the tiles get too small to read, so the row becomes a
+     swipeable strip instead of wrapping into an uneven 3 + 2. */
+  #home-instagram-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* Full-bleed strip: the first tile still lines up with the heading, and
+       the last one can scroll clear of the right edge. */
+    margin: 0 -32px;
+    padding: 8px 32px 16px;
+    scrollbar-width: none;
+  }
+  #home-instagram-grid::-webkit-scrollbar { display: none; }
+  .instagram-tile {
+    flex: 0 0 68%;
+    max-width: 280px;
+    scroll-snap-align: start;
+  }
+}
+
+/* ============================================================
+   ADMIN SIGN-IN (/admin)
+   The admin door on the marketing design system: paper page, taped card,
+   stamp label, .btn-primary paper ticket. app/admin/layout.tsx still paints
+   the olive body for the dashboard routes, so this page lays its own paper
+   surface across the full viewport rather than changing that layout.
+   ============================================================ */
+#admin-signin-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Clears the fixed site nav so the card centres in the space below it. */
+  padding: calc(var(--nav-h) + 48px) 24px 48px;
+  /* bg5 is the collage with an open middle, so the card lands in the clear
+     space and the Brooklyn/dog scraps frame it. Paper underneath covers the
+     aspect-ratio gap on very tall or very wide viewports. */
+  background: url('/img/bg5.png') center / cover no-repeat, var(--paper);
+  color: var(--ink);
+}
+
+#admin-signin-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 44px 40px 32px;
+  /* .card clips its children; the tape strip hangs off the top edge. */
+  overflow: visible;
+  transform: rotate(-0.6deg);
+  /* Deeper than .card's default shadow: on the collage the sheet has to read
+     as pasted on top of the artwork, not printed into it. */
+  box-shadow: 0 18px 40px rgba(35, 31, 24, 0.28);
+}
+
+/* Same masking-tape scan the home page tapes its cards with, centered on the
+   top edge (see the #page-home tape block above). */
+#admin-signin-card::before {
+  content: '';
+  position: absolute;
+  top: -15px; left: 50%; margin-left: -70px;
+  width: 140px; height: 32px;
+  background: url('/img/tape/tape-hero.webp') center / 100% 100% no-repeat;
+  transform: rotate(-2.5deg);
+  filter: drop-shadow(0 2px 4px rgba(35, 31, 24, 0.16));
+  opacity: 0.94;
+  z-index: 3;
+  pointer-events: none;
+}
+
+#admin-signin-header { margin-bottom: 30px; }
+#admin-signin-card h1 {
+  /* The global h1 clamp is hero-scale; inside a 440px card it needs its own. */
+  font-size: clamp(38px, 7vw, 52px);
+  line-height: 1;
+  color: var(--ink);
+}
+#admin-signin-subtext {
+  font-family: var(--font-type);
+  font-size: 14px;
+  color: var(--muted-ink);
+  margin-top: 10px;
+}
+
+#admin-signin-google-btn {
+  width: 100%;
+  justify-content: center;
+}
+#admin-signin-google-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+#admin-signin-error {
+  font-family: var(--font-type);
+  font-size: 12px;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-top: 14px;
+}
+
+#admin-signin-denied-panel {
+  border-top: 1px solid var(--zine-rule);
+  padding-top: 20px;
+}
+#admin-signin-denied-title {
+  font-family: var(--font-stamp);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 8px;
+}
+#admin-signin-denied-body {
+  font-family: var(--font-type);
+  font-size: 14px;
+  color: var(--muted-ink);
+  margin-bottom: 16px;
+}
+#admin-signin-denied-signout {
+  font-family: var(--font-type);
+  font-size: 14px;
+  color: var(--olive);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+}
+#admin-signin-denied-signout:hover { color: var(--ink); }
+
+@media (max-width: 480px) {
+  #admin-signin-card {
+    padding: 38px 24px 28px;
+    /* Upright on phones — the tilt costs horizontal room the card needs. */
+    transform: none;
+  }
+  #admin-signin-card::before { width: 120px; margin-left: -60px; }
+}
+
+/* =============================================
+   HOME LOADING SCREEN (intro)
+   Gated entirely by data-home-intro on <html>, set before first paint by the
+   inline script in components/marketing/HomeIntroOverlay.tsx. No attribute
+   (reduced motion, JS off, client-side nav back to home) means no loading
+   screen and a normally visible page — the hidden states below only ever
+   apply while the overlay is on screen to replace them.
+   ============================================= */
+#home-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  /* Same paper as the page underneath, so the wipe reads as the sheet being
+     lifted rather than a different surface sliding away. */
+  background: var(--cream) url('/textures/paper-grain.png');
+  background-size: 300px 300px;
+  will-change: transform;
+}
+html[data-home-intro='loading'] #home-intro-overlay,
+html[data-home-intro='revealing'] #home-intro-overlay { display: flex; }
+
+/* Nothing but the overlay while it loads. `visibility` rather than `display`
+   deliberately: the hero and the section-reveal ScrollTriggers still measure
+   their real layout underneath, so nothing re-measures at the reveal. */
+html[data-home-intro='loading'] #main-nav,
+html[data-home-intro='loading'] #page-home { visibility: hidden; }
+html[data-home-intro='loading'] body { overflow: hidden; }
+
+/* The shell is what gsap moves on exit; the bob below stays on the image
+   inside it. A running CSS animation on transform outranks an inline one, so
+   the two must not share an element. */
+#home-intro-walker-shell { display: block; }
+#home-intro-walker-silhouette {
+  /* Overrides the global img rule (width/height 100%, object-fit: cover). */
+  width: min(58vw, 440px);
+  height: auto;
+  object-fit: contain;
+  /* brightness(0) flattens the illustration to solid ink — the silhouette. */
+  filter: brightness(0);
+  opacity: 0.3;
+  /* Mirrored: the source art walks left, and the walker leaves to the right.
+     Carried in the keyframes as well, since a running CSS animation on
+     transform replaces this declaration outright rather than composing. */
+  transform: scaleX(-1);
+  animation: home-intro-walker-bob 2.4s ease-in-out infinite;
+}
+@keyframes home-intro-walker-bob {
+  0%, 100% { transform: scaleX(-1) translateY(0); }
+  50% { transform: scaleX(-1) translateY(-7px); }
+}
+
+@media (max-width: 640px) {
+  #home-intro-walker-silhouette { width: min(76vw, 340px); }
 }

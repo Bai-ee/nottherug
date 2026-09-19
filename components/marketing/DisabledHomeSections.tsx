@@ -37,14 +37,14 @@ export function OtherServicesTeaser() {
           <div className="divider divider-center"></div>
         </div>
         <div className="grid-3" id="home-other-services-grid" style={{ gap: '32px' }}>
-          <div className="service-card" onClick={() => router.push('/services')}>
+          <div className="service-card" onClick={() => router.push('/#home-personalized-care-section')}>
             <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-senior.svg" alt="" loading="lazy" /></div>
             <h3>Senior Dog Visits</h3>
             <p>Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.</p>
             <div className="svc-price">$35<span>/visit</span></div>
             <div className="price-tax-note" style={{ fontSize: '12px', color: 'var(--mid-gray)', fontWeight: 400, marginTop: '2px' }}>+ sales tax</div>
           </div>
-          <div className="service-card" onClick={() => router.push('/services')}>
+          <div className="service-card" onClick={() => router.push('/#home-personalized-care-section')}>
             <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-boarding.svg" alt="" loading="lazy" /></div>
             <h3>Boarding &amp; Overnight Sitting</h3>
             <p>Loving overnight care in your dog&apos;s own home, where they can stick to their routine and sleep in familiar surroundings while you&apos;re away.</p>
@@ -52,7 +52,7 @@ export function OtherServicesTeaser() {
             <div className="price-tax-note" style={{ fontSize: '12px', color: 'var(--mid-gray)', fontWeight: 400, marginTop: '2px' }}>+ sales tax</div>
             <div className="svc-badge">7+ day discounts</div>
           </div>
-          <div className="service-card" onClick={() => router.push('/services')}>
+          <div className="service-card" onClick={() => router.push('/#home-personalized-care-section')}>
             <div className="service-icon-badge" aria-hidden="true"><img src="/img/icons/service-cat.svg" alt="" loading="lazy" /></div>
             <h3>Cat Visits</h3>
             <p>Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We&apos;ll also water plants, bring in the mail, and keep an eye on your home while you&apos;re away.</p>
@@ -61,7 +61,7 @@ export function OtherServicesTeaser() {
           </div>
         </div>
         <div style={{ textAlign: 'center', marginTop: '40px' }}>
-          <Link href="/services" className="btn btn-outline">See All Services &amp; Rates</Link>
+          <Link href="/#home-personalized-care-section" className="btn btn-outline">See All Services &amp; Rates</Link>
         </div>
       </div>
     </section>

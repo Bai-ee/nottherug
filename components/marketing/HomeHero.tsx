@@ -3,13 +3,14 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
+import { openWelcomeWalkModal } from './WelcomeWalkModal';
 
 export default function HomeHero() {
   const heroRef = useRef<HTMLElement | null>(null);
   useHomeHeroMotion(heroRef);
 
   return (
-    <section className="hero" ref={heroRef}>
+    <section className="hero" id="hero-section-shell" ref={heroRef}>
       <div className="hero-visual" id="hero-visual-video-shell">
         <figure className="polaroid polaroid-tilt-right taped taped-center" id="hero-polaroid-frame">
           <div className="polaroid-window" id="hero-polaroid-window">
@@ -26,11 +27,50 @@ export default function HomeHero() {
         <div className="hero-eyebrow" id="hero-eyebrow-stamp-row">
           <span className="stamp-label" id="hero-stamp-label">Williamsburg, Brooklyn &middot; Est. 2011</span>
         </div>
-        <h1 className="hero-h1">Your dog deserves<br /><em>someone they know.</em></h1>
-        <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently. Because peace of mind starts with knowing exactly who&apos;s holding the leash.</p>
+        <h1 className="hero-h1" id="hero-headline">
+          {/* Four hard-broken lines, kept at the top level of the h1: the
+              hero word-split in useHomeHeroMotion only re-emits <br>s that are
+              direct children, so a <br> nested inside <em> would be dropped
+              once the entrance animation rebuilds the markup. */}
+          Your dog<br />deserves<br /><em>someone they</em><br /><em>know.</em>
+        </h1>
+        <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently.</p>
         <div className="hero-actions" id="hero-actions-row">
-          <Link href="/book" className="btn btn-primary" id="hero-cta-primary">Book Luis, for a Meet &amp; Greet</Link>
-          <Link href="/services" className="btn btn-ghost" id="hero-cta-secondary">View Services</Link>
+          {/* Primary action keeps the reader on the page: it scrolls down to
+              the services rundown. The href is the real anchor so it still
+              works before hydration and with JS off. */}
+          <a
+            href="#home-personalized-care-section"
+            className="btn btn-primary btn-accent"
+            id="hero-cta-primary"
+            onClick={(e) => {
+              const target = document.getElementById('home-personalized-care-section');
+              if (!target) return; // no section on this page — let the anchor do its thing
+              e.preventDefault();
+              target.scrollIntoView({
+                // globals.css deliberately omits `scroll-behavior: smooth`, so
+                // callers opt in; honour the reduced-motion preference here.
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                block: 'start',
+              });
+            }}
+          >
+            View Services
+          </a>
+          {/* Opens the welcome modal (group walk offer + intake). The href
+              stays a real link so the button still works before hydration and
+              with JS off — /contact carries the same meet & greet form. */}
+          <Link
+            href="/contact"
+            className="btn btn-ghost"
+            id="hero-cta-secondary"
+            onClick={(e) => {
+              e.preventDefault();
+              openWelcomeWalkModal();
+            }}
+          >
+            Contact Luis
+          </Link>
         </div>
       </div>
       <div className="hero-stats" id="hero-stats-strip">

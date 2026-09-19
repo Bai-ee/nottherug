@@ -156,6 +156,18 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+
+  // The standalone /services and /how-it-works pages are gone — rates live in
+  // the home page's #home-personalized-care-section panel and the process steps
+  // in #home-how-it-works-section. Old links and bookmarks land there.
+  // Not permanent: a 308 would be cached by browsers indefinitely, and this
+  // consolidation is still settling.
+  async redirects() {
+    return [
+      { source: '/services', destination: '/#home-personalized-care-section', permanent: false },
+      { source: '/how-it-works', destination: '/#home-how-it-works-section', permanent: false },
+    ];
+  },
   serverExternalPackages: ['sharp', 'firebase-admin'],
 
   outputFileTracingExcludes: {

@@ -1,20 +1,51 @@
 import Link from 'next/link';
-import CertificationStrip from './CertificationStrip';
+import { WILLIAMSBURG } from '@/lib/content/coverage';
+import { EMAIL_HREF } from '@/lib/content/contact';
+import AlwaysIncluded from './AlwaysIncluded';
+import InstagramGrid from './InstagramGrid';
 
 // Closing trust recap — safety credentials + Williamsburg-specific proof
 // combined into one section, positioned right before Reviews as the site's
-// final "why us" push before the ask. Copy is reused verbatim from the
+// final "why us" push before the ask. No header of its own: it reads as a
+// continuation of the process steps above it, not a new pitch. Copy is reused verbatim from the
 // /safety and /neighborhoods/williamsburg pages (source of truth for these
 // claims), same as in the original app/page.tsx.
 export default function ClosingTrust() {
   return (
     <section className="section" id="home-closing-trust-section">
       <div className="container">
-        <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-          <div className="label">Why Williamsburg Trusts Us</div>
-          <h2>Insured, background-checked, and <em style={{ fontStyle: 'normal', color: 'var(--sage-light)' }}>local since 2011</em></h2>
-        </div>
         <div className="grid-2" id="home-closing-trust-grid" style={{ gap: '56px', alignItems: 'start' }}>
+          <div id="home-closing-williamsburg-pitch">
+            <h3>We&apos;re a Williamsburg service, through and through</h3>
+            <p style={{ fontSize: '16px', lineHeight: '1.8', marginTop: '12px' }}>We know every park, shortcut, and puddle to avoid — because we&apos;ve been walking these blocks since 2011. Not a citywide app dispatching whoever&apos;s nearest: the same local team, every time.</p>
+            {/* The named parks back the claim directly above them: this is the
+                list of blocks the paragraph is talking about. Moved here from
+                the service-area band, where it sat a screen away from the
+                sentence it proves. */}
+            <div id="home-closing-parks-row">
+              <div id="home-closing-parks-label">Parks We Walk</div>
+              <div id="home-closing-parks-list">
+                {WILLIAMSBURG.parks.map((park) => (
+                  <span className="trust-park-tag" key={park}>{park}</span>
+                ))}
+              </div>
+              <p id="home-closing-parks-note">{WILLIAMSBURG.tagline}</p>
+            </div>
+            <div className="divider" style={{ margin: '28px 0' }}></div>
+            <div id="home-closing-cta-row" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+              <Link href="/book" className="btn btn-primary btn-accent" id="home-closing-book-luis-cta">Contact Luis, to Get Started</Link>
+              {/* Secondary action beside the client CTA — walkers, not clients.
+                  There is no careers route, so it opens a mail to Luis with the
+                  subject filled in; swap the href if a hiring page lands. */}
+              <a
+                id="home-closing-join-team-cta"
+                className="btn btn-outline"
+                href={`${EMAIL_HREF}?subject=${encodeURIComponent('Joining the Not The Rug team')}`}
+              >
+                Join Our Team
+              </a>
+            </div>
+          </div>
           <div id="home-closing-safety-list">
             <div style={{ display: 'flex', gap: '16px', padding: '20px 0', borderBottom: '1px solid var(--light-gray)' }}>
               <div className="trust-icon-box" style={{ flexShrink: 0 }}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -45,17 +76,17 @@ export default function ClosingTrust() {
               </div>
             </div>
           </div>
-          <div id="home-closing-williamsburg-pitch">
-            <h3>We&apos;re a Williamsburg service, through and through</h3>
-            <p style={{ fontSize: '16px', lineHeight: '1.8', marginTop: '12px' }}>We know every park, shortcut, and puddle to avoid — because we&apos;ve been walking these blocks since 2011. Not a citywide app dispatching whoever&apos;s nearest: the same local team, every time.</p>
-            <div className="divider" style={{ margin: '28px 0' }}></div>
-            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <Link href="/book" className="btn btn-primary">Book a Walk in Williamsburg</Link>
-              <Link href="/contact" className="btn btn-outline">Ask About Williamsburg Coverage</Link>
-            </div>
-          </div>
         </div>
-        <CertificationStrip id="home-closing-cert-strip" style={{ justifyContent: 'center', marginTop: '56px' }} />
+        {/* The four "included with every walk" callouts close this band: the
+            credentials above say who walks your dog, these say what every walk
+            carries. Moved here from the How It Works strip. */}
+        <AlwaysIncluded />
+        {/* The feed closes the band, directly under the "no contracts" line:
+            the promise, then five photographs of it. It keeps its own section
+            element for the id and the anchor, but paints no surface of its own
+            inside here — see #home-closing-trust-section #home-instagram-section
+            in globals.css. */}
+        <InstagramGrid />
       </div>
     </section>
   );

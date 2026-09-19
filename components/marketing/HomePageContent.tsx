@@ -5,13 +5,19 @@ import SiteNav from '@/components/SiteNav';
 import MeetGreetForm from '@/components/MeetGreetForm';
 import HomeHero from './HomeHero';
 import ProofMarquee from './ProofMarquee';
-import HowItWorksStrip from './HowItWorksStrip';
+import WalkConceptsMarquee from './WalkConceptsMarquee';
 import TrustBar from './TrustBar';
 import ServicesPreview from './ServicesPreview';
+import TeamBand from './TeamBand';
 import ClosingTrust from './ClosingTrust';
 import FeaturedReviews from './FeaturedReviews';
 import SiteFooter from './SiteFooter';
+import WelcomeWalkModal from './WelcomeWalkModal';
+import HomeIntroOverlay from './HomeIntroOverlay';
+import HomePawWalk from './HomePawWalk';
+import HowItWorksStrip from './HowItWorksStrip';
 import { useSectionReveals } from './hooks/useSectionReveals';
+import { useScrollToTopOnLoad } from './hooks/useScrollToTopOnLoad';
 import {
   PersonalizedCareCarousel,
   OtherServicesTeaser,
@@ -23,61 +29,115 @@ import {
 
 export default function HomePageContent() {
   const pageRef = useRef<HTMLDivElement | null>(null);
+  // Home always opens at the top — no restored offset mid-page while the
+  // reveals replay from the start.
+  useScrollToTopOnLoad();
   useSectionReveals(pageRef);
 
   return (
     <>
+      {/* Loading screen. First in the tree so its inline gate script runs
+          before the nav or the page paint — nothing is on screen ahead of the
+          walker silhouette. */}
+      <HomeIntroOverlay />
+
       <SiteNav />
 
-      {/* Fixed circular brand seal, bottom-right of the viewport. Visibility
-          (home only) is handled in CSS via #home-floating-logo-badge's
-          :has() selector — this element only needs to exist on the home
-          route, which it now does since this component is home-only. */}
-      <img id="home-floating-logo-badge" src="/logos/notRugGreen.png" alt="Not The Rug NYC dog walking" />
+      {/* First-visit popup promoting the free meet & greet. Home only — /book
+          and /contact already put the form in front of the visitor. */}
+      <WelcomeWalkModal />
 
-      {/* id + "active" class kept: globals.css gates #home-floating-logo-badge
-          and several homepage-only masking-tape decorations on
-          `#page-home.active` / `#page-home .foo` (see :has() rule above). */}
+      {/* id + "active" class kept: globals.css gates several homepage-only
+          masking-tape decorations on `#page-home.active` / `#page-home .foo`. */}
       <div id="page-home" className="page active" ref={pageRef}>
+        {/* Paw trail walking the whole page along an editable SVG route.
+            First child so it measures #page-home, and z-indexed above the
+            sections it crosses — see lib/marketing/paw-walk-path.ts. */}
+        <HomePawWalk />
+
         <HomeHero />
-        <ProofMarquee />
-        <HowItWorksStrip />
+
+        {/* Rates follow the fold directly — the featured Group Walk card is
+            the page's primary conversion surface. Everything else follows. */}
+        <ServicesPreview />
+
+        {/* The dark trust bar closes the rates section: pricing first, then a
+            full-bleed black rule of credentials under it. */}
         <TrustBar />
+
+        <TeamBand />
+
+        {/* Roster first: the steps below describe what these people do, so the
+            faces come before the process. Same surface as the strip, so the
+            two bands read as one. */}
+
+        {/* Credentials sit directly under the roster: these are the people,
+            and this is what backs them — insured, checked, local. Header-less
+            and pad-less on top so it reads as one band with the faces above. */}
+        <ClosingTrust />
+
+        {/* The process steps answer the question the rates raise — what do I
+            actually get. Its own dark band now (it used to be nested inside
+            the sage-dark reviews band and inherited that surface). */}
+
+        {/* Review quotes scroll past, then the reviews section they come
+            from. Both run on cream, so the marquee and the voices band read as
+            one light break after the green process strip. */}
+        <ProofMarquee />
+        <FeaturedReviews />
+
+        {/* Black seam line between the voices band and the process strip that
+            opens the closing band — the walk itself, listed. */}
+        {/* Process block on cream, under the voices band: the clients speak,
+            then what working with us actually looks like. Trial placement —
+            it used to open the green closing band above the form. */}
+        <section className="section" id="home-process-section">
+          <div className="container">
+            <HowItWorksStrip />
+          </div>
+        </section>
+
+        <WalkConceptsMarquee />
 
         {/* Animated product carousel — disabled per current direction; the
             static rate cards in ServicesPreview replace it. Left in place
             (not deleted) in case it comes back. */}
         {false && <PersonalizedCareCarousel />}
-        <ServicesPreview />
-
-        <ClosingTrust />
-        <FeaturedReviews />
 
         {false && <OtherServicesTeaser />}
 
+        {/* Closing band: the How It Works / Meet & Greet sheet and the footer
+            share one shell so a single background paints across both. Each of
+            them used to carry its own surface, and the two met as a visible
+            crease at the seam. Their backgrounds are cleared inside this shell
+            (see #home-closing-band-shell in globals.css). */}
+        <div id="home-closing-band-shell">
         <section className="section" id="home-contact-sheet-section">
           <div className="container">
+            {/* The process steps close the page inside this band, directly
+                above the form they lead to — the strip dropped its own section
+                chrome so the green runs unbroken. */}
             <div id="home-contact-sheet-header">
-              <div className="stamp-label stamp-label-dark stamp-label-heading">Form 02 · Meet &amp; Greet</div>
+              <div className="stamp-label stamp-label-dark stamp-label-heading">Sign Up 05 · Let’s Get Started</div>
               <h2>What We&apos;d Like to Know....</h2>
             </div>
             <div id="home-book-form-wrap" className="booking-form-wrap">
               <div className="booking-form" id="home-contact-sheet-form-sheet">
                 <div className="booking-form-body">
-                  <MeetGreetForm paneId="home-meetgreet" source="home" />
+                  <MeetGreetForm paneId="home-meetgreet" source="home" layout="full" />
                 </div>
               </div>
             </div>
           </div>
         </section>
+          <SiteFooter />
+        </div>
 
         {false && <WeekdayBenefits />}
         {false && <VisitIncludes />}
         {false && <FounderPullQuote />}
         {false && <NeighborhoodTeaser />}
       </div>
-
-      <SiteFooter />
     </>
   );
 }

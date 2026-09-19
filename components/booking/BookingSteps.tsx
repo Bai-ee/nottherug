@@ -11,11 +11,11 @@ import {
 import type { BookingFieldErrors, BookingFormValues, BookingStepDef, RegisterField } from './types';
 
 export const BOOKING_STEPS: BookingStepDef[] = [
-  { key: 'you', label: 'You', title: 'First — a little about you' },
+  { key: 'you', label: 'You', title: 'A little about you' },
   { key: 'dog', label: 'Your dog', title: 'Now, tell us about your dog' },
   { key: 'care', label: 'The care', title: 'What kind of care are you looking for?' },
   { key: 'quirks', label: 'Quirks', title: 'Anything we should watch for?' },
-  { key: 'wrap', label: 'Wrap up', title: 'Last step — anything else?' },
+  { key: 'wrap', label: 'Wrap up', title: 'Last step: anything else?' },
 ];
 
 type FieldAria = {
@@ -302,6 +302,13 @@ type WrapUpProps = {
   notes: string;
   onNotesChange: (value: string) => void;
   phoneConsult: boolean;
+  /**
+   * Booked-details mode: the visitor already has an appointment, so offering
+   * a phone consultation "instead" of scheduling makes no sense. Hidden
+   * entirely rather than disabled, so nothing on-screen implies a choice
+   * that is not actually available.
+   */
+  hidePhoneConsult?: boolean;
   onPhoneConsultChange: (value: boolean) => void;
   errors: BookingFieldErrors;
   alertId: string;
@@ -314,6 +321,7 @@ export function StepWrapUp({
   onNotesChange,
   phoneConsult,
   onPhoneConsultChange,
+  hidePhoneConsult = false,
   errors,
   alertId,
   registerField,
@@ -327,7 +335,7 @@ export function StepWrapUp({
           ref={registerField('notes')}
           className="form-control"
           rows={3}
-          placeholder="Quirks, anxieties, medication needs, building access info — anything helpful"
+          placeholder="Quirks, anxieties, medication needs, building access info, anything helpful"
           autoComplete="off"
           value={notes}
           onChange={(e) => onNotesChange(e.target.value)}
@@ -335,27 +343,29 @@ export function StepWrapUp({
         />
       </div>
 
-      <label
-        htmlFor={`${paneId}-phone-consult`}
-        data-survey="phone-consult"
-        style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', padding: '16px', border: `1px solid ${phoneConsult ? 'var(--sage-dark)' : 'var(--light-gray)'}`, borderRadius: 'var(--radius)', background: phoneConsult ? 'var(--sage-light, #edf3db)' : 'white', marginBottom: '24px', transition: 'all 0.15s' }}
-      >
-        <input
-          id={`${paneId}-phone-consult`}
-          type="checkbox"
-          checked={phoneConsult}
-          onChange={(e) => onPhoneConsultChange(e.target.checked)}
-          style={{ accentColor: 'var(--sage-dark)', width: '16px', height: '16px', flexShrink: 0, marginTop: '2px' }}
-        />
-        <div>
-          <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '3px' }}>
-            Request a phone consultation instead
+      {!hidePhoneConsult && (
+        <label
+          htmlFor={`${paneId}-phone-consult`}
+          data-survey="phone-consult"
+          style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', padding: '16px', border: `1px solid ${phoneConsult ? 'var(--sage-dark)' : 'var(--light-gray)'}`, borderRadius: 'var(--radius)', background: phoneConsult ? 'var(--sage-light, #edf3db)' : 'white', marginBottom: '24px', transition: 'all 0.15s' }}
+        >
+          <input
+            id={`${paneId}-phone-consult`}
+            type="checkbox"
+            checked={phoneConsult}
+            onChange={(e) => onPhoneConsultChange(e.target.checked)}
+            style={{ accentColor: 'var(--sage-dark)', width: '16px', height: '16px', flexShrink: 0, marginTop: '2px' }}
+          />
+          <div>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--charcoal)', marginBottom: '3px' }}>
+              Request a phone consultation instead
+            </div>
+            <div style={{ fontSize: '13px', color: 'var(--mid-gray)' }}>
+              Prefer to talk first? We&apos;ll call you to answer questions before scheduling.
+            </div>
           </div>
-          <div style={{ fontSize: '13px', color: 'var(--mid-gray)' }}>
-            Prefer to talk first? We&apos;ll call you to answer questions before scheduling.
-          </div>
-        </div>
-      </label>
+        </label>
+      )}
     </>
   );
 }

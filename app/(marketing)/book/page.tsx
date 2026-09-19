@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import MeetGreetForm from '@/components/MeetGreetForm';
+import BookingOnboardingIntake from '@/components/booking/BookingOnboardingIntake';
+import { parseBookingPrefill } from '@/lib/leads/prefill';
 import { buildPageMetadata } from '@/lib/content/site';
 
 export const metadata: Metadata = buildPageMetadata({
@@ -9,7 +10,17 @@ export const metadata: Metadata = buildPageMetadata({
   description: 'No commitment, no charge. We come to you, meet your dog, and answer every question.',
 });
 
-export default function BookPage() {
+// The welcome modal (components/marketing/WelcomeWalkModal.tsx) sends visitors
+// here with their two answers in the query string. parseBookingPrefill only
+// accepts values that match the shared option lists, so anything else is
+// ignored and the form opens with its normal defaults.
+export default async function BookPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const prefill = parseBookingPrefill(await searchParams, 'book-page');
+
   return (
     <div id="book-page" className="page" style={{ display: 'block' }}>
       <nav id="main-nav">
@@ -62,7 +73,15 @@ export default function BookPage() {
           <div className="booking-form-wrap">
             <div className="booking-form">
               <div id="book-form-body" className="booking-form-body">
-                <MeetGreetForm paneId="book-tab-meetgreet" source="book-page" />
+                {/* Same props as before, now via the wrapper that also reads
+                    the welcome modal's sessionStorage handoff when the visitor
+                    arrives at ?onboarding=welcome. */}
+                <BookingOnboardingIntake
+                  paneId="book-tab-meetgreet"
+                  source={prefill.source}
+                  initialValues={prefill.values}
+                  initialPhoneConsult={prefill.phoneConsult}
+                />
               </div>
             </div>
           </div>

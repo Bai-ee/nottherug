@@ -5,8 +5,8 @@
 
 export const LEGACY_PAGE_REDIRECTS: Record<string, string> = {
   home: '/',
-  services: '/services',
-  'how-it-works': '/how-it-works',
+  services: '/#home-personalized-care-section',
+  'how-it-works': '/#home-how-it-works-block',
   about: '/about',
   safety: '/safety',
   neighborhoods: '/neighborhoods/williamsburg',

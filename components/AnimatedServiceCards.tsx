@@ -747,7 +747,7 @@ export default function AnimatedServiceCards() {
   // components/marketing/DisabledHomeSections.tsx, so this never runs on the
   // live site — kept as a real Next.js navigation instead of the removed SPA
   // `window.showPage` global (R13) in case the carousel is re-enabled later.
-  const goToServices = () => router.push("/services");
+  const goToServices = () => router.push("/#home-personalized-care-section");
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tapeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const priceRefs = useRef<(HTMLDivElement | null)[]>([]);

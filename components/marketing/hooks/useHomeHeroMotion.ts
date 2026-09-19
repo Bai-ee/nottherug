@@ -2,6 +2,7 @@
 
 import { useEffect, type RefObject } from 'react';
 import { loadGsap, prefersReducedMotion, type GsapBundle } from './gsapLoader';
+import { waitForHomeIntro } from './homeIntroGate';
 
 type GsapContext = ReturnType<GsapBundle['gsap']['context']>;
 
@@ -52,7 +53,8 @@ function splitIntoWords(el: HTMLElement) {
  * Home hero: headline word-in entrance, background clip-path reveal, hero
  * image scroll parallax, and the animated stat counters. Scoped to the hero
  * section ref — reverting on unmount only tears down this section's timeline
- * and ScrollTriggers. Under prefers-reduced-motion, or if gsap fails to load,
+ * and ScrollTriggers. The entrance waits on the home loading screen (see
+ * homeIntroGate): it plays as the overlay wipes away, not behind it. Under prefers-reduced-motion, or if gsap fails to load,
  * the hero renders with its normal (already visible) markup — nothing here
  * ever hides it via CSS ahead of time.
  */
@@ -64,8 +66,8 @@ export function useHomeHeroMotion(heroRef: RefObject<HTMLElement | null>) {
     let cancelled = false;
     let ctx: GsapContext | undefined;
 
-    loadGsap()
-      .then(({ gsap, ScrollTrigger }) => {
+    Promise.all([loadGsap(), waitForHomeIntro()])
+      .then(([{ gsap, ScrollTrigger }]) => {
         if (cancelled) return;
 
         ctx = gsap.context(() => {
@@ -83,7 +85,15 @@ export function useHomeHeroMotion(heroRef: RefObject<HTMLElement | null>) {
           if (words.length) {
             gsap
               .timeline({ delay: 0.12, defaults: { ease: 'power4.out' } })
-              .to('.hero-visual', { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease: 'power4.inOut' }, 0)
+              .to('.hero-visual', {
+                clipPath: 'inset(0 0% 0 0)',
+                duration: 1.1,
+                ease: 'power4.inOut',
+                // A finished inset(0) still clips to the element's own box, so
+                // the polaroid badge that hangs off its left edge came back
+                // cut. Drop the property once the wipe is done.
+                onComplete: () => gsap.set('.hero-visual', { clipPath: 'none' }),
+              }, 0)
               .to('.hero-eyebrow', { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out' }, '-=0.4')
               .to(words, { y: '0%', duration: 0.88, stagger: 0.065 }, '-=0.35')
               .addLabel('afterHeadline')

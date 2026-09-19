@@ -2,20 +2,92 @@
 
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { isVerifiedCalendlyBookingEvent } from '@/lib/analytics/verifiedOrigin';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   calendlyUrl: string;
+  /**
+   * Invoked exactly once per attempt, and only for a scheduling message that
+   * passes BOTH checks in isVerifiedCalendlyBookingEvent: Calendly's origin
+   * AND this dialog's own iframe window. Never inferred from the dialog
+   * merely being open — the welcome modal's booked confirmation hangs off
+   * this callback, so a looser check here would let any page post a fake
+   * booking into it.
+   */
+  onBooked?: () => void;
+  /** A changed value starts a NEW attempt: the completion dedupe resets. */
+  attemptId?: string;
+  /**
+   * Small caps line above the title. Defaults to "Step 2 of 2", true of the
+   * questionnaire-first flow this dialog was built for (form, then
+   * scheduler). The welcome modal opens it as its own second step with a
+   * confirmation still to come, so it passes its own label instead.
+   */
+  eyebrow?: string;
 };
+
+/**
+ * Turns one verified Calendly message into exactly one onBooked call.
+ * `hasFired` is owned by the caller (a ref) so dedupe survives the dialog
+ * being closed and reopened inside the same attempt — Calendly can post the
+ * same event_scheduled message more than once for a single real booking.
+ * Reads nothing from event.data beyond what the verifier inspects: that
+ * payload carries the visitor's name and email, and none of it is forwarded
+ * anywhere. Exported, free of component state, so it can be unit-tested.
+ */
+export function createBookingCompletionHandler(
+  getIframeWindow: () => Window | null,
+  hasFired: { current: boolean },
+  onBooked?: () => void,
+) {
+  return function handleCalendlyMessage(event: MessageEvent) {
+    if (hasFired.current) return;
+    if (!isVerifiedCalendlyBookingEvent(event, getIframeWindow())) return;
+    hasFired.current = true;
+    if (!onBooked) return;
+    try {
+      onBooked();
+    } catch (err) {
+      // A caller's callback must never take this listener down with it.
+      console.warn('[booking] onBooked callback failed', err);
+    }
+  };
+}
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
 
-export default function SchedulingDialog({ open, onClose, calendlyUrl }: Props) {
+export default function SchedulingDialog({ open, onClose, calendlyUrl, onBooked, attemptId, eyebrow = 'Step 2 of 2' }: Props) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // Persists for the dialog's whole mount lifetime by default; the effect
+  // below is the one exception, for a genuinely new attempt.
+  const bookingObservedRef = useRef(false);
+  const attemptIdRef = useRef(attemptId);
+
+  useEffect(() => {
+    if (attemptId !== undefined && attemptId !== attemptIdRef.current) {
+      bookingObservedRef.current = false;
+    }
+    attemptIdRef.current = attemptId;
+  }, [attemptId]);
+
+  // Only listens while the dialog (and its iframe) are actually mounted;
+  // always removed on close or unmount.
+  useEffect(() => {
+    if (!open) return;
+    const handleMessage = createBookingCompletionHandler(
+      () => iframeRef.current?.contentWindow ?? null,
+      bookingObservedRef,
+      onBooked,
+    );
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [open, onBooked]);
 
   // Lock body scroll while open, restore it (and the page's scroll position) on close.
   useEffect(() => {
@@ -159,8 +231,9 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl }: Props) 
                 textTransform: 'uppercase',
                 color: 'rgba(237,243,219,0.6)',
               }}
+              id="calendly-modal-eyebrow"
             >
-              Step 2 of 2
+              {eyebrow}
             </div>
             <div
               id="calendly-modal-title"
@@ -199,6 +272,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl }: Props) 
           </button>
         </div>
         <iframe
+          ref={iframeRef}
           id="calendly-modal-iframe"
           title="Calendly scheduling"
           src={calendlyUrl}

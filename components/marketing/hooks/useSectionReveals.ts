@@ -10,7 +10,9 @@ const CARD_SELECTOR = [
   // section never renders, so this selector list matches the live home page
   // exactly as it did in app/page.tsx's initSectionReveals.
   '.service-card:not(#home-animated-products-grid .service-card)',
-  '.review-card',
+  // The home voices band renders static — four equal columns whose bylines
+  // line up across the row, which a per-card fade breaks up (FeaturedReviews).
+  '.review-card:not(#home-featured-reviews-section .review-card)',
   '.hood-card',
   '.trust-card',
   '.pricing-card',
@@ -20,24 +22,21 @@ const CARD_SELECTOR = [
   '.cta-band',
   '.contact-card',
   '.package-tier',
-  '.booking-form',
+  // Both home-page form sheets render static: the rates section's intake and
+  // the contact sheet at the foot of the page ("A little about you"). A form
+  // that fades up as you reach it moves under the cursor of someone already
+  // reaching for its first field.
+  '.booking-form:not(#home-rates-intake-sheet):not(#home-contact-sheet-form-sheet)',
   '.phase-callout',
 ].join(',');
 
-const HEADING_SELECTOR = [
-  '.section h2',
-  '.section h3:not(.service-card h3)',
-  '.section .label',
-  '.page-hero h1',
-  '.page-hero p',
-  '.book-hero h1',
-  '.book-hero p',
-].join(',');
-
 /**
- * Fades up headings and cards as they scroll into view, scoped to the page
- * container passed in. Each page owns its own instance and its own
- * gsap.context — reverting on unmount touches only this page's triggers.
+ * Fades up cards as they scroll into view, scoped to the page container
+ * passed in. Section headers (h2/h3/.label) render static — they are not
+ * revealed, so a header is never hidden while its section is on screen.
+ *
+ * Each page owns its own instance and its own gsap.context — reverting on
+ * unmount touches only this page's triggers.
  */
 export function useSectionReveals(containerRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
@@ -51,20 +50,7 @@ export function useSectionReveals(containerRef: RefObject<HTMLElement | null>) {
       .then(({ gsap, ScrollTrigger }) => {
         if (cancelled) return;
         ctx = gsap.context(() => {
-          const headings = Array.from(container.querySelectorAll(HEADING_SELECTOR));
           const cards = Array.from(container.querySelectorAll(CARD_SELECTOR));
-
-          if (headings.length) {
-            gsap.set(headings, { autoAlpha: 0, y: 26 });
-            ScrollTrigger.batch(headings, {
-              onEnter: (batch) => gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out', overwrite: true }),
-              onEnterBack: (batch) => gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out', overwrite: true }),
-              onLeave: (batch) => gsap.to(batch, { autoAlpha: 0, y: 26, duration: 0.4, stagger: 0.04, ease: 'power3.out', overwrite: true }),
-              onLeaveBack: (batch) => gsap.to(batch, { autoAlpha: 0, y: 26, duration: 0.4, stagger: 0.04, ease: 'power3.out', overwrite: true }),
-              start: 'top 90%',
-              end: 'bottom top',
-            });
-          }
 
           if (cards.length) {
             gsap.set(cards, { autoAlpha: 0, y: 52 });

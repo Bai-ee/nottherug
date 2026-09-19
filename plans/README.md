@@ -4,6 +4,9 @@
 | --- | --- | --- | --- |
 | [001](001-reversible-section-reveals.md) | Make section reveal animations reverse on scroll-up (play in, play out) | MEDIUM | DONE |
 | [002](002-production-readiness.md) | Production readiness, code cleanup, and Claude execution plan | HIGH | PLANNED |
+| [006](006-homepage-ui-merge-handoff.md) | Homepage UI merge handoff (two trees, uncommitted) | HIGH | OPEN |
+| [007](007-homepage-instagram-section-2026-09-18.md) | Homepage Instagram section — session record, 2026-09-18 | MEDIUM | BUILT, UNCOMMITTED |
+| [008](008-2026-09-18-paw-walk-and-band-session.md) | Paw walk + band layout session, 2026-09-18 | MEDIUM | UNCOMMITTED |
 
 ## Execution order
 
