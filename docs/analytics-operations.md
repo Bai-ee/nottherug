@@ -190,30 +190,48 @@ something is broken:
   selected range falls before the "Tracking starts on [date]" note — see
   below.
 
-## Known retention gap
+## Retention
 
-**`analyticsRateLimits` documents (the rate-limiter's per-IP, per-minute
-counters) have no expiry.** Each one is small, but they accumulate forever —
-one new document roughly every minute a visitor is active, indefinitely.
-This mirrors an identical, already-known gap in the `leadRateLimits`
-collection used by the booking form; it is not a new problem introduced by
-this feature.
+Every analytics document now carries its own expiry date, written when the
+document is created:
 
-**What to do about it:** this is not urgent at 100 visits/day (the storage
-cost is trivial for a long time), but it should eventually be cleaned up by
-one of:
-- A scheduled Cloud Function or Firestore TTL policy that deletes
-  `analyticsRateLimits` documents older than a day or two (they're only ever
-  read within the same 60-second window they were written in, so anything
-  older is dead weight).
-- A manual periodic cleanup if a scheduled job is not worth setting up yet.
+| Collection | Field | Expires |
+| --- | --- | --- |
+| `analytics_events` | `expiresAt` | 13 months after the event was received |
+| `analyticsRateLimits` | `expiresAt` | 48 hours after the counter's minute |
 
-**Developer note:** `analytics_events` (the actual traffic data, as opposed
-to the rate-limit counters) does *not* have a retention policy defined
-either. That is a deliberate scope decision to revisit later, not an
-oversight — see the plan's "Tracking and storage design constraints"
-("Define a modest retention policy... before activation"). Decide on and
-implement one before this has been running for a long time in production.
+The field is a real Firestore timestamp, which is what a TTL policy needs.
+Nothing deletes the documents until that policy exists — stamping is done in
+code, expiring is a project setting.
+
+**Developer — one-time TTL setup (not yet applied to any deployed project).**
+Run these once per Firebase project, replacing `<project-id>` with the value
+of `FIREBASE_ADMIN_PROJECT_ID`:
+
+```bash
+gcloud firestore fields ttls update expiresAt \
+  --collection-group=analytics_events --enable-ttl --project=<project-id>
+
+gcloud firestore fields ttls update expiresAt \
+  --collection-group=analyticsRateLimits --enable-ttl --project=<project-id>
+```
+
+Verify with:
+
+```bash
+gcloud firestore fields ttls list --project=<project-id>
+```
+
+Firestore deletes expired documents within about 24 hours of their expiry, so
+"expired" and "gone" are not the same minute. Deletions count as ordinary
+document deletes for billing.
+
+**Backlog written before the policy.** Documents created before this change
+have no `expiresAt`, so TTL will never touch them. The protected manual
+cleanup endpoint stays for exactly that case — see
+`app/api/admin/analytics/cleanup/route.ts`. It is bounded (at most 300
+deletes per collection per run), idempotent, and reports whether more remain,
+so an old backlog is cleared by calling it a few times.
 
 ## If the dashboard looks empty
 
