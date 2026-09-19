@@ -665,6 +665,13 @@ export default function BookingForm({
         </div>
         </>
         )}
+
+        {/* Plain-language version of what the analytics in this file do, shown
+            where a visitor is actually typing (plan 009 P4). */}
+        <p id="booking-tracking-disclosure" className="form-note">
+          We count visits to our own site without cookies. We never store what you type
+          in this form, and we never sell your information.
+        </p>
       </form>
 
       {status === 'success' && submittedSummary && (
