@@ -270,7 +270,7 @@ function AdminBriefPageContent({
   return (
     <>
       <style>{css}</style>
-      <AdminShell title="Not The Rug · Daily Brief" email={email} onSignOut={signOut} lastRefreshed={lastRefreshed}>
+      <AdminShell title="Daily Brief" email={email} onSignOut={signOut} lastRefreshed={lastRefreshed}>
         <div id="admin-brief-page-shell">
 
           <section id="admin-brief-actions-row" className="card card-pad">
