@@ -1,0 +1,248 @@
+/* =============================================
+   SECTION JUMP — mobile in-page nav
+   Styles for components/marketing/SectionJump.tsx. Tokens come from
+   globals.css (:root); nothing here is declared that the paper palette
+   already provides.
+   ============================================= */
+
+/* Fixed overlay layer holding the trigger, the fan and the scrim. It spans the
+   viewport so the scrim can dim the page, but is pointer-transparent so the
+   closed state never eats taps meant for the page underneath.
+   z-index 60 is deliberate: above page content, below .mobile-menu (99) and
+   #main-nav (100), because route navigation always outranks in-page jumping. */
+#section-jump-root {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  font-family: var(--font-body);
+  opacity: 0;
+  visibility: hidden;
+  /* visibility flips only after the fade finishes, so the exit is not abrupt */
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
+#section-jump-root[data-revealed='true'] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.28s ease, visibility 0s;
+}
+
+/* Desktop uses the left rail instead. The breakpoint must match SectionRail's
+   (1280px, where the rail clears the 1240px content column) — a mismatch would
+   leave a band of widths with no section nav at all. Hidden in CSS, not JS, so
+   a wide screen never flashes the mobile control between hydration and first
+   paint. */
+@media (min-width: 1280px) {
+  #section-jump-root {
+    display: none;
+  }
+}
+
+/* ---------- Scrim ---------- */
+#section-jump-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(35, 31, 24, 0.44);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* iOS Safari still rubber-band scrolls a clipped page on touch; blocking the
+     pan gesture on the layer that covers the viewport is what actually stops it. */
+  touch-action: none;
+  transition: opacity 0.24s ease, visibility 0s linear 0.24s;
+}
+#section-jump-root[data-open='true'] #section-jump-scrim {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.24s ease, visibility 0s;
+}
+
+/* ---------- Trigger ---------- */
+/* Mirrors #home-floating-logo-badge's mobile offsets (right/bottom 14px, 56px)
+   on the opposite corner, so the two floating elements read as a pair and can
+   never overlap. */
+#section-jump-trigger {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  pointer-events: auto;
+  /* Paper fill, not sage: the control sits over deep-green sections as often
+     as paper ones, and a sage button on green reads as a hole rather than a
+     control. Matches the cream step medallions already on the page. */
+  background: var(--paper);
+  color: var(--olive);
+  border: 1.5px solid rgba(79, 90, 61, 0.35);
+  box-shadow: 0 6px 18px var(--shadow-paper);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+#section-jump-root[data-open='true'] #section-jump-trigger {
+  background: var(--ink);
+  color: var(--paper);
+  transform: scale(0.94);
+}
+
+.section-jump-trigger-icon {
+  /* both glyphs share one grid cell so they cross-fade in place */
+  grid-area: 1 / 1;
+  width: 23px;
+  height: 23px;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+#section-jump-trigger-icon-close {
+  opacity: 0;
+  transform: scale(0.7) rotate(-45deg);
+}
+#section-jump-root[data-open='true'] #section-jump-trigger-icon-pin {
+  opacity: 0;
+  transform: scale(0.7);
+}
+#section-jump-root[data-open='true'] #section-jump-trigger-icon-close {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Fan ---------- */
+/* Anchored just above the trigger. The padding keeps the pills' shadows from
+   being clipped by the overflow rule, so `left` is inset by the same amount to
+   keep the first pill's edge aligned with the trigger. */
+#section-jump-menu {
+  /* globals.css styles the bare `nav` element as the fixed green site bar, so
+     the fan has to unset that band (position/top/right/height/background/
+     border/flex) before it can be a floating menu — same reset the desktop
+     rail's own <nav> carries. */
+  position: absolute;
+  top: auto;
+  right: auto;
+  left: 8px;
+  bottom: 74px;
+  height: auto;
+  display: block;
+  background: none;
+  backdrop-filter: none;
+  border-bottom: none;
+  z-index: auto;
+  padding: 6px;
+  pointer-events: none;
+  /* never reaches across to the home badge, and never runs under the nav */
+  max-width: calc(100vw - 80px);
+  max-height: calc(100vh - var(--nav-h) - 100px);
+  max-height: calc(100dvh - var(--nav-h) - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+}
+#section-jump-root[data-open='true'] #section-jump-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.2s ease, visibility 0s;
+}
+
+#section-jump-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* The fan itself: rows nearest the trigger sit furthest right, so the stack's
+   left edge traces a shallow arc around the button rather than a flat column.
+   Keyed off nth-last-child so the curve holds for any route's list length. */
+.section-jump-row:nth-last-child(5) { margin-left: 7px; }
+.section-jump-row:nth-last-child(4) { margin-left: 14px; }
+.section-jump-row:nth-last-child(3) { margin-left: 23px; }
+.section-jump-row:nth-last-child(2) { margin-left: 34px; }
+.section-jump-row:nth-last-child(1) { margin-left: 47px; }
+
+.section-jump-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px 10px;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1.5px solid rgba(79, 90, 61, 0.35);
+  box-shadow: 0 3px 10px rgba(35, 31, 24, 0.2);
+  font-family: var(--font-stamp);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  /* closed state: tucked back into the trigger it fans out of */
+  opacity: 0;
+  transform: translate3d(-12px, 16px, 0) scale(0.94);
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+#section-jump-root[data-open='true'] .section-jump-item {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger outward from the trigger on open only — the close reads better as a
+   single collapse than as a reverse ripple. */
+#section-jump-root[data-open='true'] .section-jump-row:nth-last-child(1) .section-jump-item { transition-delay: 0ms; }
+#section-jump-root[data-open='true'] .section-jump-row:nth-last-child(2) .section-jump-item { transition-delay: 26ms; }
+#section-jump-root[data-open='true'] .section-jump-row:nth-last-child(3) .section-jump-item { transition-delay: 52ms; }
+#section-jump-root[data-open='true'] .section-jump-row:nth-last-child(4) .section-jump-item { transition-delay: 78ms; }
+#section-jump-root[data-open='true'] .section-jump-row:nth-last-child(5) .section-jump-item { transition-delay: 104ms; }
+#section-jump-root[data-open='true'] .section-jump-row:nth-last-child(6) .section-jump-item { transition-delay: 130ms; }
+#section-jump-root[data-open='true'] .section-jump-row:nth-last-child(n + 7) .section-jump-item { transition-delay: 156ms; }
+
+/* "You are here" — the filled marker carries the state for anyone who can't
+   read the color difference. */
+.section-jump-item-marker {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+.section-jump-item[aria-current='true'] {
+  background: var(--sage-dark);
+  color: var(--paper);
+  border-color: var(--sage-dark);
+}
+.section-jump-item[aria-current='true'] .section-jump-item-marker {
+  background: currentColor;
+}
+
+#section-jump-trigger:focus-visible,
+.section-jump-item:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ---------- Reduced motion ---------- */
+/* No transform or opacity animation at all: the control and the fan simply
+   appear. Visibility still does the showing/hiding, so nothing is left
+   focusable while closed. */
+@media (prefers-reduced-motion: reduce) {
+  #section-jump-root,
+  #section-jump-root[data-revealed='true'],
+  #section-jump-scrim,
+  #section-jump-root[data-open='true'] #section-jump-scrim,
+  #section-jump-menu,
+  #section-jump-root[data-open='true'] #section-jump-menu,
+  #section-jump-trigger,
+  .section-jump-trigger-icon,
+  .section-jump-item {
+    transition: none;
+  }
+  .section-jump-item {
+    transform: none;
+  }
+  #section-jump-root[data-open='true'] #section-jump-trigger {
+    transform: none;
+  }
+}

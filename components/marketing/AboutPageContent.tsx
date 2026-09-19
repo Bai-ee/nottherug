@@ -17,7 +17,7 @@ export default function AboutPageContent() {
     <div id="about-page-shell" ref={pageRef}>
       <SiteNav />
 
-      <div className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00003.webp') center 20%/cover no-repeat" }}>
+      <div id="about-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00003.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Our Story</div>
           <h1>15 years of walks,<br />one neighborhood</h1>
@@ -26,7 +26,7 @@ export default function AboutPageContent() {
         <a href={INSTAGRAM_PLACEHOLDER_URL} target="_blank" rel="noopener" className="page-hero-label" id="page-hero-label-about"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Scout · @scout_bklyn</a>
       </div>
 
-      <section className="section">
+      <section id="about-story-section" className="section">
         <div className="container">
           <div className="grid-2" style={{ gap: '72px' }}>
             <div>
@@ -59,7 +59,7 @@ export default function AboutPageContent() {
         </div>
       </section>
 
-      <section className="section">
+      <section id="about-team-section" className="section">
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <div className="label">The Team</div>
@@ -70,7 +70,7 @@ export default function AboutPageContent() {
         </div>
       </section>
 
-      <section className="section bg-warm">
+      <section id="about-principles-section" className="section bg-warm">
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <div className="label">How We Work</div>

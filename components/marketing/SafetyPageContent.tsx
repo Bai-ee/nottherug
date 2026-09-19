@@ -17,7 +17,7 @@ export default function SafetyPageContent() {
     <div id="safety-page-shell" ref={pageRef}>
       <SiteNav />
 
-      <div className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.webp') center 20%/cover no-repeat" }}>
+      <div id="safety-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Safety &amp; Trust</div>
           <h1>Why trust matters<br />more than price</h1>
@@ -26,16 +26,28 @@ export default function SafetyPageContent() {
         <a href={INSTAGRAM_PLACEHOLDER_URL} target="_blank" rel="noopener" className="page-hero-label" id="page-hero-label-safety"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Waffles · @waffles_nyc</a>
       </div>
 
-      <section className="section">
+      {/* One content section split into three nav destinations. The inner
+          blocks already carry their own vertical rhythm (TrustCards' 64px
+          bottom margin, SafetyFaq's 64px top margin), so the seams zero out
+          their section padding to keep the original spacing. */}
+      <section id="safety-standards-section" className="section" style={{ paddingBottom: 0 }}>
         <div className="container">
           <TrustCards />
+        </div>
+      </section>
 
+      <section id="safety-credentials-section" className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <div className="label">Certifications &amp; Memberships</div>
             <h3>Professional credentials</h3>
           </div>
           <CertificationStrip style={{ justifyContent: 'center' }} />
+        </div>
+      </section>
 
+      <section id="safety-faq-section" className="section" style={{ paddingTop: 0 }}>
+        <div className="container">
           <SafetyFaq />
         </div>
       </section>
