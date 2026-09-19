@@ -35,7 +35,7 @@ export function RangeSelector({
         <button
           key={range}
           type="button"
-          className={range === value ? 'btn btn-primary btn-sm btn-accent' : 'btn btn-primary btn-sm admin-btn-secondary'}
+          className={range === value ? 'btn btn-primary booking-forward-btn btn-sm btn-accent' : 'btn btn-primary booking-forward-btn btn-sm admin-btn-secondary'}
           onClick={() => onChange(range)}
           disabled={disabled}
           aria-pressed={range === value}

@@ -111,7 +111,7 @@ export function RenderControls({
       </div>
 
       <div id="admin-photos-render-actions" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap', marginTop: 24 }}>
-        <button type="button" className="btn btn-primary btn-accent" disabled={!canRender} onClick={onRender}>
+        <button type="button" className="btn btn-primary booking-forward-btn btn-accent" disabled={!canRender} onClick={onRender}>
           {isRendering ? 'Rendering…' : 'Render'}
         </button>
         {sourceFileName && <span className="form-note" style={{ margin: 0 }}>Source: {sourceFileName}</span>}

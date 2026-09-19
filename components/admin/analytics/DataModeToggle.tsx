@@ -30,7 +30,7 @@ export function DataModeToggle({
     <div id="admin-analytics-data-mode-toggle" role="group" aria-label="Data mode">
       <button
         type="button"
-        className={testMode ? 'btn btn-primary btn-sm admin-btn-secondary' : 'btn btn-primary btn-sm btn-accent'}
+        className={testMode ? 'btn btn-primary booking-forward-btn btn-sm admin-btn-secondary' : 'btn btn-primary booking-forward-btn btn-sm btn-accent'}
         onClick={() => onChange(false)}
         disabled={disabled}
         aria-pressed={!testMode}
@@ -39,7 +39,7 @@ export function DataModeToggle({
       </button>
       <button
         type="button"
-        className={testMode ? 'btn btn-primary btn-sm btn-accent' : 'btn btn-primary btn-sm admin-btn-secondary'}
+        className={testMode ? 'btn btn-primary booking-forward-btn btn-sm btn-accent' : 'btn btn-primary booking-forward-btn btn-sm admin-btn-secondary'}
         onClick={() => onChange(true)}
         disabled={disabled}
         aria-pressed={testMode}

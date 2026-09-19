@@ -57,7 +57,7 @@ export function PhotoUploadPanel({
         <p className="form-note" style={{ margin: 0 }}>JPEG · PNG · HEIC · camera library supported</p>
         <button
           type="button"
-          className="btn btn-primary btn-accent btn-sm"
+          className="btn btn-primary booking-forward-btn btn-accent btn-sm"
           disabled={isUploading}
           onClick={(e) => { e.stopPropagation(); onChooseClick(); }}
         >

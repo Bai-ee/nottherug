@@ -84,9 +84,9 @@
 
 /* Controls row: range selector + real/test toggle, side by side on wider
    screens and stacked on a phone. */
-#admin-analytics-controls-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
-#admin-analytics-range-selector { display: flex; gap: 6px; flex-wrap: wrap; }
-#admin-analytics-data-mode-toggle { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+#admin-analytics-controls-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; width: 100%; }
+#admin-analytics-range-selector { display: flex; gap: 6px; flex: 1 1 320px; }
+#admin-analytics-data-mode-toggle { display: flex; gap: 6px; flex: 1 1 240px; align-items: stretch; }
 
 /* Shared panel-head row — a stamp-label heading plus an optional badge or
    legend on the right — reused by every card panel that needs one. */
@@ -150,10 +150,13 @@
 #admin-shell-main .admin-analytics-panel-head { justify-content: center; }
 #admin-shell-main .admin-analytics-hero-stats-row { justify-content: center; }
 .card .form-note { margin-left: auto; margin-right: auto; }
-/* text-align does not move a button that is a flex or grid child, so centre
-   those explicitly too — both the button itself and the row it sits in. */
-.card .btn { align-self: center; }
-.card div:has(> .btn) { justify-content: center; }
+/* Buttons here are blocks, not paper tickets pinned to a page: they fill the
+   width they are given, so a group of them reads as one control rather than
+   as scattered labels. Upright comes from .booking-forward-btn in the markup. */
+#admin-shell-main .btn,
+.admin-state-screen .btn { flex: 1 1 auto; justify-content: center; }
+#admin-shell-main .card div:has(> .btn) { width: 100%; }
+.admin-state-screen .card .btn { width: 100%; }
 
 /* Air between a label and the thing it labels. */
 .card .stamp-label { margin-bottom: 18px; }
@@ -190,6 +193,16 @@
     text-align: center;
     gap: 6px;
   }
+  /* ...except the report tables, which stay line-by-line across the width. */
+  #admin-analytics-source-table .rc-row,
+  #admin-analytics-page-table .rc-row,
+  #admin-analytics-cta-table .rc-row,
+  #admin-analytics-funnel-panel .rc-row {
+    flex-direction: row;
+    align-items: baseline;
+    text-align: left;
+    width: 100%;
+  }
   #admin-page-header,
   #admin-page-header-heading,
   #admin-page-header-controls,
@@ -199,6 +212,9 @@
     text-align: center;
     width: 100%;
   }
+  /* Stacked: fill the width, keep the natural height — flex-grow along a
+     column axis would stretch them into tall slabs. */
+  #admin-shell-main .btn { width: 100%; flex: 0 0 auto; }
   #admin-analytics-controls-row,
   #admin-analytics-range-selector,
   #admin-analytics-data-mode-toggle,
@@ -206,8 +222,11 @@
   .admin-analytics-hero-stats-row {
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
+    /* stacked groups size to their buttons rather than sharing the row's
+       leftover height between them */
+    flex: 0 0 auto;
   }
   #admin-analytics-trend-axis { justify-content: center; gap: 12px; }
   .admin-lead-card-header-row,

@@ -68,6 +68,7 @@ export function AdminNav() {
                 </Link>
               );
             })}
+            <Link href="/" id="admin-nav-view-site-link">View Site</Link>
             <Link href="/admin" id="admin-nav-client-access-link" className="nav-cta btn-accent">
               Client Access
             </Link>
@@ -101,6 +102,9 @@ export function AdminNav() {
             </Link>
           ))}
         </div>
+        <Link href="/" id="admin-mobile-menu-view-site-link" onClick={() => setMobileOpen(false)}>
+          View Site
+        </Link>
         <Link
           href="/admin"
           id="admin-mobile-menu-client-access-link"

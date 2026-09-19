@@ -33,7 +33,7 @@ export function GeneratorExportOverlay({
         <span className="stamp-label">
           {genPhase === 'generating' ? 'Generating' : genPhase === 'error' ? 'Generation Issue' : 'Export'}
         </span>
-        <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={onClose}>Back</button>
+        <button type="button" className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary" onClick={onClose}>Back</button>
       </div>
 
       <div id="admin-gen-export-preview" style={{ flex: 1, minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, position: 'relative' }}>
@@ -46,7 +46,7 @@ export function GeneratorExportOverlay({
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, padding: 24, textAlign: 'center' }}>
             <span className="stamp-label">Generation failed</span>
             <p className="form-note" style={{ maxWidth: 280 }}>{genError || 'The image did not finish generating.'}</p>
-            <button type="button" className="btn btn-primary btn-sm admin-btn-secondary" onClick={onClose}>Close</button>
+            <button type="button" className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary" onClick={onClose}>Close</button>
           </div>
         )}
         {genPhase !== 'generating' && genPhase !== 'error' && displayRender && (
@@ -55,7 +55,7 @@ export function GeneratorExportOverlay({
         )}
         <button
           type="button"
-          className="btn btn-primary btn-sm admin-btn-secondary"
+          className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary"
           id="admin-gen-export-close"
           onClick={onClose}
           style={{ position: 'absolute', top: 12, right: 12 }}
@@ -66,7 +66,7 @@ export function GeneratorExportOverlay({
         <div id="admin-gen-export-panel" className="card-pad" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'flex', gap: 8 }}>
             <a
-              className="btn btn-primary btn-accent"
+              className="btn btn-primary booking-forward-btn btn-accent"
               style={{ flex: 1, justifyContent: 'center' }}
               href={displayRender.renderDownloadURL}
               download={`ntr-${displayRender.id}.jpg`}
@@ -76,7 +76,7 @@ export function GeneratorExportOverlay({
               Download
             </a>
             {typeof navigator !== 'undefined' && !!navigator.share && (
-              <button type="button" className="btn btn-primary admin-btn-secondary" onClick={() => onShare(displayRender)}>
+              <button type="button" className="btn btn-primary booking-forward-btn admin-btn-secondary" onClick={() => onShare(displayRender)}>
                 Share
               </button>
             )}

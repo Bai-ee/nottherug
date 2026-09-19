@@ -277,7 +277,7 @@ function AdminBriefPageContent({
             <div className="stamp-label stamp-label-heading">Scout, Scribe, Guardian, Reporter</div>
             {readinessChip}
             <div id="admin-brief-actions-row-controls">
-              <button className="btn btn-primary btn-accent" disabled={loading || running} onClick={() => void fetchOverview()}>
+              <button className="btn btn-primary booking-forward-btn btn-accent" disabled={loading || running} onClick={() => void fetchOverview()}>
                 Refresh Latest
               </button>
             </div>

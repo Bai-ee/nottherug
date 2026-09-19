@@ -120,7 +120,7 @@ export function LeadTable({
 
             <button
               type="button"
-              className="btn btn-primary btn-sm admin-btn-secondary"
+              className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary"
               id={`admin-lead-card-toggle-${rowKey}`}
               style={{ marginTop: 12, padding: '10px 0' }}
               onClick={(e) => {

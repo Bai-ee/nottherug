@@ -48,7 +48,7 @@ export function ErrorBanner({ message, onRetry }: { message: string; onRetry: ()
       <span className="text-terra">
         <span className="badge badge-terra">Error</span> Could not load analytics: {message}
       </span>
-      <button type="button" className="btn btn-primary btn-sm btn-accent" onClick={onRetry}>Retry</button>
+      <button type="button" className="btn btn-primary booking-forward-btn btn-sm btn-accent" onClick={onRetry}>Retry</button>
     </div>
   );
 }
