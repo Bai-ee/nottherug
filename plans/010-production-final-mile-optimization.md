@@ -539,3 +539,38 @@ Vercel preview and production carry `NEXT_PUBLIC_ANALYTICS_ENABLED=true` and
 (renders, no console errors, `/api/track` beacons 202). Production deployment
 and the controlled production analytics test are recorded in plan 009's
 tracker.
+
+### Production release record (September 19, 2026)
+
+- `main` = `9aca667` (release `24c11b8` + one deployment fix), pushed to `origin/main`.
+- Production deployment `dpl_CosFGdKKy1YbxZ5Eh4M95ypwHYYF`
+  (`nottherug-np5m401al-baiees-projects.vercel.app`) aliased to
+  `nottherug-ten.vercel.app` and `nottherug-baiees-projects.vercel.app`.
+  Previous production (rollback target): `dpl_7Vpkd4PjX83kV3snpDPi4TmyQtRE`
+  (`nottherug-jqi9izuho-baiees-projects.vercel.app`, commit `f77e3d2`).
+- Deployment defect found and fixed during the production smoke test: Vercel's
+  Next launcher runs Node 24 with `--no-experimental-require-module`, so the
+  externalized `firebase-admin/auth` failed at jwks-rsa's `require('jose')`
+  with `ERR_REQUIRE_ESM`. Every Firestore-backed route had been failing in
+  production since September 16 (`/api/track` dropped every event with a 202,
+  `/api/admin/analytics` returned 500). Fix: bundle `firebase-admin`,
+  `jwks-rsa`, `jose` via `transpilePackages` (`9aca667`).
+- Environment defect found and fixed: `NEXT_PUBLIC_ANALYTICS_TEST_MODE` had
+  been stored as `"true\n"`; re-added as `true` on preview and production.
+  Before the fix, one preview visit wrote two real-mode documents
+  (`page_view` + `engagement` on `/safety`, ids `ecd191c2…` and `b7fc7cb2…`,
+  21:49 UTC). They were not deleted (production deletes were not authorized);
+  the owner may delete them or let the cleanup endpoint handle them.
+- Controlled production analytics test (anonymous, synthetic, no lead,
+  appointment, or email): 14 `mode: "test"` documents — 7 page views (one per
+  tracked route), CTA clicks `nav_book`, `footer_book`, `hero_view_services`,
+  `footer_services`, `booking_form_start`, `booking_step` details + dog. Every
+  document's field set is within the allowlist, `expiresAt` = received +
+  395 days, no name/email/phone/free text stored. The rate-limit bucket
+  carries a 48-hour `expiresAt`.
+- Admin dashboard (owner session, Test Data view) reconciled exactly with the
+  journey; Real Data view shows only the two stray real-mode documents.
+- Production remains in analytics TEST MODE. Real collection starts only when
+  the owner redeploys with `NEXT_PUBLIC_ANALYTICS_TEST_MODE=false`.
+- Not performed: physical iPhone/Android device pass (owner action); worker
+  B2's breakpoint-specific background crops (uncommitted, backlog).
