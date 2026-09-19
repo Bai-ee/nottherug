@@ -142,7 +142,7 @@
       "bytes": 155292,
       "loading": "native <img>, eager",
       "exception": "Low priority: both consumers are dev-only/disabled experiments, not the shipped homepage graph.",
-      "pendingPatch": "patches/02-card-bg-webp.patch (currently still live as /img/card_bg.png, 2311572 bytes)"
+      "pendingPatch": null, "replaced": "/img/card_bg.png (patch 02 applied; master kept in assets-src/img/)"
     }
   ],
   "publicFileClassification": {
