@@ -33,9 +33,18 @@ export type WelcomeModalStorage = Pick<Storage, 'getItem' | 'setItem'>;
 export const WELCOME_MODAL_OPEN_EVENT = 'ntr:open-welcome-modal';
 
 /** Opens the welcome modal from anywhere on the page. No-op on the server. */
-export function openWelcomeWalkModal(): void {
+export interface OpenWelcomeWalkModalOptions {
+  /** Seeds the modal's email field, so a visitor who already typed it on the
+   *  page does not type it twice. */
+  email?: string;
+  /** Skip the gate and land on the scheduler — for entry points that have
+   *  already collected an address themselves. */
+  straightToScheduler?: boolean;
+}
+
+export function openWelcomeWalkModal(options?: OpenWelcomeWalkModalOptions): void {
   if (typeof window === 'undefined') return;
-  window.dispatchEvent(new CustomEvent(WELCOME_MODAL_OPEN_EVENT));
+  window.dispatchEvent(new CustomEvent(WELCOME_MODAL_OPEN_EVENT, { detail: options }));
 }
 
 /**

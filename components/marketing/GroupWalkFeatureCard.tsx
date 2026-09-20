@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   GROUP_WALK_PREVIEW,
   GROUP_WALK_FIRST_WALK_PRICE,
@@ -9,7 +8,7 @@ import {
   FIRST_WALK_PROMO_BADGE,
   FIRST_WALK_TAX_NOTE,
 } from '@/lib/content/services';
-import { buildBookingPrefillHref } from '@/lib/leads/prefill';
+import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import { isValidEmail } from '@/lib/leads/validation';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
@@ -50,7 +49,6 @@ const SKYLINE_IMAGE = '/img/bg-section-graphic-1.webp';
  * plans/002-production-readiness.md P2A.
  */
 export default function GroupWalkFeatureCard() {
-  const router = useRouter();
   // Layered hover choreography ported from the disabled carousel, driven by
   // the CTA below rather than the card as a whole.
   const { cardRef, backdropRef, walkerRef, priceRef, ctaRef, setPawRef, onEnter, onLeave } = useGroupWalkCardHover();
@@ -79,14 +77,12 @@ export default function GroupWalkFeatureCard() {
     // never counted. The entered email/phone stay in the prefill href and
     // never enter the event payload.
     trackCta('group_walk_card_submit');
-    // Fire-and-forget, same rule as above: never blocks the redirect to /book.
+    // Fire-and-forget, same rule as above: never blocks the scheduler.
     captureLeadEmail(mail, FEATURE_SOURCE);
-    router.push(
-      buildBookingPrefillHref(
-        { email: mail, phone: tel, serviceInterest: GROUP_WALK_PREVIEW.serviceInterest ?? 'Daily Group Walks' },
-        FEATURE_SOURCE
-      )
-    );
+    // Booking comes first here too: the address is already in hand, so the
+    // scheduler opens straight away and the questionnaire waits until after.
+    // Nothing navigates — the whole journey is on this page.
+    openWelcomeWalkModal({ email: mail, straightToScheduler: true });
   }
 
   return (

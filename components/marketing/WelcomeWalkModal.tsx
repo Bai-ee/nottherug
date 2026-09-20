@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
   GROUP_WALK_PREVIEW,
@@ -20,8 +19,6 @@ import {
   getOnboardingHandoffStorage,
   newOnboardingAttemptId,
   writeOnboardingHandoff,
-  ONBOARDING_SCOPE_PARAM,
-  ONBOARDING_SCOPE_VALUE,
 } from '@/lib/booking/onboarding-handoff';
 import SchedulingDialog from '@/components/booking/SchedulingDialog';
 import { track } from '@/lib/analytics/track';
@@ -117,7 +114,8 @@ function buildCalendlyEmailUrl(base: string, email: string): string {
   }
 }
 
-const ONBOARDING_BOOK_HREF = `/book?${ONBOARDING_SCOPE_PARAM}=${ONBOARDING_SCOPE_VALUE}`;
+/** The questionnaire on this page — every exit from this modal lands here. */
+const HOME_QUESTIONS_SECTION_ID = 'home-contact-sheet-section';
 
 type View = 'gate' | 'scheduler' | 'confirmation';
 
@@ -137,7 +135,6 @@ type View = 'gate' | 'scheduler' | 'confirmation';
  * is ever active at a time.
  */
 export default function WelcomeWalkModal() {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>('gate');
   const [email, setEmail] = useState('');
@@ -159,6 +156,9 @@ export default function WelcomeWalkModal() {
   // (cleared) once read, so the gate<->scheduler visibility transition still
   // falls back to a live document.activeElement read, same as before.
   const pendingOpenerRef = useRef<HTMLElement | null>(null);
+  /** Set once this attempt's booking is verified, so dismissing the scheduler
+   *  afterwards lands on the questions instead of back at the gate. */
+  const bookedRef = useRef(false);
   // Set by the WELCOME_MODAL_OPEN_EVENT handler and by every dismissal path below. Guards
   // the first-visit scroll trigger: without this, a visitor who opens the
   // modal manually (hero CTA) and dismisses it before scrolling would see it
@@ -215,8 +215,17 @@ export default function WelcomeWalkModal() {
    * phase/email the visitor had left it in is preserved.
    */
   useEffect(() => {
-    function handleOpenRequest() {
+    function handleOpenRequest(event: Event) {
       interactedRef.current = true;
+      // An entry point that already collected an address (the group walk
+      // card) hands it over so the visitor never types it twice, and asks to
+      // skip straight to the scheduler.
+      const detail = (event as CustomEvent<{ email?: string; straightToScheduler?: boolean }>).detail;
+      if (detail?.email) setEmail(detail.email);
+      if (detail?.straightToScheduler && calendlyUrl) {
+        setFieldError('');
+        setView('scheduler');
+      }
       // Read before setOpen(true): this listener runs synchronously inside
       // openWelcomeWalkModal()'s dispatchEvent call, so document.activeElement
       // here is still whatever the caller had focused (e.g. SiteNav's mobile
@@ -227,7 +236,7 @@ export default function WelcomeWalkModal() {
     }
     window.addEventListener(WELCOME_MODAL_OPEN_EVENT, handleOpenRequest);
     return () => window.removeEventListener(WELCOME_MODAL_OPEN_EVENT, handleOpenRequest);
-  }, []);
+  }, [calendlyUrl]);
 
   /**
    * Freeze the page behind the modal. `overflow: hidden` on <body> alone is
@@ -365,9 +374,33 @@ export default function WelcomeWalkModal() {
    * function every render would detach/reattach that listener on every
    * render of this component.
    */
-  const handleSchedulerDismiss = useCallback(() => {
-    setView('gate');
+  /**
+   * Everything this modal leads to lives further down this same page, so the
+   * exits scroll rather than navigate: a new page would throw away the scroll
+   * position and the context the visitor already has.
+   */
+  const goToHomeQuestions = useCallback(() => {
+    interactedRef.current = true;
+    setOpen(false);
+    // Next frame, so the scroll is not fighting the body-scroll-lock being
+    // released as the modal closes.
+    window.requestAnimationFrame(() => {
+      const target = document.getElementById(HOME_QUESTIONS_SECTION_ID);
+      if (!target) return;
+      target.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    });
   }, []);
+
+  const handleSchedulerDismiss = useCallback(() => {
+    if (bookedRef.current) {
+      goToHomeQuestions();
+      return;
+    }
+    setView('gate');
+  }, [goToHomeQuestions]);
 
   /**
    * Verified completion — fires exactly once per attempt, from
@@ -389,8 +422,11 @@ export default function WelcomeWalkModal() {
     // Same email, `booked: true` this time — never blocks showing the
     // confirmation view.
     captureLeadEmail(email.trim(), MODAL_SOURCE, true);
-    setView('confirmation');
-  }, [attemptId, email]);
+    bookedRef.current = true;
+    // Booked: the only thing left to ask for is the questionnaire, so go
+    // straight there rather than parking on a confirmation panel.
+    goToHomeQuestions();
+  }, [attemptId, email, goToHomeQuestions]);
 
   /** "Answer questions first" — available at the missing-scheduler gate and after abandonment. */
   function goAnswerQuestions() {
@@ -404,10 +440,8 @@ export default function WelcomeWalkModal() {
       bookingObserved: false,
     });
     if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
-    interactedRef.current = true;
-    setOpen(false);
     trackCta('welcome_modal_details');
-    router.push(ONBOARDING_BOOK_HREF);
+    goToHomeQuestions();
   }
 
   /** "Tell us about your dog" from the confirmation panel. */
@@ -421,9 +455,7 @@ export default function WelcomeWalkModal() {
       });
       if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
     }
-    interactedRef.current = true;
-    setOpen(false);
-    router.push(ONBOARDING_BOOK_HREF);
+    goToHomeQuestions();
   }
 
   /** "Finish for now" — ends the flow: clears the draft and resets to a fresh gate. */
@@ -1020,7 +1052,6 @@ export default function WelcomeWalkModal() {
           source={MODAL_SOURCE}
           // Not "step 2 of 2": in this flow the scheduler is followed by a
           // confirmation, and the questionnaire after it is optional.
-          eyebrow="Pick your time"
           onBooked={handleBooked}
           attemptId={attemptId ?? undefined}
         />

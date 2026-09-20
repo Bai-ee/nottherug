@@ -29,7 +29,6 @@ type Props = {
    * scheduler). The welcome modal opens it as its own second step with a
    * confirmation still to come, so it passes its own label instead.
    */
-  eyebrow?: string;
 };
 
 /**
@@ -80,7 +79,7 @@ export function createAppointmentCompletionHandler(
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
 
-export default function SchedulingDialog({ open, onClose, calendlyUrl, source, onBooked, attemptId, eyebrow = 'Step 2 of 2' }: Props) {
+export default function SchedulingDialog({ open, onClose, calendlyUrl, source, onBooked, attemptId }: Props) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -190,7 +189,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
       id="calendly-modal"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="calendly-modal-title"
+      aria-label="Schedule your Meet and Greet"
       style={{
         position: 'fixed',
         inset: 0,
@@ -255,22 +254,14 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
             flexShrink: 0,
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <div className="stamp-label stamp-label-dark" id="calendly-modal-eyebrow">
-              {eyebrow}
-            </div>
-            <div
-              id="calendly-modal-title"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(18px, 2.4vw, 26px)',
-                color: 'var(--paper)',
-                lineHeight: 1.15,
-              }}
-            >
-              Schedule your Meet &amp; Greet
-            </div>
-          </div>
+          {/* The mark alone: the band already says where you are, and a
+              heading repeating the button you just pressed is noise. */}
+          <img
+            id="calendly-modal-logo"
+            src="/img/horiz_logo_off_white.png"
+            alt="Not The Rug"
+            style={{ height: 'clamp(26px, 3.2vw, 34px)', width: 'auto', display: 'block' }}
+          />
           <button
             ref={closeButtonRef}
             type="button"
