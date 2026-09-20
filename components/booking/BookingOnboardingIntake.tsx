@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MeetGreetForm from '@/components/MeetGreetForm';
 import type { BookingFormValues } from './types';
 import {
@@ -31,6 +31,12 @@ type Props = {
  *
  * An ordinary /book visit — no `?onboarding=welcome` — must behave exactly
  * as before: no storage read, no banner, the plain form.
+ *
+ * A genuine return under that scope param also auto-scrolls the shell below
+ * into view once, so the visitor lands on the questions instead of the page
+ * top (see the second effect). The "already booked" note already explains
+ * why they're being asked, so there is no separate prompt to add or keep in
+ * sync with it.
  */
 export default function BookingOnboardingIntake({
   paneId,
@@ -44,6 +50,12 @@ export default function BookingOnboardingIntake({
   // found (blocked storage, expired, malformed) — the self-report escape
   // hatch, so a visitor who really did book is not pushed to book twice.
   const [offerSelfReport, setOfferSelfReport] = useState(false);
+
+  const intakeShellRef = useRef<HTMLDivElement | null>(null);
+  // Guards the auto-scroll effect below to once per arrival. A fresh page
+  // load is a fresh mount (a fresh ref), so this never needs manual reset —
+  // it only stops a later re-render from re-triggering the same scroll.
+  const hasAutoScrolledRef = useRef(false);
 
   // One post-mount effect, and nothing in it is reachable without the scope
   // param, so a plain /book visit never touches sessionStorage. The state
@@ -63,10 +75,33 @@ export default function BookingOnboardingIntake({
     return () => window.clearTimeout(timer);
   }, []);
 
+  // Lands a genuine welcome-modal return — a resolved handoff, or the
+  // self-report fallback shown when the handoff didn't survive — on the
+  // questionnaire instead of the top of the page, once per arrival. Neither
+  // handoffEmail nor offerSelfReport is ever set outside the scope-param
+  // branch above, so a plain /book visit never runs past the first guard.
+  // Skips outright if the visitor has already scrolled away from the top by
+  // the time this fires, and otherwise never fights them afterwards:
+  // scrollIntoView's own smooth animation is interrupted the instant the
+  // visitor scrolls, same as the section jumps in SiteNav/HomeHero.
+  useEffect(() => {
+    if (hasAutoScrolledRef.current) return;
+    if (!isOnboardingScope(window.location.search)) return;
+    if (!handoffEmail && !offerSelfReport) return;
+    hasAutoScrolledRef.current = true;
+
+    const target = intakeShellRef.current;
+    if (!target) return;
+    if (window.scrollY > 8) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+  }, [handoffEmail, offerSelfReport]);
+
   const values = handoffEmail ? { ...initialValues, email: handoffEmail } : initialValues;
 
   return (
-    <div id="book-onboarding-intake-shell" data-section="book-onboarding-intake">
+    <div id="book-onboarding-intake-shell" data-section="book-onboarding-intake" ref={intakeShellRef}>
       {bookedDetailsMode && (
         <p id="book-onboarding-booked-note" className="form-note" style={{ marginBottom: '16px' }}>
           Your Meet &amp; Greet is already booked. These details just help us prepare. Check your Calendly
