@@ -79,7 +79,7 @@ export const HOME_SERVICE_PREVIEW_ROW_1: ServicePreviewItem[] = [
     price: '$35',
     priceUnit: '/visit',
     serviceInterest: 'Senior Dog Care',
-    nameLines: ['Senior Dog', 'Visits'],
+    nameLines: ['Senior', 'Dog Walks'],
     fineprint: '20+ minutes, gentle pace',
   },
   GROUP_WALK_PREVIEW,

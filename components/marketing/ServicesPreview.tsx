@@ -22,16 +22,17 @@ const OTHER_CARDS = [...HOME_SERVICE_PREVIEW_ROW_1, ...HOME_SERVICE_PREVIEW_ROW_
  * reuse the /services catalog badges where one already exists (Premium,
  * 7+ day discounts) so the two pages agree.
  *
- * `spot` puts the sticker directly above the rate name or directly below its
- * description — alternating down the row so it does not read as five
- * identical tags, while each label stays attached to the rate it belongs to.
+ * Every sticker sits directly under its rate's description. They used to
+ * alternate above the name / below the description so the row would not read
+ * as five identical tags, but stacked into one column that alternation read
+ * as a mistake — one placement at every breakpoint instead.
  */
-const RATE_STICKERS: Record<string, { label: string; spot: 'above' | 'below' }> = {
-  'Solo Walk': { label: 'Premium', spot: 'above' },
-  'Senior Dog Visits': { label: 'Gentle Pace', spot: 'below' },
-  'Puppy Walk': { label: 'Puppy Pace', spot: 'above' },
-  'Boarding & Overnight Sitting': { label: '7+ Day Discounts', spot: 'below' },
-  'Cat Visits': { label: 'Cats Too', spot: 'above' },
+const RATE_STICKERS: Record<string, string> = {
+  'Solo Walk': 'Premium',
+  'Senior Dog Visits': 'Gentle Pace',
+  'Puppy Walk': 'Puppy Pace',
+  'Boarding & Overnight Sitting': '7+ Day Discounts',
+  'Cat Visits': 'Cats Too',
 };
 
 /** kebab-case id fragment so each sticker is addressable for later tuning. */
@@ -47,18 +48,18 @@ function stickerSlug(title: string) {
  * service copy reduced to fine print underneath.
  */
 export function PreviewCard({ item }: { item: ServicePreviewItem }) {
-  const sticker = RATE_STICKERS[item.title];
+  const stickerLabel = RATE_STICKERS[item.title];
   return (
     // id per rate so the footer's Services column can link straight at the
     // rate it names instead of dropping the reader at the top of the section.
     <div className="home-rate-item" id={`home-rate-${stickerSlug(item.title)}`}>
-      {sticker && (
+      {stickerLabel && (
         <span
           id={`home-rate-sticker-${stickerSlug(item.title)}`}
-          className={`home-rate-sticker home-rate-sticker-${sticker.spot}`}
+          className="home-rate-sticker"
           aria-hidden="true"
         >
-          {sticker.label}
+          {stickerLabel}
         </span>
       )}
       <h3 className="home-rate-name">
@@ -112,9 +113,10 @@ export default function ServicesPreview() {
           }
           /* Stamped stickers, one per rate (see RATE_STICKERS above). Same
              olive/stamp language as the featured card's corner ribbon, at
-             label scale. They sit in the column's own flow — directly above
-             the rate name or directly under its description — so a label can
-             never drift into the gap between two rates. The tilt is set in
+             label scale. They sit in the column's own flow, directly under
+             its description, so a label can never drift into the gap between
+             two rates. The order property puts the span last while it stays
+             the column's first child in the JSX. The tilt is set in
              hooks/useRateStickerParallax.ts, not here: gsap writes the whole
              transform inline while it tweens y, which beats a stylesheet
              rotate(). */
@@ -132,12 +134,6 @@ export default function ServicesPreview() {
             border-radius: 3px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.22);
             pointer-events: none;
-          }
-          #home-rates-preview-other-cards .home-rate-sticker-above {
-            order: -1;
-            margin-bottom: 8px;
-          }
-          #home-rates-preview-other-cards .home-rate-sticker-below {
             order: 99;
             margin-top: 4px;
           }
@@ -198,6 +194,9 @@ export default function ServicesPreview() {
           @media (max-width: 600px) {
             #home-rates-preview-other-cards { gap: 22px; }
             #home-rates-preview-other-cards .home-rate-item { flex-basis: 100%; }
+            /* Vertical orientation only: the premium rate opens the stack.
+               Above this width it keeps its middle spot in the row. */
+            #home-rates-preview-other-cards #home-rate-solo-walk { order: -1; }
           }
 
         `}</style>
