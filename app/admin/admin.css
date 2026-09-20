@@ -333,10 +333,23 @@
 /* Refresh and export close the page. */
 #admin-leads-footer-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
-/* An opened line item reads as a left-hand label list, not centred copy. */
-.admin-lead-row-detail,
-.admin-lead-row-detail .rc-row { text-align: left; }
-.admin-lead-row-detail .rc-row { justify-content: flex-start; }
+/* An opened line item reads as a left-hand label list, not centred copy. The
+   id prefix is needed to outrank the phone rule that centres every other
+   report row. It also sticks to the left edge, so opening a row while the
+   table is scrolled sideways does not park its details off-screen. */
+#admin-shell-main .admin-lead-row-detail {
+  position: sticky;
+  left: 0;
+  width: min(100%, 100vw);
+  text-align: left;
+}
+#admin-shell-main .admin-lead-row-detail .rc-row {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-start;
+  text-align: left;
+}
+#admin-shell-main .admin-lead-row-detail .rc-row .rc-value { text-align: left; }
 
 #admin-leads-row-scroll { overflow-x: auto; }
 #admin-leads-row-list { min-width: 880px; display: grid; }

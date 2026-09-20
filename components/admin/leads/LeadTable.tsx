@@ -70,10 +70,10 @@ function FieldRow({ lead, field }: { lead: LeadRecord; field: LeadDisplayField }
 /** The line-item view's columns, in order. Narrow enough as a set that the
  *  grid fits a laptop without sideways scrolling; below that the list scrolls
  *  rather than dropping a column the owner might be looking for. */
-const ROW_COLUMNS: LeadDisplayField[] = LEAD_DISPLAY_FIELDS.filter((f) =>
-  (['ownerName', 'submittedAt', 'source', 'email', 'phone', 'neighborhood', 'dogName'] as const).includes(
-    f.key as 'ownerName',
-  ),
+const ROW_COLUMN_KEYS = ['ownerName', 'submittedAt', 'source', 'email', 'phone', 'neighborhood', 'dogName'] as const;
+
+const ROW_COLUMNS: LeadDisplayField[] = ROW_COLUMN_KEYS.map(
+  (key) => LEAD_DISPLAY_FIELDS.find((f) => f.key === key)!,
 );
 
 function LeadRows({
