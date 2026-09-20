@@ -1,5 +1,5 @@
 /**
- * Coverage for lib/analytics/report.ts (plan A4). fsQueryRange/fsQueryRangeCount
+ * Coverage for lib/analytics/report.ts (plan A4). fsQueryRange
  * are mocked with a small in-memory implementation that actually applies the
  * requested [start, end) range, limit, and direction — the same contract real
  * Firestore has — so these tests exercise the report's own New York day-
@@ -36,10 +36,13 @@ function ev(overrides: RawDoc): RawDoc {
   };
 }
 
-/** Simulates Firestore's range query: filters fixtures by [start, end) on `field`, sorts, applies limit. */
-function rangeQueryMock(fixtures: RawDoc[]) {
-  return vi.fn(async (_collectionId: string, field: string, start: string, end: string, limit = 5000, direction: 'ASCENDING' | 'DESCENDING' = 'ASCENDING') => {
-    const matches = fixtures.filter((d) => {
+/** Simulates Firestore's range query: filters fixtures by [start, end) on
+ *  `field`, sorts, applies limit. Answers per collection, because leads and
+ *  analytics_events are both read this way now. */
+function rangeQueryMock(fixtures: RawDoc[], leadFixtures: RawDoc[] = []) {
+  return vi.fn(async (collectionId: string, field: string, start: string, end: string, limit = 5000, direction: 'ASCENDING' | 'DESCENDING' = 'ASCENDING') => {
+    const source = collectionId === 'leads' ? leadFixtures : fixtures;
+    const matches = source.filter((d) => {
       const v = String(d[field]);
       return v >= start && v < end;
     });
@@ -53,9 +56,11 @@ function rangeQueryMock(fixtures: RawDoc[]) {
   });
 }
 
-function countQueryMock(total: number) {
-  return vi.fn(async () => total);
+/** N completed questionnaires inside the window under test. */
+function leadDocs(total: number, at = '2026-01-15T12:00:00.000Z'): RawDoc[] {
+  return Array.from({ length: total }, (_, i) => ({ id: `lead-${i}`, type: 'meetgreet', submittedAt: at }));
 }
+
 
 describe('getAnalyticsReport', () => {
   beforeEach(() => {
@@ -101,8 +106,7 @@ describe('getAnalyticsReport', () => {
       ev({ id: 'e20', sid: 'sess-live', event: 'page_view', receivedAt: '2026-01-15T17:30:00.000Z' }),
     ];
 
-    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
-    fsQueryRangeCount.mockImplementation(countQueryMock(5));
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(5)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const now = new Date('2026-01-15T18:00:00.000Z'); // 13:00 NY (EST, UTC-5)
@@ -179,8 +183,7 @@ describe('getAnalyticsReport', () => {
       ev({ id: 'real-1', sid: 'sess-real', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z' }),
       ev({ id: 'test-1', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:05:00.000Z', mode: 'test' }),
     ];
-    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
-    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const now = new Date('2026-01-15T18:00:00.000Z');
@@ -198,8 +201,7 @@ describe('getAnalyticsReport', () => {
     const fixtures: RawDoc[] = [
       ev({ id: 'test-1', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z', mode: 'test' }),
     ];
-    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
-    fsQueryRangeCount.mockImplementation(countQueryMock(7));
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(7)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const now = new Date('2026-01-15T18:00:00.000Z');
@@ -208,8 +210,10 @@ describe('getAnalyticsReport', () => {
     // rather than the real business total under a test-data banner.
     const test = await getAnalyticsReport('today', { now, includeTest: true });
     expect(test.inquiries).toBeNull();
+    expect(test.outstandingCaptures).toBeNull();
     expect(test.meta.degraded).toEqual([]); // null here means not measured, not a failure
-    expect(fsQueryRangeCount).not.toHaveBeenCalled();
+    // Test mode must not read the leads collection at all.
+    expect(fsQueryRange.mock.calls.some((c: unknown[]) => c[0] === 'leads')).toBe(false);
 
     // The tracked-cohort inquiry rate is event-derived, so it still applies.
     expect(test.inquiryRate.trackedSessions).toBe(1);
@@ -229,8 +233,7 @@ describe('getAnalyticsReport', () => {
       ),
       ev({ id: 'test-1', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z', mode: 'test' }),
     ];
-    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
-    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z'), includeTest: true });
@@ -261,8 +264,7 @@ describe('getAnalyticsReport', () => {
       ev({ id: 'p7', sid: 'sess-d', event: 'engagement', receivedAt: '2026-01-15T12:06:00.000Z', route: '/safety' }),
       ev({ id: 'p8', sid: 'sess-d', event: 'cta_click', cta: 'nav_book', receivedAt: '2026-01-15T12:07:00.000Z', route: '/safety' }),
     ];
-    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
-    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
@@ -283,8 +285,7 @@ describe('getAnalyticsReport', () => {
       ev({ id: 'test-1', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:05:00.000Z', route: '/book', mode: 'test' }),
       ev({ id: 'test-2', sid: 'sess-test', event: 'page_view', receivedAt: '2026-01-15T12:06:00.000Z', route: '/book', mode: 'test' }),
     ];
-    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
-    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const now = new Date('2026-01-15T18:00:00.000Z');
@@ -297,8 +298,13 @@ describe('getAnalyticsReport', () => {
   });
 
   it('returns an empty page table (not a fabricated row) when the events query fails', async () => {
-    fsQueryRange.mockRejectedValue(new Error('Firestore RANGE analytics_events: 503 unavailable'));
-    fsQueryRangeCount.mockImplementation(countQueryMock(3));
+    // Only the events read fails; the leads read still answers.
+    fsQueryRange.mockImplementation(async (collectionId: string, ...rest: unknown[]) => {
+      if (collectionId === 'leads') {
+        return rangeQueryMock([], leadDocs(3))(collectionId, ...(rest as [string, string, string]));
+      }
+      throw new Error('Firestore RANGE analytics_events: 503 unavailable');
+    });
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
@@ -307,18 +313,57 @@ describe('getAnalyticsReport', () => {
   });
 
   it('reports a truthful total above the 1,000-record cap that lib/leads/stats.ts imposes elsewhere', async () => {
-    fsQueryRange.mockImplementation(rangeQueryMock([]));
-    fsQueryRangeCount.mockImplementation(countQueryMock(1500));
+    fsQueryRange.mockImplementation(rangeQueryMock([], leadDocs(1500)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const report = await getAnalyticsReport('30d', { now: new Date('2026-01-15T18:00:00.000Z') });
 
     expect(report.inquiries).toBe(1500);
-    expect(fsQueryRangeCount).toHaveBeenCalledWith('leads', 'submittedAt', expect.any(String), expect.any(String));
+    // Read as a plain range on one field: an equality filter alongside the
+    // range would be a compound query, which Firestore will not serve without
+    // a composite index that does not exist.
+    const leadsCall = fsQueryRange.mock.calls.find((c: unknown[]) => c[0] === 'leads');
+    expect(leadsCall?.[1]).toBe('submittedAt');
+    expect(leadsCall?.[5]).toBeUndefined();
+  });
+
+  it('excludes capture documents from inquiries at the query level and counts outstanding ones separately', async () => {
+    const leadFixtures: RawDoc[] = [
+      // Two genuine completed questionnaires — these are the only documents
+      // that should ever count as an inquiry.
+      { id: 'lead-1', type: 'meetgreet', submittedAt: '2026-01-15T12:00:00.000Z' },
+      { id: 'lead-2', type: 'meetgreet', submittedAt: '2026-01-15T13:00:00.000Z' },
+
+      // A partial capture still waiting on the questionnaire — counts toward
+      // outstandingCaptures, never toward inquiries.
+      { id: 'capture-1', type: 'capture', status: 'partial', submittedAt: '2026-01-15T14:00:00.000Z' },
+
+      // A capture that has since converted (the person came back and
+      // completed the questionnaire, creating a separate meetgreet document
+      // elsewhere). This row itself is neither an inquiry nor still
+      // outstanding — it must not inflate either count.
+      { id: 'capture-2', type: 'capture', status: 'converted', submittedAt: '2026-01-15T15:00:00.000Z' },
+
+      // A legacy document written before the `type` field existed (schema
+      // v1). Counting the window in memory rather than with an equality
+      // filter is what keeps it visible: it is a real submitted lead and is
+      // counted as an inquiry.
+      { id: 'legacy-1', submittedAt: '2026-01-15T16:00:00.000Z' },
+
+      // Out of range — must not appear in either count.
+      { id: 'lead-3', type: 'meetgreet', submittedAt: '2026-01-14T20:00:00.000Z' },
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock([], leadFixtures));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
+
+    expect(report.inquiries).toBe(3); // lead-1, lead-2 and the legacy document
+    expect(report.outstandingCaptures).toBe(1); // capture-1 only
   });
 
   it('distinguishes no_data_yet (nothing ever recorded) from zero_activity (recorded before, nothing in this window)', async () => {
-    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+
 
     fsQueryRange.mockImplementation(rangeQueryMock([]));
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
@@ -346,8 +391,7 @@ describe('getAnalyticsReport', () => {
       // 2026-10-31 23:59 EDT — the day before; must be excluded from "today".
       ev({ id: 'day-before', sid: 'sess-before', event: 'page_view', receivedAt: '2026-11-01T03:59:00.000Z' }),
     ];
-    fsQueryRange.mockImplementation(rangeQueryMock(fixtures));
-    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const now = new Date('2026-11-01T17:00:00.000Z'); // noon NY, EST, after the transition
@@ -361,10 +405,12 @@ describe('getAnalyticsReport', () => {
   });
 
   it('degrades gracefully when only the leads query fails', async () => {
-    fsQueryRange.mockImplementation(
-      rangeQueryMock([ev({ id: 'e1', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z' })])
-    );
-    fsQueryRangeCount.mockRejectedValue(new Error('Firestore COUNT leads: 503 unavailable'));
+    const events = rangeQueryMock([ev({ id: 'e1', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z' })]);
+    fsQueryRange.mockImplementation(async (collectionId: string, ...rest: unknown[]) => {
+      if (collectionId === 'leads') throw new Error('Firestore RANGE leads: 503 unavailable');
+      return events(collectionId, ...(rest as [string, string, string]));
+    });
+
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
@@ -372,12 +418,18 @@ describe('getAnalyticsReport', () => {
     expect(report.meta.status).toBe('partial_failure');
     expect(report.meta.degraded).toEqual(['leads']);
     expect(report.inquiries).toBeNull();
+    expect(report.outstandingCaptures).toBeNull();
     expect(report.pageviews).toBe(1); // events leg still healthy
   });
 
   it('degrades gracefully when only the events query fails', async () => {
-    fsQueryRange.mockRejectedValue(new Error('Firestore RANGE analytics_events: 503 unavailable'));
-    fsQueryRangeCount.mockImplementation(countQueryMock(3));
+    // Only the events read fails; the leads read still answers.
+    fsQueryRange.mockImplementation(async (collectionId: string, ...rest: unknown[]) => {
+      if (collectionId === 'leads') {
+        return rangeQueryMock([], leadDocs(3))(collectionId, ...(rest as [string, string, string]));
+      }
+      throw new Error('Firestore RANGE analytics_events: 503 unavailable');
+    });
 
     const { getAnalyticsReport } = await import('@/lib/analytics/report');
     const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
@@ -385,6 +437,7 @@ describe('getAnalyticsReport', () => {
     expect(report.meta.status).toBe('partial_failure');
     expect(report.meta.degraded).toEqual(['events']);
     expect(report.inquiries).toBe(3); // leads leg still healthy
+    expect(report.outstandingCaptures).toBe(0); // three completed leads, no captures
     expect(report.pageviews).toBe(0);
     expect(report.sessions).toBe(0);
     expect(report.live).toEqual({ windowMinutes: 60, startIso: '', endIso: '', pageviews: 0, sessions: 0 });
@@ -401,7 +454,7 @@ describe('getAnalyticsReport', () => {
   });
 
   it('flags eventsTruncated when the bounded range query hits its row ceiling', async () => {
-    fsQueryRangeCount.mockImplementation(countQueryMock(0));
+
     fsQueryRange.mockImplementation(async (_c: string, _f: string, _s: string, _e: string, limit = 5000) =>
       Array.from({ length: limit }, (_, i) => ev({ id: `t${i}`, sid: `s${i}`, event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z' }))
     );

@@ -15,8 +15,11 @@ import { LEAD_DISPLAY_FIELDS, type LeadRecord } from './contract';
  */
 
 /** The questions that count toward completeness — what the visitor was asked,
- *  minus the fields the system fills in for them. */
-const SYSTEM_FIELDS = new Set(['submittedAt', 'source', 'email']);
+ *  minus every field the system fills in for them. `id` belongs here too: it
+ *  is the document key, present on every record including an email-only
+ *  capture, so counting it reported one answered question for someone who had
+ *  answered none. */
+const SYSTEM_FIELDS = new Set(['submittedAt', 'source', 'email', 'id']);
 
 export const COUNTED_LEAD_FIELDS = LEAD_DISPLAY_FIELDS.filter(
   (f) => !f.legacy && !SYSTEM_FIELDS.has(f.key as string),

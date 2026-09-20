@@ -90,4 +90,20 @@ describe('GET /admin/leads', () => {
     expect(typeof body.cap).toBe('number');
     expect(fsQueryCollection).toHaveBeenCalledWith('leads', 'submittedAt', 'DESCENDING', body.cap);
   });
+
+  it('excludes a capture row already converted to a full lead, but keeps outstanding captures and meetgreet leads', async () => {
+    verifyAdmin.mockResolvedValue('admin@example.test');
+    fsQueryCollection.mockResolvedValue([
+      { id: 'capture_converted', type: 'capture', status: 'converted', email: 'done@example.test', submittedAt: '2026-01-03T00:00:00.000Z', convertedLeadId: 'meetgreet_1' },
+      { id: 'capture_outstanding', type: 'capture', status: 'partial', email: 'waiting@example.test', submittedAt: '2026-01-02T00:00:00.000Z' },
+      { id: 'meetgreet_1', type: 'meetgreet', email: 'done@example.test', submittedAt: '2026-01-01T00:00:00.000Z' },
+    ]);
+
+    const { GET } = await import('@/app/admin/leads/route');
+    const res = await GET(leadsRequest({ Authorization: 'Bearer good-token' }));
+    const body = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(body.leads.map((l: { id: string }) => l.id)).toEqual(['capture_outstanding', 'meetgreet_1']);
+  });
 });

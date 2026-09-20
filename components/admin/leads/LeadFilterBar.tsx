@@ -1,8 +1,12 @@
 'use client';
 
+export type LeadSortOrder = 'newest' | 'complete';
+
 export function LeadFilterBar({
   query,
   onQueryChange,
+  sortBy,
+  onSortChange,
   loading,
   filteredCount,
   totalCount,
@@ -10,6 +14,10 @@ export function LeadFilterBar({
 }: {
   query: string;
   onQueryChange: (value: string) => void;
+  /** 'newest' matches the server's own order; 'complete' surfaces the
+   *  most-answered leads first so the founder sees the serious ones. */
+  sortBy: LeadSortOrder;
+  onSortChange: (value: LeadSortOrder) => void;
   loading: boolean;
   filteredCount: number;
   totalCount: number;
@@ -28,6 +36,19 @@ export function LeadFilterBar({
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
           />
+        </div>
+
+        <div className="form-group" id="admin-leads-sort-group">
+          <label htmlFor="leads-sort-select">Sort by</label>
+          <select
+            id="leads-sort-select"
+            className="form-control"
+            value={sortBy}
+            onChange={(e) => onSortChange(e.target.value === 'complete' ? 'complete' : 'newest')}
+          >
+            <option value="newest">Newest first</option>
+            <option value="complete">Most answered first</option>
+          </select>
         </div>
       </div>
 

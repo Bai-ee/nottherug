@@ -303,14 +303,36 @@ async function runRangeQuery(
  * This exists so a total is never inferred by counting a capped result set.
  * `lib/leads/stats.ts` has a standing caveat that its 1,000-record cap must not
  * be labelled "all time"; this is how a genuine total is obtained instead.
+ *
+ * `equalityFilter` optionally adds one more `field == value` clause to the
+ * same AND, e.g. to count only one document "type" within the range rather
+ * than every document. It is EQUAL, never NOT_EQUAL: Firestore requires any
+ * range/inequality filter and any not-equal filter in the same compound query
+ * to target the SAME field, so a not-equal filter here (on a field other than
+ * `field`) would be rejected outright, not just slow. An equality filter on a
+ * different field is valid but, combined with the range filter above, needs a
+ * composite Firestore index over (equalityFilter.field, field) — if that
+ * index does not exist yet, Firestore returns FAILED_PRECONDITION, which
+ * callers should treat the same as any other query failure (this function
+ * does not swallow it).
+ *
+ * Equality filters also never match a document where the field is absent
+ * entirely — this can undercount a collection whose schema added the filtered
+ * field partway through its history. Callers filtering on a field that is not
+ * universally present should say so explicitly where the count is used.
  */
 export async function fsQueryRangeCount(
   collectionId: string,
   field: string,
   start: string,
-  end: string
+  end: string,
 ): Promise<number> {
   const token = await getToken();
+  const filters: Array<Record<string, unknown>> = [
+    { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: start } } },
+    { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: { stringValue: end } } },
+  ];
+
   const res = await fetch(`${FS_BASE}:runAggregationQuery`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -318,15 +340,7 @@ export async function fsQueryRangeCount(
       structuredAggregationQuery: {
         structuredQuery: {
           from: [{ collectionId }],
-          where: {
-            compositeFilter: {
-              op: 'AND',
-              filters: [
-                { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: start } } },
-                { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: { stringValue: end } } },
-              ],
-            },
-          },
+          where: { compositeFilter: { op: 'AND', filters } },
         },
         aggregations: [{ alias: 'total', count: {} }],
       },

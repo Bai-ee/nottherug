@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import type { LeadRecord } from '@/lib/leads/contract';
+import { byCompletenessDesc, type AdminLeadRecord } from '@/components/admin/leads/adminLeadRecord';
 import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminShell } from '@/components/admin/AdminShell';
 import { adminFetch, useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
-import { LeadFilterBar } from '@/components/admin/leads/LeadFilterBar';
+import { LeadFilterBar, type LeadSortOrder } from '@/components/admin/leads/LeadFilterBar';
 import { LeadTable } from '@/components/admin/leads/LeadTable';
 
 /** Which layout the owner last chose. Per-viewer convenience only, so every
@@ -84,9 +84,10 @@ function LeadsPageContent({
 }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [leads, setLeads] = useState<LeadRecord[]>([]);
+  const [leads, setLeads] = useState<AdminLeadRecord[]>([]);
   const [cap, setCap] = useState<number | null>(null);
   const [query, setQuery] = useState('');
+  const [sortBy, setSortBy] = useState<LeadSortOrder>('newest');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   // Bumped by the Refresh button to re-run the effect below. An effect that
   // directly calls a separately-defined, named function which sets state
@@ -100,7 +101,7 @@ function LeadsPageContent({
   useEffect(() => {
     (async () => {
       try {
-        const data = await adminFetch<{ leads: LeadRecord[]; cap: number }>('/admin/leads', getToken, {
+        const data = await adminFetch<{ leads: AdminLeadRecord[]; cap: number }>('/admin/leads', getToken, {
           cache: 'no-store',
           signal: abortSignal,
         });
@@ -121,7 +122,7 @@ function LeadsPageContent({
     setRefreshKey((k) => k + 1);
   }
 
-  const filtered = useMemo(() => {
+  const searched = useMemo(() => {
     const q = query.trim().toLowerCase();
     return leads.filter((l) => {
       if (!q) return true;
@@ -132,6 +133,13 @@ function LeadsPageContent({
       return hay.includes(q);
     });
   }, [leads, query]);
+
+  // "Most answered first" surfaces the serious leads without disturbing the
+  // search above; "Newest first" keeps the server's own submittedAt order.
+  const filtered = useMemo(() => {
+    if (sortBy !== 'complete') return searched;
+    return [...searched].sort(byCompletenessDesc);
+  }, [searched, sortBy]);
 
   const view = useSyncExternalStore(subscribeView, readStoredView, () => 'cards' as LeadsView);
 
@@ -151,6 +159,8 @@ function LeadsPageContent({
         <LeadFilterBar
           query={query}
           onQueryChange={setQuery}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
           loading={loading}
           filteredCount={filtered.length}
           totalCount={leads.length}

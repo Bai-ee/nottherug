@@ -14,19 +14,31 @@ const RATE_FORMAT = new Intl.NumberFormat('en-US', { style: 'percent', maximumFr
  *  - this is a test-mode view (`testMode`). Leads have no test/real split, so
  *    the real total must not appear on a page labelled test data.
  *
- * Presentation: one paper card holding both headline tiles, split by the
- * homepage's own .grid-2. Numbers use .hero-stat-num — the same big-number
- * treatment as every other stat on this page; "biggest number on the page"
- * is now expressed by this card sitting first, not by a bigger font size.
+ * `outstandingCaptures` is a deliberately separate, smaller figure: people
+ * who gave an email and started booking on Calendly but never answered the
+ * questionnaire. It shares `inquiries`'s exact degraded/test-mode treatment
+ * (leads cannot be split real/test or reloaded independently of inquiries),
+ * but it is never summed with `inquiries` and never labelled "Inquiries" —
+ * it sits under its own "Awaiting Answers" heading so a non-technical reader
+ * cannot mistake it for a completed inquiry.
+ *
+ * Presentation: one paper card holding all headline tiles, laid out by the
+ * homepage's own .grid-2 (two columns; a third tile wraps to its own row).
+ * Numbers use .hero-stat-num — the same big-number treatment as every other
+ * stat on this page; "biggest number on the page" is expressed by this card
+ * sitting first, not by a bigger font size.
  */
 export function InquiryHeadline({
   inquiries,
+  outstandingCaptures,
   inquiryRate,
   degraded,
   testMode,
   dailyTrend,
 }: {
   inquiries: number | null;
+  /** Partial-capture backlog for the same range — see the doc comment above. Never an inquiry. */
+  outstandingCaptures: number | null;
   inquiryRate: InquiryRateInfo;
   /** Day buckets for the range, used for the card's own trend line. */
   dailyTrend: DailyTrendPoint[];
@@ -36,6 +48,7 @@ export function InquiryHeadline({
   testMode: boolean;
 }) {
   const inquiriesDisplay = degraded ? '—' : (inquiries ?? 0).toLocaleString('en-US');
+  const outstandingCapturesDisplay = degraded ? '—' : (outstandingCaptures ?? 0).toLocaleString('en-US');
 
   return (
     <section id="admin-analytics-headline-row" className="card card-pad grid-2">
@@ -58,6 +71,30 @@ export function InquiryHeadline({
               <p className="text-terra">Inquiry totals could not be loaded this time.</p>
             ) : (
               <a className="text-sage" href="/admin/dashboard/leads">View in Leads →</a>
+            )}
+          </>
+        )}
+      </div>
+
+      <div id="admin-analytics-outstanding-captures-tile">
+        <div className="stamp-label">Awaiting Answers</div>
+
+        {testMode ? (
+          <>
+            <div className="hero-stat-num">Not measured</div>
+            <p className="form-note">
+              Same reason as Inquiries: this also comes from your leads list, which does not separate test from real.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="hero-stat-num">{outstandingCapturesDisplay}</div>
+            {degraded ? (
+              <p className="text-terra">Could not be loaded this time.</p>
+            ) : (
+              <p className="form-note">
+                Gave an email and started booking, but haven&apos;t answered the questions yet. Not an inquiry until they do.
+              </p>
             )}
           </>
         )}

@@ -13,7 +13,7 @@
 // silently disagree with the client tracker or the ingestion route about
 // what a field means.
 
-import { fsQueryRange, fsQueryRangeCount } from '@/lib/server/firestoreRest';
+import { fsQueryRange } from '@/lib/server/firestoreRest';
 import { ServiceError } from '@/lib/server/errors';
 import {
   BOOKING_STEPS,
@@ -170,15 +170,50 @@ export interface AnalyticsReport {
    * Authoritative saved-lead count for the range, from the leads collection —
    * never the client lead_saved event.
    *
+   * Counts only `type: 'meetgreet'` documents (a completed questionnaire).
+   * The leads collection also holds `type: 'capture'` documents — a
+   * deliberately partial lead (email + Calendly booking intent, no answers)
+   * written by app/api/leads/capture/route.ts when someone only gives an
+   * email before booking. Those are excluded at the Firestore query level
+   * (a `type == 'meetgreet'` equality filter alongside the date range), never
+   * fetched and filtered client-side — see fsQueryRangeCount in
+   * lib/server/firestoreRest.ts. The capture-side count is reported
+   * separately as `outstandingCaptures` and must never be added here.
+   *
    * Null in exactly two cases the UI must tell apart:
    *  - the leads query failed (meta.degraded includes 'leads');
    *  - this is a test-mode report (meta.testMode). Leads carry no mode field,
    *    so real inquiries cannot be split out of a test-mode view, and showing
    *    the real total under a "not real business data" banner would be a lie.
    *    Not measured is the only honest answer there.
+   *
+   * KNOWN LIMITATION: a lead written before the `type` field existed (schema
+   * v1) matches neither `type == 'meetgreet'` nor `type == 'capture'` —
+   * Firestore equality filters never match a document missing the filtered
+   * field — so such a document is invisible to this count. Only matters if
+   * its `submittedAt` falls inside the queried range; harmless for the
+   * today/7d/30d ranges this report actually supports unless the `type` field
+   * was introduced within the last 30 days.
    */
   inquiries: number | null;
   inquiryRate: InquiryRateInfo;
+
+  /**
+   * Count of `type: 'capture'` leads documents in this same range whose
+   * `status` is still `'partial'` — someone gave an email and started
+   * booking on Calendly but has not answered the questionnaire yet. Once they
+   * do, the meetgreet submission flips that same document's `status` to
+   * `'converted'` (see markCaptureConverted in app/api/leads/meetgreet), so
+   * it drops out of this count; the genuine inquiry they created is a
+   * separate `type: 'meetgreet'` document already counted in `inquiries`.
+   *
+   * Never added to `inquiries` and never rendered as one — see
+   * components/admin/analytics/InquiryHeadline.tsx. Filtered at the query
+   * level the same way (a `status == 'partial'` equality filter alongside the
+   * date range) and shares `inquiries`'s exact null semantics: null when the
+   * leads query failed, null in test mode.
+   */
+  outstandingCaptures: number | null;
 
   /** Count of appointment_completed events (deduplicated by event id). Reported separately — never summed with inquiries (decision 7). */
   appointmentsScheduled: number;
@@ -528,6 +563,40 @@ export interface GetAnalyticsReportOptions {
   now?: Date;
 }
 
+interface LeadsCount {
+  /** Completed questionnaires — the authoritative inquiry total. */
+  inquiries: number;
+  /** Email-only captures still waiting on answers. Never an inquiry. */
+  outstandingCaptures: number;
+}
+
+/** How many lead documents one window may hold before the count is no longer
+ *  trustworthy. Orders of magnitude above this business's real volume. */
+const LEADS_QUERY_LIMIT = 5000;
+
+async function countLeadsInWindow(startIso: string, endIso: string): Promise<LeadsCount> {
+  const rows = await fsQueryRange('leads', 'submittedAt', startIso, endIso, LEADS_QUERY_LIMIT);
+  if (rows.length >= LEADS_QUERY_LIMIT) {
+    // Refuse to report a number that is quietly capped.
+    throw new Error('leads window exceeded the read cap');
+  }
+
+  let inquiries = 0;
+  let outstandingCaptures = 0;
+  for (const row of rows) {
+    if (row.type === 'capture') {
+      // A capture whose person later completed the questionnaire is counted
+      // by their full lead instead, never twice.
+      if (row.status !== 'converted') outstandingCaptures += 1;
+      continue;
+    }
+    // Everything else in this collection is a real submitted lead, including
+    // historical documents written before `type` existed.
+    inquiries += 1;
+  }
+  return { inquiries, outstandingCaptures };
+}
+
 export async function getAnalyticsReport(range: ReportRange, options: GetAnalyticsReportOptions = {}): Promise<AnalyticsReport> {
   const includeTest = options.includeTest ?? false;
   const now = options.now ?? new Date();
@@ -536,13 +605,27 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
   // Leads (authoritative inquiries) and events (everything else) are
   // independent dependencies. One failing must not blank out the other —
   // that is what meta.degraded communicates instead of a bare 500.
-  // The leads collection has no mode field: every lead in it is a real
-  // inquiry. A test-mode report therefore does not query it at all and
-  // reports `inquiries: null` (= not measured), rather than putting the real
-  // business total on a page labelled "not real business data".
-  const leadsQuery = includeTest
-    ? Promise.resolve<number | null>(null)
-    : fsQueryRangeCount('leads', 'submittedAt', window.startIso, window.endIso);
+  // The leads collection has no mode field: every lead in it is real
+  // business data. A test-mode report therefore does not query it at all and
+  // reports `inquiries`/`outstandingCaptures` as null (= not measured),
+  // rather than putting the real business totals on a page labelled "not
+  // real business data".
+  //
+  // One bounded read of the window, counted in memory, rather than two
+  // filtered aggregation queries. A `type == ...` or `status == ...` filter
+  // combined with the submittedAt range is a compound query, which Firestore
+  // will not serve without a composite index — and until that index exists it
+  // answers FAILED_PRECONDITION, which would have degraded the owner's single
+  // most trusted number to "—" the moment this shipped. A plain range on one
+  // field needs no index at all.
+  //
+  // Affordable because this collection is small: leads arrive a few a week,
+  // and the cap below is far above any 30-day window this business produces.
+  // If a window ever did exceed it the count would silently be low, so
+  // hitting the cap is reported as a degraded leads dependency instead.
+  const leadsQuery: Promise<LeadsCount | null> = includeTest
+    ? Promise.resolve(null)
+    : countLeadsInWindow(window.startIso, window.endIso);
 
   const [leadsResult, eventsResult, liveResult, earliestResult] = await Promise.allSettled([
     leadsQuery,
@@ -553,8 +636,10 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
 
   const degraded: Array<'leads' | 'events'> = [];
 
-  const inquiries = leadsResult.status === 'fulfilled' ? leadsResult.value : null;
+  const leadsValue = leadsResult.status === 'fulfilled' ? leadsResult.value : null;
   if (leadsResult.status === 'rejected') degraded.push('leads');
+  const inquiries = leadsValue?.inquiries ?? null;
+  const outstandingCaptures = leadsValue?.outstandingCaptures ?? null;
 
   const events = eventsResult.status === 'fulfilled' ? eventsResult.value.events : [];
   const eventsTruncated = eventsResult.status === 'fulfilled' ? eventsResult.value.truncated : false;
@@ -616,6 +701,7 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
     },
     range: window,
     inquiries,
+    outstandingCaptures,
     inquiryRate,
     appointmentsScheduled,
     pageviews,

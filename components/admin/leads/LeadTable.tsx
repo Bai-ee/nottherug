@@ -1,8 +1,9 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadRecord, type LeadDisplayField } from '@/lib/leads/contract';
+import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadDisplayField } from '@/lib/leads/contract';
 import { telHref, mailtoHref, googleCalendarHref } from '@/lib/leads/contactLinks';
+import { isOutstandingCapture, isLeadComplete, leadQualityLabel, type AdminLeadRecord } from './adminLeadRecord';
 
 const TZ = 'America/New_York';
 
@@ -44,7 +45,7 @@ const DETAIL_FIELDS = LEAD_DISPLAY_FIELDS.filter(
  * lead record itself carries no booking reference, so this is the scheduling
  * page, not this client's appointment.
  */
-function LeadActions({ lead }: { lead: LeadRecord }) {
+function LeadActions({ lead }: { lead: AdminLeadRecord }) {
   const mail = mailtoHref(lead);
   const tel = telHref(lead.phone);
   const calendar = googleCalendarHref(lead);
@@ -84,7 +85,7 @@ function LeadActions({ lead }: { lead: LeadRecord }) {
   );
 }
 
-function FieldRow({ lead, field }: { lead: LeadRecord; field: LeadDisplayField }) {
+function FieldRow({ lead, field }: { lead: AdminLeadRecord; field: LeadDisplayField }) {
   const isNotes = field.key === 'notes';
 
   let valueNode: ReactNode;
@@ -118,6 +119,43 @@ function FieldRow({ lead, field }: { lead: LeadRecord; field: LeadDisplayField }
   );
 }
 
+/** The seriousness signal every row shows, in words: "Booked · 7 of 11
+ *  answered" or plainly "3 of 11 answered" — never a 0-100 score.
+ *  `bookedSelfReported` is the visitor's own browser reporting a Calendly
+ *  completion, a hint and not proof, so the tooltip says so wherever the
+ *  word "Booked" can appear. */
+function LeadQualityBadge({ lead }: { lead: AdminLeadRecord }) {
+  const complete = isLeadComplete(lead);
+  return (
+    <span
+      className={`badge ${complete ? 'badge-sage' : 'badge-gold'}`}
+      title={lead.bookedSelfReported ? "Self-reported by the visitor's browser — not a confirmed booking." : undefined}
+    >
+      {leadQualityLabel(lead)}
+    </span>
+  );
+}
+
+/** What a capture row's face shows instead of six blank questionnaire
+ *  fields: the one thing it has (an email) and a plain statement of where
+ *  the person is in the funnel, so it reads as "waiting on answers" rather
+ *  than a broken lead. */
+function CaptureFaceNote({ lead }: { lead: AdminLeadRecord }) {
+  return (
+    <>
+      <div className="rc-row" style={{ gap: 16 }}>
+        <span className="rc-label" style={{ minWidth: 150 }}>Email</span>
+        <a href={`mailto:${lead.email}`} className="rc-value" onClick={(e) => e.stopPropagation()}>
+          {lead.email}
+        </a>
+      </div>
+      <p className="form-note" style={{ margin: 0 }}>
+        Gave an email and went to book on Calendly — hasn&rsquo;t answered the questionnaire yet.
+      </p>
+    </>
+  );
+}
+
 /** The line-item view's columns, in order. Narrow enough as a set that the
  *  grid fits a laptop without sideways scrolling; below that the list scrolls
  *  rather than dropping a column the owner might be looking for. */
@@ -132,7 +170,7 @@ function LeadRows({
   expandedId,
   onToggleExpand,
 }: {
-  leads: LeadRecord[];
+  leads: AdminLeadRecord[];
   expandedId: string | null;
   onToggleExpand: (rowKey: string) => void;
 }) {
@@ -145,6 +183,9 @@ function LeadRows({
               {f.label}
             </span>
           ))}
+          <span className="rc-label admin-lead-cell" role="columnheader">
+            Completeness
+          </span>
         </div>
 
         {leads.map((lead) => {
@@ -173,11 +214,16 @@ function LeadRows({
                       <span className="badge badge-sage">{lead.source || '—'}</span>
                     ) : f.key === 'submittedAt' ? (
                       fmtDate(lead.submittedAt)
+                    ) : f.key === 'ownerName' && isOutstandingCapture(lead) ? (
+                      <span className="badge badge-gold">Waiting on answers</span>
                     ) : (
                       formatLeadFieldValue(lead, f)
                     )}
                   </span>
                 ))}
+                <span className="admin-lead-cell" role="cell">
+                  <LeadQualityBadge lead={lead} />
+                </span>
               </div>
 
               {isOpen ? (
@@ -187,9 +233,13 @@ function LeadRows({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <LeadActions lead={lead} />
-                  {visibleDetailFields.map((f) => (
-                    <FieldRow key={f.key} lead={lead} field={f} />
-                  ))}
+                  {isOutstandingCapture(lead) ? (
+                    <p className="form-note" style={{ margin: 0 }}>
+                      No questionnaire answers yet — this row is only the email capture from Calendly checkout.
+                    </p>
+                  ) : (
+                    visibleDetailFields.map((f) => <FieldRow key={f.key} lead={lead} field={f} />)
+                  )}
                 </div>
               ) : null}
             </div>
@@ -206,7 +256,7 @@ export function LeadTable({
   onToggleExpand,
   view = 'cards',
 }: {
-  leads: LeadRecord[];
+  leads: AdminLeadRecord[];
   expandedId: string | null;
   onToggleExpand: (rowKey: string) => void;
   /** 'rows' is the compact line-item view; 'cards' is one paper card each. */
@@ -244,8 +294,12 @@ export function LeadTable({
               className="admin-lead-card-header-row"
             >
               <div>
-                <div className="rc-title">{lead.ownerName || '—'}</div>
-                <div className="rc-subtitle">{fmtDate(lead.submittedAt)}</div>
+                <div className="rc-title">
+                  {isOutstandingCapture(lead) ? 'Waiting on answers' : lead.ownerName || '—'}
+                </div>
+                <div className="rc-subtitle">
+                  {isOutstandingCapture(lead) ? `${lead.email} · ${fmtDate(lead.submittedAt)}` : fmtDate(lead.submittedAt)}
+                </div>
               </div>
               <span className="badge badge-sage">{lead.source || '—'}</span>
             </div>
@@ -253,9 +307,19 @@ export function LeadTable({
             <div className="divider" style={{ margin: '0 0 12px' }} />
 
             <div id={`admin-lead-card-face-${rowKey}`} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {FACE_FIELDS.map((f) => (
-                <FieldRow key={f.key} lead={lead} field={f} />
-              ))}
+              <div className="rc-row" style={{ gap: 16 }}>
+                <span className="rc-label" style={{ minWidth: 150 }}>
+                  Completeness
+                </span>
+                <span className="rc-value">
+                  <LeadQualityBadge lead={lead} />
+                </span>
+              </div>
+              {isOutstandingCapture(lead) ? (
+                <CaptureFaceNote lead={lead} />
+              ) : (
+                FACE_FIELDS.map((f) => <FieldRow key={f.key} lead={lead} field={f} />)
+              )}
             </div>
 
             <button
@@ -278,9 +342,13 @@ export function LeadTable({
                 onClick={(e) => e.stopPropagation()}
               >
                 <LeadActions lead={lead} />
-                {visibleDetailFields.map((f) => (
-                  <FieldRow key={f.key} lead={lead} field={f} />
-                ))}
+                {isOutstandingCapture(lead) ? (
+                  <p className="form-note" style={{ margin: 0 }}>
+                    No questionnaire answers yet — this card is only the email capture from Calendly checkout.
+                  </p>
+                ) : (
+                  visibleDetailFields.map((f) => <FieldRow key={f.key} lead={lead} field={f} />)
+                )}
               </div>
             ) : null}
           </div>

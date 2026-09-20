@@ -148,6 +148,7 @@ function AdminAnalyticsDashboardContent({
 
         <InquiryHeadline
           inquiries={view.inquiries}
+          outstandingCaptures={view.outstandingCaptures}
           inquiryRate={view.inquiryRate}
           degraded={degradedLeads}
           testMode={testMode}

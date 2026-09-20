@@ -14,10 +14,18 @@ describe('measureLeadCompleteness', () => {
     expect(m.total).toBe(COUNTED_LEAD_FIELDS.length);
   });
 
-  it('does not count email, source or the timestamp as answers', () => {
-    expect(COUNTED_LEAD_FIELDS.map((f) => f.key)).not.toContain('email');
-    expect(COUNTED_LEAD_FIELDS.map((f) => f.key)).not.toContain('source');
-    expect(COUNTED_LEAD_FIELDS.map((f) => f.key)).not.toContain('submittedAt');
+  it('counts no system field as an answer', () => {
+    const counted = COUNTED_LEAD_FIELDS.map((f) => f.key);
+    for (const systemField of ['email', 'source', 'submittedAt', 'id']) {
+      expect(counted).not.toContain(systemField);
+    }
+  });
+
+  it('reports nothing answered for a bare capture that only has its own id', () => {
+    // Regression: `id` is present on every document, so counting it made an
+    // email-only capture read as having answered a question.
+    const m = measureLeadCompleteness({ id: 'capture_bare', email: 'a@b.com', submittedAt: 'x' });
+    expect(m.answered).toBe(0);
   });
 
   it('ignores blank strings but counts a deliberate no', () => {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
 import { errorResponse, ServiceError } from '@/lib/server/errors';
 import { fsQueryCollection } from '@/lib/server/firestoreRest';
-import type { LeadRecord } from '@/lib/leads/contract';
+import { isConvertedCapture, type AdminLeadRecord } from '@/components/admin/leads/adminLeadRecord';
 
 export const runtime = 'nodejs';
 
@@ -26,8 +26,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       'submittedAt',
       'DESCENDING',
       LEADS_LIST_CAP,
-    )) as unknown as LeadRecord[];
-    return NextResponse.json({ leads, cap: LEADS_LIST_CAP });
+    )) as unknown as AdminLeadRecord[];
+
+    // A capture whose person has since completed the questionnaire has its
+    // full lead already in this same read, under its own id — showing the
+    // capture row too would double-count that person, so it is dropped here,
+    // once, rather than in every consumer of this route.
+    const visible = leads.filter((lead) => !isConvertedCapture(lead));
+
+    return NextResponse.json({ leads: visible, cap: LEADS_LIST_CAP });
   } catch (err) {
     return errorResponse(new ServiceError(err instanceof Error ? err.message : 'Lead load failed'));
   }
