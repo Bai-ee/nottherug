@@ -121,19 +121,13 @@ export default function HomeHero() {
           <span className="stamp-label" id="hero-stamp-label">Williamsburg, Brooklyn &middot; Est. 2011</span>
         </div>
         <h1 className="hero-h1" id="hero-headline">
-          {/* Two headlines, one element: the desktop copy (four hard-broken
-              lines) and the phone copy (one line) share the h1 so the
-              entrance animation, ids and section-nav contract stay the same;
-              globals.css shows one set and hides the other by breakpoint.
-              Every line is wrapped and every <br> is a direct child on
-              purpose: the word-split in useHomeHeroMotion clones each
-              wrapper per word (keeping its class) and only re-emits
-              top-level <br>s. */}
-          <span className="hero-desktop-copy">Your dog</span> <br />
-          <span className="hero-desktop-copy">deserves</span> <br />
-          <em className="hero-desktop-copy">someone they</em> <br />
-          <em className="hero-desktop-copy">know.</em>
-          <span className="hero-phone-copy">Professional dog walkers</span>
+          {/* Four hard-broken lines, kept at the top level of the h1: the
+              hero word-split in useHomeHeroMotion only re-emits <br>s that are
+              direct children, so a <br> nested inside <em> would be dropped
+              once the entrance animation rebuilds the markup. The spaces
+              before each <br> matter: phones hide the 1st and 3rd break
+              (globals.css) to set the same headline on two centred lines. */}
+          Your dog <br />deserves <br /><em>someone they</em> <br /><em>know.</em>
         </h1>
         <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently.</p>
         {/* Desktop shows View Services (button) + Contact Luis (text link);

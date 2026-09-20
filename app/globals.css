@@ -3660,8 +3660,8 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-cta-primary { margin-bottom: 16px; }
 }
 
-/* Hero phone-only copy and controls are hidden until the phone breakpoint
-   below (the headline's phone line and the phone CTA pair in HomeHero.tsx). */
+/* Hero phone-only controls (the phone CTA pair in HomeHero.tsx) are hidden
+   until the phone breakpoint below. */
 .hero .hero-phone-copy { display: none; }
 
 /* ── PHONE NAV WORDMARK + TWO-LINE HEADLINE ───────────────────────────────
@@ -3669,10 +3669,10 @@ html[data-home-intro='loading'] body { overflow: hidden; }
    nav state (top of page and scrolled) so it never drops, tucks or hangs
    below the band. The home loading screen still plays at this width; its
    nav drop lands on this same locked position.
-   The hero swaps to its phone copy: headline "Professional dog walkers",
-   the Williamsburg stamp under it, "Contact Luis, to set up a walk" as the
-   button and "View services" as the text link. Both sets live in
-   HomeHero.tsx; this block shows one and hides the other. */
+   The hero keeps its headline (set on two centred lines), moves the
+   Williamsburg stamp under it, and swaps the CTA pair: "Contact Luis, to set
+   up a walk" as the button and "View services" as the text link. Both CTA
+   sets live in HomeHero.tsx; this block shows one and hides the other. */
 @media (max-width: 768px) {
   #main-nav .nav-logo,
   #main-nav.nav-scrolled .nav-logo {
@@ -3686,10 +3686,12 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   }
   #main-nav #nav-logo-img,
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
-  .hero .hero-desktop-copy,
-  #hero-headline br { display: none; }
-  #hero-headline .hero-phone-copy { display: inline; }
-  #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); order: 1; margin-bottom: 12px; }
+  #hero-actions-row .hero-desktop-copy { display: none; }
+  /* Same headline as desktop on two lines: "Your dog deserves" /
+     "someone they know." (1st and 3rd hard break hidden). */
+  #hero-headline br:nth-of-type(1),
+  #hero-headline br:nth-of-type(3) { display: none; }
+  #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); order: 1; margin-bottom: 12px; text-align: center; }
   /* Stamp label sits under the headline, everything centred. */
   #hero-eyebrow-stamp-row { order: 2; justify-content: center; margin: 0 0 18px; }
   #hero-content-shell { text-align: center; }
