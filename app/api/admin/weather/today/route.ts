@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
 import { errorResponse } from '@/lib/server/errors';
+import { buildWeatherLine, type NeighborhoodWeatherSummary } from '@/lib/analytics/weatherLine';
 
 /**
  * Today's Williamsburg weather for the analytics dashboard, read from the
@@ -23,43 +24,23 @@ export const runtime = 'nodejs';
 
 const CACHE_MS = 30 * 60 * 1000;
 
-type WeatherLine = {
+interface WeatherLine {
   line: string;
   tempF: number | null;
   precipPct: number | null;
   windMph: number | null;
   fetchedAt: string;
-};
+}
 
 // One forecast is plenty for every admin who loads the page in the next half
 // hour; NWS rate-limits by User-Agent and the outlook does not move that fast.
 let cached: { at: number; value: WeatherLine } | null = null;
 
-type WeatherSummary = {
-  maxTempF?: number | null;
-  minTempF?: number | null;
-  maxPrecipChancePct?: number | null;
-  maxWindMph?: number | null;
-  operationalTakeaway?: string | null;
-};
-
 function loadBriefWeather() {
-  const require = createRequire(path.join(process.cwd(), 'not-the-rug-brief/'));
-  const { requireClientConfig } = require('./clients.js');
-  const { fetchOperationalWeather } = require('./services/weather.js');
+  const requireFromBrief = createRequire(path.join(process.cwd(), 'not-the-rug-brief/'));
+  const { requireClientConfig } = requireFromBrief('./clients.js');
+  const { fetchOperationalWeather } = requireFromBrief('./services/weather.js');
   return { requireClientConfig, fetchOperationalWeather };
-}
-
-/** "Williamsburg · 72°F · 20% chance of rain · wind 8 mph", skipping whatever
- *  the forecast did not give us rather than printing a blank figure. */
-function buildLine(summary: WeatherSummary): string {
-  const parts = ['Williamsburg'];
-  if (typeof summary.maxTempF === 'number') parts.push(`${Math.round(summary.maxTempF)}°F`);
-  if (typeof summary.maxPrecipChancePct === 'number') {
-    parts.push(`${Math.round(summary.maxPrecipChancePct)}% chance of rain`);
-  }
-  if (typeof summary.maxWindMph === 'number') parts.push(`wind ${Math.round(summary.maxWindMph)} mph`);
-  return parts.join(' · ');
 }
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -76,11 +57,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const { requireClientConfig, fetchOperationalWeather } = loadBriefWeather();
     const report = await fetchOperationalWeather(requireClientConfig('not-the-rug'));
-    const summary: WeatherSummary | null = report?.overall ?? report?.neighborhoods?.[0]?.summary ?? null;
-    if (!summary) return NextResponse.json({ error: 'No forecast available' }, { status: 503 });
+
+    // The figures live on the neighbourhood's own summary; report.overall
+    // carries only prose and flags, so reading them from there returns a line
+    // with no weather in it.
+    const summary: NeighborhoodWeatherSummary | null = report?.neighborhoods?.[0]?.summary ?? null;
+    const line = buildWeatherLine(summary);
+    if (!summary || !line) {
+      return NextResponse.json({ error: 'No forecast available' }, { status: 503 });
+    }
 
     const value: WeatherLine = {
-      line: buildLine(summary),
+      line,
       tempF: summary.maxTempF ?? null,
       precipPct: summary.maxPrecipChancePct ?? null,
       windMph: summary.maxWindMph ?? null,
