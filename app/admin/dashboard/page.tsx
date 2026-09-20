@@ -23,6 +23,7 @@ import { CtaTable } from '@/components/admin/analytics/CtaTable';
 import { FunnelPanel } from '@/components/admin/analytics/FunnelPanel';
 import { TrackingDisabledBanner, LoadingBanner, ErrorBanner, ReportMetaBanner } from '@/components/admin/analytics/StatusBanner';
 import { buildEmptyReport } from '@/components/admin/analytics/emptyReport';
+import { buildDashboardGreeting } from '@/lib/analytics/greeting';
 import {
   buildDashboardRequestKey,
   deriveDashboardRequestState,
@@ -98,6 +99,25 @@ function AdminAnalyticsDashboardContent({
     };
   }, [range, testMode, getToken, abortSignal, requestKey]);
 
+  const [weatherLine, setWeatherLine] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await adminFetch<{ line?: string }>('/api/admin/weather/today', getToken, {
+          cache: 'no-store',
+          signal: abortSignal,
+        });
+        if (!cancelled && data?.line) setWeatherLine(data.line);
+      } catch {
+        // No forecast is not a dashboard error — the line simply stays out.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken, abortSignal]);
+
   const retry = useCallback(() => setRetryKey((k) => k + 1), []);
 
   const trackingEnabled = isAnalyticsEnabled();
@@ -122,6 +142,9 @@ function AdminAnalyticsDashboardContent({
   return (
     <AdminShell
       title="Site Performance"
+      // Until a report lands the page has nothing to read, so it keeps its
+      // plain name rather than greeting the owner off a zero-filled stand-in.
+      headline={synced ? buildDashboardGreeting(view) : undefined}
       email={email}
       onSignOut={signOut}
       lastRefreshed={lastRefreshed}
@@ -131,6 +154,10 @@ function AdminAnalyticsDashboardContent({
           — every panel below is a paper card; #admin-analytics-dashboard-grid
           is the only layout plumbing standing in for the old .analytics-page. */}
       <div id="admin-analytics-dashboard-grid" data-data-mode={testMode ? 'test' : 'real'}>
+
+        {weatherLine ? (
+          <p id="admin-analytics-weather-line" className="form-note">{weatherLine}</p>
+        ) : null}
 
         {!trackingEnabled ? <TrackingDisabledBanner /> : null}
 
@@ -144,9 +171,10 @@ function AdminAnalyticsDashboardContent({
           inquiryRate={view.inquiryRate}
           degraded={degradedLeads}
           testMode={testMode}
+          dailyTrend={view.dailyTrend}
         />
 
-        <LiveTile live={view.live} />
+        <LiveTile live={view.live} dailyTrend={view.dailyTrend} />
 
         {/* Test/preview traffic is a developer view: it is reached only by
             adding ?testMode=1 to the URL (see docs/analytics-operations.md),

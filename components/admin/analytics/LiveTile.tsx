@@ -1,6 +1,7 @@
 'use client';
 
-import type { LiveTile as LiveTileData } from '@/lib/analytics/report';
+import type { DailyTrendPoint, LiveTile as LiveTileData } from '@/lib/analytics/report';
+import { MiniTrend } from './MiniTrend';
 
 /**
  * Owner decision 3: a rolling 60-minute tile, always shown regardless of the
@@ -12,7 +13,7 @@ import type { LiveTile as LiveTileData } from '@/lib/analytics/report';
  * hero-stat-item/hero-stat-num/hero-stat-divider row. The heading already
  * says "Last 60 minutes", so it carries no separate "live" marker.
  */
-export function LiveTile({ live }: { live: LiveTileData }) {
+export function LiveTile({ live, dailyTrend }: { live: LiveTileData; dailyTrend: DailyTrendPoint[] }) {
   const asOf = live.endIso
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' }).format(new Date(live.endIso))
     : null;
@@ -33,6 +34,7 @@ export function LiveTile({ live }: { live: LiveTileData }) {
           <div className="hero-stat-label">Page Views</div>
         </div>
       </div>
+      <MiniTrend points={dailyTrend} metric="sessions" label="Visits" />
       <p className="form-note">{asOf ? `As of ${asOf} ET · reload the page to update` : 'Reload the page to update'}</p>
     </section>
   );

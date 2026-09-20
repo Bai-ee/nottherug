@@ -17,6 +17,7 @@ import { AdminFooter } from './AdminFooter';
  */
 export function AdminShell({
   title,
+  headline,
   email,
   onSignOut,
   actions,
@@ -26,6 +27,10 @@ export function AdminShell({
   children,
 }: {
   title: string;
+  /** Replaces the page title in the <h1> while the stamped label above it
+   *  keeps naming the section. Lets a page greet its reader with something
+   *  the data decides. */
+  headline?: string;
   email: string;
   onSignOut: () => void | Promise<void>;
   /** Page-specific controls, e.g. the Leads page's Refresh / Export CSV buttons. */
@@ -47,7 +52,7 @@ export function AdminShell({
             <div id="admin-page-header-heading">
               {/* Same stamped label the home page prints over its sections. */}
               <div className="stamp-label stamp-label-heading">Admin · {title}</div>
-              <h1 id="admin-page-title">{title}</h1>
+              <h1 id="admin-page-title">{headline ?? title}</h1>
             </div>
 
             {actions ? (

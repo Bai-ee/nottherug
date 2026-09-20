@@ -106,6 +106,20 @@
   white-space: nowrap;
 }
 
+/* Today's forecast sits just under the greeting, in the owner's own voice
+   rather than as a panel of its own. */
+#admin-analytics-weather-line { margin: 0 0 2px; text-align: center; }
+
+/* The two headline tiles, and the live tile's two numbers, stay side by side
+   at every width: each pair is there to be compared, not read as a list. */
+#admin-analytics-headline-row { grid-template-columns: 1fr 1fr; gap: 20px; }
+#admin-analytics-live-stats-row { flex-direction: row; justify-content: center; }
+
+/* A card's own day-by-day line, sized to sit under the numbers it belongs to. */
+.admin-analytics-mini-trend { display: grid; gap: 4px; justify-items: center; width: 100%; }
+.admin-analytics-mini-trend svg { width: 100%; max-width: 240px; height: 44px; display: block; }
+.admin-analytics-mini-trend .form-note { margin: 0; }
+
 /* Daily Trend heads its own column: the stamped label centred, with the
    legend reading directly under it rather than off to one side. */
 #admin-analytics-trend-panel-head { display: grid; justify-items: center; gap: 6px; }
@@ -305,6 +319,9 @@
      narrow instead of stacking. */
   #admin-analytics-range-selector { flex-direction: row; width: 100%; }
   #admin-analytics-range-selector .btn { width: auto; flex: 1 1 0; font-size: 11px; padding-left: 6px; padding-right: 6px; }
+  /* ...but the live tile's pair stays on one line, like the headline pair. */
+  #admin-analytics-live-stats-row { flex-direction: row; gap: 16px; }
+  #admin-analytics-headline-row { gap: 14px; }
   #admin-analytics-controls-row,
   #admin-analytics-error-banner,
   .admin-analytics-hero-stats-row {

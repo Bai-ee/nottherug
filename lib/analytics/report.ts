@@ -69,6 +69,9 @@ export interface DailyTrendPoint {
    */
   sessions: number;
   engagedSessions: number;
+  /** Tracked lead_saved events that day — the inquiry card's own daily line.
+   *  This is the tracked cohort, not the authoritative leads total. */
+  leadSaved: number;
 }
 
 export interface SourceRow {
@@ -430,6 +433,7 @@ function bucketDailyTrend(events: StoredAnalyticsEvent[], windows: DayWindow[]):
       pageviews: dayEvents.filter((e) => e.event === 'page_view').length,
       sessions: new Set(dayEvents.map((e) => e.sid)).size,
       engagedSessions: engagedSids.size,
+      leadSaved: dayEvents.filter((e) => e.event === 'lead_saved').length,
     };
   });
 }

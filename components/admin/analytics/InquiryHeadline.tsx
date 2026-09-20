@@ -1,6 +1,7 @@
 'use client';
 
-import type { InquiryRateInfo } from '@/lib/analytics/report';
+import type { DailyTrendPoint, InquiryRateInfo } from '@/lib/analytics/report';
+import { MiniTrend } from './MiniTrend';
 
 const RATE_FORMAT = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 1 });
 
@@ -23,9 +24,12 @@ export function InquiryHeadline({
   inquiryRate,
   degraded,
   testMode,
+  dailyTrend,
 }: {
   inquiries: number | null;
   inquiryRate: InquiryRateInfo;
+  /** Day buckets for the range, used for the card's own trend line. */
+  dailyTrend: DailyTrendPoint[];
   /** True when the leads dependency itself failed for this report (meta.degraded includes 'leads'). */
   degraded: boolean;
   /** True when the dashboard is showing test/preview traffic only (meta.testMode). */
@@ -67,6 +71,7 @@ export function InquiryHeadline({
         <p className="form-note">
           {inquiryRate.trackedLeadSaved.toLocaleString('en-US')} tracked inquiries / {inquiryRate.trackedSessions.toLocaleString('en-US')} tracked visits
         </p>
+        <MiniTrend points={dailyTrend} metric="leadSaved" label="Tracked inquiries" />
       </div>
     </section>
   );

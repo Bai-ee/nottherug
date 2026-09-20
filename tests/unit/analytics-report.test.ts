@@ -161,7 +161,9 @@ describe('getAnalyticsReport', () => {
     expect(report.funnel.phoneConsultPath).toBe(1); // sess-b
     expect(report.funnel.calendlyScheduled).toBe(1); // sess-a
 
-    expect(report.dailyTrend).toEqual([{ date: '2026-01-15', pageviews: 4, sessions: 4, engagedSessions: 1 }]);
+    expect(report.dailyTrend).toEqual([
+      { date: '2026-01-15', pageviews: 4, sessions: 4, engagedSessions: 1, leadSaved: 2 },
+    ]);
 
     expect(report.live).toEqual({
       windowMinutes: 60,
@@ -353,7 +355,9 @@ describe('getAnalyticsReport', () => {
 
     expect(report.pageviews).toBe(2);
     expect(report.sessions).toBe(2);
-    expect(report.dailyTrend).toEqual([{ date: '2026-11-01', pageviews: 2, sessions: 2, engagedSessions: 0 }]);
+    expect(report.dailyTrend).toEqual([
+      { date: '2026-11-01', pageviews: 2, sessions: 2, engagedSessions: 0, leadSaved: 0 },
+    ]);
   });
 
   it('degrades gracefully when only the leads query fails', async () => {
