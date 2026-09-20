@@ -3660,18 +3660,19 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-cta-primary { margin-bottom: 16px; }
 }
 
-/* Hero headline phone copy is hidden until the phone breakpoint below. */
-#hero-headline .hero-headline-mobile,
-#hero-headline br:nth-of-type(4) { display: none; }
+/* Hero phone-only copy and controls are hidden until the phone breakpoint
+   below (the headline's phone line and the phone CTA pair in HomeHero.tsx). */
+.hero .hero-phone-copy { display: none; }
 
 /* ── PHONE NAV WORDMARK + TWO-LINE HEADLINE ───────────────────────────────
    Phones only. The paper wordmark is locked at one in-band size in every
    nav state (top of page and scrolled) so it never drops, tucks or hangs
    below the band. The home loading screen still plays at this width; its
    nav drop lands on this same locked position.
-   The hero headline swaps to its phone copy ("Professional dog walkers" /
-   "based in Williamsburg"): the desktop lines and their breaks are hidden,
-   the phone lines and their one break shown. Both live in HomeHero.tsx. */
+   The hero swaps to its phone copy: headline "Professional dog walkers",
+   the Williamsburg stamp under it, "Contact Luis, to set up a walk" as the
+   button and "View services" as the text link. Both sets live in
+   HomeHero.tsx; this block shows one and hides the other. */
 @media (max-width: 768px) {
   #main-nav .nav-logo,
   #main-nav.nav-scrolled .nav-logo {
@@ -3685,13 +3686,17 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   }
   #main-nav #nav-logo-img,
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
-  #hero-headline .hero-headline-desktop,
-  #hero-headline br:nth-of-type(1),
-  #hero-headline br:nth-of-type(2),
-  #hero-headline br:nth-of-type(3) { display: none; }
-  #hero-headline .hero-headline-mobile,
-  #hero-headline br:nth-of-type(4) { display: inline; }
-  #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); }
+  .hero .hero-desktop-copy,
+  #hero-headline br { display: none; }
+  #hero-headline .hero-phone-copy { display: inline; }
+  #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); order: 1; margin-bottom: 12px; }
+  /* Stamp label sits under the headline, everything centred. */
+  #hero-eyebrow-stamp-row { order: 2; justify-content: center; margin: 0 0 18px; }
+  #hero-content-shell { text-align: center; }
+  /* Phone CTA pair: Contact Luis is the button, View services the text link. */
+  #hero-actions-row { display: contents; }
+  #hero-cta-phone-contact { display: inline-flex; order: 3; width: 100%; justify-content: center; margin-bottom: 16px; }
+  #hero-cta-phone-services { display: inline-flex; order: 6; align-self: center; }
   /* No tape strip on the video polaroid at phone widths. */
   #hero-polaroid-frame.taped::before { display: none; }
   /* Phones drop the walker illustration behind the hero (the mobile .hero

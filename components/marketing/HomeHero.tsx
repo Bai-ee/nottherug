@@ -61,6 +61,25 @@ export default function HomeHero() {
   useHomeHeroMotion(heroRef);
   useHeroVideoLifecycle(videoRef);
 
+  function scrollToServices(e: React.MouseEvent<HTMLAnchorElement>) {
+    const target = document.getElementById('home-personalized-care-section');
+    if (!target) return; // no section on this page — let the anchor do its thing
+    e.preventDefault();
+    target.scrollIntoView({
+      // globals.css deliberately omits `scroll-behavior: smooth`, so callers
+      // opt in; honour the reduced-motion preference here.
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  }
+
+  function openContactModal(e: React.MouseEvent<HTMLAnchorElement>) {
+    // Let a cmd/ctrl/shift-click open /contact in a new tab instead.
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    openWelcomeWalkModal();
+  }
+
   return (
     <section className="hero" id="home-hero-section" ref={heroRef}>
       <div className="hero-visual" id="hero-visual-video-shell">
@@ -103,42 +122,35 @@ export default function HomeHero() {
         </div>
         <h1 className="hero-h1" id="hero-headline">
           {/* Two headlines, one element: the desktop copy (four hard-broken
-              lines) and the phone copy (two lines) share the h1 so the
+              lines) and the phone copy (one line) share the h1 so the
               entrance animation, ids and section-nav contract stay the same;
               globals.css shows one set and hides the other by breakpoint.
               Every line is wrapped and every <br> is a direct child on
               purpose: the word-split in useHomeHeroMotion clones each
               wrapper per word (keeping its class) and only re-emits
               top-level <br>s. */}
-          <span className="hero-headline-desktop">Your dog</span> <br />
-          <span className="hero-headline-desktop">deserves</span> <br />
-          <em className="hero-headline-desktop">someone they</em> <br />
-          <em className="hero-headline-desktop">know.</em>
-          <span className="hero-headline-mobile">Professional dog walkers</span> <br />
-          <em className="hero-headline-mobile">based in Williamsburg</em>
+          <span className="hero-desktop-copy">Your dog</span> <br />
+          <span className="hero-desktop-copy">deserves</span> <br />
+          <em className="hero-desktop-copy">someone they</em> <br />
+          <em className="hero-desktop-copy">know.</em>
+          <span className="hero-phone-copy">Professional dog walkers</span>
         </h1>
         <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently.</p>
+        {/* Desktop shows View Services (button) + Contact Luis (text link);
+            phones show Contact Luis (button) + View services (text link).
+            Both pairs are in the markup and globals.css shows one pair per
+            breakpoint, so each analytics id has exactly one visible control
+            at any width. Handlers are shared above. */}
         <div className="hero-actions" id="hero-actions-row">
           {/* Primary action keeps the reader on the page: it scrolls down to
               the services rundown. The href is the real anchor so it still
               works before hydration and with JS off. */}
           <TrackedCtaAnchor
             href="#home-personalized-care-section"
-            className="btn btn-primary btn-accent"
+            className="btn btn-primary btn-accent hero-desktop-copy"
             id="hero-cta-primary"
             cta="hero_view_services"
-           
-            onClick={(e) => {
-              const target = document.getElementById('home-personalized-care-section');
-              if (!target) return; // no section on this page — let the anchor do its thing
-              e.preventDefault();
-              target.scrollIntoView({
-                // globals.css deliberately omits `scroll-behavior: smooth`, so
-                // callers opt in; honour the reduced-motion preference here.
-                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-                block: 'start',
-              });
-            }}
+            onClick={scrollToServices}
           >
             View Services
           </TrackedCtaAnchor>
@@ -147,19 +159,31 @@ export default function HomeHero() {
               with JS off — /contact carries the same meet & greet form. */}
           <TrackedCtaLink
             href="/contact"
-            className="btn btn-ghost"
+            className="btn btn-ghost hero-desktop-copy"
             id="hero-cta-secondary"
             cta="hero_contact"
-           
-            onClick={(e) => {
-              // Let a cmd/ctrl/shift-click open /contact in a new tab instead.
-              if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-              e.preventDefault();
-              openWelcomeWalkModal();
-            }}
+            onClick={openContactModal}
           >
             Contact Luis
           </TrackedCtaLink>
+          <TrackedCtaLink
+            href="/contact"
+            className="btn btn-primary btn-accent hero-phone-copy"
+            id="hero-cta-phone-contact"
+            cta="hero_contact"
+            onClick={openContactModal}
+          >
+            Contact Luis, to set up a walk
+          </TrackedCtaLink>
+          <TrackedCtaAnchor
+            href="#home-personalized-care-section"
+            className="btn btn-ghost hero-phone-copy"
+            id="hero-cta-phone-services"
+            cta="hero_view_services"
+            onClick={scrollToServices}
+          >
+            View services
+          </TrackedCtaAnchor>
         </div>
       </div>
       <div className="hero-stats" id="hero-stats-strip">
