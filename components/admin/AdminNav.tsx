@@ -23,10 +23,10 @@ const NAV_LINKS: Array<{ href: string; label: string; locked?: boolean }> = [
   // Locked: the tools behind these are not ready for the owner to use on
   // their own yet. They stay listed so the sections are not a surprise later,
   // but they do not navigate and are not focusable.
-  { href: '/admin/dashboard/brief', label: 'Brief', locked: true },
-  { href: '/admin/dashboard/photos', label: 'Photos', locked: true },
-  { href: '/admin/dashboard/generator', label: 'Generator', locked: true },
-  { href: '/admin/dashboard/preview/founder-brief', label: 'Founder Brief', locked: true },
+  { href: '/admin/dashboard/brief', label: 'Daily Brief', locked: true },
+  { href: '/admin/dashboard/photos', label: 'Socials', locked: true },
+  { href: '/admin/dashboard/generator', label: 'Image Generator', locked: true },
+  { href: '/admin/dashboard/preview/founder-brief', label: '30 Days of Content', locked: true },
 ];
 
 /** A small padlock, so a locked entry says why it does nothing. */
