@@ -17,14 +17,36 @@ import { useNavScrollShadow } from '@/components/marketing/hooks/useNavScrollSha
  * pointed at (dashboard/leads/generator/photos/brief), plus the founder
  * brief preview link the dashboard's old nav carried.
  */
-const NAV_LINKS: Array<{ href: string; label: string }> = [
-  { href: '/admin/dashboard', label: 'Overview' },
-  { href: '/admin/dashboard/leads', label: 'Leads' },
-  { href: '/admin/dashboard/brief', label: 'Brief' },
-  { href: '/admin/dashboard/photos', label: 'Photos' },
-  { href: '/admin/dashboard/generator', label: 'Generator' },
-  { href: '/admin/dashboard/preview/founder-brief', label: 'Founder Brief' },
+const NAV_LINKS: Array<{ href: string; label: string; locked?: boolean }> = [
+  { href: '/admin/dashboard', label: 'Site Performance' },
+  { href: '/admin/dashboard/leads', label: 'Scheduled Leads' },
+  // Locked: the tools behind these are not ready for the owner to use on
+  // their own yet. They stay listed so the sections are not a surprise later,
+  // but they do not navigate and are not focusable.
+  { href: '/admin/dashboard/brief', label: 'Brief', locked: true },
+  { href: '/admin/dashboard/photos', label: 'Photos', locked: true },
+  { href: '/admin/dashboard/generator', label: 'Generator', locked: true },
+  { href: '/admin/dashboard/preview/founder-brief', label: 'Founder Brief', locked: true },
 ];
+
+/** A small padlock, so a locked entry says why it does nothing. */
+function LockIcon() {
+  return (
+    <svg
+      className="admin-nav-lock-icon"
+      width="11"
+      height="11"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      aria-hidden="true"
+    >
+      <rect x="3" y="7" width="10" height="7" rx="1.5" />
+      <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
+    </svg>
+  );
+}
 
 // /admin/dashboard is a prefix of every other destination here, so it only
 // counts as active on an exact match; the rest also match their own subpaths.
@@ -71,6 +93,14 @@ export function AdminNav({ email, onSignOut }: { email: string; onSignOut: () =>
           </Link>
           <div className="nav-links">
             {NAV_LINKS.map((link) => {
+              if (link.locked) {
+                return (
+                  <span key={link.href} className="admin-nav-locked" aria-disabled="true">
+                    {link.label}
+                    <LockIcon />
+                  </span>
+                );
+              }
               const active = isActive(pathname, link.href);
               return (
                 <Link
@@ -114,11 +144,18 @@ export function AdminNav({ email, onSignOut }: { email: string; onSignOut: () =>
 
       <div className="mobile-menu" id="mobile-menu" data-open={mobileOpen ? 'true' : 'false'}>
         <div id="mobile-menu-links-list">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}>
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) =>
+            link.locked ? (
+              <span key={link.href} className="admin-nav-locked" aria-disabled="true">
+                {link.label}
+                <LockIcon />
+              </span>
+            ) : (
+              <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}>
+                {link.label}
+              </Link>
+            ),
+          )}
         </div>
         <Link href="/" id="admin-mobile-menu-view-site-link" onClick={() => setMobileOpen(false)}>
           View Site
