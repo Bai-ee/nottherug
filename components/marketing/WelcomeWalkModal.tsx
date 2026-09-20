@@ -283,12 +283,15 @@ export default function WelcomeWalkModal() {
   useEffect(() => {
     if (welcomeDialogVisible || !pendingQuestionsScrollRef.current) return;
     pendingQuestionsScrollRef.current = false;
-    const target = document.getElementById(HOME_QUESTIONS_SECTION_ID);
-    if (!target) return;
-    target.scrollIntoView({
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-      block: 'start',
+    const frame = window.requestAnimationFrame(() => {
+      const target = document.getElementById(HOME_QUESTIONS_SECTION_ID);
+      if (!target) return;
+      target.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
     });
+    return () => window.cancelAnimationFrame(frame);
   }, [welcomeDialogVisible]);
 
   // Focus trap + Escape-to-close + focus restore. Re-runs every time this
@@ -343,9 +346,9 @@ export default function WelcomeWalkModal() {
       // would otherwise strand focus on <body>. #nav-hamburger-toggle is the
       // one control guaranteed visible in that state, so fall back to it.
       if (opener && opener.offsetParent !== null) {
-        opener.focus();
+        opener.focus({ preventScroll: true });
       } else {
-        document.getElementById('nav-hamburger-toggle')?.focus();
+        document.getElementById('nav-hamburger-toggle')?.focus({ preventScroll: true });
       }
     };
   }, [welcomeDialogVisible]);
