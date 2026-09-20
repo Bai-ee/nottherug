@@ -333,6 +333,15 @@
 /* Refresh and export close the page. */
 #admin-leads-footer-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
+/* What to do about this lead, sitting above its remaining fields. */
+.admin-lead-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+#admin-shell-main .admin-lead-actions .btn { flex: 0 1 auto; width: auto; }
+
 /* An opened line item reads as a left-hand label list, not centred copy. The
    id prefix is needed to outrank the phone rule that centres every other
    report row. It also sticks to the left edge, so opening a row while the

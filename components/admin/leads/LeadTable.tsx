@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadRecord, type LeadDisplayField } from '@/lib/leads/contract';
+import { telHref, mailtoHref, googleCalendarHref } from '@/lib/leads/contactLinks';
 
 const TZ = 'America/New_York';
 
@@ -32,6 +33,56 @@ const FACE_FIELDS = LEAD_DISPLAY_FIELDS.filter((f) => FACE_FIELD_KEYS.has(f.key)
 const DETAIL_FIELDS = LEAD_DISPLAY_FIELDS.filter(
   (f) => !FACE_FIELD_KEYS.has(f.key) && f.key !== 'ownerName' && f.key !== 'submittedAt' && f.key !== 'source'
 );
+
+/**
+ * What to do about this lead, as the operating system's own actions: mailto:
+ * opens whatever mail client the machine uses, tel: opens the dialer on a
+ * phone and FaceTime or Skype on a desktop, and Google Calendar's composer
+ * opens prefilled with the client already invited.
+ *
+ * Calendly is linked only when NEXT_PUBLIC_CALENDLY_URL is configured — the
+ * lead record itself carries no booking reference, so this is the scheduling
+ * page, not this client's appointment.
+ */
+function LeadActions({ lead }: { lead: LeadRecord }) {
+  const mail = mailtoHref(lead);
+  const tel = telHref(lead.phone);
+  const calendar = googleCalendarHref(lead);
+  const calendly = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
+
+  return (
+    <div className="admin-lead-actions" onClick={(e) => e.stopPropagation()}>
+      {mail ? (
+        <a className="btn btn-primary booking-forward-btn btn-sm btn-accent" href={mail}>
+          Email {lead.ownerName?.split(' ')[0] || 'client'}
+        </a>
+      ) : null}
+      {tel ? (
+        <a className="btn btn-primary booking-forward-btn btn-sm btn-accent" href={tel}>
+          Call {lead.phone}
+        </a>
+      ) : null}
+      <a
+        className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary"
+        href={calendar}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Add to Google Calendar
+      </a>
+      {calendly ? (
+        <a
+          className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary"
+          href={calendly}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Calendly
+        </a>
+      ) : null}
+    </div>
+  );
+}
 
 function FieldRow({ lead, field }: { lead: LeadRecord; field: LeadDisplayField }) {
   const isNotes = field.key === 'notes';
@@ -135,6 +186,7 @@ function LeadRows({
                   className="admin-lead-row-detail"
                   onClick={(e) => e.stopPropagation()}
                 >
+                  <LeadActions lead={lead} />
                   {visibleDetailFields.map((f) => (
                     <FieldRow key={f.key} lead={lead} field={f} />
                   ))}
@@ -225,6 +277,7 @@ export function LeadTable({
                 style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}
                 onClick={(e) => e.stopPropagation()}
               >
+                <LeadActions lead={lead} />
                 {visibleDetailFields.map((f) => (
                   <FieldRow key={f.key} lead={lead} field={f} />
                 ))}
