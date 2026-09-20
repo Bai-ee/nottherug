@@ -64,7 +64,11 @@ export function InquiryHeadline({
       </div>
 
       <div id="admin-analytics-inquiry-rate-tile">
-        <div className="stamp-label">Inquiry Rate</div>
+        {/* One word on phones (admin.css swaps the spans by breakpoint). */}
+        <div className="stamp-label">
+          <span className="admin-label-full">Inquiry Rate</span>
+          <span className="admin-label-short">Rate</span>
+        </div>
         <div className="hero-stat-num">
           {inquiryRate.rate === null ? 'Not enough data' : RATE_FORMAT.format(inquiryRate.rate)}
         </div>

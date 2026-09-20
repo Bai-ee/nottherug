@@ -188,6 +188,10 @@
   padding-top: 8px;
 }
 
+/* Long/short label pairs: the long form everywhere, the one-word form on
+   phones (see the phone block below). */
+.admin-label-short { display: none; }
+
 /* Shared panel-head row — a stamp-label heading plus an optional badge or
    legend on the right — reused by every card panel that needs one. */
 .admin-analytics-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -339,6 +343,8 @@
   #admin-analytics-headline-row .stamp-label,
   #admin-analytics-headline-row .hero-stat-num { justify-self: center; text-align: center; margin: 0; }
   #admin-analytics-headline-row .hero-stat-num { font-size: 34px; }
+  .admin-label-full { display: none; }
+  .admin-label-short { display: inline; }
   #admin-analytics-headline-row .form-note,
   #admin-analytics-headline-row .text-terra,
   #admin-analytics-headline-row .text-sage,
