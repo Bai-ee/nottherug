@@ -3652,7 +3652,8 @@ html[data-home-intro='loading'] body { overflow: hidden; }
 @media (max-width: 768px) {
   #hero-polaroid-frame { margin: 18px 30px 8px; }
   #hero-polaroid-frame .polaroid-window { aspect-ratio: 16 / 10; }
-  #hero-polaroid-caption { padding-top: 4px; font-size: 12px; }
+  #hero-polaroid-caption { padding-top: 16px; font-size: 12px; }
+  #hero-polaroid-frame { padding-bottom: 8px; }
   #hero-polaroid-badge { width: 64px; height: 64px; right: -8px; bottom: 30px; }
   #hero-content-shell { padding: 0 20px 28px; }
   #hero-eyebrow-stamp-row { margin-bottom: 10px; }
