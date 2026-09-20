@@ -1,0 +1,29 @@
+--- a/components/marketing/SiteFooter.tsx
++++ b/components/marketing/SiteFooter.tsx
+@@ -54,11 +54,21 @@
+             <div className="footer-brand">
+               {/* Cream circle badge in place of the wordmark — the footer runs
+                   olive, and the disc is the one lockup that reads on it. */}
+-              <img
+-                id="footer-logo-badge"
+-                src="/logos/notRugYellow.png"
+-                alt="Not The Rug — NYC dog walking"
+-              />
++              <picture>
++                <source
++                  type="image/avif"
++                  srcSet="/logos/notRugYellow-224.avif 1x, /logos/notRugYellow-448.avif 2x"
++                />
++                <source
++                  type="image/webp"
++                  srcSet="/logos/notRugYellow-224.webp 1x, /logos/notRugYellow-448.webp 2x"
++                />
++                <img
++                  id="footer-logo-badge"
++                  src="/logos/notRugYellow-224.webp"
++                  alt="Not The Rug — NYC dog walking"
++                />
++              </picture>
+               <p className="footer-tagline">Brooklyn&apos;s most trusted neighborhood dog walking service. Williamsburg-based since 2011. Small groups, consistent walkers, genuine care.</p>
+               <div className="footer-social">
+                 <a

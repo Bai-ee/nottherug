@@ -6,10 +6,18 @@
   "assets": [
     {
       "source": "/video/hero-mccarren-1080.mp4",
-      "consumers": ["/ #hero-bg-video"],
-      "maxCssBox": { "width": 1161, "height": 1161 },
+      "consumers": [
+        "/ #hero-bg-video"
+      ],
+      "maxCssBox": {
+        "width": 1161,
+        "height": 1161
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1080, "height": 1080 },
+      "intrinsic": {
+        "width": 1080,
+        "height": 1080
+      },
       "format": "mp4",
       "bytes": 4468914,
       "loading": "preload=metadata,autoplay-when-visible",
@@ -17,10 +25,18 @@
     },
     {
       "source": "/video/hero-mccarren-1080.webm",
-      "consumers": ["/ #hero-bg-video"],
-      "maxCssBox": { "width": 1161, "height": 1161 },
+      "consumers": [
+        "/ #hero-bg-video"
+      ],
+      "maxCssBox": {
+        "width": 1161,
+        "height": 1161
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1080, "height": 1080 },
+      "intrinsic": {
+        "width": 1080,
+        "height": 1080
+      },
       "format": "webm",
       "bytes": 4773718,
       "loading": "preload=metadata,autoplay-when-visible",
@@ -28,10 +44,18 @@
     },
     {
       "source": "/video/hero-mccarren-poster.webp",
-      "consumers": ["/ #hero-bg-video[poster]"],
-      "maxCssBox": { "width": 1161, "height": 1161 },
+      "consumers": [
+        "/ #hero-bg-video[poster]"
+      ],
+      "maxCssBox": {
+        "width": 1161,
+        "height": 1161
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1080, "height": 1080 },
+      "intrinsic": {
+        "width": 1080,
+        "height": 1080
+      },
       "format": "webp",
       "bytes": 31994,
       "loading": "eager (native poster attribute)",
@@ -39,10 +63,18 @@
     },
     {
       "source": "/logos/notRugGreen.png",
-      "consumers": ["/ #hero-polaroid-badge (next/image)"],
-      "maxCssBox": { "width": 288, "height": 288 },
+      "consumers": [
+        "/ #hero-polaroid-badge (next/image)"
+      ],
+      "maxCssBox": {
+        "width": 288,
+        "height": 288
+      },
       "targetDpr": 2,
-      "intrinsic": { "width": 1080, "height": 1080 },
+      "intrinsic": {
+        "width": 1080,
+        "height": 1080
+      },
       "format": "png (source; next/image re-encodes to webp/avif per-request)",
       "bytes": 270756,
       "loading": "lazy (next/image default, below hero LCP text)",
@@ -50,99 +82,1124 @@
     },
     {
       "source": "/img/bg5-cover.webp",
-      "consumers": ["/admin #admin-signin-page"],
-      "maxCssBox": { "width": 2560, "height": 1440 },
+      "consumers": [
+        "/admin #admin-signin-page"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1440
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1672, "height": 941 },
+      "intrinsic": {
+        "width": 1672,
+        "height": 941
+      },
       "format": "webp",
       "bytes": 208604,
       "loading": "css background, eager",
       "exception": "Undersized for a 2560px 1x cover target (source tops out at 1672px wide); see replacement-master backlog. Format/metadata win only, not a resize.",
-      "pendingPatch": null, "replaced": "/img/bg5.png (patch 01 applied; master kept in assets-src/img/)"
+      "pendingPatch": null,
+      "replaced": "/img/bg5.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-1-cover.webp",
-      "consumers": ["/ #home-team-section", "/ #home-closing-trust-section", "/ #home-how-it-works-section"],
-      "maxCssBox": { "width": 2560, "height": 2578 },
+      "consumers": [
+        "/ #home-team-section",
+        "/ #home-closing-trust-section",
+        "/ #home-how-it-works-section"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 2578
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1672, "height": 941 },
+      "intrinsic": {
+        "width": 1672,
+        "height": 941
+      },
       "format": "webp",
       "bytes": 136054,
       "loading": "css background, eager",
       "exception": "Reported maxCssBox height (2578) is the crawler's element rect, not the cover-image's own render height; background-size:cover means the effective demand is width-bound at 2560 with the image's own aspect (1672:941), i.e. ~2560x1440. Undersized source; replacement-master backlog.",
-      "pendingPatch": null, "replaced": "/img/bg_section_1.png (patch 01 applied; master kept in assets-src/img/)"
+      "pendingPatch": null,
+      "replaced": "/img/bg_section_1.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-2-cover.webp",
-      "consumers": ["/ #home-closing-band-shell", "/ footer", "/about #main-footer", "/neighborhoods/williamsburg #main-footer"],
-      "maxCssBox": { "width": 2560, "height": 4240 },
+      "consumers": [
+        "/ #home-closing-band-shell",
+        "/ footer",
+        "/about #main-footer",
+        "/neighborhoods/williamsburg #main-footer"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 4240
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1672, "height": 941 },
+      "intrinsic": {
+        "width": 1672,
+        "height": 941
+      },
       "format": "webp",
       "bytes": 114202,
       "loading": "css background, eager",
       "exception": "Same cover-sizing note as bg-section-1-cover. Undersized source; replacement-master backlog.",
-      "pendingPatch": null, "replaced": "/img/bg_section_2.png (patch 01 applied; master kept in assets-src/img/)"
+      "pendingPatch": null,
+      "replaced": "/img/bg_section_2.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-graphic-1.webp",
-      "consumers": ["/ #home-personalized-care-section (auto 130% no-repeat)"],
-      "maxCssBox": { "width": 2560, "height": 1823 },
+      "consumers": [
+        "/ #home-personalized-care-section (auto 130% no-repeat)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1823
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1620, "height": 971 },
+      "intrinsic": {
+        "width": 1620,
+        "height": 971
+      },
       "format": "webp",
       "bytes": 292020,
       "loading": "css background, eager",
       "exception": "background-size: auto 130% scales by the section's own height, not by viewport width directly; source undersized for very wide/tall viewports. Replacement-master backlog.",
-      "pendingPatch": null, "replaced": "/img/bg_section_graphic_1.png (patch 01 applied; master kept in assets-src/img/)"
+      "pendingPatch": null,
+      "replaced": "/img/bg_section_graphic_1.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/bg-section-graphic-2.webp",
-      "consumers": ["/ #home-process-section::before"],
-      "maxCssBox": { "width": 2560, "height": 1594 },
+      "consumers": [
+        "/ #home-process-section::before"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1594
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1446, "height": 636 },
+      "intrinsic": {
+        "width": 1446,
+        "height": 636
+      },
       "format": "webp",
       "bytes": 138820,
       "loading": "css background, eager, opacity 0.17 (decorative)",
       "exception": "background-size: 100% auto scales to full section width (up to 2560); source is 1446px wide, so this is upscaled today at wide viewports even before this pass. Replacement-master backlog.",
-      "pendingPatch": null, "replaced": "/img/bg_section_graphic_2.png (patch 01 applied; master kept in assets-src/img/)"
+      "pendingPatch": null,
+      "replaced": "/img/bg_section_graphic_2.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/hero-walker-strip.webp",
-      "consumers": ["/ .hero (bottom-center, 100% auto)"],
-      "maxCssBox": { "width": 2560, "height": 1585 },
+      "consumers": [
+        "/ .hero (bottom-center, 100% auto)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1585
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1620, "height": 971 },
+      "intrinsic": {
+        "width": 1620,
+        "height": 971
+      },
       "format": "webp",
       "bytes": 199572,
       "loading": "css background, eager (hero, above the fold)",
       "exception": "background-size: 100% auto: this layer is deliberately stretched to the hero's full width at every viewport, so it is upscaled today above ~1620px CSS width regardless of format. Highest-priority replacement-master backlog item (see report).",
-      "pendingPatch": null, "replaced": "/img/homepage_image.png (patch 01 applied; master kept in assets-src/img/)"
+      "pendingPatch": null,
+      "replaced": "/img/homepage_image.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/product-background.webp",
-      "consumers": ["/ #home-personalized-care-pin-stage (bottom-center, 100% auto)"],
-      "maxCssBox": { "width": 1240, "height": 731, "note": "not captured live by the crawler (pin-stage content did not render in the crawl session); estimated from the container's 1240px max-width and the source's own aspect ratio. Re-verify before trusting as a budget ceiling." },
+      "consumers": [
+        "/ #home-personalized-care-pin-stage (bottom-center, 100% auto)"
+      ],
+      "maxCssBox": {
+        "width": 1240,
+        "height": 731,
+        "note": "not captured live by the crawler (pin-stage content did not render in the crawl session); estimated from the container's 1240px max-width and the source's own aspect ratio. Re-verify before trusting as a budget ceiling."
+      },
       "targetDpr": 1,
-      "intrinsic": { "width": 1513, "height": 590 },
+      "intrinsic": {
+        "width": 1513,
+        "height": 590
+      },
       "format": "webp",
       "bytes": 187812,
       "loading": "css background, eager",
       "exception": "Box unverified live (see note). Format/metadata win only.",
-      "pendingPatch": null, "replaced": "/img/product_background.png (patch 01 applied; master kept in assets-src/img/)"
+      "pendingPatch": null,
+      "replaced": "/img/product_background.png (patch 01 applied; master kept in assets-src/img/)"
     },
     {
       "source": "/img/card-bg.webp",
-      "consumers": ["components/AnimatedServiceCards.tsx (disabled/non-production)", "app/playground/service-cards (dev-only route)"],
-      "maxCssBox": { "width": 460, "height": 460, "note": "card art, not captured live; both consumers are excluded from the production homepage per plans/010-production-final-mile-optimization.md P2" },
+      "consumers": [
+        "components/AnimatedServiceCards.tsx (disabled/non-production)",
+        "app/playground/service-cards (dev-only route)"
+      ],
+      "maxCssBox": {
+        "width": 460,
+        "height": 460,
+        "note": "card art, not captured live; both consumers are excluded from the production homepage per plans/010-production-final-mile-optimization.md P2"
+      },
       "targetDpr": 2,
-      "intrinsic": { "width": 1596, "height": 898 },
+      "intrinsic": {
+        "width": 1596,
+        "height": 898
+      },
       "format": "webp",
       "bytes": 155292,
       "loading": "native <img>, eager",
       "exception": "Low priority: both consumers are dev-only/disabled experiments, not the shipped homepage graph.",
       "pendingPatch": "patches/02-card-bg-webp.patch (currently still live as /img/card_bg.png, 2311572 bytes)"
+    },
+    {
+      "source": "/img/bg5-cover.avif",
+      "consumers": [
+        "/admin #admin-signin-page (image-set, AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1440
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "avif",
+      "bytes": 110407,
+      "loading": "css background, eager",
+      "exception": "Same undersized-source note as bg5-cover.webp; AVIF sibling of that entry, selected by image-set() in supporting browsers."
+    },
+    {
+      "source": "/img/bg-section-1-cover.avif",
+      "consumers": [
+        "/ #home-team-section (image-set)",
+        "/ #home-closing-trust-section (image-set)",
+        "/ #home-how-it-works-section (image-set)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 2578,
+        "note": "see bg-section-1-cover.webp note: cover is width-bound"
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "avif",
+      "bytes": 89064,
+      "loading": "css background, eager",
+      "exception": "AVIF sibling of bg-section-1-cover.webp, now selected via image-set() where supported."
+    },
+    {
+      "source": "/img/bg-section-2-cover.avif",
+      "consumers": [
+        "/ #home-closing-band-shell (image-set)",
+        "/ footer (image-set)",
+        "/ #home-other-services-section (image-set)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 4240,
+        "note": "see bg-section-2-cover.webp note: cover is width-bound"
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1672,
+        "height": 941
+      },
+      "format": "avif",
+      "bytes": 75918,
+      "loading": "css background, eager",
+      "exception": "AVIF sibling of bg-section-2-cover.webp, now selected via image-set() where supported."
+    },
+    {
+      "source": "/img/bg-section-graphic-1.avif",
+      "consumers": [
+        "/ #home-personalized-care-section (image-set, auto 130% no-repeat)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1823
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1620,
+        "height": 971
+      },
+      "format": "avif",
+      "bytes": 141715,
+      "loading": "css background, eager",
+      "exception": "AVIF sibling of bg-section-graphic-1.webp, now selected via image-set() where supported."
+    },
+    {
+      "source": "/img/bg-section-graphic-2.avif",
+      "consumers": [
+        "/ #home-process-section::before (image-set, opacity 0.17)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1594
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1446,
+        "height": 636
+      },
+      "format": "avif",
+      "bytes": 72293,
+      "loading": "css background, eager",
+      "exception": "AVIF sibling of bg-section-graphic-2.webp, now selected via image-set() where supported. No mobile-tier derivative: source (1446px) is already below the mobile 2x floor (1536px)."
+    },
+    {
+      "source": "/img/hero-walker-strip.avif",
+      "consumers": [
+        "/ .hero (image-set, bottom-center 100% auto)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 1585
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1620,
+        "height": 971
+      },
+      "format": "avif",
+      "bytes": 111941,
+      "loading": "css background, eager (hero, above the fold)",
+      "exception": "AVIF sibling of hero-walker-strip.webp, now selected via image-set() where supported."
+    },
+    {
+      "source": "/img/product-background.avif",
+      "consumers": [
+        "/ #home-personalized-care-pin-stage (image-set, bottom-center 100% auto)"
+      ],
+      "maxCssBox": {
+        "width": 1240,
+        "height": 731,
+        "note": "not captured live by the crawler; see product-background.webp"
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1513,
+        "height": 590
+      },
+      "format": "avif",
+      "bytes": 85820,
+      "loading": "css background, eager",
+      "exception": "AVIF sibling of product-background.webp, now selected via image-set() where supported. No mobile-tier derivative: source (1513px) is already below the mobile 2x floor (1536px)."
+    },
+    {
+      "source": "/img/bg5-mobile.webp",
+      "consumers": [
+        "/admin #admin-signin-page (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 1200
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 864
+      },
+      "format": "webp",
+      "bytes": 116338,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Cover on a fixed-height mobile box; width-bound at 2x=1536 (matches this derivative's width). The crawler's raw height (1200) is the viewport height at capture, not image-intrinsic; cover scaling is width-bound here."
+    },
+    {
+      "source": "/img/bg5-mobile.avif",
+      "consumers": [
+        "/admin #admin-signin-page (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 1200
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 864
+      },
+      "format": "avif",
+      "bytes": 57596,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Cover on a fixed-height mobile box; width-bound at 2x=1536 (matches this derivative's width). The crawler's raw height (1200) is the viewport height at capture, not image-intrinsic; cover scaling is width-bound here."
+    },
+    {
+      "source": "/img/bg-section-1-mobile.webp",
+      "consumers": [
+        "/ #home-team-section, #home-closing-trust-section, #home-how-it-works-section (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 1889
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 864
+      },
+      "format": "webp",
+      "bytes": 67766,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Cover on tall narrow mobile sections; effective demand is width-bound at 2x=1536 (matches this derivative). Reported height (1889, from #home-closing-trust-section) is the section's own scroll height, not the cover image's rendered height."
+    },
+    {
+      "source": "/img/bg-section-1-mobile.avif",
+      "consumers": [
+        "/ #home-team-section, #home-closing-trust-section, #home-how-it-works-section (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 1889
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 864
+      },
+      "format": "avif",
+      "bytes": 44291,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Cover on tall narrow mobile sections; effective demand is width-bound at 2x=1536 (matches this derivative). Reported height (1889, from #home-closing-trust-section) is the section's own scroll height, not the cover image's rendered height."
+    },
+    {
+      "source": "/img/bg-section-2-mobile.webp",
+      "consumers": [
+        "/ #home-closing-band-shell, footer, #home-other-services-section (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 3936
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 864
+      },
+      "format": "webp",
+      "bytes": 57492,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Cover on a very tall shell section; effective demand is width-bound at 2x=1536 (matches this derivative). Reported height (3936, from #home-closing-band-shell) is the shell's own scroll height, not the cover image's rendered height."
+    },
+    {
+      "source": "/img/bg-section-2-mobile.avif",
+      "consumers": [
+        "/ #home-closing-band-shell, footer, #home-other-services-section (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 3936
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 864
+      },
+      "format": "avif",
+      "bytes": 37674,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Cover on a very tall shell section; effective demand is width-bound at 2x=1536 (matches this derivative). Reported height (3936, from #home-closing-band-shell) is the shell's own scroll height, not the cover image's rendered height."
+    },
+    {
+      "source": "/img/bg-section-graphic-1-mobile.webp",
+      "consumers": [
+        "/ #home-personalized-care-section (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 925
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 921
+      },
+      "format": "webp",
+      "bytes": 178246,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "background-size: auto 130% scales by section height; mobile section height (925) is within this derivative's 921px height at 1536px width \u2014 effectively a like-for-like fit, not upscaled."
+    },
+    {
+      "source": "/img/bg-section-graphic-1-mobile.avif",
+      "consumers": [
+        "/ #home-personalized-care-section (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 925
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 921
+      },
+      "format": "avif",
+      "bytes": 89811,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "background-size: auto 130% scales by section height; mobile section height (925) is within this derivative's 921px height at 1536px width \u2014 effectively a like-for-like fit, not upscaled."
+    },
+    {
+      "source": "/img/hero-walker-strip-mobile.webp",
+      "consumers": [
+        "/ .hero (mobile stacked layout, <=768px) (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 1498
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 921
+      },
+      "format": "webp",
+      "bytes": 112554,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "background-size: 100% auto stretches to the hero's full mobile width (768 * 2 = 1536, matches this derivative). Reported height (1498) is the hero's own stacked-layout height, not the strip image's rendered height."
+    },
+    {
+      "source": "/img/hero-walker-strip-mobile.avif",
+      "consumers": [
+        "/ .hero (mobile stacked layout, <=768px) (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 1498
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 921
+      },
+      "format": "avif",
+      "bytes": 59165,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "background-size: 100% auto stretches to the hero's full mobile width (768 * 2 = 1536, matches this derivative). Reported height (1498) is the hero's own stacked-layout height, not the strip image's rendered height."
+    },
+    {
+      "source": "/dogs/about-hero-full.webp",
+      "consumers": [
+        "/about #about-hero-section (>768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 505
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1802,
+        "height": 1774
+      },
+      "format": "webp",
+      "bytes": 213430,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/about-hero-full.avif",
+      "consumers": [
+        "/about #about-hero-section (>768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 505
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1802,
+        "height": 1774
+      },
+      "format": "avif",
+      "bytes": 105702,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/about-hero-mobile.webp",
+      "consumers": [
+        "/about #about-hero-section (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 433
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 924
+      },
+      "format": "webp",
+      "bytes": 72328,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box."
+    },
+    {
+      "source": "/dogs/about-hero-mobile.avif",
+      "consumers": [
+        "/about #about-hero-section (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 433
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 924
+      },
+      "format": "avif",
+      "bytes": 42037,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box."
+    },
+    {
+      "source": "/dogs/neighborhoods-hero-full.webp",
+      "consumers": [
+        "/neighborhoods/williamsburg #neighborhoods-williamsburg-hero-section (>768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 505
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1802,
+        "height": 1774
+      },
+      "format": "webp",
+      "bytes": 213430,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/neighborhoods-hero-full.avif",
+      "consumers": [
+        "/neighborhoods/williamsburg #neighborhoods-williamsburg-hero-section (>768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 505
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1802,
+        "height": 1774
+      },
+      "format": "avif",
+      "bytes": 105702,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/neighborhoods-hero-mobile.webp",
+      "consumers": [
+        "/neighborhoods/williamsburg #neighborhoods-williamsburg-hero-section (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 462
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 924
+      },
+      "format": "webp",
+      "bytes": 72328,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box."
+    },
+    {
+      "source": "/dogs/neighborhoods-hero-mobile.avif",
+      "consumers": [
+        "/neighborhoods/williamsburg #neighborhoods-williamsburg-hero-section (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 462
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 924
+      },
+      "format": "avif",
+      "bytes": 42037,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box."
+    },
+    {
+      "source": "/dogs/reviews-hero-full.webp",
+      "consumers": [
+        "/reviews #reviews-hero-section (>768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 609
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1848,
+        "height": 1380
+      },
+      "format": "webp",
+      "bytes": 206706,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/reviews-hero-full.avif",
+      "consumers": [
+        "/reviews #reviews-hero-section (>768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 609
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1848,
+        "height": 1380
+      },
+      "format": "avif",
+      "bytes": 96795,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/reviews-hero-mobile.webp",
+      "consumers": [
+        "/reviews #reviews-hero-section (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 535
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 1070
+      },
+      "format": "webp",
+      "bytes": 115902,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box. Crawler read 816px tall at 375px width on this route (long hero copy overflow at that width, not the image's own box) \u2014 768px width (535px tall) is the representative box used here; see worker-b report."
+    },
+    {
+      "source": "/dogs/reviews-hero-mobile.avif",
+      "consumers": [
+        "/reviews #reviews-hero-section (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 535
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1536,
+        "height": 1070
+      },
+      "format": "avif",
+      "bytes": 60729,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box. Crawler read 816px tall at 375px width on this route (long hero copy overflow at that width, not the image's own box) \u2014 768px width (535px tall) is the representative box used here; see worker-b report."
+    },
+    {
+      "source": "/dogs/safety-hero-full.webp",
+      "consumers": [
+        "/safety #safety-hero-section (>768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 505
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1480,
+        "height": 1858
+      },
+      "format": "webp",
+      "bytes": 164166,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/safety-hero-full.avif",
+      "consumers": [
+        "/safety #safety-hero-section (>768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 2560,
+        "height": 505
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 1480,
+        "height": 1858
+      },
+      "format": "avif",
+      "bytes": 79109,
+      "loading": "css background, eager (hero photo, near top of page)",
+      "exception": "Desktop/tablet/large tier keeps the master's native resolution (portrait source used as an ultra-wide cover strip already discards most of its height); see replacementMasterBacklog. AVIF sibling added this pass."
+    },
+    {
+      "source": "/dogs/safety-hero-mobile.webp",
+      "consumers": [
+        "/safety #safety-hero-section (<=768px, image-set/plain WebP candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 433
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1480,
+        "height": 924
+      },
+      "format": "webp",
+      "bytes": 43824,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box. Master (1480px wide) is ~4% short of the mobile 2x floor (1536px); sharp's withoutEnlargement clamps the mobile derivative to 1480px wide rather than upscaling. Documented undersized-source exception."
+    },
+    {
+      "source": "/dogs/safety-hero-mobile.avif",
+      "consumers": [
+        "/safety #safety-hero-section (<=768px, image-set AVIF candidate)"
+      ],
+      "maxCssBox": {
+        "width": 768,
+        "height": 433
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 1480,
+        "height": 924
+      },
+      "format": "avif",
+      "bytes": 28594,
+      "loading": "css background, eager, media(max-width:768px)",
+      "exception": "Crop-aware mobile derivative (fit:cover, attention-based focal point approximating the CSS `center 20%`), sized to 2x the measured mobile box. Master (1480px wide) is ~4% short of the mobile 2x floor (1536px); sharp's withoutEnlargement clamps the mobile derivative to 1480px wide rather than upscaling. Documented undersized-source exception."
+    },
+    {
+      "source": "/logos/notRugYellow-224.webp",
+      "consumers": [
+        "components/marketing/SiteFooter.tsx #footer-logo-badge (1x, via patches/03-footer-logo-badge-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 224,
+        "height": 224
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 223,
+        "height": 224
+      },
+      "format": "webp",
+      "bytes": 9742,
+      "loading": "native <img>/<picture>, eager",
+      "exception": "pendingPatch: patches/03-footer-logo-badge-webp.patch (SiteFooter.tsx not owned by worker-b). Still live as /logos/notRugYellow.png (702558 bytes) until applied."
+    },
+    {
+      "source": "/logos/notRugYellow-448.webp",
+      "consumers": [
+        "components/marketing/SiteFooter.tsx #footer-logo-badge (2x, via patches/03-footer-logo-badge-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 224,
+        "height": 224
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 447,
+        "height": 448
+      },
+      "format": "webp",
+      "bytes": 19534,
+      "loading": "native <img>/<picture>, eager",
+      "exception": "pendingPatch: patches/03-footer-logo-badge-webp.patch."
+    },
+    {
+      "source": "/logos/notRugYellow-224.avif",
+      "consumers": [
+        "components/marketing/SiteFooter.tsx #footer-logo-badge (1x AVIF, via patches/03-footer-logo-badge-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 224,
+        "height": 224
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 223,
+        "height": 224
+      },
+      "format": "avif",
+      "bytes": 6134,
+      "loading": "native <picture> source, eager",
+      "exception": "pendingPatch: patches/03-footer-logo-badge-webp.patch."
+    },
+    {
+      "source": "/logos/notRugYellow-448.avif",
+      "consumers": [
+        "components/marketing/SiteFooter.tsx #footer-logo-badge (2x AVIF, via patches/03-footer-logo-badge-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 224,
+        "height": 224
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 447,
+        "height": 448
+      },
+      "format": "avif",
+      "bytes": 12110,
+      "loading": "native <picture> source, eager",
+      "exception": "pendingPatch: patches/03-footer-logo-badge-webp.patch."
+    },
+    {
+      "source": "/img/pawl-104.webp",
+      "consumers": [
+        "components/marketing/HomePawWalk.tsx #home-paw-walk-layer (via patches/04-paw-walk-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 52,
+        "height": 55
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 104,
+        "height": 111
+      },
+      "format": "webp",
+      "bytes": 8178,
+      "loading": "native <img>, eager (decorative, in-viewport trail)",
+      "exception": "pendingPatch: patches/04-paw-walk-webp.patch (HomePawWalk.tsx not owned by worker-b). Still live as /img/pawl.png (264569 bytes) until applied."
+    },
+    {
+      "source": "/img/pawl-104.avif",
+      "consumers": [
+        "components/marketing/HomePawWalk.tsx #home-paw-walk-layer (AVIF, via patches/04-paw-walk-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 52,
+        "height": 55
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 104,
+        "height": 111
+      },
+      "format": "avif",
+      "bytes": 5203,
+      "loading": "native <img> (would need <picture> to serve), eager",
+      "exception": "pendingPatch: patches/04-paw-walk-webp.patch. Note: the current patch only swaps <img src> to WebP (simplest fix for a plain <img> tag); AVIF file is generated and available but not wired by that patch \u2014 left for a follow-up <picture> if worth the complexity at this file size (~5KB)."
+    },
+    {
+      "source": "/img/pawr-104.webp",
+      "consumers": [
+        "components/marketing/HomePawWalk.tsx #home-paw-walk-layer (via patches/04-paw-walk-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 52,
+        "height": 55
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 104,
+        "height": 111
+      },
+      "format": "webp",
+      "bytes": 8208,
+      "loading": "native <img>, eager (decorative, in-viewport trail)",
+      "exception": "pendingPatch: patches/04-paw-walk-webp.patch (HomePawWalk.tsx not owned by worker-b). Still live as /img/pawr.png (264721 bytes) until applied."
+    },
+    {
+      "source": "/img/pawr-104.avif",
+      "consumers": [
+        "components/marketing/HomePawWalk.tsx #home-paw-walk-layer (AVIF, via patches/04-paw-walk-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 52,
+        "height": 55
+      },
+      "targetDpr": 2,
+      "intrinsic": {
+        "width": 104,
+        "height": 111
+      },
+      "format": "avif",
+      "bytes": 5217,
+      "loading": "native <img> (would need <picture> to serve), eager",
+      "exception": "pendingPatch: patches/04-paw-walk-webp.patch. Note: the current patch only swaps <img src> to WebP (simplest fix for a plain <img> tag); AVIF file is generated and available but not wired by that patch \u2014 left for a follow-up <picture> if worth the complexity at this file size (~5KB)."
+    },
+    {
+      "source": "/img/team/christian.webp",
+      "consumers": [
+        "lib/content/team.ts TEAM[].photo (via patches/05-team-photos-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 506,
+        "height": 900
+      },
+      "format": "webp",
+      "bytes": 45780,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
+    },
+    {
+      "source": "/img/team/lincoln.webp",
+      "consumers": [
+        "lib/content/team.ts TEAM[].photo (via patches/05-team-photos-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 506,
+        "height": 900
+      },
+      "format": "webp",
+      "bytes": 139322,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
+    },
+    {
+      "source": "/img/team/luis.webp",
+      "consumers": [
+        "lib/content/team.ts TEAM[].photo (via patches/05-team-photos-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 675,
+        "height": 900
+      },
+      "format": "webp",
+      "bytes": 111166,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
+    },
+    {
+      "source": "/img/team/luis-action.webp",
+      "consumers": [
+        "lib/content/about.ts FOUNDER_PHOTO (via patches/06-founder-photo-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 750,
+        "height": 1000
+      },
+      "format": "webp",
+      "bytes": 185284,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
+    },
+    {
+      "source": "/img/team/marcus.webp",
+      "consumers": [
+        "lib/content/team.ts TEAM[].photo (via patches/05-team-photos-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 675,
+        "height": 900
+      },
+      "format": "webp",
+      "bytes": 123152,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
+    },
+    {
+      "source": "/img/team/shawn.webp",
+      "consumers": [
+        "lib/content/team.ts TEAM[].photo (via patches/05-team-photos-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 675,
+        "height": 900
+      },
+      "format": "webp",
+      "bytes": 116238,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
+    },
+    {
+      "source": "/img/team/yenny.webp",
+      "consumers": [
+        "lib/content/team.ts TEAM[].photo (via patches/05-team-photos-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 750,
+        "height": 1000
+      },
+      "format": "webp",
+      "bytes": 186910,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
+    },
+    {
+      "source": "/img/team/yenny-action.webp",
+      "consumers": [
+        "lib/content/team.ts TEAM[].photo (via patches/05-team-photos-webp.patch)"
+      ],
+      "maxCssBox": {
+        "width": 373,
+        "height": 280,
+        "note": "grid-3 column at desktop; up to ~736px wide single-column on mobile. photoSize is a zoom percentage (150-290%), so effective source demand exceeds this box \u2014 already undersized, format-only conversion."
+      },
+      "targetDpr": 1,
+      "intrinsic": {
+        "width": 750,
+        "height": 1000
+      },
+      "format": "webp",
+      "bytes": 188186,
+      "loading": "css background (inline style), eager",
+      "exception": "Format-only conversion (JPG->WebP, same pixel dimensions) \u2014 every master is already smaller than its zoomed display demand (up to 290% of the box). See replacementMasterBacklog for a higher-resolution source request. pendingPatch: patches/05-team-photos-webp.patch / patches/06-founder-photo-webp.patch (lib/content/team.ts and lib/content/about.ts not owned by worker-b). Still live as the .jpg originals until applied."
     }
   ],
   "publicFileClassification": {
@@ -150,62 +1207,88 @@
     "removedThisPass": [
       "public/img/bg3.png (zero references)",
       "public/img/bg4.png (only mentioned in a CSS comment, no url())",
-      "public/img/footer_image.png", "public/img/footer_image2.png",
-      "public/img/visits_card.png", "public/img/1dog.png", "public/img/1dog.webp",
-      "public/img/3dog.png", "public/img/3dog.webp", "public/img/multi_dog_walk.png",
-      "public/img/SeniorTop.png", "public/img/cta band.png", "public/img/service cards.png",
-      "public/img/review cards.png", "public/img/pricing cards.png", "public/img/hero_polaroid.png",
-      "public/img/featured review.png", "public/img/visit-report.jpg",
-      "public/dogs/IMAGE 00001.webp", "public/dogs/IMAGE 00008.png", "public/dogs/IMAGE 00009.png", "public/dogs/IMAGE 00010.png",
+      "public/img/footer_image.png",
+      "public/img/footer_image2.png",
+      "public/img/visits_card.png",
+      "public/img/1dog.png",
+      "public/img/1dog.webp",
+      "public/img/3dog.png",
+      "public/img/3dog.webp",
+      "public/img/multi_dog_walk.png",
+      "public/img/SeniorTop.png",
+      "public/img/cta band.png",
+      "public/img/service cards.png",
+      "public/img/review cards.png",
+      "public/img/pricing cards.png",
+      "public/img/hero_polaroid.png",
+      "public/img/featured review.png",
+      "public/img/visit-report.jpg",
+      "public/dogs/IMAGE 00001.webp",
+      "public/dogs/IMAGE 00008.png",
+      "public/dogs/IMAGE 00009.png",
+      "public/dogs/IMAGE 00010.png",
       "public/logos/Screenshot 2026-03-23 at 8.33.46 AM.png",
-      "public/textures/paper-grain-light.png", "public/textures/torn-edge-top.svg",
-      "public/window.svg", "public/vercel.svg", "public/next.svg", "public/globe.svg", "public/file.svg",
-      "public/misc/nottherug-boilerplate copy.html", "public/misc/download_video.py",
+      "public/textures/paper-grain-light.png",
+      "public/textures/torn-edge-top.svg",
+      "public/window.svg",
+      "public/vercel.svg",
+      "public/next.svg",
+      "public/globe.svg",
+      "public/file.svg",
+      "public/misc/nottherug-boilerplate copy.html",
+      "public/misc/download_video.py",
       "public/logos/Not_The_Rug_2023_clipped_web.mp4 (moved to assets-src/video/hero-mccarren-master.mp4)",
-      "public/logos/Not_The_Rug_2023_clipped_web.webm (moved to assets-src/video/hero-mccarren-master.webm)"
+      "public/logos/Not_The_Rug_2023_clipped_web.webm (moved to assets-src/video/hero-mccarren-master.webm)",
+      "public/dogs/IMAGE 00003.webp, IMAGE 00004.webp, IMAGE 00005.webp, IMAGE 00006.webp (replaced by <page>-hero-full/mobile.webp/avif; masters kept in assets-src/dogs/)"
     ],
     "sourceOnlyNotDeployed": [
-      "public/logos/ntr_offwhite_horiz.png (1536x1024, 2.1MB) — zero consumers in app/ or components/; referenced only from style-guide/boilerplate.html and style-guide/*.md, which Next.js does not serve. Recommend deleting from public/ and, if still wanted for design reference, moving into style-guide/ itself or assets-src/. Not removed in this pass because a doc still points at its current path and worker-b's scope does not include editing that doc's surrounding content beyond a path swap."
+      "public/logos/ntr_offwhite_horiz.png (1536x1024, 2.1MB) \u2014 zero consumers in app/ or components/; referenced only from style-guide/boilerplate.html and style-guide/*.md, which Next.js does not serve. Recommend deleting from public/ and, if still wanted for design reference, moving into style-guide/ itself or assets-src/. Not removed in this pass because a doc still points at its current path and worker-b's scope does not include editing that doc's surrounding content beyond a path swap."
     ],
     "removableButNotTouched": [
-      "public/dogs/IMAGE 00002-00007.webp (1474-1848px wide, portrait) are used as ultra-wide page-hero cover backgrounds (up to 2560x505). Cover-fit on those boxes upscales the source ~1.7x at 2560 CSS width — see replacement-master backlog. Not reformatted this pass: they are already WebP, so the win here is a higher-resolution master, not a codec change."
+      "public/dogs/IMAGE 00002.webp and IMAGE 00007.webp (used by /contact, /book, and HowItWorksPageContent.tsx page-heroes \u2014 outside worker-b's owned file list this pass) remain the pre-existing full-resolution files with no breakpoint derivatives. Same upscale-at-2560px issue documented below; a follow-up pass with edit access to those 3 consumers should apply the same about/neighborhoods/reviews/safety-hero-{full,mobile} treatment to them.",
+      "public/logos/notRugYellow.png, public/img/pawl.png, public/img/pawr.png, public/img/team/*.jpg, public/img/team/luis-action.jpg (FOUNDER_PHOTO) all have ready WebP/AVIF replacements generated this pass, but their consumers (SiteFooter.tsx, HomePawWalk.tsx, lib/content/team.ts, lib/content/about.ts) are outside worker-b's owned file list \u2014 patches/03..06 apply the swap; the PNG/JPG originals stay live in public/ until a patch lands."
     ]
   },
   "replacementMasterBacklog": [
     {
       "asset": "/img/homepage_image.png -> hero-walker-strip",
       "issue": "background-size: 100% auto stretches to the full hero width at every viewport. Current master is 1620px wide; already upscaled above ~1620px CSS width.",
-      "neededDimensions": "≥2560px wide at the same ~1.668:1 aspect ratio (≥2560x1535) to cover the largest supported viewport without upscaling."
+      "neededDimensions": "\u22652560px wide at the same ~1.668:1 aspect ratio (\u22652560x1535) to cover the largest supported viewport without upscaling."
     },
     {
       "asset": "/img/bg_section_1.png and /img/bg_section_2.png -> bg-section-{1,2}-cover",
       "issue": "background-size: cover on full-bleed sections up to 2560px wide. Current master is 1672px wide (1.53x short of 2560).",
-      "neededDimensions": "≥2560x1440 (same 1.777:1 aspect) for a sharp 1x cover at the widest supported viewport."
+      "neededDimensions": "\u22652560x1440 (same 1.777:1 aspect) for a sharp 1x cover at the widest supported viewport."
     },
     {
       "asset": "/img/bg5.png -> bg5-cover",
       "issue": "Same cover-on-2560px-viewport shortfall as above, used on the admin sign-in page.",
-      "neededDimensions": "≥2560x1440."
+      "neededDimensions": "\u22652560x1440."
     },
     {
       "asset": "/img/bg_section_graphic_1.png -> bg-section-graphic-1",
       "issue": "background-size: auto 130% (scales to the section's own height). Current master 1620x971.",
-      "neededDimensions": "Re-verify against the section's actual max rendered height across the viewport matrix (not captured cleanly by the crawler here); as a floor, ≥2100px tall to cover a ~1600px section height at 130% with margin."
+      "neededDimensions": "Re-verify against the section's actual max rendered height across the viewport matrix (not captured cleanly by the crawler here); as a floor, \u22652100px tall to cover a ~1600px section height at 130% with margin."
     },
     {
       "asset": "/img/bg_section_graphic_2.png -> bg-section-graphic-2",
       "issue": "background-size: 100% auto on a full-width decorative band. Current master 1446px wide.",
-      "neededDimensions": "≥2560px wide at the documented 1536:642 (~2.393:1) aspect ratio, i.e. ≥2560x1070."
+      "neededDimensions": "\u22652560px wide at the documented 1536:642 (~2.393:1) aspect ratio, i.e. \u22652560x1070."
     },
     {
-      "asset": "/dogs/IMAGE 00002.webp .. IMAGE 00007.webp",
-      "issue": "Portrait 1474-1848px-wide sources used as ultra-wide (~5:1) page-hero cover crops. object-fit/background cover scales by width to fill 2560px viewports, upscaling ~1.7x.",
-      "neededDimensions": "New landscape or square exports ≥2560px on the shorter side needed to cover a 2560-wide, ~505px-tall crop without upscaling; ideally re-shot/re-cropped landscape masters rather than upscaling the existing portraits."
+      "asset": "/dogs/IMAGE 00002.webp and IMAGE 00007.webp (00003-00006 resolved this pass \u2014 see about/neighborhoods/reviews/safety-hero-* entries)",
+      "issue": "Portrait 1474-1848px-wide sources used as ultra-wide (~5:1) page-hero cover crops on /contact, /book, and HowItWorksPageContent.tsx (not in worker-b's owned file list this pass). object-fit/background cover scales by width to fill 2560px viewports, upscaling ~1.7x.",
+      "neededDimensions": "New landscape or square exports \u22652560px on the shorter side needed to cover a 2560-wide, ~505px-tall crop without upscaling; ideally re-shot/re-cropped landscape masters rather than upscaling the existing portraits."
     },
     {
       "asset": "/img/product_background.png -> product-background",
       "issue": "Box not verified live this pass (pin-stage content didn't render in the crawl). Re-run the audit against the pinned scroll state before sizing a replacement.",
-      "neededDimensions": "TBD — re-measure first."
+      "neededDimensions": "TBD \u2014 re-measure first."
+    },
+    {
+      "asset": "about-hero-full / neighborhoods-hero-full / reviews-hero-full / safety-hero-full (from IMAGE 00003/00005/00006/00004.webp)",
+      "issue": "Desktop/tablet/large tier (>768px) keeps the master's native resolution. A portrait source used as an ultra-wide (~5:1 at 2560px) cover strip already discards most of the source height at every desktop width, and at 2560px CSS width the strip is width-bound well beyond the ~1800px-wide master.",
+      "neededDimensions": "New landscape or square exports >=2560px wide at roughly a 5:1 strip aspect (>=2560x510) would let the desktop tier cover the widest supported viewport without the browser upsampling beyond the derivative's own resolution."
     }
   ]
 }

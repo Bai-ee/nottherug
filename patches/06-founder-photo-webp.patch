@@ -1,0 +1,11 @@
+--- a/lib/content/about.ts
++++ b/lib/content/about.ts
+@@ -20,7 +20,7 @@
+   'Our walks are structured, consistent, and responsive. From pickup to drop-off, we give each dog a familiar rhythm while staying present to their pace, mood, leash cues, and body language. That repetition builds trust, helping dogs move with more ease and settle calmly when they return home.';
+ 
+ /** Founder portrait used by the story block on both surfaces. */
+-export const FOUNDER_PHOTO = '/img/team/luis-action.jpg';
++export const FOUNDER_PHOTO = '/img/team/luis-action.webp';
+ 
+ /**
+  * The four principles, shared by /about's values grid, the home page's

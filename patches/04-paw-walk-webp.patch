@@ -1,0 +1,11 @@
+--- a/components/marketing/HomePawWalk.tsx
++++ b/components/marketing/HomePawWalk.tsx
+@@ -19,7 +19,7 @@
+  */
+ const MAX_STEPS = 320;
+ 
+-const PAW_SRC = { left: '/img/pawl.png', right: '/img/pawr.png' } as const;
++const PAW_SRC = { left: '/img/pawl-104.webp', right: '/img/pawr-104.webp' } as const;
+ 
+ /** Dev-only panel, kept out of the production bundle by the ssr:false import
+     plus the flag check below. */
