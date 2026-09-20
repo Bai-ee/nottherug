@@ -124,6 +124,7 @@
    legend reading directly under it rather than off to one side. */
 #admin-analytics-trend-panel-head { display: grid; justify-items: center; gap: 6px; }
 #admin-analytics-trend-panel-head .stamp-label { margin-bottom: 0; }
+#admin-analytics-trend-legend { margin: 0; }
 
 /* Category headings inside the CTA table read as list headings, so they sit
    on the left edge of their group rather than centred over it. */

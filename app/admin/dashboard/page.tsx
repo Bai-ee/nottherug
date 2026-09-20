@@ -177,14 +177,15 @@ function AdminAnalyticsDashboardContent({
           dailyTrend={view.dailyTrend}
         />
 
-        <LiveTile live={view.live} dailyTrend={view.dailyTrend} />
-
-        {/* Test/preview traffic is a developer view: it is reached only by
-            adding ?testMode=1 to the URL (see docs/analytics-operations.md),
-            so the owner-facing controls are just the range. */}
+        {/* Sits with the card whose numbers it scopes. Test/preview traffic is
+            a developer view reached only by adding ?testMode=1 to the URL (see
+            docs/analytics-operations.md), so the owner-facing control here is
+            just the range. */}
         <div id="admin-analytics-controls-row">
           <RangeSelector value={range} onChange={setRange} loading={loading} />
         </div>
+
+        <LiveTile live={view.live} dailyTrend={view.dailyTrend} />
 
         <TrendSparkline points={view.dailyTrend} />
 

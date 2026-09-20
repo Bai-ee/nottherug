@@ -45,18 +45,18 @@ export function TrendSparkline({ points }: { points: DailyTrendPoint[] }) {
     <section id="admin-analytics-trend-panel" className="card card-pad">
       <div id="admin-analytics-trend-panel-head">
         <div className="stamp-label">Daily Trend</div>
-        <div id="admin-analytics-trend-legend">
+        <div id="admin-analytics-trend-legend" className="form-note">
           <span className="text-sage">Sessions</span>{' · '}
           <span className="text-mid">Pageviews</span>
         </div>
       </div>
       <div className="admin-analytics-panel-body">
         {points.length === 0 ? (
-          <p className="text-mid">No days in range yet.</p>
+          <p className="form-note text-mid">No days in range yet.</p>
         ) : points.length === 1 ? (
           /* One day cannot draw a line: say the day's numbers instead of
              showing an empty chart, and point at the longer ranges. */
-          <p id="admin-analytics-trend-single-day" className="text-mid">
+          <p id="admin-analytics-trend-single-day" className="form-note text-mid">
             {shortDate(points[0].date)} · {points[0].sessions.toLocaleString('en-US')} sessions · {points[0].pageviews.toLocaleString('en-US')} pageviews. A trend needs more than one day — switch to 7 or 30 days.
           </p>
         ) : (
