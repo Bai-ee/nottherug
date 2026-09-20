@@ -13,6 +13,7 @@ import { buildBookingPrefillHref } from '@/lib/leads/prefill';
 import { isValidEmail } from '@/lib/leads/validation';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
+import { captureLeadEmail } from '@/lib/leads/captureClient';
 import { PAW_TRAIL, useGroupWalkCardHover } from './hooks/useGroupWalkCardHover';
 
 const FEATURE_SOURCE = 'services-preview';
@@ -29,6 +30,7 @@ function trackCta(cta: CtaId) {
     console.warn('[analytics] cta_click failed', err);
   }
 }
+
 
 /** Brooklyn Bridge / Manhattan skyline collage — same backdrop WelcomeWalkModal.tsx uses. */
 const SKYLINE_IMAGE = '/img/bg-section-graphic-1.webp';
@@ -77,6 +79,8 @@ export default function GroupWalkFeatureCard() {
     // never counted. The entered email/phone stay in the prefill href and
     // never enter the event payload.
     trackCta('group_walk_card_submit');
+    // Fire-and-forget, same rule as above: never blocks the redirect to /book.
+    captureLeadEmail(mail, FEATURE_SOURCE);
     router.push(
       buildBookingPrefillHref(
         { email: mail, phone: tel, serviceInterest: GROUP_WALK_PREVIEW.serviceInterest ?? 'Daily Group Walks' },

@@ -26,6 +26,7 @@ import {
 import SchedulingDialog from '@/components/booking/SchedulingDialog';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
+import { captureLeadEmail } from '@/lib/leads/captureClient';
 import {
   WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
@@ -51,6 +52,7 @@ function trackCta(cta: CtaId) {
     console.warn('[analytics] cta_click failed', err);
   }
 }
+
 
 /**
  * The Group Walk illustration from the product carousel in
@@ -344,6 +346,9 @@ export default function WelcomeWalkModal() {
     // Best-effort: a storage failure here must never block opening the
     // scheduler (plans/005 handoff rules).
     if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
+    // Same best-effort rule as the handoff write above: never blocks opening
+    // the scheduler.
+    captureLeadEmail(trimmed, MODAL_SOURCE);
     trackCta('welcome_modal_schedule');
     setView('scheduler');
   }
@@ -381,6 +386,9 @@ export default function WelcomeWalkModal() {
       });
       if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
     }
+    // Same email, `booked: true` this time — never blocks showing the
+    // confirmation view.
+    captureLeadEmail(email.trim(), MODAL_SOURCE, true);
     setView('confirmation');
   }, [attemptId, email]);
 
