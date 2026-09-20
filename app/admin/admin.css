@@ -281,10 +281,11 @@
   /* Stacked: fill the width, keep the natural height — flex-grow along a
      column axis would stretch them into tall slabs. */
   #admin-shell-main .btn { width: 100%; flex: 0 0 auto; }
-  /* ...except the range row, which stays three buttons on one line. */
-  #admin-analytics-range-selector .btn { width: auto; flex: 1 1 0; font-size: 11px; }
+  /* The range control is three buttons sharing one line at every width; they
+     narrow instead of stacking. */
+  #admin-analytics-range-selector { flex-direction: row; width: 100%; }
+  #admin-analytics-range-selector .btn { width: auto; flex: 1 1 0; font-size: 11px; padding-left: 6px; padding-right: 6px; }
   #admin-analytics-controls-row,
-  #admin-analytics-range-selector,
   #admin-analytics-error-banner,
   .admin-analytics-hero-stats-row {
     flex-direction: column;
