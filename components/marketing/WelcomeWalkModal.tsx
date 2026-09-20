@@ -159,6 +159,9 @@ export default function WelcomeWalkModal() {
   /** Set once this attempt's booking is verified, so dismissing the scheduler
    *  afterwards lands on the questions instead of back at the gate. */
   const bookedRef = useRef(false);
+  /** Set by goToHomeQuestions; consumed by the effect that runs after the
+   *  body-scroll-lock has been released. */
+  const pendingQuestionsScrollRef = useRef(false);
   // Set by the WELCOME_MODAL_OPEN_EVENT handler and by every dismissal path below. Guards
   // the first-visit scroll trigger: without this, a visitor who opens the
   // modal manually (hero CTA) and dismisses it before scrolling would see it
@@ -273,6 +276,21 @@ export default function WelcomeWalkModal() {
     };
   }, [welcomeDialogVisible]);
 
+  // Takes the visitor to the questionnaire further down this page once the
+  // modal is fully closed. Declared after the scroll-lock effect above so it
+  // runs after that effect's cleanup has restored the page position —
+  // otherwise the restore lands on top of this scroll and nothing moves.
+  useEffect(() => {
+    if (welcomeDialogVisible || !pendingQuestionsScrollRef.current) return;
+    pendingQuestionsScrollRef.current = false;
+    const target = document.getElementById(HOME_QUESTIONS_SECTION_ID);
+    if (!target) return;
+    target.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  }, [welcomeDialogVisible]);
+
   // Focus trap + Escape-to-close + focus restore. Re-runs every time this
   // dialog (re)becomes the visible one — including gate ↔ confirmation
   // transitions, since those always pass through `welcomeDialogVisible`
@@ -381,17 +399,12 @@ export default function WelcomeWalkModal() {
    */
   const goToHomeQuestions = useCallback(() => {
     interactedRef.current = true;
+    // The scroll itself runs in the effect below, not here: closing the modal
+    // releases the body-scroll-lock, whose cleanup restores the page to the
+    // position it was frozen at. Scrolling from this callback — even a frame
+    // later — is undone by that restore.
+    pendingQuestionsScrollRef.current = true;
     setOpen(false);
-    // Next frame, so the scroll is not fighting the body-scroll-lock being
-    // released as the modal closes.
-    window.requestAnimationFrame(() => {
-      const target = document.getElementById(HOME_QUESTIONS_SECTION_ID);
-      if (!target) return;
-      target.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        block: 'start',
-      });
-    });
   }, []);
 
   const handleSchedulerDismiss = useCallback(() => {
