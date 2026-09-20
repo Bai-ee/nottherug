@@ -3660,13 +3660,18 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-cta-primary { margin-bottom: 16px; }
 }
 
+/* Hero headline phone copy is hidden until the phone breakpoint below. */
+#hero-headline .hero-headline-mobile,
+#hero-headline br:nth-of-type(4) { display: none; }
+
 /* ── PHONE NAV WORDMARK + TWO-LINE HEADLINE ───────────────────────────────
    Phones only. The paper wordmark is locked at one in-band size in every
    nav state (top of page and scrolled) so it never drops, tucks or hangs
    below the band. The home loading screen still plays at this width; its
    nav drop lands on this same locked position.
-   The hero headline drops its 1st and 3rd hard break to read as two lines:
-   "Your dog deserves" / "someone they know." */
+   The hero headline swaps to its phone copy ("Professional dog walkers" /
+   "based in Williamsburg"): the desktop lines and their breaks are hidden,
+   the phone lines and their one break shown. Both live in HomeHero.tsx. */
 @media (max-width: 768px) {
   #main-nav .nav-logo,
   #main-nav.nav-scrolled .nav-logo {
@@ -3680,9 +3685,15 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   }
   #main-nav #nav-logo-img,
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
+  #hero-headline .hero-headline-desktop,
   #hero-headline br:nth-of-type(1),
+  #hero-headline br:nth-of-type(2),
   #hero-headline br:nth-of-type(3) { display: none; }
+  #hero-headline .hero-headline-mobile,
+  #hero-headline br:nth-of-type(4) { display: inline; }
   #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); }
+  /* No tape strip on the video polaroid at phone widths. */
+  #hero-polaroid-frame.taped::before { display: none; }
   /* Phones drop the walker illustration behind the hero (the mobile .hero
      background above layers it under the veil) and the round sticker on the
      video polaroid; the paper grain, veil and bottom strip stay. */

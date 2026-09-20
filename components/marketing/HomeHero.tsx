@@ -102,13 +102,20 @@ export default function HomeHero() {
           <span className="stamp-label" id="hero-stamp-label">Williamsburg, Brooklyn &middot; Est. 2011</span>
         </div>
         <h1 className="hero-h1" id="hero-headline">
-          {/* Four hard-broken lines, kept at the top level of the h1: the
-              hero word-split in useHomeHeroMotion only re-emits <br>s that are
-              direct children, so a <br> nested inside <em> would be dropped
-              once the entrance animation rebuilds the markup. The spaces
-              before each <br> matter: phones hide the 1st and 3rd break
-              (globals.css) to set the headline on two lines. */}
-          Your dog <br />deserves <br /><em>someone they</em> <br /><em>know.</em>
+          {/* Two headlines, one element: the desktop copy (four hard-broken
+              lines) and the phone copy (two lines) share the h1 so the
+              entrance animation, ids and section-nav contract stay the same;
+              globals.css shows one set and hides the other by breakpoint.
+              Every line is wrapped and every <br> is a direct child on
+              purpose: the word-split in useHomeHeroMotion clones each
+              wrapper per word (keeping its class) and only re-emits
+              top-level <br>s. */}
+          <span className="hero-headline-desktop">Your dog</span> <br />
+          <span className="hero-headline-desktop">deserves</span> <br />
+          <em className="hero-headline-desktop">someone they</em> <br />
+          <em className="hero-headline-desktop">know.</em>
+          <span className="hero-headline-mobile">Professional dog walkers</span> <br />
+          <em className="hero-headline-mobile">based in Williamsburg</em>
         </h1>
         <p className="hero-p">Not The Rug is Williamsburg&apos;s most trusted dog walking service. No strangers. No first-time handlers. Just experienced professionals who show up consistently.</p>
         <div className="hero-actions" id="hero-actions-row">

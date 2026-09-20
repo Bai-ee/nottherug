@@ -11,7 +11,10 @@ import { suppressWelcomeModal } from './helpers/welcomeModal';
 // CSS, so `textContent` runs the words together ("Your dogdeserves…"). These
 // patterns are matched against the normalized innerText (see expectH1) — the
 // sentence a visitor actually reads — hence the /i flag.
-const HOME_H1 = /^Your dog deserves someone they know\.$/i;
+// The home h1 carries two copies (components/marketing/HomeHero.tsx): the
+// desktop lines and the phone lines, shown by breakpoint. Either is the one
+// sentence a visitor reads at that width.
+const HOME_H1 = /^(Your dog deserves someone they know\.|Professional dog walkers based in Williamsburg)$/i;
 const ABOUT_H1 = /^15 years of walks, one neighborhood$/i;
 const SAFETY_H1 = /^Why trust matters more than price$/i;
 
