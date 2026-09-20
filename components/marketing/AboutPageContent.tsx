@@ -17,7 +17,7 @@ export default function AboutPageContent() {
     <div id="about-page-shell" ref={pageRef}>
       <SiteNav />
 
-      <div id="about-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00003.webp') center 20%/cover no-repeat" }}>
+      <div id="about-hero-section" className="page-hero page-hero-about">
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Our Story</div>
           <h1>15 years of walks,<br />one neighborhood</h1>

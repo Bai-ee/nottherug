@@ -37,6 +37,80 @@
   --section-pad: 96px;
   --radius: 12px;
   --radius-lg: 14px; /* was 24px — paper reads flatter (docs/design.md: avoid deep rounding) */
+
+  /* Responsive background-photo candidates (plans/010-asset-optimization-spec.md).
+     Base value = plain WebP (works everywhere, matches the previous single-
+     source behaviour exactly). The @supports blocks below upgrade capable
+     browsers to image-set() (AVIF+WebP candidates); the @media blocks swap
+     in a smaller crop-aware mobile derivative at <=768px CSS width. Every
+     consumer references these via var(--x) in the exact position/size/
+     repeat it already used — only the image source becomes responsive.
+     See scripts/build-assets.mjs and docs/asset-manifest.json. */
+  --bg-section-1-photo: url('/img/bg-section-1-cover.webp');
+  --bg-section-2-photo: url('/img/bg-section-2-cover.webp');
+  --bg-section-graphic-1-photo: url('/img/bg-section-graphic-1.webp');
+  --bg-section-graphic-2-photo: url('/img/bg-section-graphic-2.webp');
+  --hero-walker-strip-photo: url('/img/hero-walker-strip.webp');
+  --product-background-photo: url('/img/product-background.webp');
+  --bg5-cover-photo: url('/img/bg5-cover.webp');
+}
+
+/* Legacy Safari: -webkit-image-set() has no type() support, so this can only
+   pick by density, not format — it just reconfirms the WebP candidate. Real
+   browsers matching this AND the standard image-set() query below get
+   overridden by the later (AVIF-capable) block. */
+@supports (background-image: -webkit-image-set(url('/img/bg5-cover.webp') 1x)) {
+  :root {
+    --bg-section-1-photo: -webkit-image-set(url('/img/bg-section-1-cover.webp') 1x);
+    --bg-section-2-photo: -webkit-image-set(url('/img/bg-section-2-cover.webp') 1x);
+    --bg-section-graphic-1-photo: -webkit-image-set(url('/img/bg-section-graphic-1.webp') 1x);
+    --bg-section-graphic-2-photo: -webkit-image-set(url('/img/bg-section-graphic-2.webp') 1x);
+    --hero-walker-strip-photo: -webkit-image-set(url('/img/hero-walker-strip.webp') 1x);
+    --product-background-photo: -webkit-image-set(url('/img/product-background.webp') 1x);
+    --bg5-cover-photo: -webkit-image-set(url('/img/bg5-cover.webp') 1x);
+  }
+}
+@supports (background-image: image-set(url('/img/bg5-cover.webp') type('image/webp'))) {
+  :root {
+    --bg-section-1-photo: image-set(url('/img/bg-section-1-cover.webp') type('image/webp'), url('/img/bg-section-1-cover.avif') type('image/avif'));
+    --bg-section-2-photo: image-set(url('/img/bg-section-2-cover.webp') type('image/webp'), url('/img/bg-section-2-cover.avif') type('image/avif'));
+    --bg-section-graphic-1-photo: image-set(url('/img/bg-section-graphic-1.webp') type('image/webp'), url('/img/bg-section-graphic-1.avif') type('image/avif'));
+    --bg-section-graphic-2-photo: image-set(url('/img/bg-section-graphic-2.webp') type('image/webp'), url('/img/bg-section-graphic-2.avif') type('image/avif'));
+    --hero-walker-strip-photo: image-set(url('/img/hero-walker-strip.webp') type('image/webp'), url('/img/hero-walker-strip.avif') type('image/avif'));
+    --product-background-photo: image-set(url('/img/product-background.webp') type('image/webp'), url('/img/product-background.avif') type('image/avif'));
+    --bg5-cover-photo: image-set(url('/img/bg5-cover.webp') type('image/webp'), url('/img/bg5-cover.avif') type('image/avif'));
+  }
+}
+@media (max-width: 768px) {
+  :root {
+    /* bg-section-graphic-2-photo and product-background-photo keep their
+       base (full-size) value here — their source master is already below
+       the mobile 2x floor, so a separate mobile derivative would not be
+       smaller. See scripts/build-assets.mjs MOBILE_BG_JOBS comment. */
+    --bg-section-1-photo: url('/img/bg-section-1-mobile.webp');
+    --bg-section-2-photo: url('/img/bg-section-2-mobile.webp');
+    --bg-section-graphic-1-photo: url('/img/bg-section-graphic-1-mobile.webp');
+    --hero-walker-strip-photo: url('/img/hero-walker-strip-mobile.webp');
+    --bg5-cover-photo: url('/img/bg5-mobile.webp');
+  }
+  @supports (background-image: -webkit-image-set(url('/img/bg5-mobile.webp') 1x)) {
+    :root {
+      --bg-section-1-photo: -webkit-image-set(url('/img/bg-section-1-mobile.webp') 1x);
+      --bg-section-2-photo: -webkit-image-set(url('/img/bg-section-2-mobile.webp') 1x);
+      --bg-section-graphic-1-photo: -webkit-image-set(url('/img/bg-section-graphic-1-mobile.webp') 1x);
+      --hero-walker-strip-photo: -webkit-image-set(url('/img/hero-walker-strip-mobile.webp') 1x);
+      --bg5-cover-photo: -webkit-image-set(url('/img/bg5-mobile.webp') 1x);
+    }
+  }
+  @supports (background-image: image-set(url('/img/bg5-mobile.webp') type('image/webp'))) {
+    :root {
+      --bg-section-1-photo: image-set(url('/img/bg-section-1-mobile.webp') type('image/webp'), url('/img/bg-section-1-mobile.avif') type('image/avif'));
+      --bg-section-2-photo: image-set(url('/img/bg-section-2-mobile.webp') type('image/webp'), url('/img/bg-section-2-mobile.avif') type('image/avif'));
+      --bg-section-graphic-1-photo: image-set(url('/img/bg-section-graphic-1-mobile.webp') type('image/webp'), url('/img/bg-section-graphic-1-mobile.avif') type('image/avif'));
+      --hero-walker-strip-photo: image-set(url('/img/hero-walker-strip-mobile.webp') type('image/webp'), url('/img/hero-walker-strip-mobile.avif') type('image/avif'));
+      --bg5-cover-photo: image-set(url('/img/bg5-mobile.webp') type('image/webp'), url('/img/bg5-mobile.avif') type('image/avif'));
+    }
+  }
 }
 
 /* =============================================
@@ -604,7 +678,7 @@ footer {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.85), rgba(79, 90, 61, 0.85)),
-    url('/img/bg-section-2-cover.webp') center / cover no-repeat,
+    var(--bg-section-2-photo) center / cover no-repeat,
     var(--sage-dark);
   color: white;
   padding: 76px 0 40px;
@@ -724,7 +798,7 @@ footer {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.90), rgba(79, 90, 61, 0.90)),
-    url('/img/bg-section-1-cover.webp') center / cover no-repeat;
+    var(--bg-section-1-photo) center / cover no-repeat;
   border-top: 1px solid rgba(243,236,217,0.14);
   border-bottom: 1px solid rgba(243,236,217,0.14);
   scroll-margin-top: var(--nav-h);
@@ -737,7 +811,7 @@ footer {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.90), rgba(79, 90, 61, 0.90)),
-    url('/img/bg-section-1-cover.webp') center / cover no-repeat;
+    var(--bg-section-1-photo) center / cover no-repeat;
   border-top: 1px solid rgba(243,236,217,0.14);
   padding-bottom: clamp(36px, 5vw, 64px);
 }
@@ -822,7 +896,7 @@ footer {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    url('/img/bg-section-2-cover.webp') center / cover no-repeat;
+    var(--bg-section-2-photo) center / cover no-repeat;
 }
 /* Closing trust recap — sage-dark veil over a photo (not flat color), same
    layered technique as the light sections but tinted dark instead of cream.
@@ -832,7 +906,7 @@ footer {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.88), rgba(79, 90, 61, 0.88)),
-    url('/img/bg-section-1-cover.webp') center / cover no-repeat;
+    var(--bg-section-1-photo) center / cover no-repeat;
   /* Continues the team band directly beneath the roster: no rule and no top
      pad at that seam, so the faces and the credentials read as one band. The
      bottom hairline still separates it from the process strip below, which is
@@ -861,7 +935,7 @@ footer {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.80), rgba(79, 90, 61, 0.80)),
-    url('/img/bg-section-2-cover.webp') center / cover no-repeat;
+    var(--bg-section-2-photo) center / cover no-repeat;
 }
 /* Members paint nothing of their own: a second surface over the shared one is
    exactly the crease this shell removes. Scoped to the shell so the footer
@@ -923,13 +997,13 @@ footer {
        background-position percentage had no slack to move it. Overscaling the
        height and anchoring at the top is what actually drops the artwork —
        130% = roughly 30% of the section height lower. */
-    url('/img/bg-section-graphic-1.webp') center top / auto 130% no-repeat;
+    var(--bg-section-graphic-1-photo) center top / auto 130% no-repeat;
 }
 #home-personalized-care-pin-stage {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    url('/img/product-background.webp') bottom center / 100% auto no-repeat;
+    var(--product-background-photo) bottom center / 100% auto no-repeat;
 }
 
 /* Hero */
@@ -958,7 +1032,7 @@ footer {
       / clamp(420px, calc(42vw + (var(--hero-walker-ramp) * 0.27)), 720px) auto
       no-repeat,
     linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    url('/img/hero-walker-strip.webp') bottom center / 100% auto no-repeat;
+    var(--hero-walker-strip-photo) bottom center / 100% auto no-repeat;
 }
 /* Hero walker across mid widths — the illustration is tuned for the widest
    viewports (720px wide at 60% 12%). Its old 42vw ramp only reached that 720px
@@ -1469,6 +1543,67 @@ footer {
 .page-hero h1 { color: white; margin-bottom: 20px; }
 .page-hero p { font-family: var(--font-type); color: rgba(255,255,255,0.65); font-size: 18px; max-width: 540px; margin: 0 auto; }
 
+/* Page-hero photo candidates (About/Neighborhoods/Reviews/Safety) — moved
+   out of each page component's inline style so a media query can swap in
+   the crop-aware mobile derivative. Same pattern as the responsive
+   background-photo variables in :root above: base = full-size WebP,
+   @supports upgrades to image-set(WebP+AVIF), @media (<=768px) swaps in the
+   mobile derivative. See scripts/build-assets.mjs PAGE_HERO_JOBS. */
+:root {
+  --about-hero-photo: url('/dogs/about-hero-full.webp');
+  --neighborhoods-hero-photo: url('/dogs/neighborhoods-hero-full.webp');
+  --reviews-hero-photo: url('/dogs/reviews-hero-full.webp');
+  --safety-hero-photo: url('/dogs/safety-hero-full.webp');
+}
+@supports (background-image: -webkit-image-set(url('/dogs/about-hero-full.webp') 1x)) {
+  :root {
+    --about-hero-photo: -webkit-image-set(url('/dogs/about-hero-full.webp') 1x);
+    --neighborhoods-hero-photo: -webkit-image-set(url('/dogs/neighborhoods-hero-full.webp') 1x);
+    --reviews-hero-photo: -webkit-image-set(url('/dogs/reviews-hero-full.webp') 1x);
+    --safety-hero-photo: -webkit-image-set(url('/dogs/safety-hero-full.webp') 1x);
+  }
+}
+@supports (background-image: image-set(url('/dogs/about-hero-full.webp') type('image/webp'))) {
+  :root {
+    --about-hero-photo: image-set(url('/dogs/about-hero-full.webp') type('image/webp'), url('/dogs/about-hero-full.avif') type('image/avif'));
+    --neighborhoods-hero-photo: image-set(url('/dogs/neighborhoods-hero-full.webp') type('image/webp'), url('/dogs/neighborhoods-hero-full.avif') type('image/avif'));
+    --reviews-hero-photo: image-set(url('/dogs/reviews-hero-full.webp') type('image/webp'), url('/dogs/reviews-hero-full.avif') type('image/avif'));
+    --safety-hero-photo: image-set(url('/dogs/safety-hero-full.webp') type('image/webp'), url('/dogs/safety-hero-full.avif') type('image/avif'));
+  }
+}
+@media (max-width: 768px) {
+  :root {
+    --about-hero-photo: url('/dogs/about-hero-mobile.webp');
+    --neighborhoods-hero-photo: url('/dogs/neighborhoods-hero-mobile.webp');
+    --reviews-hero-photo: url('/dogs/reviews-hero-mobile.webp');
+    --safety-hero-photo: url('/dogs/safety-hero-mobile.webp');
+  }
+  @supports (background-image: -webkit-image-set(url('/dogs/about-hero-mobile.webp') 1x)) {
+    :root {
+      --about-hero-photo: -webkit-image-set(url('/dogs/about-hero-mobile.webp') 1x);
+      --neighborhoods-hero-photo: -webkit-image-set(url('/dogs/neighborhoods-hero-mobile.webp') 1x);
+      --reviews-hero-photo: -webkit-image-set(url('/dogs/reviews-hero-mobile.webp') 1x);
+      --safety-hero-photo: -webkit-image-set(url('/dogs/safety-hero-mobile.webp') 1x);
+    }
+  }
+  @supports (background-image: image-set(url('/dogs/about-hero-mobile.webp') type('image/webp'))) {
+    :root {
+      --about-hero-photo: image-set(url('/dogs/about-hero-mobile.webp') type('image/webp'), url('/dogs/about-hero-mobile.avif') type('image/avif'));
+      --neighborhoods-hero-photo: image-set(url('/dogs/neighborhoods-hero-mobile.webp') type('image/webp'), url('/dogs/neighborhoods-hero-mobile.avif') type('image/avif'));
+      --reviews-hero-photo: image-set(url('/dogs/reviews-hero-mobile.webp') type('image/webp'), url('/dogs/reviews-hero-mobile.avif') type('image/avif'));
+      --safety-hero-photo: image-set(url('/dogs/safety-hero-mobile.webp') type('image/webp'), url('/dogs/safety-hero-mobile.avif') type('image/avif'));
+    }
+  }
+}
+
+/* Per-page hero background — same gradient veil + `center 20% / cover` crop
+   each page used inline before; only the source moved (see variables
+   above), so a media query can apply. */
+.page-hero-about { background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), var(--about-hero-photo) center 20% / cover no-repeat; }
+.page-hero-neighborhoods { background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), var(--neighborhoods-hero-photo) center 20% / cover no-repeat; }
+.page-hero-reviews { background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), var(--reviews-hero-photo) center 20% / cover no-repeat; }
+.page-hero-safety { background: linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), var(--safety-hero-photo) center 20% / cover no-repeat; }
+
 .pricing-card {
   background: var(--warm-white);
   border: 1px solid rgba(0,0,0,0.07);
@@ -1976,7 +2111,7 @@ footer {
       url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
       linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
       url('/img/3Top-flipped.png') 60% 12% / clamp(300px, 86vw, 460px) auto no-repeat,
-      url('/img/hero-walker-strip.webp') bottom center / 100% auto no-repeat;
+      var(--hero-walker-strip-photo) bottom center / 100% auto no-repeat;
   }
   #hero-stats-strip { grid-column: 1; grid-row: 3; width: calc(100% - 40px); padding-left: 20px; padding-right: 20px; margin-bottom: 40px; }
   .hero-visual { grid-column: 1; grid-row: 1; height: auto; width: 100%; position: static; padding-bottom: 0; }
@@ -2920,7 +3055,7 @@ footer {
      height is 0.418 x that width, and 0.3 of that is 12.54vw. */
   top: -12.54vw;
   aspect-ratio: 1536 / 642;
-  background: url('/img/bg-section-graphic-2.webp') center top / 100% auto no-repeat;
+  background: var(--bg-section-graphic-2-photo) center top / 100% auto no-repeat;
   opacity: 0.17;
   pointer-events: none;
   z-index: 0;
@@ -3484,7 +3619,7 @@ footer {
   /* bg5 is the collage with an open middle, so the card lands in the clear
      space and the Brooklyn/dog scraps frame it. Paper underneath covers the
      aspect-ratio gap on very tall or very wide viewports. */
-  background: url('/img/bg5-cover.webp') center / cover no-repeat, var(--paper);
+  background: var(--bg5-cover-photo) center / cover no-repeat, var(--paper);
   color: var(--ink);
 }
 
