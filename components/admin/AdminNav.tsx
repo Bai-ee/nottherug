@@ -115,7 +115,7 @@ export function AdminNav({ email, onSignOut }: { email: string; onSignOut: () =>
             })}
             <Link href="/" id="admin-nav-view-site-link">View Site</Link>
             <button type="button" id="admin-nav-signout" onClick={() => void onSignOut()} title={email}>
-              Sign Out
+              Log Out
             </button>
             <Link href="/admin" id="admin-nav-client-access-link" className="nav-cta btn-accent">
               Client Access
@@ -160,14 +160,16 @@ export function AdminNav({ email, onSignOut }: { email: string; onSignOut: () =>
         <Link href="/" id="admin-mobile-menu-view-site-link" onClick={() => setMobileOpen(false)}>
           View Site
         </Link>
+        {/* Where the signed-in address used to sit: the one thing you would
+            actually do from here. */}
         <button
           type="button"
           id="admin-mobile-menu-signout"
           onClick={() => { setMobileOpen(false); void onSignOut(); }}
+          title={email}
         >
-          Sign Out
+          Log Out
         </button>
-        <span id="admin-mobile-menu-email">{email}</span>
         <Link
           href="/admin"
           id="admin-mobile-menu-client-access-link"

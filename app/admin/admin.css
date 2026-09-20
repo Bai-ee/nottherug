@@ -10,7 +10,7 @@
 #admin-shell-main {
   /* Same clearance the marketing page heroes use, so the oversized paper
      logo hanging below the band never lands on the first panel. */
-  padding-top: calc(var(--nav-h) + 64px);
+  padding-top: calc(var(--nav-h) + 40px);
   padding-bottom: 64px;
   min-height: 60vh;
 }
@@ -23,7 +23,7 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 #admin-page-title { margin: 4px 0 0; }
 #admin-page-header-controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
@@ -100,7 +100,7 @@
 
 /* Replaces the old .analytics-page: stacks every panel with even spacing.
    Width/side-gutter already come from AdminShell's .container. */
-#admin-analytics-dashboard-grid { display: grid; gap: 24px; }
+#admin-analytics-dashboard-grid { display: grid; gap: 16px; }
 /* .grid-2 centers its items, which is right for the homepage's text-beside-
    image bands and wrong for two panels of different heights sitting side by
    side — they should start on the same line. */
@@ -123,10 +123,6 @@
   padding-right: 8px;
   white-space: nowrap;
 }
-
-/* Today's forecast sits just under the greeting, in the owner's own voice
-   rather than as a panel of its own. */
-#admin-analytics-weather-line { margin: 0 0 2px; text-align: center; }
 
 /* The two headline tiles, and the live tile's two numbers, stay side by side
    at every width: each pair is there to be compared, not read as a list. */
@@ -174,14 +170,6 @@
    The marketing nav lights up on hover because it invites a click. This one
    is a fixed index of where you already are, so nothing moves under the
    cursor. The active entry still marks the current page. */
-#main-nav .nav-links a:hover { color: rgba(255, 255, 255, 0.7); background: none; }
-#main-nav .nav-links a.active:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
-#main-nav .nav-cta:hover,
-#admin-nav-client-access-link:hover { transform: none; }
-.mobile-menu a:hover,
-.mobile-menu a:active { color: rgba(243, 236, 217, 0.82); padding-left: 0; }
-.mobile-menu .mobile-cta:hover { padding-left: 18px; }
-
 /* Locked: listed so the section is not a surprise later, but it does not
    navigate, is not focusable and never reacts to the cursor. */
 .admin-nav-locked {
@@ -225,7 +213,6 @@
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.2s;
 }
-#admin-nav-signout:hover { color: rgba(255, 255, 255, 0.7); background: none; }
 /* A button does not pick up the sheet's `a` styling, so it repeats it: the
    same stamped row, dashed perforation and hover nudge as every other entry
    (see .mobile-menu a in globals.css). */
@@ -245,15 +232,6 @@
   letter-spacing: 0.06em;
   color: rgba(243, 236, 217, 0.82);
   transition: color 0.2s ease, padding-left 0.2s ease;
-}
-#admin-mobile-menu-signout:hover { color: rgba(243, 236, 217, 0.82); padding-left: 2px; }
-#admin-mobile-menu-email {
-  display: block;
-  font-family: var(--font-stamp);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.45);
-  padding-top: 8px;
 }
 
 /* Long/short label pairs: the long form everywhere, the one-word form on
@@ -294,7 +272,7 @@
 #admin-analytics-error-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
 @media (min-width: 900px) {
-  #admin-analytics-dashboard-grid { gap: 28px; }
+  #admin-analytics-dashboard-grid { gap: 20px; }
 }
 
 /* ── REFINEMENT PASS ────────────────────────────────────────────────────────
@@ -332,7 +310,7 @@
 
 /* Air between a label and the thing it labels. */
 .card .stamp-label { margin-bottom: 18px; }
-#admin-shell-main .admin-analytics-panel-body { gap: 20px; }
+#admin-shell-main .admin-analytics-panel-body { gap: 14px; }
 #admin-shell-main .hero-stat-num { margin-bottom: 10px; }
 #admin-shell-main .admin-analytics-hero-stats-row { gap: 32px; }
 

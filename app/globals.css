@@ -202,7 +202,7 @@ nav {
   align-items: center;
   gap: 10px;
 }
-.nav-links a:hover, .nav-links a.active {
+.nav-links a.active {
   color: white;
   background: rgba(255,255,255,0.1);
 }
@@ -222,10 +222,8 @@ nav {
   letter-spacing: 0.06em;
   transition: all .2s !important;
 }
-.nav-cta:hover {
-  background-color: var(--cream) !important;
-  transform: rotate(-1.2deg) translateY(-1px);
-}
+/* No hover state: the bar is an index of where you are, not a surface that
+   reacts to the cursor. The active entry is still marked. */
 
 /* Neighborhood dropdown */
 .nav-dropdown { position: relative; }
@@ -296,10 +294,9 @@ nav {
   color: rgba(243, 236, 217, 0.82);
   transition: color .2s ease, padding-left .2s ease;
 }
-.mobile-menu a:hover,
+/* Tap feedback only — :active stays, the cursor changes nothing. */
 .mobile-menu a:active {
   color: var(--paper);
-  padding-left: 8px;
 }
 #mobile-menu-links-list a:last-child { border-bottom: none; }
 /* Paper-ticket CTA, full width: the nav's Book a Walk treatment (inset rule,
@@ -317,7 +314,7 @@ nav {
   text-transform: uppercase; letter-spacing: 0.08em;
   transform: none;
 }
-.mobile-menu .mobile-cta:hover { padding-left: 18px; }
+
 /* Login and Instagram share the closing row: secondary weight, no rules. */
 #mobile-menu-utility-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -331,7 +328,7 @@ nav {
   letter-spacing: 0.1em;
   color: rgba(243, 236, 217, 0.62) !important;
 }
-#mobile-menu-utility-row a:hover { color: var(--paper) !important; padding-left: 2px !important; }
+
 
 /* =============================================
    LAYOUT HELPERS
@@ -427,7 +424,7 @@ h3 { font-size: clamp(22px, 2vw, 30px); }
 /* Booking-modal CTAs — the buttons that pop the welcome modal (hero primary,
    nav "Book a Walk", mobile menu "Book a Walk"). Terracotta fill so the one
    booking action reads apart from every other paper-ticket button on the
-   page, olive on hover. `!important` only where .nav-cta already uses it. */
+   page. `!important` only where .nav-cta already uses it. */
 .btn-accent,
 .nav-cta.btn-accent,
 .mobile-menu .mobile-cta.btn-accent {
@@ -437,11 +434,7 @@ h3 { font-size: clamp(22px, 2vw, 30px); }
   outline-color: rgba(243, 236, 217, 0.45);
 }
 .btn-accent:hover,
-.nav-cta.btn-accent:hover,
-.mobile-menu .mobile-cta.btn-accent:hover {
-  background-color: var(--olive) !important;
-  color: var(--paper) !important;
-}
+
 
 /* Footer's terracotta CTA. It needs its own hover: .btn-accent:hover goes
    olive, which disappears against the green footer. */
@@ -2340,9 +2333,7 @@ footer {
 .nav-logo-main {
   transition: letter-spacing 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.nav-logo:hover .nav-logo-main {
-  letter-spacing: 0.8px;
-}
+
 
 /* Review source links — each featured quote points back to its Yelp listing. */
 .review-source-link {

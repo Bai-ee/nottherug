@@ -99,25 +99,6 @@ function AdminAnalyticsDashboardContent({
     };
   }, [range, testMode, getToken, abortSignal, requestKey]);
 
-  const [weatherLine, setWeatherLine] = useState<string | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const data = await adminFetch<{ line?: string }>('/api/admin/weather/today', getToken, {
-          cache: 'no-store',
-          signal: abortSignal,
-        });
-        if (!cancelled && data?.line) setWeatherLine(data.line);
-      } catch {
-        // No forecast is not a dashboard error — the line simply stays out.
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [getToken, abortSignal]);
-
   const retry = useCallback(() => setRetryKey((k) => k + 1), []);
 
   const trackingEnabled = isAnalyticsEnabled();
@@ -154,10 +135,6 @@ function AdminAnalyticsDashboardContent({
           — every panel below is a paper card; #admin-analytics-dashboard-grid
           is the only layout plumbing standing in for the old .analytics-page. */}
       <div id="admin-analytics-dashboard-grid" data-data-mode={testMode ? 'test' : 'real'}>
-
-        {weatherLine ? (
-          <p id="admin-analytics-weather-line" className="form-note">{weatherLine}</p>
-        ) : null}
 
         {!trackingEnabled ? <TrackingDisabledBanner /> : null}
 

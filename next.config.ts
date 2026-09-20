@@ -244,7 +244,6 @@ const nextConfig: NextConfig = {
     '/api/admin/photos/render':                 GENERATOR_TRACE_EXCLUDES,
     '/admin/not-the-rug/run-brief':             GENERATOR_TRACE_EXCLUDES,
     '/admin/not-the-rug/latest-brief':          BRIEF_TRACE_EXCLUDES,
-    '/api/admin/weather/today':                 BRIEF_TRACE_EXCLUDES,
     '/admin/not-the-rug/latest-brief/html':     BRIEF_TRACE_EXCLUDES,
     '/admin/not-the-rug/history':               BRIEF_TRACE_EXCLUDES,
     '/admin/not-the-rug/history/[id]/html':     BRIEF_TRACE_EXCLUDES,
@@ -263,9 +262,6 @@ const nextConfig: NextConfig = {
       ...GENERATOR_ASSET_INCLUDES,
     ],
     '/admin/not-the-rug/latest-brief': [
-      './not-the-rug-brief/**/*',
-    ],
-    '/api/admin/weather/today': [
       './not-the-rug-brief/**/*',
     ],
     '/admin/not-the-rug/latest-brief/html': [
