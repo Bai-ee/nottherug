@@ -3663,7 +3663,8 @@ html[data-home-intro='loading'] body { overflow: hidden; }
 /* ── PHONE NAV WORDMARK + TWO-LINE HEADLINE ───────────────────────────────
    Phones only. The paper wordmark is locked at one in-band size in every
    nav state (top of page and scrolled) so it never drops, tucks or hangs
-   below the band; the home loading screen is already skipped at this width.
+   below the band. The home loading screen still plays at this width; its
+   nav drop lands on this same locked position.
    The hero headline drops its 1st and 3rd hard break to read as two lines:
    "Your dog deserves" / "someone they know." */
 @media (max-width: 768px) {
