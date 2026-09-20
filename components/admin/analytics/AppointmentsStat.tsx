@@ -18,8 +18,12 @@ export function AppointmentsStat({ appointmentsScheduled }: { appointmentsSchedu
         <div className="hero-stat-label">Verified Completions</div>
       </div>
       <p className="form-note">Verified Calendly completions · reported separately from inquiries, never combined</p>
-      <a id="admin-analytics-appointments-leads-link" className="text-sage" href="/admin/dashboard/leads">
-        View all leads →
+      <a
+        id="admin-analytics-appointments-leads-link"
+        className="btn btn-primary booking-forward-btn btn-sm btn-accent"
+        href="/admin/dashboard/leads"
+      >
+        View all leads
       </a>
     </section>
   );
