@@ -25,7 +25,24 @@ const TOOLING_EXTENSIONS = new Set(['.py', '.html', '.ds_store', '.sh', '.md']);
 // Above-fold assets allowed to be eager/preloaded without a manifest exception.
 const APPROVED_EAGER_PATTERNS = [
   /^\/video\/hero-mccarren/,
-  /^\/img\/(bg5-cover|bg-section-1-cover|bg-section-2-cover|bg-section-graphic-1|bg-section-graphic-2|hero-walker-strip|product-background|card-bg)\.webp$/,
+  /^\/img\/(bg5-cover|bg-section-1-cover|bg-section-2-cover|bg-section-graphic-1|bg-section-graphic-2|hero-walker-strip|product-background|card-bg)\.(webp|avif)$/,
+  // Breakpoint-specific candidates for the same CSS backgrounds above,
+  // selected via image-set()/media queries — same above-fold sections,
+  // just a responsive derivative rather than a second unrelated asset.
+  /^\/img\/(bg5-mobile|bg-section-1-mobile|bg-section-2-mobile|bg-section-graphic-1-mobile|hero-walker-strip-mobile)\.(webp|avif)$/,
+  // Page-hero photos (About/Neighborhoods/Reviews/Safety): a CSS background
+  // near the top of each page, same reasoning as the homepage backgrounds.
+  /^\/dogs\/(about|neighborhoods|reviews|safety)-hero-(full|mobile)\.(webp|avif)$/,
+  // Footer badge and paw-walk trail prints: tiny native <img>/<picture>
+  // assets with no native lazy-loading opportunity worth the complexity
+  // (badge is a few KB in the footer; paw prints are a few KB decorative
+  // trail elements already in the initial viewport range).
+  /^\/logos\/notRugYellow-(224|448)\.(webp|avif)$/,
+  /^\/img\/paw[lr]-104\.(webp|avif)$/,
+  // Team photos: CSS background-image via inline style has no native lazy
+  // path (unlike <img loading="lazy">); this is pre-existing behavior, not
+  // introduced by this pass — see docs/asset-manifest.json team entries.
+  /^\/img\/team\/.+\.webp$/,
   /^\/textures\//,
 ];
 
