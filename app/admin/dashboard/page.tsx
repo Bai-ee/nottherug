@@ -166,6 +166,9 @@ function AdminAnalyticsDashboardContent({
 
         {synced ? <ReportMetaBanner meta={view.meta} /> : null}
 
+        {/* Owner's first question: did anyone book? So appointments lead. */}
+        <AppointmentsStat appointmentsScheduled={view.appointmentsScheduled} />
+
         <InquiryHeadline
           inquiries={view.inquiries}
           inquiryRate={view.inquiryRate}
@@ -185,11 +188,10 @@ function AdminAnalyticsDashboardContent({
 
         <TrendSparkline points={view.dailyTrend} />
 
-        {/* Three range-scoped stat cards side by side, homepage grid-3. */}
-        <div id="admin-analytics-stats-row" className="grid-3">
+        {/* Two range-scoped stat cards side by side, homepage grid-2. */}
+        <div id="admin-analytics-stats-row" className="grid-2">
           <VisitsStat pageviews={view.pageviews} sessions={view.sessions} range={range} />
           <EngagedVisitStat engagedVisitPct={view.engagedVisitPct} sessions={view.sessions} />
-          <AppointmentsStat appointmentsScheduled={view.appointmentsScheduled} />
         </div>
 
         {/* Traffic sources and pages viewed side by side, homepage grid-2. */}
