@@ -2,7 +2,6 @@
 
 import type { AnalyticsReportMeta } from '@/lib/analytics/report';
 
-const DATE_FORMAT = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'America/New_York' });
 
 const DEGRADED_LABEL: Record<'leads' | 'events', string> = {
   leads: 'inquiry totals',
@@ -62,10 +61,6 @@ export function ErrorBanner({ message, onRetry }: { message: string; onRetry: ()
 export function ReportMetaBanner({ meta }: { meta: AnalyticsReportMeta }) {
   return (
     <div id="admin-analytics-meta-banner">
-      {meta.trackingStartDate ? (
-        <p className="form-note">Tracking starts on {DATE_FORMAT.format(new Date(meta.trackingStartDate))}.</p>
-      ) : null}
-
       {meta.status === 'no_data_yet' ? (
         <div id="admin-analytics-no-data-callout" className="card card-pad">
           <p className="text-mid">
