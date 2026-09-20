@@ -268,6 +268,37 @@
 #admin-shell-main .hero-stat-num { margin-bottom: 10px; }
 #admin-shell-main .admin-analytics-hero-stats-row { gap: 32px; }
 
+/* ── LEADS: LINE ITEM VIEW ──────────────────────────────────────────────────
+   The compact alternative to one card per lead. Columns are sized so the set
+   fits a laptop without sideways scrolling; below that the list scrolls
+   rather than silently dropping a column the owner may be looking for. */
+#admin-leads-view-toggle { display: flex; gap: 6px; }
+#admin-leads-view-toggle .btn { padding-left: 12px; padding-right: 12px; }
+
+#admin-leads-row-scroll { overflow-x: auto; }
+#admin-leads-row-list { min-width: 880px; display: grid; }
+.admin-lead-row {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1.1fr) minmax(130px, 1fr) 96px
+    minmax(170px, 1.5fr) minmax(115px, 0.9fr) minmax(110px, 1fr) minmax(90px, 0.8fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 4px;
+  text-align: left;
+  border-bottom: 1px solid var(--light-gray);
+}
+.admin-lead-row-body { cursor: pointer; }
+.admin-lead-row-body:hover { background: rgba(0, 0, 0, 0.02); }
+/* One line per cell: the full value stays available as the cell's title. */
+.admin-lead-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.admin-lead-row-detail {
+  display: grid;
+  gap: 8px;
+  padding: 12px 4px 16px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
 /* Two rows the leads page used to lay out with inline styles; they live here
    so the phone breakpoint below can restack and centre them. */
 .admin-lead-card-header-row {

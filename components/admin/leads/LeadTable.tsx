@@ -67,7 +67,16 @@ function FieldRow({ lead, field }: { lead: LeadRecord; field: LeadDisplayField }
   );
 }
 
-export function LeadTable({
+/** The line-item view's columns, in order. Narrow enough as a set that the
+ *  grid fits a laptop without sideways scrolling; below that the list scrolls
+ *  rather than dropping a column the owner might be looking for. */
+const ROW_COLUMNS: LeadDisplayField[] = LEAD_DISPLAY_FIELDS.filter((f) =>
+  (['ownerName', 'submittedAt', 'source', 'email', 'phone', 'neighborhood', 'dogName'] as const).includes(
+    f.key as 'ownerName',
+  ),
+);
+
+function LeadRows({
   leads,
   expandedId,
   onToggleExpand,
@@ -76,12 +85,91 @@ export function LeadTable({
   expandedId: string | null;
   onToggleExpand: (rowKey: string) => void;
 }) {
+  return (
+    <div id="admin-leads-row-scroll">
+      <div id="admin-leads-row-list" role="table" aria-label="Leads">
+        <div className="admin-lead-row admin-lead-row-head" role="row">
+          {ROW_COLUMNS.map((f) => (
+            <span key={f.key} className="rc-label admin-lead-cell" role="columnheader">
+              {f.label}
+            </span>
+          ))}
+        </div>
+
+        {leads.map((lead) => {
+          const rowKey = lead.id ?? `${lead.email}-${lead.submittedAt}`;
+          const isOpen = expandedId === rowKey;
+          const visibleDetailFields = DETAIL_FIELDS.filter((f) => !f.legacy || lead[f.key] !== undefined);
+
+          return (
+            <div key={rowKey} id={`admin-lead-row-${rowKey}`}>
+              <div
+                className="admin-lead-row admin-lead-row-body"
+                role="row"
+                tabIndex={0}
+                aria-expanded={isOpen}
+                onClick={() => onToggleExpand(rowKey)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onToggleExpand(rowKey);
+                  }
+                }}
+              >
+                {ROW_COLUMNS.map((f) => (
+                  <span key={f.key} className="admin-lead-cell" role="cell" title={formatLeadFieldValue(lead, f)}>
+                    {f.key === 'source' ? (
+                      <span className="badge badge-sage">{lead.source || '—'}</span>
+                    ) : f.key === 'submittedAt' ? (
+                      fmtDate(lead.submittedAt)
+                    ) : (
+                      formatLeadFieldValue(lead, f)
+                    )}
+                  </span>
+                ))}
+              </div>
+
+              {isOpen ? (
+                <div
+                  id={`admin-lead-row-detail-${rowKey}`}
+                  className="admin-lead-row-detail"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {visibleDetailFields.map((f) => (
+                    <FieldRow key={f.key} lead={lead} field={f} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function LeadTable({
+  leads,
+  expandedId,
+  onToggleExpand,
+  view = 'cards',
+}: {
+  leads: LeadRecord[];
+  expandedId: string | null;
+  onToggleExpand: (rowKey: string) => void;
+  /** 'rows' is the compact line-item view; 'cards' is one paper card each. */
+  view?: 'cards' | 'rows';
+}) {
   if (leads.length === 0) {
     return (
       <div id="admin-leads-empty-state" className="card card-pad" style={{ textAlign: 'center' }}>
         <p className="form-note" style={{ margin: 0 }}>No leads match the current filters.</p>
       </div>
     );
+  }
+
+  if (view === 'rows') {
+    return <LeadRows leads={leads} expandedId={expandedId} onToggleExpand={onToggleExpand} />;
   }
 
   return (

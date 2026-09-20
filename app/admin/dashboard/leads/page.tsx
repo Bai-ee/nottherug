@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { LeadRecord } from '@/lib/leads/contract';
 import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
@@ -8,6 +8,69 @@ import { AdminShell } from '@/components/admin/AdminShell';
 import { adminFetch, useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
 import { LeadFilterBar } from '@/components/admin/leads/LeadFilterBar';
 import { LeadTable } from '@/components/admin/leads/LeadTable';
+
+/** Which layout the owner last chose. Per-viewer convenience only, so every
+ *  access is guarded: a private window or blocked storage must not break the
+ *  page, it just starts on cards.
+ *
+ *  Read through useSyncExternalStore rather than an effect: the server has no
+ *  localStorage, so its snapshot is always 'cards', and the client swaps in
+ *  the stored value without a hydration mismatch or a set-state-in-effect. */
+const VIEW_STORAGE_KEY = 'ntr.admin.leads.view';
+
+type LeadsView = 'cards' | 'rows';
+
+const viewListeners = new Set<() => void>();
+
+function subscribeView(onChange: () => void) {
+  viewListeners.add(onChange);
+  // Another tab changing the preference keeps this one in step.
+  window.addEventListener('storage', onChange);
+  return () => {
+    viewListeners.delete(onChange);
+    window.removeEventListener('storage', onChange);
+  };
+}
+
+function readStoredView(): LeadsView {
+  try {
+    const saved = window.localStorage.getItem(VIEW_STORAGE_KEY);
+    return saved === 'rows' ? 'rows' : 'cards';
+  } catch {
+    return 'cards';
+  }
+}
+
+function writeStoredView(next: LeadsView) {
+  try {
+    window.localStorage.setItem(VIEW_STORAGE_KEY, next);
+  } catch {
+    // Remembering the choice is a convenience, never a requirement.
+  }
+  for (const listener of viewListeners) listener();
+}
+
+/** Two stacked paper cards. */
+function CardsIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="13" height="5.5" rx="1" />
+      <rect x="1.5" y="9" width="13" height="5.5" rx="1" />
+    </svg>
+  );
+}
+
+/** Four list lines. */
+function RowsIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+      <line x1="1.8" y1="3" x2="14.2" y2="3" />
+      <line x1="1.8" y1="6.5" x2="14.2" y2="6.5" />
+      <line x1="1.8" y1="10" x2="14.2" y2="10" />
+      <line x1="1.8" y1="13.5" x2="14.2" y2="13.5" />
+    </svg>
+  );
+}
 import { exportLeadsCsv } from '@/components/admin/leads/exportLeadsCsv';
 
 function LeadsPageContent({
@@ -78,6 +141,8 @@ function LeadsPageContent({
     });
   }, [leads, query, sourceFilter]);
 
+  const view = useSyncExternalStore(subscribeView, readStoredView, () => 'cards' as LeadsView);
+
   return (
     <AdminShell
       title="Leads"
@@ -85,6 +150,30 @@ function LeadsPageContent({
       onSignOut={signOut}
       actions={
         <>
+          <div id="admin-leads-view-toggle" role="group" aria-label="Lead layout">
+            <button
+              type="button"
+              id="admin-leads-view-cards-btn"
+              className={`btn btn-primary booking-forward-btn btn-sm ${view === 'cards' ? 'btn-accent' : 'admin-btn-secondary'}`}
+              aria-pressed={view === 'cards'}
+              title="Card view"
+              onClick={() => writeStoredView('cards')}
+            >
+              <CardsIcon />
+              <span className="sr-only">Card view</span>
+            </button>
+            <button
+              type="button"
+              id="admin-leads-view-rows-btn"
+              className={`btn btn-primary booking-forward-btn btn-sm ${view === 'rows' ? 'btn-accent' : 'admin-btn-secondary'}`}
+              aria-pressed={view === 'rows'}
+              title="Line item view"
+              onClick={() => writeStoredView('rows')}
+            >
+              <RowsIcon />
+              <span className="sr-only">Line item view</span>
+            </button>
+          </div>
           <button type="button" className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary" id="admin-leads-refresh-btn" onClick={refresh}>Refresh</button>
           <button
             type="button"
@@ -118,7 +207,8 @@ function LeadsPageContent({
         />
 
         <div id="leads-table-shell">
-          <LeadTable leads={filtered} expandedId={expandedId} onToggleExpand={(rowKey) => setExpandedId((current) => (current === rowKey ? null : rowKey))} />
+          <LeadTable
+            view={view} leads={filtered} expandedId={expandedId} onToggleExpand={(rowKey) => setExpandedId((current) => (current === rowKey ? null : rowKey))} />
         </div>
       </div>
     </AdminShell>
