@@ -43,7 +43,7 @@ export function TrendSparkline({ points }: { points: DailyTrendPoint[] }) {
 
   return (
     <section id="admin-analytics-trend-panel" className="card card-pad">
-      <div id="admin-analytics-trend-panel-head" className="admin-analytics-panel-head">
+      <div id="admin-analytics-trend-panel-head">
         <div className="stamp-label">Daily Trend</div>
         <div id="admin-analytics-trend-legend">
           <span className="text-sage">Sessions</span>{' · '}

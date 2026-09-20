@@ -4,6 +4,20 @@ import type { InquiryRateInfo } from '@/lib/analytics/report';
 
 const RATE_FORMAT = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 1 });
 
+const START_DATE_FORMAT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'UTC',
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+/** trackingStartDate is a plain YYYY-MM-DD day label, so it is read as UTC to
+ *  keep it the same day it was recorded rather than shifting a timezone. */
+function formatStartDate(day: string): string {
+  const parsed = new Date(`${day}T00:00:00.000Z`);
+  return Number.isNaN(parsed.getTime()) ? day : START_DATE_FORMAT.format(parsed);
+}
+
 /**
  * The biggest number on the page (owner decision 1). `inquiries` is the
  * authoritative saved-lead count — never "zero" when it is null. A true zero
@@ -23,9 +37,12 @@ export function InquiryHeadline({
   inquiryRate,
   degraded,
   testMode,
+  trackingStartDate,
 }: {
   inquiries: number | null;
   inquiryRate: InquiryRateInfo;
+  /** ISO date of the earliest event on record, or null before anything is tracked. */
+  trackingStartDate: string | null;
   /** True when the leads dependency itself failed for this report (meta.degraded includes 'leads'). */
   degraded: boolean;
   /** True when the dashboard is showing test/preview traffic only (meta.testMode). */
@@ -66,6 +83,9 @@ export function InquiryHeadline({
         </div>
         <p className="form-note">
           {inquiryRate.trackedLeadSaved.toLocaleString('en-US')} tracked inquiries / {inquiryRate.trackedSessions.toLocaleString('en-US')} tracked visits
+        </p>
+        <p className="form-note">
+          {trackingStartDate ? `Tracking started ${formatStartDate(trackingStartDate)}` : 'Tracking has not recorded a first event yet'}
         </p>
       </div>
     </section>

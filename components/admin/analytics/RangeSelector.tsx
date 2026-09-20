@@ -23,11 +23,14 @@ const RANGES: ReportRange[] = ['today', '7d', '30d'];
 export function RangeSelector({
   value,
   onChange,
-  disabled,
+  loading,
 }: {
   value: ReportRange;
   onChange: (range: ReportRange) => void;
-  disabled?: boolean;
+  /** A report is in flight. The buttons stay live: disabling them made a
+   *  second click during a fetch do nothing, which read as a broken control.
+   *  A superseded request is already discarded by the page's effect. */
+  loading?: boolean;
 }) {
   return (
     <div id="admin-analytics-range-selector" role="group" aria-label="Report range">
@@ -37,8 +40,8 @@ export function RangeSelector({
           type="button"
           className={range === value ? 'btn btn-primary booking-forward-btn btn-sm btn-accent' : 'btn btn-primary booking-forward-btn btn-sm admin-btn-secondary'}
           onClick={() => onChange(range)}
-          disabled={disabled}
           aria-pressed={range === value}
+          aria-busy={loading && range === value ? true : undefined}
         >
           {RANGE_LABELS[range]}
         </button>

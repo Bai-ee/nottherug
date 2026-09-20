@@ -20,8 +20,9 @@ export function AdminFooter({ lastRefreshed }: { lastRefreshed?: Date | null }) 
     // value use the light-on-dark variants the marketing footer uses.
     <footer id="admin-chrome-footer">
       <div className="container">
-        <span className="stamp-label stamp-label-dark">Last data refresh</span>
-        <span id="admin-chrome-footer-value" className="footer-copy">{value}</span>
+        <span id="admin-chrome-footer-value" className="stamp-label stamp-label-dark">
+          Last data refresh · {value}
+        </span>
       </div>
     </footer>
   );

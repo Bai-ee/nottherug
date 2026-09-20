@@ -8,10 +8,9 @@ import type { LiveTile as LiveTileData } from '@/lib/analytics/report';
  * — never a background poll (that would be the auto-refresh the owner
  * explicitly declined).
  *
- * Presentation: paper card, badge-gold as the "this is happening now"
- * marker (the old pulsing accent dot had no equivalent in the allowed
- * vocabulary, so this reuses the badge component instead), numbers in the
- * homepage's own hero-stat-item/hero-stat-num/hero-stat-divider row.
+ * Presentation: paper card, numbers in the homepage's own
+ * hero-stat-item/hero-stat-num/hero-stat-divider row. The heading already
+ * says "Last 60 minutes", so it carries no separate "live" marker.
  */
 export function LiveTile({ live }: { live: LiveTileData }) {
   const asOf = live.endIso
@@ -22,7 +21,6 @@ export function LiveTile({ live }: { live: LiveTileData }) {
     <section id="admin-analytics-live-tile" className="card card-pad">
       <div id="admin-analytics-live-tile-head" className="admin-analytics-panel-head">
         <div className="stamp-label">Last {live.windowMinutes} Minutes</div>
-        <span className="badge badge-gold">Live</span>
       </div>
       <div id="admin-analytics-live-stats-row" className="admin-analytics-hero-stats-row">
         <div className="hero-stat-item">

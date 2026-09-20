@@ -33,7 +33,7 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AdminNav() {
+export function AdminNav({ email, onSignOut }: { email: string; onSignOut: () => void | Promise<void> }) {
   const pathname = usePathname() ?? '';
   const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
@@ -84,6 +84,9 @@ export function AdminNav() {
               );
             })}
             <Link href="/" id="admin-nav-view-site-link">View Site</Link>
+            <button type="button" id="admin-nav-signout" onClick={() => void onSignOut()} title={email}>
+              Sign Out
+            </button>
             <Link href="/admin" id="admin-nav-client-access-link" className="nav-cta btn-accent">
               Client Access
             </Link>
@@ -120,6 +123,14 @@ export function AdminNav() {
         <Link href="/" id="admin-mobile-menu-view-site-link" onClick={() => setMobileOpen(false)}>
           View Site
         </Link>
+        <button
+          type="button"
+          id="admin-mobile-menu-signout"
+          onClick={() => { setMobileOpen(false); void onSignOut(); }}
+        >
+          Sign Out
+        </button>
+        <span id="admin-mobile-menu-email">{email}</span>
         <Link
           href="/admin"
           id="admin-mobile-menu-client-access-link"

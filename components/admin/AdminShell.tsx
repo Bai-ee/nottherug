@@ -36,7 +36,7 @@ export function AdminShell({
 }) {
   return (
     <div className="admin-shell" data-admin-layout={layout}>
-      <AdminNav />
+      <AdminNav email={email} onSignOut={onSignOut} />
 
       <main id="admin-shell-main">
         <div className="container">
@@ -47,18 +47,11 @@ export function AdminShell({
               <h1 id="admin-page-title">{title}</h1>
             </div>
 
-            <div id="admin-page-header-controls">
-              {actions ? <div id="admin-page-header-actions">{actions}</div> : null}
-              <span id="admin-page-header-email" className="form-note">{email}</span>
-              <button
-                type="button"
-                id="admin-page-header-signout"
-                className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary"
-                onClick={() => void onSignOut()}
-              >
-                Sign Out
-              </button>
-            </div>
+            {actions ? (
+              <div id="admin-page-header-controls">
+                <div id="admin-page-header-actions">{actions}</div>
+              </div>
+            ) : null}
           </header>
 
           {children}

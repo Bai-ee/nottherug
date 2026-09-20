@@ -143,6 +143,7 @@ function AdminAnalyticsDashboardContent({
           inquiryRate={view.inquiryRate}
           degraded={degradedLeads}
           testMode={testMode}
+          trackingStartDate={view.meta.trackingStartDate}
         />
 
         <LiveTile live={view.live} />
@@ -151,7 +152,7 @@ function AdminAnalyticsDashboardContent({
             adding ?testMode=1 to the URL (see docs/analytics-operations.md),
             so the owner-facing controls are just the range. */}
         <div id="admin-analytics-controls-row">
-          <RangeSelector value={range} onChange={setRange} disabled={loading} />
+          <RangeSelector value={range} onChange={setRange} loading={loading} />
         </div>
 
         <TrendSparkline points={view.dailyTrend} />

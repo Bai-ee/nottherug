@@ -86,7 +86,73 @@
    view reached only through ?testMode=1 in the URL — there is no owner
    facing toggle. */
 #admin-analytics-controls-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; width: 100%; }
-#admin-analytics-range-selector { display: flex; gap: 6px; flex: 1 1 320px; }
+#admin-analytics-range-selector {
+  display: flex;
+  gap: 8px;
+  flex: 1 1 100%;
+  width: 100%;
+}
+#admin-analytics-range-selector .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+
+/* Daily Trend heads its own column: the stamped label centred, with the
+   legend reading directly under it rather than off to one side. */
+#admin-analytics-trend-panel-head { display: grid; justify-items: center; gap: 6px; }
+#admin-analytics-trend-panel-head .stamp-label { margin-bottom: 0; }
+
+/* Category headings inside the CTA table read as list headings, so they sit
+   on the left edge of their group rather than centred over it. */
+#admin-analytics-cta-table .rc-label { text-align: left; display: block; }
+
+/* The funnel's two closing notes are one block of explanation, not two
+   separate paragraphs with a gap between them. */
+#admin-analytics-funnel-notes { display: grid; gap: 4px; }
+#admin-analytics-funnel-notes .form-note { margin: 0; }
+
+/* The footer says everything in one stamped line, centred. */
+#admin-chrome-footer .container { justify-content: center; text-align: center; }
+
+/* Sign Out lives in the nav now; it is a button, so it does not pick up the
+   .nav-links a styling on its own. */
+/* Matches .nav-links a in globals.css so it reads as one of the nav entries. */
+#admin-nav-signout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 7px 12px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s;
+}
+#admin-nav-signout:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+/* Matches .mobile-menu a, which the sheet styles as full-width rows. */
+#admin-mobile-menu-signout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  width: 100%;
+  padding: 0;
+}
+#admin-mobile-menu-email {
+  display: block;
+  font-family: var(--font-stamp);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  padding-top: 8px;
+}
 
 /* Shared panel-head row — a stamp-label heading plus an optional badge or
    legend on the right — reused by every card panel that needs one. */
@@ -215,6 +281,8 @@
   /* Stacked: fill the width, keep the natural height — flex-grow along a
      column axis would stretch them into tall slabs. */
   #admin-shell-main .btn { width: 100%; flex: 0 0 auto; }
+  /* ...except the range row, which stays three buttons on one line. */
+  #admin-analytics-range-selector .btn { width: auto; flex: 1 1 0; font-size: 11px; }
   #admin-analytics-controls-row,
   #admin-analytics-range-selector,
   #admin-analytics-error-banner,
