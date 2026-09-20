@@ -23,9 +23,9 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  margin-bottom: 32px;
+  margin-bottom: 14px;
 }
-#admin-page-title { margin: 6px 0 0; }
+#admin-page-title { margin: 4px 0 0; }
 #admin-page-header-controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 #admin-page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 #admin-page-header-email { margin: 0; }
@@ -42,7 +42,13 @@
 .admin-state-screen .card { max-width: 420px; display: grid; gap: 14px; justify-items: center; }
 
 #admin-chrome-footer { padding: 36px 0 44px; }
-#admin-chrome-footer .container { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+#admin-chrome-footer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
 #admin-chrome-footer-value { margin: 0; }
 
 /* The generator is a canvas editor that sizes itself against the viewport

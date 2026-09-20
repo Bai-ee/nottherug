@@ -21,6 +21,7 @@ export function AdminShell({
   onSignOut,
   actions,
   lastRefreshed,
+  trackingStartedAt,
   layout = 'flow',
   children,
 }: {
@@ -30,6 +31,8 @@ export function AdminShell({
   /** Page-specific controls, e.g. the Leads page's Refresh / Export CSV buttons. */
   actions?: ReactNode;
   lastRefreshed?: Date | null;
+  /** Passed straight to the footer; only the analytics dashboard has one. */
+  trackingStartedAt?: string | null;
   /** 'fixed' is the generator's full-viewport canvas layout. */
   layout?: 'flow' | 'fixed';
   children: ReactNode;
@@ -58,7 +61,7 @@ export function AdminShell({
         </div>
       </main>
 
-      <AdminFooter lastRefreshed={lastRefreshed} />
+      <AdminFooter lastRefreshed={lastRefreshed} trackingStartedAt={trackingStartedAt} />
     </div>
   );
 }

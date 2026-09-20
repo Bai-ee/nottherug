@@ -125,6 +125,7 @@ function AdminAnalyticsDashboardContent({
       email={email}
       onSignOut={signOut}
       lastRefreshed={lastRefreshed}
+      trackingStartedAt={view.meta.trackingStartDate}
     >
       {/* Restyled onto the marketing design system (see app/admin/admin.css)
           — every panel below is a paper card; #admin-analytics-dashboard-grid
@@ -143,7 +144,6 @@ function AdminAnalyticsDashboardContent({
           inquiryRate={view.inquiryRate}
           degraded={degradedLeads}
           testMode={testMode}
-          trackingStartDate={view.meta.trackingStartDate}
         />
 
         <LiveTile live={view.live} />
