@@ -2793,11 +2793,7 @@ footer {
     /* Chips size themselves below; a flex track must not stretch them. */
     grid-template-columns: none;
   }
-  .home-team-chip {
-    flex: 0 0 68%;
-    max-width: 280px;
-    scroll-snap-align: start;
-  }
+
   /* Same box, same placement for every chip in the strip: no alternating
      lean here (the tilt classes would otherwise outrank the phone-wide
      .polaroid reset above), so the first chip sits square on the heading's
@@ -2809,9 +2805,9 @@ footer {
    so the first chip starts exactly on the heading's left edge. */
 @media (max-width: 768px) {
   #home-team-scroller { padding-left: 20px; scroll-padding-inline-start: 20px; }
-  /* Bigger frame, bigger caption: at this width the chip is a portrait, not a
-     thumbnail in a contact sheet. */
-  .home-team-chip .polaroid-caption { font-size: 13px; }
+  /* Same full-bleed correction for the Instagram strip: its -32px assumes the
+     desktop gutter, so on a phone the first print hung 12px off the left edge
+     while its own heading sat at 20px. */
 }
 
 .home-team-chip-role {
@@ -3461,10 +3457,30 @@ footer {
     scrollbar-width: none;
   }
   #home-instagram-grid::-webkit-scrollbar { display: none; }
-  .instagram-tile {
-    flex: 0 0 68%;
+  /* Both photo strips on this page — Instagram and the team roster — take
+     their print width from here, so the two rows read as the same size
+     whatever the viewport. A percentage cannot do that: each strip resolves
+     it against its own padded content box, which is how the team prints
+     ended up two thirds the size of the Instagram ones on a phone. */
+  .instagram-tile,
+  .home-team-chip {
+    flex: 0 0 min(62vw, 280px);
     max-width: 280px;
     scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 768px) {
+  /* No bleed arithmetic on a phone: the grid sits inside .container, so
+     dropping the negative margin lines the first print up on the gutter — and
+     therefore on its own heading — exactly, the way the team strip does. The
+     trailing padding keeps the last print able to clear the right edge.
+     Declared after the rule above because both are media blocks of equal
+     weight, so source order is what decides. */
+  #home-instagram-grid {
+    margin-inline: 0;
+    padding-inline: 0 24px;
+    scroll-padding-inline-start: 0;
   }
 }
 
