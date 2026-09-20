@@ -110,9 +110,13 @@
 #admin-analytics-cta-table .rc-label { text-align: left; display: block; }
 
 /* The funnel's two closing notes are one block of explanation, not two
-   separate paragraphs with a gap between them. */
+   separate paragraphs with a gap between them, and the rule that separates
+   them from the rows is a hairline, not a gap of its own. */
 #admin-analytics-funnel-notes { display: grid; gap: 4px; }
 #admin-analytics-funnel-notes .form-note { margin: 0; }
+#admin-analytics-funnel-panel .admin-analytics-panel-body { gap: 10px; }
+#admin-analytics-funnel-panel .divider { margin: 6px auto; }
+#admin-analytics-funnel-rows .form-note { margin: 4px 0 0; }
 
 /* The footer says everything in one stamped line, centred. */
 #admin-chrome-footer .container { justify-content: center; text-align: center; }

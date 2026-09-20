@@ -5,17 +5,18 @@ import type { InquiryRateInfo } from '@/lib/analytics/report';
 const RATE_FORMAT = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 1 });
 
 const START_DATE_FORMAT = new Intl.DateTimeFormat('en-US', {
-  timeZone: 'UTC',
+  timeZone: 'America/New_York',
   month: 'short',
   day: 'numeric',
   year: 'numeric',
 });
 
-/** trackingStartDate is a plain YYYY-MM-DD day label, so it is read as UTC to
- *  keep it the same day it was recorded rather than shifting a timezone. */
-function formatStartDate(day: string): string {
-  const parsed = new Date(`${day}T00:00:00.000Z`);
-  return Number.isNaN(parsed.getTime()) ? day : START_DATE_FORMAT.format(parsed);
+/** trackingStartDate is the first event's `receivedAt`, a full ISO timestamp.
+ *  It reads in the same New York business day the rest of the report uses, so
+ *  the owner never sees a raw timestamp or a day shifted by a timezone. */
+function formatStartDate(receivedAt: string): string {
+  const parsed = new Date(receivedAt);
+  return Number.isNaN(parsed.getTime()) ? receivedAt : START_DATE_FORMAT.format(parsed);
 }
 
 /**
@@ -41,7 +42,7 @@ export function InquiryHeadline({
 }: {
   inquiries: number | null;
   inquiryRate: InquiryRateInfo;
-  /** ISO date of the earliest event on record, or null before anything is tracked. */
+  /** Timestamp of the earliest event on record, or null before anything is tracked. */
   trackingStartDate: string | null;
   /** True when the leads dependency itself failed for this report (meta.degraded includes 'leads'). */
   degraded: boolean;
