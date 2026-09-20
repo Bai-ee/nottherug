@@ -319,12 +319,42 @@
      narrow instead of stacking. */
   #admin-analytics-range-selector { flex-direction: row; width: 100%; }
   #admin-analytics-range-selector .btn { width: auto; flex: 1 1 0; font-size: 11px; padding-left: 6px; padding-right: 6px; }
-  /* ...but the live tile's pair stays on one line, like the headline pair. */
-  #admin-analytics-live-stats-row { flex-direction: row; gap: 16px; }
-  #admin-analytics-headline-row { gap: 14px; }
+  /* Stat cards share one phone layout: the pair of numbers side by side
+     (live tile, visits, inquiries + inquiry rate), notes and each card's own
+     mini chart full width beneath them, everything centred. */
+  .admin-analytics-hero-stats-row { flex-direction: row; justify-content: center; align-items: flex-start; gap: 16px; }
+  .admin-analytics-hero-stats-row .hero-stat-divider { margin: 0; }
+  #admin-analytics-headline-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    grid-auto-flow: row dense;
+    align-items: start;
+  }
+  /* The two tiles dissolve into the grid so their labels and numbers share
+     rows; their notes, links and chart span both columns underneath. */
+  #admin-analytics-inquiries-tile,
+  #admin-analytics-inquiry-rate-tile { display: contents; }
+  #admin-analytics-inquiries-tile > * { grid-column: 1; }
+  #admin-analytics-inquiry-rate-tile > * { grid-column: 2; }
+  #admin-analytics-headline-row .stamp-label,
+  #admin-analytics-headline-row .hero-stat-num { justify-self: center; text-align: center; margin: 0; }
+  #admin-analytics-headline-row .hero-stat-num { font-size: 34px; }
+  #admin-analytics-headline-row .form-note,
+  #admin-analytics-headline-row .text-terra,
+  #admin-analytics-headline-row .text-sage,
+  #admin-analytics-headline-row .admin-analytics-mini-trend {
+    grid-column: 1 / -1;
+    justify-self: center;
+    text-align: center;
+    margin: 0;
+  }
+  #admin-analytics-headline-row .admin-analytics-mini-trend { margin-top: 6px; }
+  /* Charts get room to breathe from the numbers above and the note below. */
+  .admin-analytics-mini-trend { margin-top: 10px; }
+  .admin-analytics-mini-trend svg { max-width: 100%; height: 56px; }
+  #admin-analytics-trend-svg { height: 120px; margin: 12px 0 8px; }
   #admin-analytics-controls-row,
-  #admin-analytics-error-banner,
-  .admin-analytics-hero-stats-row {
+  #admin-analytics-error-banner {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
