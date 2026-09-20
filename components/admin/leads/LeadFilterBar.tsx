@@ -3,9 +3,6 @@
 export function LeadFilterBar({
   query,
   onQueryChange,
-  sourceFilter,
-  onSourceFilterChange,
-  sources,
   loading,
   filteredCount,
   totalCount,
@@ -13,9 +10,6 @@ export function LeadFilterBar({
 }: {
   query: string;
   onQueryChange: (value: string) => void;
-  sourceFilter: string;
-  onSourceFilterChange: (value: string) => void;
-  sources: string[];
   loading: boolean;
   filteredCount: number;
   totalCount: number;
@@ -34,22 +28,6 @@ export function LeadFilterBar({
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
           />
-        </div>
-        <div className="form-group" id="admin-leads-source-group">
-          <label htmlFor="leads-source-select">Source</label>
-          <select
-            id="leads-source-select"
-            className="form-control form-select"
-            value={sourceFilter}
-            onChange={(e) => onSourceFilterChange(e.target.value)}
-          >
-            <option value="all">All sources</option>
-            {sources.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 

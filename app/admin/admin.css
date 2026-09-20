@@ -314,8 +314,29 @@
    The compact alternative to one card per lead. Columns are sized so the set
    fits a laptop without sideways scrolling; below that the list scrolls
    rather than silently dropping a column the owner may be looking for. */
-#admin-leads-view-toggle { display: flex; gap: 6px; }
-#admin-leads-view-toggle .btn { padding-left: 12px; padding-right: 12px; }
+/* The layout switch sits on the list it acts on, left aligned, and is no
+   more than an icon — it changes how the same leads are drawn, so it does not
+   need the weight of a button. */
+#admin-leads-list-toolbar { display: flex; justify-content: flex-start; margin-bottom: 10px; }
+.admin-leads-view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted-ink);
+}
+.admin-leads-view-toggle-btn:hover { color: var(--ink); }
+
+/* Refresh and export close the page. */
+#admin-leads-footer-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+/* An opened line item reads as a left-hand label list, not centred copy. */
+.admin-lead-row-detail,
+.admin-lead-row-detail .rc-row { text-align: left; }
+.admin-lead-row-detail .rc-row { justify-content: flex-start; }
 
 #admin-leads-row-scroll { overflow-x: auto; }
 #admin-leads-row-list { min-width: 880px; display: grid; }

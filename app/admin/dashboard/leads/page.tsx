@@ -87,7 +87,6 @@ function LeadsPageContent({
   const [leads, setLeads] = useState<LeadRecord[]>([]);
   const [cap, setCap] = useState<number | null>(null);
   const [query, setQuery] = useState('');
-  const [sourceFilter, setSourceFilter] = useState<'all' | string>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   // Bumped by the Refresh button to re-run the effect below. An effect that
   // directly calls a separately-defined, named function which sets state
@@ -122,16 +121,9 @@ function LeadsPageContent({
     setRefreshKey((k) => k + 1);
   }
 
-  const sources = useMemo(() => {
-    const s = new Set<string>();
-    leads.forEach((l) => { if (l.source) s.add(l.source); });
-    return Array.from(s).sort();
-  }, [leads]);
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return leads.filter((l) => {
-      if (sourceFilter !== 'all' && l.source !== sourceFilter) return false;
       if (!q) return true;
       const hay = [l.ownerName, l.email, l.phone, l.dogName, l.neighborhood, l.breedAge, l.notes, l.serviceInterest, l.reactivity, l.allergies]
         .filter(Boolean)
@@ -139,7 +131,7 @@ function LeadsPageContent({
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [leads, query, sourceFilter]);
+  }, [leads, query]);
 
   const view = useSyncExternalStore(subscribeView, readStoredView, () => 'cards' as LeadsView);
 
@@ -148,44 +140,6 @@ function LeadsPageContent({
       title="Leads"
       email={email}
       onSignOut={signOut}
-      actions={
-        <>
-          <div id="admin-leads-view-toggle" role="group" aria-label="Lead layout">
-            <button
-              type="button"
-              id="admin-leads-view-cards-btn"
-              className={`btn btn-primary booking-forward-btn btn-sm ${view === 'cards' ? 'btn-accent' : 'admin-btn-secondary'}`}
-              aria-pressed={view === 'cards'}
-              title="Card view"
-              onClick={() => writeStoredView('cards')}
-            >
-              <CardsIcon />
-              <span className="sr-only">Card view</span>
-            </button>
-            <button
-              type="button"
-              id="admin-leads-view-rows-btn"
-              className={`btn btn-primary booking-forward-btn btn-sm ${view === 'rows' ? 'btn-accent' : 'admin-btn-secondary'}`}
-              aria-pressed={view === 'rows'}
-              title="Line item view"
-              onClick={() => writeStoredView('rows')}
-            >
-              <RowsIcon />
-              <span className="sr-only">Line item view</span>
-            </button>
-          </div>
-          <button type="button" className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary" id="admin-leads-refresh-btn" onClick={refresh}>Refresh</button>
-          <button
-            type="button"
-            className="btn btn-primary booking-forward-btn btn-accent btn-sm"
-            id="admin-leads-export-csv-btn"
-            onClick={() => exportLeadsCsv(filtered)}
-            disabled={!filtered.length}
-          >
-            Export CSV
-          </button>
-        </>
-      }
     >
       <div id="leads-page-shell" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {error ? (
@@ -197,9 +151,6 @@ function LeadsPageContent({
         <LeadFilterBar
           query={query}
           onQueryChange={setQuery}
-          sourceFilter={sourceFilter}
-          onSourceFilterChange={setSourceFilter}
-          sources={sources}
           loading={loading}
           filteredCount={filtered.length}
           totalCount={leads.length}
@@ -207,8 +158,50 @@ function LeadsPageContent({
         />
 
         <div id="leads-table-shell">
+          {/* One icon, on the list it acts on, showing the layout it switches
+              to rather than the one already on screen. */}
+          <div id="admin-leads-list-toolbar">
+            <button
+              type="button"
+              id="admin-leads-view-toggle-btn"
+              className="admin-leads-view-toggle-btn"
+              aria-pressed={view === 'rows'}
+              title={view === 'cards' ? 'Switch to line items' : 'Switch to cards'}
+              onClick={() => writeStoredView(view === 'cards' ? 'rows' : 'cards')}
+            >
+              {view === 'cards' ? <RowsIcon /> : <CardsIcon />}
+              <span className="sr-only">{view === 'cards' ? 'Switch to line items' : 'Switch to cards'}</span>
+            </button>
+          </div>
+
           <LeadTable
-            view={view} leads={filtered} expandedId={expandedId} onToggleExpand={(rowKey) => setExpandedId((current) => (current === rowKey ? null : rowKey))} />
+            view={view}
+            leads={filtered}
+            expandedId={expandedId}
+            onToggleExpand={(rowKey) => setExpandedId((current) => (current === rowKey ? null : rowKey))}
+          />
+        </div>
+
+        {/* Refresh and export read as what you do after looking through the
+            list, so they sit at the end of it. */}
+        <div id="admin-leads-footer-actions">
+          <button
+            type="button"
+            className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary"
+            id="admin-leads-refresh-btn"
+            onClick={refresh}
+          >
+            Refresh
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary booking-forward-btn btn-accent btn-sm"
+            id="admin-leads-export-csv-btn"
+            onClick={() => exportLeadsCsv(filtered)}
+            disabled={!filtered.length}
+          >
+            Export CSV
+          </button>
         </div>
       </div>
     </AdminShell>
