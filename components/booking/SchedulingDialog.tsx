@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { track } from '@/lib/analytics/track';
+import { buildCalendlyEmbedUrl } from '@/lib/booking/calendlyEmbedUrl';
 import { isVerifiedCalendlyBookingEvent } from '@/lib/analytics/verifiedOrigin';
 
 type Props = {
@@ -227,9 +228,9 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
         ref={dialogRef}
         id="calendly-modal-shell"
         style={{
-          background: '#f7f5f1',
+          background: 'var(--paper)',
           borderRadius: '4px',
-          border: '1px solid #1c1c1a',
+          border: '1px solid var(--olive)',
           width: '96vw',
           height: '95vh',
           maxWidth: '1400px',
@@ -242,10 +243,11 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
         <div
           id="calendly-modal-header"
           style={{
-            padding: '18px 26px',
-            borderBottom: '1px solid #1c1c1a',
-            background: '#1c1c1a',
-            color: '#EDF3DB',
+            padding: '16px clamp(16px, 3vw, 26px)',
+            // The same olive band the site nav wears, so the scheduler reads
+            // as a room in this house rather than a third-party window.
+            background: 'var(--olive)',
+            color: 'var(--paper)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -254,26 +256,15 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <div
-              style={{
-                fontFamily: 'var(--font-type)',
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase',
-                color: 'rgba(237,243,219,0.6)',
-              }}
-              id="calendly-modal-eyebrow"
-            >
+            <div className="stamp-label stamp-label-dark" id="calendly-modal-eyebrow">
               {eyebrow}
             </div>
             <div
               id="calendly-modal-title"
               style={{
-                fontFamily: 'var(--font-display, Georgia, serif)',
-                fontSize: 'clamp(16px, 2.4vw, 22px)',
-                color: '#EDF3DB',
-                letterSpacing: '-0.005em',
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(18px, 2.4vw, 26px)',
+                color: 'var(--paper)',
                 lineHeight: 1.15,
               }}
             >
@@ -285,26 +276,12 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
             type="button"
             aria-label="Close"
             onClick={onClose}
+            className="btn btn-primary booking-forward-btn btn-sm btn-accent"
             style={{
-              background: 'transparent',
-              border: '1px solid rgba(237,243,219,0.35)',
-              borderRadius: '4px',
-              fontFamily: 'var(--font-type)',
-              fontSize: '12px',
-              fontWeight: 600,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              color: '#EDF3DB',
-              padding: '8px 14px',
-              // 44px is the minimum comfortable mobile tap target; the visible
-              // label/padding stay as designed and this just adds the
-              // remaining hit area via min-height/min-width.
+              // The only thing the shared button styling does not cover: a
+              // comfortable tap target on a phone.
               minHeight: '44px',
               minWidth: '44px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               flexShrink: 0,
             }}
           >
@@ -315,8 +292,8 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
           ref={iframeRef}
           id="calendly-modal-iframe"
           title="Calendly scheduling"
-          src={calendlyUrl}
-          style={{ flex: 1, width: '100%', border: 'none', background: '#f7f5f1' }}
+          src={buildCalendlyEmbedUrl(calendlyUrl)}
+          style={{ flex: 1, width: '100%', border: 'none', background: 'var(--paper)' }}
         />
       </div>
     </div>,

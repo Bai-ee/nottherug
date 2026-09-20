@@ -433,8 +433,10 @@ h3 { font-size: clamp(22px, 2vw, 30px); }
   color: var(--paper) !important;
   outline-color: rgba(243, 236, 217, 0.45);
 }
-.btn-accent:hover,
-
+.btn-accent:hover {
+  background-color: var(--olive) !important;
+  color: var(--paper) !important;
+}
 
 /* Footer's terracotta CTA. It needs its own hover: .btn-accent:hover goes
    olive, which disappears against the green footer. */
