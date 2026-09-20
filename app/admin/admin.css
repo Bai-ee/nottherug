@@ -30,7 +30,25 @@
 #admin-page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 #admin-page-header-email { margin: 0; }
 
-/* Pre-dashboard states (checking session, signed out, denied, retry). Same
+/* Verifying a session is not a destination: no card, no dimming, nothing to
+   read. It waits 400ms before appearing at all, so the common case — a valid
+   session that resolves immediately — never shows it. */
+#admin-session-checking-indicator {
+  position: fixed;
+  top: calc(var(--nav-h) + 12px);
+  right: 16px;
+  z-index: 50;
+  opacity: 0;
+  animation: admin-checking-fade-in 160ms ease 400ms forwards;
+}
+@keyframes admin-checking-fade-in {
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #admin-session-checking-indicator { animation-duration: 1ms; }
+}
+
+/* Pre-dashboard states (signed out, denied, retry). Same
    paper card as everywhere else, centred in the viewport. */
 .admin-state-screen {
   min-height: 100vh;
