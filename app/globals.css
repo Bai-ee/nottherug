@@ -3686,7 +3686,10 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   }
   #main-nav #nav-logo-img,
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
-  #hero-actions-row .hero-desktop-copy { display: none; }
+  #hero-actions-row .hero-desktop-copy,
+  #hero-polaroid-caption .hero-desktop-copy { display: none; }
+  /* Caption reads "McCarren Park", centred under the video. */
+  #hero-polaroid-caption { text-align: center; justify-content: center; }
   /* Same headline as desktop on two lines: "Your dog deserves" /
      "someone they know." (1st and 3rd hard break hidden). */
   #hero-headline br:nth-of-type(1),

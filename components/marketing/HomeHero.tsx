@@ -99,7 +99,7 @@ export default function HomeHero() {
               <source src="/video/hero-mccarren-1080.mp4" type="video/mp4" />
             </video>
           </div>
-          <figcaption className="polaroid-caption" id="hero-polaroid-caption"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park, Williamsburg</figcaption>
+          <figcaption className="polaroid-caption" id="hero-polaroid-caption"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> McCarren Park<span className="hero-desktop-copy">, Williamsburg</span></figcaption>
           {/* Rendered box is .polaroid-badge / #hero-polaroid-badge in
               globals.css: 80-144px on mobile/tablet, clamp(224px,18vw,288px)
               on desktop. next/image needs the source's real intrinsic size
