@@ -24,9 +24,9 @@ const NAV_LINKS: Array<{ href: string; label: string; locked?: boolean }> = [
   // their own yet. They stay listed so the sections are not a surprise later,
   // but they do not navigate and are not focusable.
   { href: '/admin/dashboard/brief', label: 'Daily Brief', locked: true },
-  { href: '/admin/dashboard/photos', label: 'Socials', locked: true },
-  { href: '/admin/dashboard/generator', label: 'Image Generator', locked: true },
-  { href: '/admin/dashboard/preview/founder-brief', label: '30 Days of Content', locked: true },
+  { href: '/admin/dashboard/photos', label: 'Auto Post', locked: true },
+  { href: '/admin/dashboard/generator', label: 'Generate Content', locked: true },
+  { href: '/admin/dashboard/preview/founder-brief', label: 'Strategy Builder', locked: true },
 ];
 
 /** A small padlock, so a locked entry says why it does nothing. */
