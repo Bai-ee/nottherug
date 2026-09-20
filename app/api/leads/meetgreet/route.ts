@@ -232,6 +232,23 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
   return notifications;
 }
 
+/** Flips the email-keyed capture row (app/api/leads/capture) to converted. */
+async function markCaptureConverted(email: string, leadId: string, at: string): Promise<void> {
+  try {
+    const captureId = `capture_${createHash('sha256').update(email.trim().toLowerCase()).digest('hex').slice(0, 32)}`;
+    const existing = await fsGetDoc(`leads/${captureId}`);
+    if (!existing.exists || !existing.data) return;
+    await fsSetDoc(`leads/${captureId}`, {
+      ...existing.data,
+      status: 'converted',
+      convertedLeadId: leadId,
+      convertedAt: at,
+    });
+  } catch (err) {
+    console.error('[lead:meetgreet] capture conversion failed', err instanceof Error ? err.message : 'unknown');
+  }
+}
+
 export async function POST(req: Request) {
   const declaredLength = req.headers.get('content-length');
   if (declaredLength && Number(declaredLength) > MAX_BODY_BYTES) {
@@ -294,6 +311,11 @@ export async function POST(req: Request) {
     console.error('[lead:meetgreet] firestore create failed', err instanceof Error ? err.message : 'unknown');
     return errorResponse(500, 'Could not save lead. Please try again.');
   }
+
+  // Best effort: the partial capture for this address is no longer
+  // outstanding, so it stops showing as a lead waiting on answers. A failure
+  // here must never fail the submission the customer is waiting on.
+  void markCaptureConverted(validation.data.email, id, submittedAt);
 
   if (!created) {
     // Same content hashed to an id that already exists — a retry of a request
