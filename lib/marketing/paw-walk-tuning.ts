@@ -24,8 +24,8 @@ export const PAW_WALK_DEFAULTS: PawWalkTuning = {
   size: 33,
   strideRatio: 3.7,
   stepDuration: 0.008,
-  scrub: 1.55,
-  lead: 0.39,
+  scrub: 1,
+  lead: 0.7,
   opacity: 0.28,
   trackHalfWidth: 24,
 };
