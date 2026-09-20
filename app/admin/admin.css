@@ -162,6 +162,26 @@
 
 /* Sign Out lives in the nav now; it is a button, so it does not pick up the
    .nav-links a styling on its own. */
+/* The admin bar carries nine entries with real names, which is a much wider
+   row than the marketing nav's five. Right-aligned, that row reaches back
+   under the pasted paper logo and hides the first entries, so the sheet takes
+   over well before the site's own 1100px breakpoint, and above that the
+   entries are set a little tighter to clear the logo. */
+@media (max-width: 1500px) {
+  #main-nav .nav-links { display: none; }
+  #main-nav .nav-hamburger { display: flex; }
+}
+@media (min-width: 1501px) {
+  #main-nav .nav-links a,
+  #main-nav .nav-links .admin-nav-locked,
+  #admin-nav-signout {
+    font-size: 13px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  #admin-nav-client-access-link { margin-left: 4px; }
+}
+
 /* ── ADMIN NAV: NO HOVER, LOCKED ENTRIES ────────────────────────────────────
    The marketing nav lights up on hover because it invites a click. This one
    is a fixed index of where you already are, so nothing moves under the
