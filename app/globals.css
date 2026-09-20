@@ -2807,6 +2807,17 @@ footer {
     max-width: 280px;
     scroll-snap-align: start;
   }
+  /* Same box, same placement for every chip in the strip: no alternating
+     lean here (the tilt classes would otherwise outrank the phone-wide
+     .polaroid reset above), so the first chip sits square on the heading's
+     edge and each one after it lines up exactly. */
+  .home-team-chip.polaroid-tilt-left,
+  .home-team-chip.polaroid-tilt-right { --polaroid-tilt: 0deg; }
+}
+/* Phone gutter is 20px (.container), not the 32px the strip assumes above,
+   so the first chip starts exactly on the heading's left edge. */
+@media (max-width: 768px) {
+  #home-team-scroller { padding-left: 20px; scroll-padding-inline-start: 20px; }
   /* Bigger frame, bigger caption: at this width the chip is a portrait, not a
      thumbnail in a contact sheet. */
   .home-team-chip .polaroid-caption { font-size: 13px; }
