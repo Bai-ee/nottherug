@@ -281,7 +281,7 @@ export default function WelcomeWalkModal() {
   // runs after that effect's cleanup has restored the page position —
   // otherwise the restore lands on top of this scroll and nothing moves.
   useEffect(() => {
-    if (welcomeDialogVisible || !pendingQuestionsScrollRef.current) return;
+    if (open || !pendingQuestionsScrollRef.current) return;
     pendingQuestionsScrollRef.current = false;
     const frame = window.requestAnimationFrame(() => {
       const target = document.getElementById(HOME_QUESTIONS_SECTION_ID);
@@ -292,7 +292,7 @@ export default function WelcomeWalkModal() {
       });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [welcomeDialogVisible]);
+  }, [open]);
 
   // Focus trap + Escape-to-close + focus restore. Re-runs every time this
   // dialog (re)becomes the visible one — including gate ↔ confirmation
@@ -411,11 +411,7 @@ export default function WelcomeWalkModal() {
   }, []);
 
   const handleSchedulerDismiss = useCallback(() => {
-    if (bookedRef.current) {
-      goToHomeQuestions();
-      return;
-    }
-    setView('gate');
+    goToHomeQuestions();
   }, [goToHomeQuestions]);
 
   /**
