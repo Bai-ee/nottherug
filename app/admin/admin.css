@@ -109,6 +109,14 @@
    side — they should start on the same line. */
 #admin-analytics-tables-row { align-items: stretch; }
 
+/* The stats row holds THREE cards in a two-column grid, so the last one used
+   to sit alone beside an empty cell. It spans the row instead — a full-width
+   card reads as deliberate where a half-width orphan reads as a gap. The two
+   above it stretch to a shared height for the same reason the tables row
+   does. Collapsing to one column on narrow screens makes the span a no-op. */
+#admin-analytics-stats-row { align-items: stretch; }
+#admin-analytics-engaged-visit-panel { grid-column: 1 / -1; }
+
 /* Controls row: the range selector. Test/preview traffic is a developer
    view reached only through ?testMode=1 in the URL — there is no owner
    facing toggle. */
