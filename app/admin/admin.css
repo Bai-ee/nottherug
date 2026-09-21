@@ -127,9 +127,9 @@
   white-space: nowrap;
 }
 
-/* The two headline tiles, and the live tile's two numbers, stay side by side
-   at every width: each pair is there to be compared, not read as a list. */
-#admin-analytics-headline-row { grid-template-columns: 1fr 1fr; gap: 20px; }
+/* Paired numbers stay side by side at every width: each pair is there to be
+   compared, not read as a list. The headline pairs are laid out by
+   .admin-stat-pair at the end of this file. */
 #admin-analytics-live-stats-row { flex-direction: row; justify-content: center; }
 
 /* A card's own day-by-day line, sized to sit under the numbers it belongs to. */
@@ -452,33 +452,8 @@
      mini chart full width beneath them, everything centred. */
   .admin-analytics-hero-stats-row { flex-direction: row; justify-content: center; align-items: flex-start; gap: 16px; }
   .admin-analytics-hero-stats-row .hero-stat-divider { margin: 0; }
-  #admin-analytics-headline-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 16px;
-    grid-auto-flow: row dense;
-    align-items: start;
-  }
-  /* The two tiles dissolve into the grid so their labels and numbers share
-     rows; their notes, links and chart span both columns underneath. */
-  #admin-analytics-inquiries-tile,
-  #admin-analytics-inquiry-rate-tile { display: contents; }
-  #admin-analytics-inquiries-tile > * { grid-column: 1; }
-  #admin-analytics-inquiry-rate-tile > * { grid-column: 2; }
-  #admin-analytics-headline-row .stamp-label,
-  #admin-analytics-headline-row .hero-stat-num { justify-self: center; text-align: center; margin: 0; }
-  #admin-analytics-headline-row .hero-stat-num { font-size: 34px; }
   .admin-label-full { display: none; }
   .admin-label-short { display: inline; }
-  #admin-analytics-headline-row .form-note,
-  #admin-analytics-headline-row .text-terra,
-  #admin-analytics-headline-row .text-sage,
-  #admin-analytics-headline-row .admin-analytics-mini-trend {
-    grid-column: 1 / -1;
-    justify-self: center;
-    text-align: center;
-    margin: 0;
-  }
-  #admin-analytics-headline-row .admin-analytics-mini-trend { margin-top: 6px; }
   /* Charts get room to breathe from the numbers above and the note below. */
   .admin-analytics-mini-trend { margin-top: 10px; }
   .admin-analytics-mini-trend svg { max-width: 100%; height: 56px; }
@@ -512,12 +487,73 @@
   .admin-shell #admin-shell-main { padding-top: calc(var(--nav-h) + 28px); }
 }
 
-/* ── BOOKING PAIR ───────────────────────────────────────────────────────────
-   Appointments Scheduled and Awaiting Answers are read together: meetings on
-   the calendar, and the people who booked but still owe answers. They share a
-   row and match heights (.grid-2 centres its items by default, which would
-   leave the shorter card floating). Their shared "View all leads" link sits
-   centred beneath the pair rather than inside either card. */
-#admin-analytics-booking-row { align-items: stretch; }
-#admin-analytics-leads-link-row { display: flex; justify-content: center; }
-#admin-shell-main #admin-analytics-leads-link-row .btn { flex: 0 1 auto; width: min(320px, 100%); }
+/* ── PAIRED HEADLINE STATS ──────────────────────────────────────────────────
+   Two figures read side by side inside one card. Subgrid puts their stamp,
+   number and caption on shared rows, so the numbers line up no matter how
+   long either label wraps — the eye compares the figures, not their
+   positions. Spacing runs on a 4pt scale: tight inside one stat (12 / 8),
+   generous between the pair and the fine print that qualifies them (28),
+   generous again before the action (24). */
+.admin-stat-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
+  column-gap: clamp(24px, 4vw, 48px);
+  /* Capped so the two figures read as a pair. Left at full card width they
+     sit a third of a metre apart on a laptop and stop being a comparison. */
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+.admin-stat-pair > .admin-stat-col {
+  display: grid;
+  grid-row: 1 / span 3;
+  grid-template-rows: subgrid;
+  align-content: start;
+  row-gap: 0;
+  min-width: 0;
+}
+/* A stamp is pressed onto the paper; grid would otherwise stretch it into a
+   rule across the column. */
+#admin-shell-main .admin-stat-col .stamp-label { justify-self: center; margin: 0 0 12px; }
+#admin-shell-main .admin-stat-col .hero-stat-num { margin: 0 0 8px; line-height: 1.05; }
+#admin-shell-main .admin-stat-col .hero-stat-label { margin: 0; }
+/* "Not measured" is a sentence, not a figure — it takes the step below the
+   numbers so a reader never scans it as one. */
+#admin-shell-main .admin-stat-col .admin-stat-words { font-size: 22px; line-height: 1.2; }
+#admin-shell-main .admin-stat-pair + .admin-analytics-mini-trend { margin-top: 20px; }
+#admin-shell-main .admin-analytics-mini-trend + a { margin-top: 20px; display: inline-block; }
+
+/* Fine print sits on a measure it can actually be read at — centred ragged
+   monospace across a full card width is the thing that reads as unformatted. */
+#admin-shell-main .admin-card-note {
+  max-width: 56ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.admin-stat-pair + .admin-card-note,
+.admin-stat-pair + a { margin-top: 28px; }
+#admin-shell-main .admin-card-note + .admin-card-note { margin-top: 8px; }
+#admin-shell-main .admin-card-note + .btn,
+#admin-shell-main .admin-stat-pair + .btn { margin-top: 24px; }
+/* This one action is not a full-width block: it closes a card of figures, and
+   a centred ticket reads as the end of the card rather than a form control. */
+#admin-shell-main #admin-analytics-appointments-leads-link {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: 100%;
+}
+#admin-shell-main #admin-analytics-inquiries-leads-link { display: inline-block; }
+
+@media (max-width: 640px) {
+  /* The pair survives the phone: two numbers meant to be compared, tightened
+     rather than stacked into a list. Only the scale comes down. */
+  .admin-stat-pair { column-gap: 14px; }
+  #admin-shell-main .admin-stat-col .stamp-label { font-size: 10px; padding: 5px 8px; margin-bottom: 10px; }
+  #admin-shell-main .admin-stat-col .hero-stat-num { font-size: 34px; }
+  #admin-shell-main .admin-stat-col .admin-stat-words { font-size: 16px; }
+  #admin-shell-main .admin-stat-col .hero-stat-label { font-size: 11px; }
+  #admin-shell-main .admin-card-note { max-width: none; }
+}
