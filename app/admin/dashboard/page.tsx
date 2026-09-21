@@ -16,6 +16,7 @@ import { LiveTile } from '@/components/admin/analytics/LiveTile';
 import { TrendSparkline } from '@/components/admin/analytics/TrendSparkline';
 import { EngagedVisitStat } from '@/components/admin/analytics/EngagedVisitStat';
 import { AppointmentsStat } from '@/components/admin/analytics/AppointmentsStat';
+import { QualityLeadsStat } from '@/components/admin/analytics/QualityLeadsStat';
 import { VisitsStat } from '@/components/admin/analytics/VisitsStat';
 import { SourceTable } from '@/components/admin/analytics/SourceTable';
 import { PageTable } from '@/components/admin/analytics/PageTable';
@@ -144,7 +145,10 @@ function AdminAnalyticsDashboardContent({
         {synced ? <ReportMetaBanner meta={view.meta} /> : null}
 
         {/* Owner's first question: did anyone book? So appointments lead. */}
-        <AppointmentsStat appointmentsScheduled={view.appointmentsScheduled} />
+        <AppointmentsStat
+          bookedLeads={view.bookedLeads}
+          verifiedCompletions={view.appointmentsScheduled}
+        />
 
         <InquiryHeadline
           inquiries={view.inquiries}
@@ -169,6 +173,10 @@ function AdminAnalyticsDashboardContent({
 
         {/* Two range-scoped stat cards side by side, homepage grid-2. */}
         <div id="admin-analytics-stats-row" className="grid-2">
+          <QualityLeadsStat
+            completedQuestionnaires={view.completedQuestionnaires}
+            inquiries={view.inquiries}
+          />
           <VisitsStat pageviews={view.pageviews} sessions={view.sessions} range={range} />
           <EngagedVisitStat engagedVisitPct={view.engagedVisitPct} sessions={view.sessions} />
         </div>

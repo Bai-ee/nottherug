@@ -41,6 +41,8 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
 
     inquiries: 0,
     outstandingCaptures: 0,
+    bookedLeads: 0,
+    completedQuestionnaires: 0,
     inquiryRate: {
       rate: null,
       trackedLeadSaved: 0,

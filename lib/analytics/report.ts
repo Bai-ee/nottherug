@@ -14,6 +14,8 @@
 // what a field means.
 
 import { fsQueryRange } from '@/lib/server/firestoreRest';
+import { measureLeadCompleteness } from '@/lib/leads/completeness';
+import type { LeadRecord } from '@/lib/leads/contract';
 import { ServiceError } from '@/lib/server/errors';
 import {
   BOOKING_STEPS,
@@ -214,6 +216,13 @@ export interface AnalyticsReport {
    * leads query failed, null in test mode.
    */
   outstandingCaptures: number | null;
+  /** Bookings as the leads themselves report them — the number that grows
+   *  whenever a meeting is scheduled, whether or not any question was
+   *  answered. Null in test mode and when the leads query fails, same as
+   *  every other leads-derived figure. */
+  bookedLeads: number | null;
+  /** Leads who answered every question. */
+  completedQuestionnaires: number | null;
 
   /** Count of appointment_completed events (deduplicated by event id). Reported separately — never summed with inquiries (decision 7). */
   appointmentsScheduled: number;
@@ -568,6 +577,13 @@ interface LeadsCount {
   inquiries: number;
   /** Email-only captures still waiting on answers. Never an inquiry. */
   outstandingCaptures: number;
+  /** People whose browser reported a booking, whether or not they went on to
+   *  answer anything. Counted from the leads themselves rather than from the
+   *  analytics event, which only exists when Calendly's message reaches the
+   *  page and passes its origin check — a real booking can happen without it. */
+  bookedLeads: number;
+  /** Leads who answered every question on the questionnaire. */
+  completedQuestionnaires: number;
 }
 
 /** How many lead documents one window may hold before the count is no longer
@@ -583,7 +599,11 @@ async function countLeadsInWindow(startIso: string, endIso: string): Promise<Lea
 
   let inquiries = 0;
   let outstandingCaptures = 0;
+  let bookedLeads = 0;
+  let completedQuestionnaires = 0;
   for (const row of rows) {
+    if (row.bookedSelfReported === true) bookedLeads += 1;
+    if (measureLeadCompleteness(row as Partial<LeadRecord>).complete) completedQuestionnaires += 1;
     if (row.type === 'capture') {
       // A capture whose person later completed the questionnaire is counted
       // by their full lead instead, never twice.
@@ -594,7 +614,7 @@ async function countLeadsInWindow(startIso: string, endIso: string): Promise<Lea
     // historical documents written before `type` existed.
     inquiries += 1;
   }
-  return { inquiries, outstandingCaptures };
+  return { inquiries, outstandingCaptures, bookedLeads, completedQuestionnaires };
 }
 
 export async function getAnalyticsReport(range: ReportRange, options: GetAnalyticsReportOptions = {}): Promise<AnalyticsReport> {
@@ -639,6 +659,8 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
   const leadsValue = leadsResult.status === 'fulfilled' ? leadsResult.value : null;
   if (leadsResult.status === 'rejected') degraded.push('leads');
   const inquiries = leadsValue?.inquiries ?? null;
+  const bookedLeads = leadsValue?.bookedLeads ?? null;
+  const completedQuestionnaires = leadsValue?.completedQuestionnaires ?? null;
   const outstandingCaptures = leadsValue?.outstandingCaptures ?? null;
 
   const events = eventsResult.status === 'fulfilled' ? eventsResult.value.events : [];
@@ -702,6 +724,8 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
     range: window,
     inquiries,
     outstandingCaptures,
+    bookedLeads,
+    completedQuestionnaires,
     inquiryRate,
     appointmentsScheduled,
     pageviews,

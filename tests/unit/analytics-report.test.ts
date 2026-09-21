@@ -327,6 +327,51 @@ describe('getAnalyticsReport', () => {
     expect(leadsCall?.[5]).toBeUndefined();
   });
 
+  it('counts a booking even when nobody answered a question, and counts full questionnaires apart', async () => {
+    const leadFixtures: RawDoc[] = [
+      // Booked from the modal, never answered anything: an appointment, not
+      // an inquiry, and certainly not a completed questionnaire.
+      {
+        id: 'capture-booked',
+        type: 'capture',
+        status: 'partial',
+        bookedSelfReported: true,
+        email: 'a@b.com',
+        submittedAt: '2026-01-15T12:00:00.000Z',
+      },
+      // A full questionnaire with every counted field answered.
+      {
+        id: 'lead-complete',
+        type: 'meetgreet',
+        submittedAt: '2026-01-15T13:00:00.000Z',
+        email: 'c@d.com',
+        ownerName: 'Ada',
+        phone: '3475550100',
+        neighborhood: 'North Williamsburg',
+        dogName: 'Biscuit',
+        breedAge: 'Terrier, 4',
+        serviceInterest: 'Daily Group Walks',
+        vaccinations: 'Yes',
+        walkFrequency: '3x weekly',
+        reactivity: 'None',
+        allergies: 'None',
+        phoneConsult: false,
+        notes: 'Back gate',
+      },
+      // A questionnaire that stopped early: an inquiry, but not complete.
+      { id: 'lead-partial', type: 'meetgreet', submittedAt: '2026-01-15T14:00:00.000Z', ownerName: 'Bo' },
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock([], leadFixtures));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
+
+    expect(report.bookedLeads).toBe(1); // the capture, despite zero answers
+    expect(report.completedQuestionnaires).toBe(1); // lead-complete only
+    expect(report.inquiries).toBe(2); // both meetgreet documents
+    expect(report.outstandingCaptures).toBe(1);
+  });
+
   it('excludes capture documents from inquiries at the query level and counts outstanding ones separately', async () => {
     const leadFixtures: RawDoc[] = [
       // Two genuine completed questionnaires — these are the only documents
