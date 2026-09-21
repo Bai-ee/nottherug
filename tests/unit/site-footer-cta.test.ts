@@ -46,15 +46,38 @@ describe('SiteFooter CTA wiring', () => {
     expect(bookLinks[0].props.id).toBe('footer-book-luis-cta');
   });
 
-  it('wires footer_contact to exactly one element, the Company column entry', async () => {
+  // footer_contact moved off a link and onto the modal trigger: Contact Us
+  // opens ContactDialog in place instead of scrolling to a band. The event is
+  // unchanged, so the owner's contact numbers stay continuous.
+  it('wires footer_contact to exactly one element, the Company column trigger', async () => {
     const { default: SiteFooter } = await import('@/components/marketing/SiteFooter');
     const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
+    const { default: ContactUsTrigger } = await import('@/components/marketing/ContactUsTrigger');
     const tree = SiteFooter();
 
-    const contactLinks = findByType(tree, TrackedCtaLink).filter((el) => el.props.cta === 'footer_contact');
-    expect(contactLinks).toHaveLength(1);
-    expect(contactLinks[0].props.href).toBe('/#home-contact-sheet-header');
-    expect(contactLinks[0].props.id).toBe('footer-company-contact-link');
+    const triggers = findByType(tree, ContactUsTrigger).filter((el) => el.props.cta === 'footer_contact');
+    expect(triggers).toHaveLength(1);
+    expect(triggers[0].props.id).toBe('footer-company-contact-link');
+    // And no link still claims the id — one element per cta.
+    expect(findByType(tree, TrackedCtaLink).filter((el) => el.props.cta === 'footer_contact')).toHaveLength(0);
+  });
+
+  // The phone and email in the footer's Contact column are tel:/mailto:, so
+  // they render through TrackedCtaAnchor (a real <a>) and report the same
+  // site-wide contact_phone/contact_email ids the /contact page uses.
+  it('wires the footer contact details to tel: and mailto: anchors', async () => {
+    const { default: SiteFooter } = await import('@/components/marketing/SiteFooter');
+    const { default: TrackedCtaAnchor } = await import('@/components/marketing/TrackedCtaAnchor');
+    const { PHONE_HREF, EMAIL_HREF } = await import('@/lib/content/contact');
+    const tree = SiteFooter();
+
+    const anchors = findByType(tree, TrackedCtaAnchor);
+    const phone = anchors.filter((el) => el.props.cta === 'contact_phone');
+    const email = anchors.filter((el) => el.props.cta === 'contact_email');
+    expect(phone).toHaveLength(1);
+    expect(email).toHaveLength(1);
+    expect(phone[0].props.href).toBe(PHONE_HREF);
+    expect(email[0].props.href).toBe(EMAIL_HREF);
   });
 
   // All six rate links share footer_services on purpose: the id measures
@@ -101,6 +124,8 @@ describe('SiteFooter CTA wiring', () => {
     // The Instagram/Yelp/Google buttons are plain <a> elements — plan 004
     // excludes outbound proof links until they answer a business question.
     const tracked = findByType(tree, TrackedCtaLink);
-    expect(tracked).toHaveLength(8);
+    // Six rates + the Book CTA. Contact Us is a ContactUsTrigger now, and the
+    // phone/email details are TrackedCtaAnchor — neither is a TrackedCtaLink.
+    expect(tracked).toHaveLength(7);
   });
 });

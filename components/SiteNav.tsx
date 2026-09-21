@@ -8,6 +8,7 @@ import type { CtaId } from '@/lib/analytics/events';
 import { usePathname } from 'next/navigation';
 import { useNavScrollShadow } from './marketing/hooks/useNavScrollShadow';
 import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
+import ContactUsTrigger from './marketing/ContactUsTrigger';
 
 /**
  * Every nav item now points at a section of the home page: the standalone
@@ -161,6 +162,11 @@ export default function SiteNav() {
                 {link.label}
               </Link>
             ))}
+            {/* A button, not a route: Contact Us opens the contact modal in
+                place. The /contact page is still reachable on its own. */}
+            <ContactUsTrigger id="nav-contact-us-trigger" cta="nav_contact" className="nav-contact-btn">
+              Contact Us
+            </ContactUsTrigger>
             <Link href="/admin" id="nav-admin-login-link">Login</Link>
             <a
               id="nav-instagram-link"
@@ -210,6 +216,14 @@ export default function SiteNav() {
         </div>
         <Link href="/book" id="mobile-menu-book-cta" className="mobile-cta btn-accent" onClick={(e) => handleBookClick(e, 'mobile_menu_book')}>Book a Walk</Link>
         <div id="mobile-menu-utility-row">
+          <ContactUsTrigger
+            id="mobile-menu-contact-trigger"
+            cta="nav_contact"
+            className="mobile-menu-contact-btn"
+            onOpen={() => setMobileOpen(false)}
+          >
+            Contact Us
+          </ContactUsTrigger>
           <Link href="/admin" id="mobile-menu-login-link">Login</Link>
           <a
             id="mobile-menu-instagram-link"

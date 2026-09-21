@@ -3744,3 +3744,135 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   }
   #hero-polaroid-badge { display: none; }
 }
+
+/* ============================================================
+   CONTACT MODAL (components/marketing/ContactDialog.tsx)
+   The formal contact card, opened by the Contact Us entries in the nav and
+   the footer. Same room as the booking scheduler — olive header band with
+   the wordmark over a paper sheet — at a quarter of the size, because all it
+   carries is four facts.
+   ============================================================ */
+#contact-modal {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(12px, 3vw, 28px);
+  background: rgba(28, 28, 26, 0.82);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#contact-modal-sheet {
+  width: min(520px, 100%);
+  background: var(--paper);
+  border: 1px solid var(--olive);
+  border-radius: 4px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  animation: contact-modal-enter 180ms ease-out;
+}
+#contact-modal-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px clamp(16px, 3vw, 24px);
+  background: var(--olive);
+}
+#contact-modal-logo { height: 28px; width: auto; display: block; object-fit: contain; }
+#contact-modal-close-btn {
+  flex-shrink: 0;
+  /* 44px is the tap target; the type inside stays small. */
+  min-height: 44px; min-width: 44px;
+  padding: 0 14px;
+  font-family: var(--font-stamp);
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--paper);
+  background: transparent;
+  border: 1px solid rgba(243, 236, 217, 0.45);
+  border-radius: 3px;
+}
+#contact-modal-close-btn:hover { background: rgba(243, 236, 217, 0.12); }
+#contact-modal-close-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+#contact-modal-body { padding: clamp(20px, 4vw, 28px); }
+#contact-modal-title {
+  font-family: var(--font-display);
+  font-size: 22px; line-height: 1.2; color: var(--charcoal);
+  margin-bottom: 22px;
+}
+#contact-modal-detail-list { display: grid; gap: 18px; }
+/* Label above value, one fact per row: the formal register here comes from
+   the list holding its line, not from extra copy. */
+.contact-modal-detail dt {
+  font-family: var(--font-stamp);
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--mid-gray);
+  margin-bottom: 4px;
+}
+.contact-modal-detail-value {
+  display: block;
+  font-size: 15px; line-height: 1.45; color: var(--charcoal);
+}
+a.contact-modal-detail-value { color: var(--sage-dark); text-decoration: underline; text-underline-offset: 3px; }
+a.contact-modal-detail-value:hover { color: var(--charcoal); }
+a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+.contact-modal-detail-note {
+  margin-top: 4px;
+  font-size: 13px; line-height: 1.5; color: var(--mid-gray);
+}
+
+@keyframes contact-modal-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #contact-modal-sheet { animation: none; }
+}
+
+/* ============================================================
+   FOOTER CONTACT DETAILS (components/marketing/SiteFooter.tsx)
+   The same four facts as the modal, stacked in the footer's last column.
+   ============================================================ */
+#footer-contact-list { display: grid; gap: 14px; }
+.footer-contact-item { margin-bottom: 0; }
+.footer-contact-label {
+  display: block;
+  font-family: var(--font-stamp);
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 2px;
+}
+.footer-contact-value { display: block; font-size: 14px; color: rgba(255, 255, 255, 0.75); }
+a.footer-contact-value:hover { color: white; }
+.footer-contact-note { display: block; font-size: 12px; line-height: 1.5; color: rgba(255, 255, 255, 0.45); }
+
+/* Contact Us is a button everywhere it appears (it opens the contact modal
+   rather than navigating), so in each place it has to shed the button chrome
+   and wear the styling of the links it sits among. */
+.nav-contact-btn {
+  padding: 7px 12px; border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px; font-weight: 500;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.7);
+  background: none; border: none;
+  transition: all 0.2s;
+}
+.nav-contact-btn:hover { color: white; background: rgba(255, 255, 255, 0.1); }
+.nav-contact-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+#mobile-menu-utility-row .mobile-menu-contact-btn {
+  padding: 4px 2px;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(243, 236, 217, 0.62);
+  background: none; border: none;
+}
+#mobile-menu-utility-row .mobile-menu-contact-btn:hover { color: var(--paper); }
+#mobile-menu-utility-row .mobile-menu-contact-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.footer-link-btn {
+  padding: 0; background: none; border: none;
+  font-family: inherit; font-size: 14px; text-align: left;
+  color: rgba(255, 255, 255, 0.75);
+  transition: color 0.2s;
+}
+.footer-link-btn:hover { color: white; }
+.footer-link-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }

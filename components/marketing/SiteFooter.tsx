@@ -2,6 +2,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { INSTAGRAM_URL, YELP_URL, GOOGLE_REVIEW_URL } from '@/lib/content/site';
 import TrackedCtaLink from './TrackedCtaLink';
+import TrackedCtaAnchor from './TrackedCtaAnchor';
+import ContactUsTrigger from './ContactUsTrigger';
+import {
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  EMAIL_DISPLAY,
+  EMAIL_HREF,
+  RESPONSE_HOURS,
+} from '@/lib/content/contact';
 import type { CtaId } from '@/lib/analytics/events';
 
 // Shared footer for the marketing pages that had it in the source SPA (home,
@@ -35,15 +44,16 @@ const FOOTER_RATES: Array<{ href: string; label: string; id: string }> = [
   { href: '/#home-group-walk-feature-card', label: 'Group Walk', id: 'footer-rates-link-group-walk' },
 ];
 
-// Only "Contact" carries a cta id — it is the one company entry that states an
-// intent rather than a reading interest. The rest stay untracked on purpose.
+// Contact left this list when it became a modal trigger (ContactUsTrigger,
+// rendered after the map): it is a button now, not an href, and it is the one
+// company entry that states an intent rather than a reading interest — so it
+// is also the only one carrying a cta id. The rest stay untracked on purpose.
 const FOOTER_COMPANY: Array<{ href: string; label: string; id?: string; cta?: CtaId }> = [
   { href: '/#home-team-section', label: 'The Team' },
   { href: '/#home-closing-trust-section', label: 'Safety & Trust' },
   { href: '/#home-featured-reviews-section', label: 'Reviews' },
   { href: '/#home-instagram-section', label: 'Instagram' },
   { href: '/#home-how-it-works-block', label: 'How It Works' },
-  { href: '/#home-contact-sheet-header', label: 'Contact', id: 'footer-company-contact-link', cta: 'footer_contact' },
 ];
 
 export default function SiteFooter() {
@@ -121,12 +131,56 @@ export default function SiteFooter() {
                     )}
                   </li>
                 ))}
+                <li>
+                  <ContactUsTrigger
+                    id="footer-company-contact-link"
+                    cta="footer_contact"
+                    className="footer-link-btn"
+                  >
+                    Contact Us
+                  </ContactUsTrigger>
+                </li>
               </ul>
             </div>
-            <div className="footer-col" id="footer-col-service-area">
-              <h4>Service Area</h4>
-              <ul>
-                <li><Link href="/#home-closing-parks-row">Williamsburg</Link></li>
+            {/* The same four facts the contact modal carries, in the same
+                order, each held to a line or two: the dog collage overlays
+                this corner of the footer (#main-footer::after), so a column
+                that runs long here reads over the artwork. The street address
+                stays on the legal line below, and the full service-area
+                caveat stays in the modal. */}
+            <div className="footer-col" id="footer-col-contact">
+              <h4>Contact</h4>
+              <ul id="footer-contact-list">
+                <li className="footer-contact-item">
+                  <span className="footer-contact-label">Call or Text</span>
+                  <TrackedCtaAnchor
+                    href={PHONE_HREF}
+                    id="footer-contact-phone-link"
+                    cta="contact_phone"
+                    className="footer-contact-value"
+                  >
+                    {PHONE_DISPLAY}
+                  </TrackedCtaAnchor>
+                </li>
+                <li className="footer-contact-item">
+                  <span className="footer-contact-label">Email</span>
+                  <TrackedCtaAnchor
+                    href={EMAIL_HREF}
+                    id="footer-contact-email-link"
+                    cta="contact_email"
+                    className="footer-contact-value"
+                  >
+                    {EMAIL_DISPLAY}
+                  </TrackedCtaAnchor>
+                </li>
+                <li className="footer-contact-item">
+                  <span className="footer-contact-label">Service Area</span>
+                  <Link href="/#home-closing-parks-row" className="footer-contact-value">Williamsburg</Link>
+                </li>
+                <li className="footer-contact-item">
+                  <span className="footer-contact-label">Response Hours</span>
+                  <span className="footer-contact-value">{RESPONSE_HOURS}</span>
+                </li>
               </ul>
             </div>
           </div>
