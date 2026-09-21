@@ -21,6 +21,21 @@ describe('buildCalendlyEmbedUrl', () => {
     expect(url).not.toContain('#');
   });
 
+  it('declares itself an embed, which is what makes Calendly report bookings', () => {
+    // Without these, Calendly renders and takes bookings but never posts
+    // calendly.event_scheduled to the parent — the confirmed-completion count
+    // then sits at zero no matter how many meetings are scheduled.
+    const url = new URL(buildCalendlyEmbedUrl('https://calendly.com/x/y', 'nottherug.com'));
+    expect(url.searchParams.get('embed_type')).toBe('Inline');
+    expect(url.searchParams.get('embed_domain')).toBe('nottherug.com');
+  });
+
+  it('omits embed_domain rather than sending an empty one', () => {
+    const url = new URL(buildCalendlyEmbedUrl('https://calendly.com/x/y'));
+    expect(url.searchParams.has('embed_domain')).toBe(false);
+    expect(url.searchParams.get('embed_type')).toBe('Inline');
+  });
+
   it('keeps parameters the configured link already sets', () => {
     const url = new URL(buildCalendlyEmbedUrl('https://calendly.com/x/y?primary_color=000000&name=Ada'));
     expect(url.searchParams.get('primary_color')).toBe('000000');

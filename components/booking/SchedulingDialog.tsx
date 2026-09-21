@@ -283,7 +283,10 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
           ref={iframeRef}
           id="calendly-modal-iframe"
           title="Calendly scheduling"
-          src={buildCalendlyEmbedUrl(calendlyUrl)}
+          src={buildCalendlyEmbedUrl(
+            calendlyUrl,
+            typeof window === 'undefined' ? undefined : window.location.hostname,
+          )}
           style={{ flex: 1, width: '100%', border: 'none', background: 'var(--paper)' }}
         />
       </div>

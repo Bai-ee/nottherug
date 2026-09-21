@@ -10,6 +10,12 @@
  *
  * Colours are passed as bare hex, which is the format Calendly's embed
  * expects; a leading # is rejected and silently drops the theme.
+ *
+ * `embed_domain` and `embed_type` are not decoration: Calendly only posts its
+ * `calendly.event_scheduled` message to the parent window when the booking
+ * page is loaded as an embed, and those two parameters are what say so. The
+ * page renders and takes bookings without them — it simply never tells us one
+ * happened, which is why every confirmed-completion count sat at zero.
  */
 
 /** Site tokens, resolved here because a URL cannot read a CSS variable. */
@@ -20,12 +26,17 @@ const EMBED_THEME = {
   hide_gdpr_banner: '1',
 } as const;
 
-export function buildCalendlyEmbedUrl(baseUrl: string): string {
+export function buildCalendlyEmbedUrl(baseUrl: string, embedDomain?: string): string {
   if (!baseUrl) return baseUrl;
 
   try {
     const url = new URL(baseUrl);
-    for (const [key, value] of Object.entries(EMBED_THEME)) {
+    const params: Record<string, string> = { ...EMBED_THEME, embed_type: 'Inline' };
+    // The host doing the embedding. Calendly checks it, so a wrong or missing
+    // value costs us the completion message.
+    if (embedDomain) params.embed_domain = embedDomain;
+
+    for (const [key, value] of Object.entries(params)) {
       // Never override a parameter the configured URL already sets: whoever
       // wrote that link meant it.
       if (!url.searchParams.has(key)) url.searchParams.set(key, value);
