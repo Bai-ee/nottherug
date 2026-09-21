@@ -16,6 +16,7 @@ import { LiveTile } from '@/components/admin/analytics/LiveTile';
 import { TrendSparkline } from '@/components/admin/analytics/TrendSparkline';
 import { EngagedVisitStat } from '@/components/admin/analytics/EngagedVisitStat';
 import { AppointmentsStat } from '@/components/admin/analytics/AppointmentsStat';
+import { OutstandingCapturesStat } from '@/components/admin/analytics/OutstandingCapturesStat';
 import { QualityLeadsStat } from '@/components/admin/analytics/QualityLeadsStat';
 import { VisitsStat } from '@/components/admin/analytics/VisitsStat';
 import { SourceTable } from '@/components/admin/analytics/SourceTable';
@@ -144,15 +145,34 @@ function AdminAnalyticsDashboardContent({
 
         {synced ? <ReportMetaBanner meta={view.meta} /> : null}
 
-        {/* Owner's first question: did anyone book? So appointments lead. */}
-        <AppointmentsStat
-          bookedLeads={view.bookedLeads}
-          verifiedCompletions={view.appointmentsScheduled}
-        />
+        {/* Owner's first question: did anyone book? So appointments lead, with
+            the people who booked but still owe answers read next to it. */}
+        <div id="admin-analytics-booking-row" className="grid-2">
+          <AppointmentsStat
+            bookedLeads={view.bookedLeads}
+            verifiedCompletions={view.appointmentsScheduled}
+          />
+          <OutstandingCapturesStat
+            outstandingCaptures={view.outstandingCaptures}
+            degraded={degradedLeads}
+            testMode={testMode}
+          />
+        </div>
+
+        {/* Belongs to the pair above, not to either card, so it sits centred
+            under both rather than inside one of them. */}
+        <div id="admin-analytics-leads-link-row">
+          <a
+            id="admin-analytics-appointments-leads-link"
+            className="btn btn-primary booking-forward-btn btn-sm btn-accent"
+            href="/admin/dashboard/leads"
+          >
+            View all leads
+          </a>
+        </div>
 
         <InquiryHeadline
           inquiries={view.inquiries}
-          outstandingCaptures={view.outstandingCaptures}
           inquiryRate={view.inquiryRate}
           degraded={degradedLeads}
           testMode={testMode}

@@ -511,3 +511,13 @@
 @media (max-width: 768px) {
   .admin-shell #admin-shell-main { padding-top: calc(var(--nav-h) + 28px); }
 }
+
+/* ── BOOKING PAIR ───────────────────────────────────────────────────────────
+   Appointments Scheduled and Awaiting Answers are read together: meetings on
+   the calendar, and the people who booked but still owe answers. They share a
+   row and match heights (.grid-2 centres its items by default, which would
+   leave the shorter card floating). Their shared "View all leads" link sits
+   centred beneath the pair rather than inside either card. */
+#admin-analytics-booking-row { align-items: stretch; }
+#admin-analytics-leads-link-row { display: flex; justify-content: center; }
+#admin-shell-main #admin-analytics-leads-link-row .btn { flex: 0 1 auto; width: min(320px, 100%); }

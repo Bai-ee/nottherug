@@ -684,6 +684,46 @@ export default function WelcomeWalkModal() {
               #welcome-walk-modal-bar-panel {
                 padding: clamp(14px, 2.2vw, 20px) clamp(16px, 2.4vw, 24px) 0;
               }
+              /* ── AFTER THE SCHEDULER ──────────────────────────────────
+                 The illustration column exists to sell the walk. Once a time
+                 is booked it has done that, so every view after the gate drops
+                 it and the panel is only as wide and tall as its own content.
+                 On a phone that strip was most of the difference between
+                 fitting the viewport and scrolling inside the dialog. */
+              #welcome-walk-modal-shell:not([data-view='gate']) {
+                grid-template-columns: minmax(0, 1fr) !important;
+                grid-template-areas: 'bar' 'head' 'form' !important;
+                max-width: 560px !important;
+              }
+              #welcome-walk-modal-shell:not([data-view='gate']) #welcome-walk-modal-art-panel {
+                display: none !important;
+              }
+              #welcome-walk-modal-confirmation-panel .booking-form-body { padding: 16px; }
+              /* The thank-you drawn at field scale rather than as a headline:
+                 the same hairline, tinted fill and stamped label the inputs
+                 below it carry, so it reads as part of the form. */
+              #welcome-walk-modal-booked-note {
+                display: flex;
+                align-items: baseline;
+                gap: 10px;
+                border: 1px solid rgba(36, 35, 33, 0.28);
+                border-radius: 4px;
+                background: rgba(79, 90, 61, 0.05);
+                padding: 10px 12px;
+                margin: 0 0 14px;
+              }
+              #welcome-walk-modal-booked-note .stamp-label { margin-bottom: 0; flex-shrink: 0; }
+              #welcome-walk-modal-booked-note #welcome-walk-modal-confirmation-title {
+                margin: 0;
+                font-family: var(--font-body);
+                font-size: 13px;
+                line-height: 1.45;
+                color: var(--ink);
+              }
+              /* The questionnaire's own intro is written for someone who has
+                 not booked yet ("before any walk is booked"). Here it is both
+                 wrong and the tallest block on the panel. */
+              #welcome-walk-modal-questions [data-section='meetgreet-progress-row'] p { display: none; }
               @media (max-width: 767px) {
                 #welcome-walk-modal-shell {
                   grid-template-columns: 1fr !important;
@@ -735,6 +775,74 @@ export default function WelcomeWalkModal() {
                    padding renders larger because the Bebas line box adds leading
                    above the caps, so the bar carries a bigger number to match. */
                 #welcome-walk-modal-bar-panel { padding-bottom: 15px; }
+                /* Post-booking views: no art strip to shrink, so the room
+                   comes out of the questionnaire's own spacing instead. The
+                   whole panel has to clear the viewport without the form
+                   panel ever scrolling inside itself. */
+                #welcome-walk-modal-shell:not([data-view='gate']) { max-height: calc(100dvh - 12px) !important; }
+                #welcome-walk-modal-confirmation-panel .booking-form-body { padding: 12px !important; }
+                #welcome-walk-modal-booked-note {
+                  margin-bottom: 10px !important;
+                  padding: 8px 10px !important;
+                  gap: 8px;
+                }
+                #welcome-walk-modal-booked-note .stamp-label { font-size: 9px !important; padding: 3px 6px !important; }
+                #welcome-walk-modal-booked-note #welcome-walk-modal-confirmation-title { font-size: 11px !important; }
+                /* The step stamp above already names the step ("STEP 1 OF 5 ·
+                   YOU"), so its display title is the one heading a phone can
+                   do without here. */
+                #welcome-walk-modal-questions [data-section='meetgreet-progress-row'] h3 { display: none !important; }
+                #welcome-walk-modal-questions [data-section='meetgreet-progress-row'] { margin-bottom: 12px !important; }
+                #welcome-walk-modal-questions [data-section='meetgreet-progress-row'] h3 { font-size: 20px !important; }
+                #welcome-walk-modal-questions [data-section='meetgreet-carousel-nav-row'] {
+                  margin-top: 10px !important;
+                  padding-top: 12px !important;
+                }
+                /* Field rhythm is the rest of the budget: the questionnaire
+                   is spaced for a full page, and on a phone the panel has to
+                   clear the viewport without scrolling inside itself. Font
+                   sizes are left alone — only the space around them gives. */
+                #welcome-walk-modal-questions .form-group { gap: 4px !important; margin-bottom: 8px !important; }
+                #welcome-walk-modal-questions .form-control { padding: 9px 14px !important; border-radius: 8px !important; }
+                #welcome-walk-modal-questions #booking-tracking-disclosure {
+                  font-size: 10px !important;
+                  margin-top: 8px !important;
+                }
+                /* Quirks is the one tall step: two lists of tick boxes, one
+                   per row on a narrow phone. Paired up, with the "select all
+                   that apply" hints dropped (the boxes say so themselves),
+                   it clears the viewport like the other four.
+                   These rules beat the step's inline styles, which is what
+                   the !important is for. */
+                #welcome-walk-modal-questions [data-survey='reactivity'] > div[role='group'] {
+                  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                  gap: 6px !important;
+                }
+                #welcome-walk-modal-questions [data-survey='allergies'] > div[role='group'] { gap: 6px !important; }
+                #welcome-walk-modal-questions [data-survey] > p { display: none !important; }
+                #welcome-walk-modal-questions [data-survey] label[for] {
+                  padding: 6px 8px !important;
+                  font-size: 12px !important;
+                  gap: 6px !important;
+                }
+                #welcome-walk-modal-questions [data-survey] { margin-bottom: 10px !important; }
+              }
+              /* Short phones (an SE-sized 667px viewport) are the tightest
+                 case: the first step carries four fields and still has to
+                 clear the screen. Everything here is spacing, never a
+                 sentence — the tracking disclosure in particular stays,
+                 because it has to be readable where someone is typing. */
+              @media (max-width: 767px) and (max-height: 700px) {
+                #welcome-walk-modal-questions .form-group { margin-bottom: 6px !important; }
+                #welcome-walk-modal-questions .form-control { padding: 7px 12px !important; }
+                #welcome-walk-modal-questions [data-section='meetgreet-progress-row'] { margin-bottom: 8px !important; }
+                #welcome-walk-modal-questions [data-section='meetgreet-carousel-nav-row'] {
+                  margin-top: 8px !important;
+                  padding-top: 10px !important;
+                }
+                #welcome-walk-modal-booked-note { margin-bottom: 8px !important; padding: 6px 8px !important; }
+                #welcome-walk-modal-confirmation-panel .booking-form-body { padding: 10px !important; }
+                #welcome-walk-modal-bar-panel { padding-top: 10px !important; padding-bottom: 8px !important; }
               }
               @media (prefers-reduced-motion: reduce) {
                 #welcome-walk-modal, #welcome-walk-modal-shell { animation: none !important; }
@@ -751,6 +859,7 @@ export default function WelcomeWalkModal() {
             <div
               ref={dialogRef}
               id="welcome-walk-modal-shell"
+              data-view={view}
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'minmax(0, 0.85fr) minmax(0, 1.15fr)',
@@ -871,16 +980,17 @@ export default function WelcomeWalkModal() {
 
                       {view === 'questions' ? (
                         <>
-                          <h3
-                            id="welcome-walk-modal-confirmation-title"
-                            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
-                          >
-                            Thank you — your Meet &amp; Greet is booked
-                          </h3>
-                          <p className="form-note" style={{ margin: '0 0 4px' }}>
-                            We will be in contact. While you are here, a few questions so your walker
-                            arrives already knowing your dog.
-                          </p>
+                          {/* Deliberately not a display heading: post-booking
+                              the thank-you is an acknowledgement, not the
+                              thing being asked for, so it is drawn at field
+                              scale (see #welcome-walk-modal-booked-note) and
+                              the questionnaire below it leads. */}
+                          <div id="welcome-walk-modal-booked-note">
+                            <span className="stamp-label">Booked</span>
+                            <p id="welcome-walk-modal-confirmation-title">
+                              Thank you — a few questions so your walker arrives already knowing your dog.
+                            </p>
+                          </div>
                           {/* The same questionnaire the page carries, in its
                               stepped carousel, with the booking already made:
                               no phone-consult alternative and no scheduler to

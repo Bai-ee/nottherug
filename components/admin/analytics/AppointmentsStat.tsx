@@ -38,13 +38,6 @@ export function AppointmentsStat({
         {verifiedCompletions.toLocaleString('en-US')} of these were also confirmed by Calendly in the
         visitor&apos;s browser. That confirmation can go missing, so this is the lower number of the two.
       </p>
-      <a
-        id="admin-analytics-appointments-leads-link"
-        className="btn btn-primary booking-forward-btn btn-sm btn-accent"
-        href="/admin/dashboard/leads"
-      >
-        View all leads
-      </a>
     </section>
   );
 }
