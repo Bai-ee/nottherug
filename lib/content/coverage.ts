@@ -19,7 +19,7 @@ export const WILLIAMSBURG: NeighborhoodInfo = {
   color: '#7D9E8C',
   tagline: 'Our home neighborhood since 2011',
   desc: 'Williamsburg is where Not The Rug was born, and it remains the heart of our operation. We know every building, every doorman, every park bench, and every dog on every block. When it comes to Williamsburg dog walking, nobody knows these streets better.',
-  parks: ['McCarren Park', 'East River State Park', 'Domino Park', 'N 5th St Dog Run', 'Marcy Park'],
+  parks: ['McCarren Park', 'Bushwick Inlet Park', 'Domino Park', 'Marcy Park'],
   seo: 'Dog walker Williamsburg Brooklyn',
 };
 
