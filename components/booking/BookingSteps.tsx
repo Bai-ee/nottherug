@@ -2,7 +2,6 @@
 
 import {
   ALLERGY_OPTIONS,
-  NEIGHBORHOOD_OPTIONS,
   SERVICE_AREA_LABEL,
   REACTIVITY_OPTIONS,
   SERVICE_INTEREST_OPTIONS,
@@ -46,16 +45,7 @@ export function StepAboutYou({
   errors,
   alertId,
   registerField,
-  lockNeighborhood = false,
-}: StepProps & {
-  /**
-   * Show the served area as a locked row instead of the picker, exactly as the
-   * welcome modal does (#welcome-walk-modal-neighborhood-display). Display
-   * only: the submitted `neighborhood` stays whatever the form already holds,
-   * so the payload is unchanged and still a valid NEIGHBORHOOD_OPTIONS value.
-   */
-  lockNeighborhood?: boolean;
-}) {
+}: StepProps) {
   return (
     <>
       <div className="form-row">
@@ -105,37 +95,26 @@ export function StepAboutYou({
           />
         </div>
         <div className="form-group">
-          {lockNeighborhood ? (
-            <>
-              {/* Not a <label htmlFor>: the row below is not a form control,
-                  so there is nothing for "for" to reference. .booking-field-caption
-                  gives the <span> the same inked stamp treatment as a real label. */}
-              <span className="booking-field-caption" style={{ fontWeight: 500 }}>Neighborhood</span>
-              <div
-                id={`${paneId}-neighborhood-display`}
-                className="form-control booking-locked-field"
-                aria-label={`Neighborhood: ${SERVICE_AREA_LABEL}`}
-                title="Williamsburg is the only neighborhood we serve"
-              >
-                {SERVICE_AREA_LABEL}
-              </div>
-            </>
-          ) : (
-            <>
-              <label htmlFor={`${paneId}-neighborhood`}>Neighborhood</label>
-              <select
-                id={`${paneId}-neighborhood`}
-                className="form-control form-select"
-                autoComplete="off"
-                value={values.neighborhood}
-                onChange={(e) => update('neighborhood', e.target.value)}
-              >
-                {NEIGHBORHOOD_OPTIONS.map((option) => (
-                  <option key={option}>{option}</option>
-                ))}
-              </select>
-            </>
-          )}
+          {/* The served area is locked in every layout, the way the welcome
+              modal's gate locks it (#welcome-walk-modal-neighborhood-display):
+              Williamsburg is the only neighborhood served, so offering nine
+              choices — eight of which are declines — was never a question we
+              meant to ask. Not a <label htmlFor>: the row below is not a form
+              control, so there is nothing for "for" to reference.
+              .booking-field-caption gives the <span> the same inked stamp
+              treatment as a real label. Display only: the submitted
+              `neighborhood` stays whatever the form already holds, so the
+              payload is unchanged and still a valid NEIGHBORHOOD_OPTIONS
+              value. */}
+          <span className="booking-field-caption" style={{ fontWeight: 500 }}>Neighborhood</span>
+          <div
+            id={`${paneId}-neighborhood-display`}
+            className="form-control booking-locked-field"
+            aria-label={`Neighborhood: ${SERVICE_AREA_LABEL}`}
+            title="Williamsburg is the only neighborhood we serve"
+          >
+            {SERVICE_AREA_LABEL}
+          </div>
         </div>
       </div>
     </>

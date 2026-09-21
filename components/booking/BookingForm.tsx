@@ -650,7 +650,7 @@ export default function BookingForm({
           >
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[0] = el; }} {...groupProps(0)}>
               <GroupHeader index={0} paneId={paneId} fullLayout={fullLayout} />
-              <StepAboutYou {...stepProps} lockNeighborhood={fullLayout} />
+              <StepAboutYou {...stepProps} />
             </div>
 
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[1] = el; }} {...groupProps(1)}>

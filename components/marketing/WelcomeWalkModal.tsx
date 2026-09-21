@@ -503,13 +503,19 @@ export default function WelcomeWalkModal() {
             id="welcome-walk-modal"
             role="dialog"
             aria-modal="true"
-            // The h2 this normally points at is only rendered outside the
-            // confirmation view (see #welcome-walk-modal-heading-panel below),
-            // so a dangling id there would leave the dialog with no
-            // accessible name once a booking completes. Point at the
-            // confirmation heading instead when that view is showing.
+            // Each view names the dialog with the heading it actually
+            // renders (see #welcome-walk-modal-heading-panel below): the gate
+            // and the questionnaire both carry a display h2, and the
+            // did-you-book check carries its own h3. A dangling id here would
+            // leave the dialog with no accessible name.
             aria-labelledby={
-              view === 'gate' ? 'welcome-walk-modal-title' : 'welcome-walk-modal-confirmation-title'
+              view === 'gate'
+                ? 'welcome-walk-modal-title'
+                : view === 'questions'
+                  ? 'welcome-walk-modal-questions-title'
+                  : view === 'done'
+                    ? 'welcome-walk-modal-done-title'
+                    : 'welcome-walk-modal-confirmation-title'
             }
             onClick={(e) => {
               if (e.target === e.currentTarget) handleDismiss();
@@ -539,9 +545,13 @@ export default function WelcomeWalkModal() {
               .hit-slop-44::before { content: ''; position: absolute; inset: -9px; }
               /* Home hero headline treatment (.hero-h1), deliberately oversized.
                  Sized in container units against the heading panel — not vw — so the
-                 line fits the COLUMN it lives in and never wraps to two lines. */
+                 line fits the COLUMN it lives in and never wraps to two lines.
+                 Every view's headline shares the rule: .hero-h1's own clamp is
+                 sized for a full-width hero and runs straight off this panel. */
               #welcome-walk-modal-heading-panel { container-type: inline-size; }
-              #welcome-walk-modal-title {
+              #welcome-walk-modal-title,
+              #welcome-walk-modal-questions-title,
+              #welcome-walk-modal-done-title {
                 font-size: min(7.9cqw, 56px);
                 margin: 0;
                 white-space: nowrap;
@@ -699,26 +709,25 @@ export default function WelcomeWalkModal() {
                 display: none !important;
               }
               #welcome-walk-modal-confirmation-panel .booking-form-body { padding: 16px; }
-              /* The thank-you drawn at field scale rather than as a headline:
-                 the same hairline, tinted fill and stamped label the inputs
-                 below it carry, so it reads as part of the form. */
+              /* A lede under the display headline, not a boxed receipt: the
+                 bordered, tinted panel read as a notice bolted onto the form,
+                 which is exactly the seam between "booked" and "now answer
+                 this" that this modal exists to remove. */
               #welcome-walk-modal-booked-note {
                 display: flex;
-                align-items: baseline;
-                gap: 10px;
-                border: 1px solid rgba(36, 35, 33, 0.28);
-                border-radius: 4px;
-                background: rgba(79, 90, 61, 0.05);
-                padding: 10px 12px;
-                margin: 0 0 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                margin: 0 0 16px;
               }
               #welcome-walk-modal-booked-note .stamp-label { margin-bottom: 0; flex-shrink: 0; }
-              #welcome-walk-modal-booked-note #welcome-walk-modal-confirmation-title {
+              #welcome-walk-modal-booked-lede {
                 margin: 0;
                 font-family: var(--font-body);
-                font-size: 13px;
-                line-height: 1.45;
-                color: var(--ink);
+                font-size: clamp(14px, 1.6vw, 15px);
+                line-height: 1.55;
+                color: var(--mid-gray);
+                max-width: 54ch;
               }
               /* The questionnaire's own intro is written for someone who has
                  not booked yet ("before any walk is booked"). Here it is both
@@ -759,7 +768,9 @@ export default function WelcomeWalkModal() {
                 #welcome-walk-modal-shell { max-height: calc(100dvh - 12px) !important; }
                 #welcome-walk-modal-art-panel { min-height: 88px !important; }
                 #welcome-walk-modal-heading-panel { padding-top: 4px !important; }
-                #welcome-walk-modal-title { font-size: clamp(26px, 7.4vw, 34px) !important; line-height: 1 !important; }
+                #welcome-walk-modal-title,
+                #welcome-walk-modal-questions-title,
+                #welcome-walk-modal-done-title { font-size: clamp(26px, 7.4vw, 34px) !important; line-height: 1 !important; }
                 #welcome-walk-modal-tax-note, #welcome-walk-modal-rate-fineprint { display: none !important; }
                 #welcome-walk-modal-form-panel { padding-top: 6px !important; padding-bottom: 10px !important; }
                 #welcome-walk-modal-sheet .booking-form-body { padding: 10px 12px 12px !important; }
@@ -782,12 +793,11 @@ export default function WelcomeWalkModal() {
                 #welcome-walk-modal-shell:not([data-view='gate']) { max-height: calc(100dvh - 12px) !important; }
                 #welcome-walk-modal-confirmation-panel .booking-form-body { padding: 12px !important; }
                 #welcome-walk-modal-booked-note {
-                  margin-bottom: 10px !important;
-                  padding: 8px 10px !important;
-                  gap: 8px;
+                  margin-bottom: 12px !important;
+                  gap: 6px;
                 }
                 #welcome-walk-modal-booked-note .stamp-label { font-size: 9px !important; padding: 3px 6px !important; }
-                #welcome-walk-modal-booked-note #welcome-walk-modal-confirmation-title { font-size: 11px !important; }
+                #welcome-walk-modal-booked-lede { font-size: 13px !important; }
                 /* The step stamp above already names the step ("STEP 1 OF 5 ·
                    YOU"), so its display title is the one heading a phone can
                    do without here. */
@@ -933,6 +943,20 @@ export default function WelcomeWalkModal() {
                     Book your free <em>Meet &amp; Greet</em>
                   </h2>
                 )}
+                {/* Same display headline as the gate, in the same slot: the
+                    booking is made, and what is left is one short form, so
+                    the panel should read as the second half of the same
+                    modal rather than as a form with a receipt stapled on. */}
+                {view === 'questions' && (
+                  <h2 id="welcome-walk-modal-questions-title" className="hero-h1">
+                    Almost <em>done&hellip;</em>
+                  </h2>
+                )}
+                {view === 'done' && (
+                  <h2 id="welcome-walk-modal-done-title" className="hero-h1">
+                    All <em>set</em>
+                  </h2>
+                )}
               </div>
 
               <div
@@ -969,7 +993,7 @@ export default function WelcomeWalkModal() {
                             <button
                               type="button"
                               id="welcome-walk-modal-confirm-no"
-                              className="btn btn-primary booking-forward-btn btn-outline"
+                              className="btn btn-outline booking-forward-btn"
                               onClick={() => setView('scheduler')}
                             >
                               Not yet — pick a time
@@ -980,15 +1004,15 @@ export default function WelcomeWalkModal() {
 
                       {view === 'questions' ? (
                         <>
-                          {/* Deliberately not a display heading: post-booking
-                              the thank-you is an acknowledgement, not the
-                              thing being asked for, so it is drawn at field
-                              scale (see #welcome-walk-modal-booked-note) and
-                              the questionnaire below it leads. */}
+                          {/* The stamp carries the receipt — the time is
+                              booked — and the lede says why there is still a
+                              form to fill in. The headline above it does the
+                              talking, so this is a lede, not a banner. */}
                           <div id="welcome-walk-modal-booked-note">
                             <span className="stamp-label">Booked</span>
-                            <p id="welcome-walk-modal-confirmation-title">
-                              Thank you — a few questions so your walker arrives already knowing your dog.
+                            <p id="welcome-walk-modal-booked-lede">
+                              Before we walk your dog, we have to meet your dog. Please complete the
+                              questionnaire so we understand their tendencies and can get you onboarded faster.
                             </p>
                           </div>
                           {/* The same questionnaire the page carries, in its
@@ -1009,28 +1033,32 @@ export default function WelcomeWalkModal() {
 
                       {view === 'done' ? (
                         <>
-                          <h3
-                            id="welcome-walk-modal-confirmation-title"
-                            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
-                          >
-                            All set — thank you
-                          </h3>
-                          <p className="form-note" style={{ margin: '0 0 12px' }}>
-                            Luis has your answers and will be in contact before the Meet &amp; Greet.
-                            If anything changes, reach him directly:
-                          </p>
+                          {/* Same three parts as every other view of this
+                              modal: stamp, lede, then one filled action. The
+                              headline sits in the heading panel above. */}
+                          <div id="welcome-walk-modal-booked-note">
+                            <span className="stamp-label">Meet &amp; Greet booked</span>
+                            <p id="welcome-walk-modal-booked-lede">
+                              Thank you — Luis has your answers and will be in touch before the
+                              Meet &amp; Greet. If anything changes, reach him directly.
+                            </p>
+                          </div>
+                          {/* The two ways to reach Luis are alternatives, not
+                              a primary and a fallback, so they wear the same
+                              outline treatment — the filled button below is
+                              the one action this view is asking for. */}
                           <div id="welcome-walk-modal-done-contacts">
-                            <a className="btn btn-primary booking-forward-btn btn-sm btn-accent" href={PHONE_HREF}>
+                            <a className="btn btn-outline booking-forward-btn btn-sm" href={PHONE_HREF}>
                               {PHONE_DISPLAY}
                             </a>
-                            <a className="btn btn-primary booking-forward-btn btn-sm btn-outline" href={EMAIL_HREF}>
+                            <a className="btn btn-outline booking-forward-btn btn-sm" href={EMAIL_HREF}>
                               {EMAIL_DISPLAY}
                             </a>
                           </div>
                           <button
                             type="button"
                             id="welcome-walk-modal-done-close"
-                            className="btn btn-ghost"
+                            className="btn btn-primary booking-forward-btn btn-accent"
                             onClick={finishForNow}
                           >
                             Close

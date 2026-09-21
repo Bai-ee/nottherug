@@ -177,11 +177,15 @@ nav {
   opacity: 1;
 }
 .nav-links {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 2px;
 }
+/* 8px of side padding, not 12: the bar carries six destinations plus Contact
+   Us, Login, Instagram and the CTA, and the paper logo sign deliberately
+   overhangs the band — at 12px the first link ran underneath it and could not
+   be clicked. */
 .nav-links a {
-  padding: 7px 12px; border-radius: 4px;
-  font-size: 14px; font-weight: 500;
+  padding: 7px 8px; border-radius: 4px;
+  font-size: 13px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255,255,255,0.7);
   transition: all .2s;
@@ -336,7 +340,9 @@ nav {
 #welcome-walk-modal-done-contacts {
   display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px;
 }
-#welcome-walk-modal-done-close { margin-top: 14px; }
+/* Filled action, centered under the pair of contact buttons above it — the
+   same shape the questionnaire's own forward button has. */
+#welcome-walk-modal-done-close { display: flex; width: fit-content; margin: 14px auto 0; }
 
 /* =============================================
    LAYOUT HELPERS
@@ -3846,9 +3852,9 @@ a.footer-contact-value:hover { color: white; }
    rather than navigating), so in each place it has to shed the button chrome
    and wear the styling of the links it sits among. */
 .nav-contact-btn {
-  padding: 7px 12px; border-radius: 4px;
+  padding: 7px 8px; border-radius: 4px;
   font-family: inherit;
-  font-size: 14px; font-weight: 500;
+  font-size: 13px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.7);
   background: none; border: none;
