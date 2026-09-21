@@ -330,6 +330,12 @@ nav {
 }
 
 
+/* The one-question booking prompt above the home questionnaire. */
+#home-booked-self-report { margin-bottom: 20px; text-align: center; }
+#home-booked-self-report-actions {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px;
+}
+
 /* =============================================
    LAYOUT HELPERS
    ============================================= */

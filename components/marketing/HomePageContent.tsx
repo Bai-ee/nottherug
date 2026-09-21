@@ -1,5 +1,6 @@
 import SiteNav from '@/components/SiteNav';
 import MeetGreetForm from '@/components/MeetGreetForm';
+import { BookedSelfReportPrompt } from '@/components/booking/BookedSelfReportPrompt';
 import HomeHero from './HomeHero';
 import ProofMarquee from './ProofMarquee';
 import WalkConceptsMarquee from './WalkConceptsMarquee';
@@ -142,6 +143,7 @@ export default function HomePageContent() {
             <div id="home-book-form-wrap" className="booking-form-wrap">
               <div className="booking-form" id="home-contact-sheet-form-sheet">
                 <div className="booking-form-body">
+                  <BookedSelfReportPrompt />
                   <MeetGreetForm paneId="home-meetgreet" source="home" layout="full" />
                 </div>
               </div>

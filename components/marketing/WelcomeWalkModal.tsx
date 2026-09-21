@@ -24,6 +24,7 @@ import SchedulingDialog from '@/components/booking/SchedulingDialog';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { captureLeadEmail } from '@/lib/leads/captureClient';
+import { requestBookedSelfReport, clearBookedSelfReport } from '@/lib/booking/bookedSelfReport';
 import {
   WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
@@ -411,8 +412,11 @@ export default function WelcomeWalkModal() {
   }, []);
 
   const handleSchedulerDismiss = useCallback(() => {
+    // Calendly's completion message may never have arrived, so the only
+    // reliable way to know whether this visit produced a booking is to ask.
+    if (!bookedRef.current) requestBookedSelfReport(email.trim(), MODAL_SOURCE);
     goToHomeQuestions();
-  }, [goToHomeQuestions]);
+  }, [goToHomeQuestions, email]);
 
   /**
    * Verified completion — fires exactly once per attempt, from
@@ -435,6 +439,8 @@ export default function WelcomeWalkModal() {
     // confirmation view.
     captureLeadEmail(email.trim(), MODAL_SOURCE, true);
     bookedRef.current = true;
+    // Verified: nothing left to ask.
+    clearBookedSelfReport();
     // Booked: the only thing left to ask for is the questionnaire, so go
     // straight there rather than parking on a confirmation panel.
     goToHomeQuestions();
