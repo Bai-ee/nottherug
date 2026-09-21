@@ -40,6 +40,12 @@ type Props = {
    * to keep short. The fields, validation and payload are identical in both.
    */
   layout?: 'steps' | 'full';
+  /**
+   * Called once the lead is saved, so a host that owns the surrounding
+   * surface can take over — the welcome modal shows its own closing panel
+   * instead of leaving the visitor on a success line inside the form.
+   */
+  onSubmitted?: () => void;
 };
 
 type SubmitLeadResult =
@@ -203,6 +209,7 @@ export default function BookingForm({
   initialPhoneConsult = false,
   bookedDetailsMode = false,
   layout = 'steps',
+  onSubmitted,
 }: Props) {
   const [form, setForm] = useState<BookingFormValues>({ ...initial, ...initialValues });
   const [reactivity, setReactivity] = useState<string[]>([]);
@@ -447,6 +454,7 @@ export default function BookingForm({
     // success UI and the scheduling branch below read this, never `form`/`phoneConsult`.
     setSubmittedSummary({ dogName: submittedDogName, phoneConsult: wantsPhoneConsult });
     setStatus('success');
+    onSubmitted?.();
     setForm({ ...initial, ...initialValues });
     setReactivity([]);
     setAllergies([]);

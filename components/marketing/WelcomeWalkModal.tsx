@@ -24,7 +24,8 @@ import SchedulingDialog from '@/components/booking/SchedulingDialog';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { captureLeadEmail } from '@/lib/leads/captureClient';
-import { requestBookedSelfReport, clearBookedSelfReport } from '@/lib/booking/bookedSelfReport';
+import MeetGreetForm from '@/components/MeetGreetForm';
+import { PHONE_DISPLAY, PHONE_HREF, EMAIL_DISPLAY, EMAIL_HREF } from '@/lib/content/contact';
 import {
   WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
@@ -118,7 +119,17 @@ function buildCalendlyEmailUrl(base: string, email: string): string {
 /** The questionnaire on this page — every exit from this modal lands here. */
 const HOME_QUESTIONS_SECTION_ID = 'home-contact-sheet-section';
 
-type View = 'gate' | 'scheduler' | 'confirmation';
+type View =
+  /** Email (and phone) before anything else. */
+  | 'gate'
+  /** Calendly, in its own dialog. */
+  | 'scheduler'
+  /** Calendly never told us whether they booked, so ask them. */
+  | 'confirm-booking'
+  /** Thank you, then the questionnaire as a carousel, in this same modal. */
+  | 'questions'
+  /** Answered: thank you again, and how to reach Luis directly. */
+  | 'done';
 
 /**
  * Booking-first entry point: email-only gate → Calendly (free Meet & Greet)
@@ -412,11 +423,17 @@ export default function WelcomeWalkModal() {
   }, []);
 
   const handleSchedulerDismiss = useCallback(() => {
-    // Calendly's completion message may never have arrived, so the only
-    // reliable way to know whether this visit produced a booking is to ask.
-    if (!bookedRef.current) requestBookedSelfReport(email.trim(), MODAL_SOURCE);
-    goToHomeQuestions();
-  }, [goToHomeQuestions, email]);
+    // Calendly's completion message may never arrive, so when it has not we
+    // ask rather than guess — and rather than thank someone who did not book.
+    setView(bookedRef.current ? 'questions' : 'confirm-booking');
+  }, []);
+
+  /** "Yes, it's booked" on the confirm step: the visitor is the signal. */
+  const confirmBookedByHand = useCallback(() => {
+    bookedRef.current = true;
+    captureLeadEmail(email.trim(), MODAL_SOURCE, true);
+    setView('questions');
+  }, [email]);
 
   /**
    * Verified completion — fires exactly once per attempt, from
@@ -439,12 +456,10 @@ export default function WelcomeWalkModal() {
     // confirmation view.
     captureLeadEmail(email.trim(), MODAL_SOURCE, true);
     bookedRef.current = true;
-    // Verified: nothing left to ask.
-    clearBookedSelfReport();
-    // Booked: the only thing left to ask for is the questionnaire, so go
-    // straight there rather than parking on a confirmation panel.
-    goToHomeQuestions();
-  }, [attemptId, email, goToHomeQuestions]);
+    // Verified: thank them and ask the questions here, without sending them
+    // anywhere. Splitting this across a scroll made the journey feel broken.
+    setView('questions');
+  }, [attemptId, email]);
 
   /** "Answer questions first" — available at the missing-scheduler gate and after abandonment. */
   function goAnswerQuestions() {
@@ -462,19 +477,7 @@ export default function WelcomeWalkModal() {
     goToHomeQuestions();
   }
 
-  /** "Tell us about your dog" from the confirmation panel. */
-  function goDetailsAfterBooking() {
-    if (attemptId) {
-      const handoff = createOnboardingHandoff({
-        email: email.trim(),
-        source: MODAL_SOURCE,
-        attemptId,
-        bookingObserved: true,
-      });
-      if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
-    }
-    goToHomeQuestions();
-  }
+
 
   /** "Finish for now" — ends the flow: clears the draft and resets to a fresh gate. */
   function finishForNow() {
@@ -506,7 +509,7 @@ export default function WelcomeWalkModal() {
             // accessible name once a booking completes. Point at the
             // confirmation heading instead when that view is showing.
             aria-labelledby={
-              view === 'confirmation' ? 'welcome-walk-modal-confirmation-title' : 'welcome-walk-modal-title'
+              view === 'gate' ? 'welcome-walk-modal-title' : 'welcome-walk-modal-confirmation-title'
             }
             onClick={(e) => {
               if (e.target === e.currentTarget) handleDismiss();
@@ -816,7 +819,7 @@ export default function WelcomeWalkModal() {
               </div>
 
               <div id="welcome-walk-modal-heading-panel" style={{ gridArea: 'head', padding: '10px clamp(16px, 2.4vw, 24px) 0' }}>
-                {view !== 'confirmation' && (
+                {view === 'gate' && (
                   <h2 id="welcome-walk-modal-title" className="hero-h1">
                     Book your free <em>Meet &amp; Greet</em>
                   </h2>
@@ -831,48 +834,99 @@ export default function WelcomeWalkModal() {
                   overflowY: 'auto',
                 }}
               >
-                {view === 'confirmation' ? (
+                {view !== 'gate' ? (
                   <div id="welcome-walk-modal-confirmation-panel" className="booking-form">
                     <div className="booking-form-body">
-                      <h3
-                        id="welcome-walk-modal-confirmation-title"
-                        style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
-                      >
-                        Your free Meet &amp; Greet is booked
-                      </h3>
-                      <p className="form-note" style={{ margin: '0 0 16px' }}>
-                        Check your inbox. Your Calendly confirmation email has the date and time.
-                      </p>
-                      <div
-                        id="welcome-walk-modal-cta-row"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'baseline',
-                          justifyContent: 'center',
-                          gap: '20px',
-                          flexWrap: 'wrap',
-                          borderTop: '1px dashed var(--light-gray)',
-                          paddingTop: '14px',
-                          marginTop: '2px',
-                        }}
-                      >
-                        <button
-                          type="button"
-                          className="btn btn-ghost"
-                          id="welcome-walk-modal-cta-secondary"
-                          onClick={finishForNow}
-                        >
-                          Finish for now
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          id="welcome-walk-modal-cta-details"
-                          onClick={goDetailsAfterBooking}
-                        >
-                          Tell us about your dog
-                        </button>
-                      </div>
+                      {view === 'confirm-booking' ? (
+                        <>
+                          <h3
+                            id="welcome-walk-modal-confirmation-title"
+                            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
+                          >
+                            Did you book a time?
+                          </h3>
+                          <p className="form-note" style={{ margin: '0 0 16px' }}>
+                            The scheduler does not always tell us, so we would rather ask than guess.
+                          </p>
+                          <div id="welcome-walk-modal-confirm-actions">
+                            <button
+                              type="button"
+                              id="welcome-walk-modal-confirm-yes"
+                              className="btn btn-primary booking-forward-btn btn-accent"
+                              onClick={confirmBookedByHand}
+                            >
+                              Yes, it&apos;s booked
+                            </button>
+                            <button
+                              type="button"
+                              id="welcome-walk-modal-confirm-no"
+                              className="btn btn-primary booking-forward-btn btn-outline"
+                              onClick={() => setView('scheduler')}
+                            >
+                              Not yet — pick a time
+                            </button>
+                          </div>
+                        </>
+                      ) : null}
+
+                      {view === 'questions' ? (
+                        <>
+                          <h3
+                            id="welcome-walk-modal-confirmation-title"
+                            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
+                          >
+                            Thank you — your Meet &amp; Greet is booked
+                          </h3>
+                          <p className="form-note" style={{ margin: '0 0 4px' }}>
+                            We will be in contact. While you are here, a few questions so your walker
+                            arrives already knowing your dog.
+                          </p>
+                          {/* The same questionnaire the page carries, in its
+                              stepped carousel, with the booking already made:
+                              no phone-consult alternative and no scheduler to
+                              reopen. The address is carried in, so it is not
+                              typed twice. */}
+                          <MeetGreetForm
+                            paneId="welcome-walk-modal-questions"
+                            source={MODAL_SOURCE}
+                            layout="steps"
+                            bookedDetailsMode
+                            initialValues={{ email: email.trim() }}
+                            onSubmitted={() => setView('done')}
+                          />
+                        </>
+                      ) : null}
+
+                      {view === 'done' ? (
+                        <>
+                          <h3
+                            id="welcome-walk-modal-confirmation-title"
+                            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
+                          >
+                            All set — thank you
+                          </h3>
+                          <p className="form-note" style={{ margin: '0 0 12px' }}>
+                            Luis has your answers and will be in contact before the Meet &amp; Greet.
+                            If anything changes, reach him directly:
+                          </p>
+                          <div id="welcome-walk-modal-done-contacts">
+                            <a className="btn btn-primary booking-forward-btn btn-sm btn-accent" href={PHONE_HREF}>
+                              {PHONE_DISPLAY}
+                            </a>
+                            <a className="btn btn-primary booking-forward-btn btn-sm btn-outline" href={EMAIL_HREF}>
+                              {EMAIL_DISPLAY}
+                            </a>
+                          </div>
+                          <button
+                            type="button"
+                            id="welcome-walk-modal-done-close"
+                            className="btn btn-ghost"
+                            onClick={finishForNow}
+                          >
+                            Close
+                          </button>
+                        </>
+                      ) : null}
                     </div>
                   </div>
                 ) : (

@@ -330,11 +330,13 @@ nav {
 }
 
 
-/* The one-question booking prompt above the home questionnaire. */
-#home-booked-self-report { margin-bottom: 20px; text-align: center; }
-#home-booked-self-report-actions {
+/* Closing panels inside the welcome modal: the booking question, and the
+   direct contacts on the final thank-you. */
+#welcome-walk-modal-confirm-actions,
+#welcome-walk-modal-done-contacts {
   display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px;
 }
+#welcome-walk-modal-done-close { margin-top: 14px; }
 
 /* =============================================
    LAYOUT HELPERS
