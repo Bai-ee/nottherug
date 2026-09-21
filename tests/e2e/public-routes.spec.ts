@@ -24,6 +24,7 @@ const ROUTES: Array<{ path: string; h1: RegExp }> = [
   { path: '/book', h1: /^Book your free Meet & Greet$/i },
   // `.` stands in for the apostrophe: the copy uses a typographic one.
   { path: '/contact', h1: /^We.re real people with a real number$/i },
+  { path: '/signup', h1: /^What We.d Like to Know\.*$/i },
 ];
 
 // The standalone /services and /how-it-works routes were folded into the home

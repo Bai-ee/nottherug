@@ -31,6 +31,7 @@ export const PUBLIC_ROUTES: string[] = [
   '/neighborhoods/williamsburg',
   '/reviews',
   '/book',
+  '/signup',
 ];
 
 /**

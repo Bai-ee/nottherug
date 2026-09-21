@@ -23,6 +23,15 @@ export function useScrollToTopOnLoad() {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     };
 
+    // A hash from an earlier in-page jump (nav "Let's Get Started", the
+    // section rail) survives a reload or a back/forward return, and the
+    // browser would honour it and open the page at that section. Only a fresh
+    // navigation to a hash link is a deliberate request for that section.
+    const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    if (window.location.hash && navEntry && navEntry.type !== 'navigate') {
+      window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+    }
+
     toTop();
 
     // Safari/Firefox restore a bfcache entry's offset at `pageshow`, after

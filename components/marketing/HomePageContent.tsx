@@ -1,5 +1,5 @@
 import SiteNav from '@/components/SiteNav';
-import MeetGreetForm from '@/components/MeetGreetForm';
+import ContactSheetSection from './ContactSheetSection';
 import HomeHero from './HomeHero';
 import ProofMarquee from './ProofMarquee';
 import WalkConceptsMarquee from './WalkConceptsMarquee';
@@ -114,40 +114,8 @@ export default function HomePageContent() {
             crease at the seam. Their backgrounds are cleared inside this shell
             (see #home-closing-band-shell in globals.css). */}
         <div id="home-closing-band-shell">
-        <section className="section" id="home-contact-sheet-section">
-          <div className="container">
-            {/* The process steps close the page inside this band, directly
-                above the form they lead to — the strip dropped its own section
-                chrome so the green runs unbroken. */}
-            <div id="home-contact-sheet-header">
-              <div id="home-contact-sheet-header-copy">
-                <div className="stamp-label stamp-label-dark stamp-label-heading">Sign Up 05 · Let’s Get Started</div>
-                <h2>What We&apos;d Like to Know....</h2>
-              </div>
-              {/* Decorative: the halftone bridge clipping fills the empty half
-                  of this row on wide screens. Alt is empty on purpose — it
-                  carries no information the headline doesn't already give. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                id="home-contact-sheet-clipping"
-                src="/img/bg-section-graphic-1.webp"
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                decoding="async"
-                width={1620}
-                height={971}
-              />
-            </div>
-            <div id="home-book-form-wrap" className="booking-form-wrap">
-              <div className="booking-form" id="home-contact-sheet-form-sheet">
-                <div className="booking-form-body">
-                  <MeetGreetForm paneId="home-meetgreet" source="home" layout="full" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Same section as /signup renders on its own (ContactSheetSection). */}
+        <ContactSheetSection source="home" paneId="home-meetgreet" />
           <SiteFooter />
         </div>
 

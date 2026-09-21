@@ -184,7 +184,9 @@ nav {
    overhangs the band — at 12px the first link ran underneath it and could not
    be clicked. */
 .nav-links a {
-  padding: 7px 8px; border-radius: 4px;
+  /* 5px, not 8px: with the Sign Up entry the row was overlapping the paper
+     wordmark by ~32px at 1440px; the tighter pads give it back its slack. */
+  padding: 7px 5px; border-radius: 4px;
   font-size: 13px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255,255,255,0.7);
@@ -3882,3 +3884,9 @@ a.footer-contact-value:hover { color: white; }
 }
 .footer-link-btn:hover { color: white; }
 .footer-link-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* Narrow desktops: the six-entry nav row plus its CTAs needs a point less
+   type to clear the wordmark (measured 52px over at 1280px). */
+@media (min-width: 769px) and (max-width: 1360px) {
+  .nav-links a { font-size: 12px; padding: 7px 5px; }
+}

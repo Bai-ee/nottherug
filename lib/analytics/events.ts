@@ -34,6 +34,7 @@ export const TRACKED_ROUTES = [
   '/neighborhoods/williamsburg',
   '/reviews',
   '/safety',
+  '/signup',
 ] as const;
 
 export type TrackedRoute = (typeof TRACKED_ROUTES)[number];

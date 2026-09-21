@@ -19,6 +19,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/neighborhoods/williamsburg': 'Williamsburg',
   '/reviews': 'Reviews',
   '/safety': 'Safety',
+  '/signup': 'Sign Up',
 };
 
 /**

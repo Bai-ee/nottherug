@@ -54,6 +54,7 @@ const FOOTER_COMPANY: Array<{ href: string; label: string; id?: string; cta?: Ct
   { href: '/#home-featured-reviews-section', label: 'Reviews' },
   { href: '/#home-instagram-section', label: 'Instagram' },
   { href: '/#home-how-it-works-block', label: 'How It Works' },
+  { href: '/signup', label: 'Sign Up' },
 ];
 
 export default function SiteFooter() {
