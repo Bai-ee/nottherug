@@ -190,7 +190,8 @@ export default function SiteFooter() {
                 id="footer-book-luis-cta"
                 className="btn btn-primary btn-sm btn-accent"
                 cta="footer_book"
-              >Contact Luis, to set up a walk</TrackedCtaLink>
+                opensWelcomeModal
+              >Book a Meet &amp; Greet</TrackedCtaLink>
             </div>
             <div className="footer-bottom">
               <div className="footer-copy">© 2026 Not The Rug · 281 N 7th St, Ste 13, Brooklyn, NY 11211 · b/t Havemeyer St &amp; Meeker Ave · All rights reserved</div>

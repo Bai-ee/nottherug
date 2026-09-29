@@ -167,7 +167,7 @@ export default function HomeHero() {
             cta="hero_contact"
             onClick={openContactModal}
           >
-            Contact Luis, to set up a walk
+            Book a Meet &amp; Greet
           </TrackedCtaLink>
           <TrackedCtaAnchor
             href="#home-personalized-care-section"

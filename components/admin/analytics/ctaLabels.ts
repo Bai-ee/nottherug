@@ -16,16 +16,16 @@ export const CTA_LABELS: Record<CtaId, string> = {
   closing_trust_book: 'Homepage closing section: Book',
   neighborhood_detail_book: 'Williamsburg page: Book',
   footer_book: 'Footer: Book',
-  group_walk_card_submit: 'Homepage group walk card: Get started',
+  group_walk_card_submit: 'Homepage dog walking card: Book a Meet & Greet',
   welcome_modal_schedule: 'Welcome modal: Choose time',
   welcome_modal_details: 'Welcome modal: Answer questions first',
-  contact_modal_schedule: 'Contact modal: Schedule a Meet & Greet',
+  contact_modal_schedule: 'Contact modal: Book a Meet & Greet',
   service_modal_get_started: 'Service details modal: Contact Luis to get started',
 
   // Contact intent — a click toward talking to Luis, not an email or call.
   nav_contact: 'Top nav: Get started',
   footer_contact: 'Footer: Contact',
-  hero_contact: 'Homepage hero: Contact Luis',
+  hero_contact: 'Homepage hero: Book a Meet & Greet',
   neighborhood_detail_contact: 'Williamsburg page: Ask about coverage',
   meetgreet_question_contact: 'Meet & Greet form: Just have a question?',
 

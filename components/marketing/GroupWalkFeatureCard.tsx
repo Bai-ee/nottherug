@@ -542,7 +542,7 @@ export default function GroupWalkFeatureCard({
             onFocus={onEnter}
             onBlur={onLeave}
           >
-            Choose Time
+            Book a Meet &amp; Greet
           </button>
         </form>
       </div>

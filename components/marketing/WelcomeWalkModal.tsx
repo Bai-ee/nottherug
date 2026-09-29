@@ -574,6 +574,9 @@ export default function WelcomeWalkModal({
                 white-space: nowrap;
                 text-align: left;
               }
+              /* The gate headline is a full sentence, too long for one line:
+                 it wraps to two balanced lines instead of overflowing. */
+              #welcome-walk-modal-title { white-space: normal; text-wrap: balance; }
               /* Left column, back to front: the skyline collage, a paper wash,
                  the circular seal, then the walker and dogs on top. On open
                  the skyline pans and the walker walks in (keyframes below);
@@ -961,7 +964,7 @@ export default function WelcomeWalkModal({
               <div id="welcome-walk-modal-heading-panel" style={{ gridArea: 'head', padding: '10px clamp(16px, 2.4vw, 24px) 0' }}>
                 {view === 'gate' && (
                   <h2 id="welcome-walk-modal-title" className="hero-h1">
-                    Set Up an <em>In Person Meeting</em>
+                    Book a Meet &amp; Greet <em>to Schedule a Walk</em>
                   </h2>
                 )}
                 {/* Same display headline as the gate, in the same slot: the

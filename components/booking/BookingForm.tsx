@@ -731,7 +731,7 @@ export default function BookingForm({
                   ? "Send My Dog's Details"
                   : phoneConsult
                     ? 'Request Phone Consultation'
-                    : 'Set Up Time'}
+                    : 'Book a Meet & Greet'}
             </button>
             {/* Opens the Contact Us modal in place, so asking a question never
                 takes the visitor off the form they were filling in. */}
@@ -784,7 +784,7 @@ export default function BookingForm({
                   ? "Send My Dog's Details"
                   : phoneConsult
                     ? 'Request Phone Consultation'
-                    : 'Set Up Time'}
+                    : 'Book a Meet & Greet'}
             </button>
           )}
         </div>

@@ -217,7 +217,7 @@ test.describe('public routes', () => {
 
     await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
-    await page.getByRole('link', { name: /Contact Luis, to Get Started/ }).first().click();
+    await page.getByRole('link', { name: /Book a Meet & Greet/ }).first().click();
     await expect(page).toHaveURL(/\/book$/);
 
     // The nav "Book a Walk" is the one booking control that deliberately does

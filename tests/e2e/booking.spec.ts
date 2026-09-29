@@ -71,7 +71,7 @@ test.describe('booking form', () => {
   test('phone consultation unchecked: success offers scheduling, not a completed appointment', async ({ page }) => {
     await fillThroughWrapUpStep(page);
 
-    await page.getByRole('button', { name: 'Set Up Time' }).click();
+    await page.getByRole('button', { name: 'Book a Meet & Greet' }).click();
 
     await expect(page.getByText(/be in touch/i)).toBeVisible();
 

@@ -226,7 +226,7 @@ function ServiceCarouselSheet({
               openWelcomeWalkModal();
             }}
           >
-            Contact Luis, to Get Started
+            Book a Meet &amp; Greet
           </button>
         </div>
       </div>

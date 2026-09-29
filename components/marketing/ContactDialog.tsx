@@ -203,7 +203,7 @@ export default function ContactDialog({ open, onClose }: Props) {
                     openWelcomeWalkModal();
                   }}
                 >
-                  Schedule a Meet &amp; Greet
+                  Book a Meet &amp; Greet
                 </TrackedCtaLink>
               </div>
             </div>
