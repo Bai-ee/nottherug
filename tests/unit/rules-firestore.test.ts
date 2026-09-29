@@ -97,4 +97,46 @@ describe('firestore.rules', () => {
     await assertFails(db.collection('leads').doc('some-lead').collection('notes').doc('n1').get());
     await assertFails(db.collection('leads').doc('some-lead').collection('notes').doc('n1').set({ mine: true }));
   });
+
+  // Backup walker bench (plans/011): every collection holds applicant PII or
+  // dispatch state, so neither the public nor a signed-in admin may touch it
+  // from the client SDK; all access goes through server routes.
+  const BENCH_DOCS: Array<[string, string]> = [
+    ['benchSettings', 'config'],
+    ['benchPeople', 'bench_abc'],
+    ['benchCallouts', 'c1'],
+    ['benchCalloutClaims', 'c1'],
+    ['benchMessages', 'm1'],
+    ['benchShifts', 's1'],
+    ['benchRateLimits', 'apply_abc_123'],
+  ];
+
+  it('denies public reads and writes of every bench collection', async (ctx) => {
+    if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
+    const db = testEnv.unauthenticatedContext().firestore();
+    for (const [collection, id] of BENCH_DOCS) {
+      await assertFails(db.collection(collection).doc(id).get());
+      await assertFails(db.collection(collection).doc(id).set({ mine: true }));
+    }
+  });
+
+  it('denies a signed-in admin direct client access to bench collections', async (ctx) => {
+    if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
+    await testEnv.withSecurityRulesDisabled(async (ctxAdmin) => {
+      await ctxAdmin.firestore().collection('admins').doc('bench-admin@example.test').set({ role: 'admin' });
+    });
+    const db = testEnv.authenticatedContext('bench-admin-uid', { email: 'bench-admin@example.test' }).firestore();
+    for (const [collection, id] of BENCH_DOCS) {
+      await assertFails(db.collection(collection).doc(id).get());
+      await assertFails(db.collection(collection).doc(id).set({ mine: true }));
+    }
+  });
+
+  it('denies client claims and offers on a callout, so nobody can take a shift from the browser', async (ctx) => {
+    if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
+    const db = testEnv.authenticatedContext('walker-uid', { email: 'walker@example.test' }).firestore();
+    await assertFails(db.collection('benchCalloutClaims').doc('c1').set({ personId: 'me' }));
+    await assertFails(db.collection('benchCallouts').doc('c1').collection('offers').doc('p1').get());
+    await assertFails(db.collection('benchCallouts').doc('c1').collection('offers').doc('p1').set({ response: 'yes' }));
+  });
 });

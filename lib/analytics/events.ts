@@ -35,6 +35,8 @@ export const TRACKED_ROUTES = [
   '/reviews',
   '/safety',
   '/signup',
+  // The backup-walker application (plans/011): off-nav, linked from Indeed.
+  '/walk-with-us',
 ] as const;
 
 export type TrackedRoute = (typeof TRACKED_ROUTES)[number];

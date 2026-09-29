@@ -62,6 +62,48 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Backup walker bench (plans/011). Applicant and walker records hold PII
+    // (name, email, mobile, ZIP, resume path) and SMS threads; settings hold
+    // Luis's alert phone. The public application and the admin page reach all
+    // of it only through server routes with the service account, so every
+    // client read and write is denied, including for signed-in admins.
+    match /benchSettings/{id} {
+      allow read, write: if false;
+    }
+
+    match /benchPeople/{personId} {
+      allow read, write: if false;
+    }
+
+    // Callouts and their per-person offers (Phase 3). The offers subcollection
+    // is spelled out because a rule on the parent does not cover it.
+    match /benchCallouts/{calloutId} {
+      allow read, write: if false;
+
+      match /offers/{personId} {
+        allow read, write: if false;
+      }
+    }
+
+    // The atomic claim for a callout (Phase 3): exactly one server-side create
+    // wins. A client that could write here could claim a shift.
+    match /benchCalloutClaims/{calloutId} {
+      allow read, write: if false;
+    }
+
+    match /benchMessages/{id} {
+      allow read, write: if false;
+    }
+
+    match /benchShifts/{id} {
+      allow read, write: if false;
+    }
+
+    // Per-IP counters for the public bench routes, readable only by the server.
+    match /benchRateLimits/{id} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -20,6 +20,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/reviews': 'Reviews',
   '/safety': 'Safety',
   '/signup': 'Sign Up',
+  '/walk-with-us': 'Walk With Us',
 };
 
 /**
