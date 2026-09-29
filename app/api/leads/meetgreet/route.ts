@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { createHash } from 'node:crypto';
-import { fsCreateDoc, fsGetDoc, fsIncrementField, fsSetDoc } from '@/lib/server/firestoreRest';
+import { fsCreateDoc, fsGetDoc, fsIncrementField, fsMergeDoc } from '@/lib/server/firestoreRest';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
 import { parseLeadSubmission } from '@/lib/leads/validation';
@@ -17,6 +17,8 @@ export const maxDuration = 20;
 const MAX_BODY_BYTES = 20_000;
 
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+/** Rate-limit rows are disposable; expiresAt lets a Firestore TTL policy reap them. */
+const RATE_LIMIT_RETENTION_MS = 48 * 60 * 60 * 1000;
 const RATE_LIMIT_MAX_PER_WINDOW = 5;
 
 // The idempotency guard only needs to cover a client retrying after a
@@ -88,19 +90,19 @@ function clientIp(req: Request): string {
  * errors could bypass the limit; that is judged less bad than blocking real
  * customers during a Firestore incident.
  *
- * Operational note: `leadRateLimits/*` documents accumulate — one per IP per
- * RATE_LIMIT_WINDOW_MS window — and are never deleted. Each carries a
- * `windowStart` field, but it is a plain epoch-ms integer, not a Firestore
- * Timestamp, so a native TTL policy cannot target it as-is without a change
- * to firestoreRest.ts's value serialization (not owned by this task). No
- * cleanup job is included; this is a flagged follow-up, not a bug.
+ * Operational note: each `leadRateLimits/*` doc carries `expiresAt` (a Date,
+ * now + 48h) so a Firestore TTL policy on that field can reap them; the policy
+ * itself is configured in Firebase, not here.
  */
 async function checkRateLimit(ip: string): Promise<boolean> {
   try {
     const windowStart = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
     const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 24);
     const path = `leadRateLimits/${ipHash}_${windowStart}`;
-    const count = await fsIncrementField(path, 'count', 1, { windowStart });
+    const count = await fsIncrementField(path, 'count', 1, {
+      windowStart,
+      expiresAt: new Date(Date.now() + RATE_LIMIT_RETENTION_MS),
+    });
     return count <= RATE_LIMIT_MAX_PER_WINDOW;
   } catch (err) {
     console.error('[lead:meetgreet] rate limit check failed', err instanceof Error ? err.message : 'unknown');
@@ -232,14 +234,37 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
   return notifications;
 }
 
+/** Best-effort read of the capture row's self-reported booking hint for this address. */
+async function readCaptureBookedHint(email: string): Promise<boolean> {
+  try {
+    const capture = await fsGetDoc(`leads/${captureIdForEmail(email)}`);
+    return capture.exists && capture.data?.bookedSelfReported === true;
+  } catch {
+    return false;
+  }
+}
+
+function captureIdForEmail(email: string): string {
+  return `capture_${createHash('sha256').update(email.trim().toLowerCase()).digest('hex').slice(0, 32)}`;
+}
+
+/** Runs after the response when possible (serverless may freeze a floating promise); awaits inline otherwise. */
+async function runAfterResponse(task: () => Promise<void>): Promise<void> {
+  try {
+    after(task);
+  } catch {
+    await task();
+  }
+}
+
 /** Flips the email-keyed capture row (app/api/leads/capture) to converted. */
 async function markCaptureConverted(email: string, leadId: string, at: string): Promise<void> {
   try {
-    const captureId = `capture_${createHash('sha256').update(email.trim().toLowerCase()).digest('hex').slice(0, 32)}`;
+    const captureId = captureIdForEmail(email);
     const existing = await fsGetDoc(`leads/${captureId}`);
     if (!existing.exists || !existing.data) return;
-    await fsSetDoc(`leads/${captureId}`, {
-      ...existing.data,
+    // Merge only the conversion fields so a capture written concurrently is not clobbered.
+    await fsMergeDoc(`leads/${captureId}`, {
       status: 'converted',
       convertedLeadId: leadId,
       convertedAt: at,
@@ -277,6 +302,11 @@ export async function POST(req: Request) {
   const id = computeSubmissionKey(validation.data, dedupeWindowStart);
   const submittedAt = new Date().toISOString();
   const lead = buildLeadRecord(id, submittedAt, validation.data);
+  // Carry the capture's self-reported booking hint onto the lead itself, since
+  // the admin table hides the converted capture row.
+  if (await readCaptureBookedHint(validation.data.email)) {
+    (lead as unknown as Record<string, unknown>).bookedSelfReported = true;
+  }
 
   // Bucket-boundary lookback: an identical retry that straddles the current
   // Known limitation, deliberately not fixed with a transaction: this closes the
@@ -315,7 +345,7 @@ export async function POST(req: Request) {
   // Best effort: the partial capture for this address is no longer
   // outstanding, so it stops showing as a lead waiting on answers. A failure
   // here must never fail the submission the customer is waiting on.
-  void markCaptureConverted(validation.data.email, id, submittedAt);
+  await runAfterResponse(() => markCaptureConverted(validation.data.email, id, submittedAt));
 
   if (!created) {
     // Same content hashed to an id that already exists — a retry of a request
@@ -337,7 +367,8 @@ export async function POST(req: Request) {
   lead.notifications = notifications;
 
   try {
-    await fsSetDoc(`leads/${id}`, lead as unknown as Record<string, unknown>);
+    // Merge only notifications: a booked flag merged onto this lead meanwhile must survive.
+    await fsMergeDoc(`leads/${id}`, { notifications });
   } catch (err) {
     // The lead itself is already saved; only the notification-status write failed.
     console.error('[lead:meetgreet] notification status persist failed', err instanceof Error ? err.message : 'unknown');

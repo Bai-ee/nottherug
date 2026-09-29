@@ -28,6 +28,9 @@ const fsGetDoc = vi.fn(async (path: string) => {
 const fsSetDoc = vi.fn(async (path: string, data: Record<string, unknown> = {}) => {
   docsByPath.set(path, data);
 });
+const fsMergeDoc = vi.fn(async (path: string, data: Record<string, unknown> = {}) => {
+  docsByPath.set(path, { ...(docsByPath.get(path) ?? {}), ...data });
+});
 const fsDeleteDoc = vi.fn(async () => {});
 const fsQueryCollection = vi.fn(async () => [] as unknown[]);
 const fsIncrementField = vi.fn(async () => 1);
@@ -36,6 +39,7 @@ vi.mock('@/lib/server/firestoreRest', () => ({
   fsCreateDoc,
   fsGetDoc,
   fsSetDoc,
+  fsMergeDoc,
   fsDeleteDoc,
   fsQueryCollection,
   fsIncrementField,

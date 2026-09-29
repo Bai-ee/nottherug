@@ -207,6 +207,7 @@ document is created:
 | --- | --- | --- |
 | `analytics_events` | `expiresAt` | 13 months after the event was received |
 | `analyticsRateLimits` | `expiresAt` | 48 hours after the counter's minute |
+| `leadRateLimits` | `expiresAt` | 48 hours after the counter was written (plan 012; policy NOT yet enabled) |
 
 The field is a real Firestore timestamp, which is what a TTL policy needs.
 Nothing deletes the documents until that policy exists — stamping is done in
@@ -222,6 +223,9 @@ gcloud firestore fields ttls update expiresAt \
 
 gcloud firestore fields ttls update expiresAt \
   --collection-group=analyticsRateLimits --enable-ttl --project=<project-id>
+
+gcloud firestore fields ttls update expiresAt \
+  --collection-group=leadRateLimits --enable-ttl --project=<project-id>
 ```
 
 Verify with:

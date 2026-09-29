@@ -12,6 +12,11 @@ export const runtime = 'nodejs';
 // plain local const (not exported) since Next's route.ts only recognizes HTTP
 // method and route-config exports.
 const LEADS_LIST_CAP = 500;
+// The cap is applied AFTER dropping converted captures, so those rows cannot
+// eat into the 500 shown. Reads a bounded 2x window to make room for them.
+// Trade-off: if more than half the newest 1000 rows are converted captures the
+// list can still come up short of 500; never an unbounded read.
+const LEADS_READ_CEILING = LEADS_LIST_CAP * 2;
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
@@ -25,14 +30,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       'leads',
       'submittedAt',
       'DESCENDING',
-      LEADS_LIST_CAP,
+      LEADS_READ_CEILING,
     )) as unknown as AdminLeadRecord[];
 
     // A capture whose person has since completed the questionnaire has its
     // full lead already in this same read, under its own id — showing the
     // capture row too would double-count that person, so it is dropped here,
     // once, rather than in every consumer of this route.
-    const visible = leads.filter((lead) => !isConvertedCapture(lead));
+    const visible = leads.filter((lead) => !isConvertedCapture(lead)).slice(0, LEADS_LIST_CAP);
 
     return NextResponse.json({ leads: visible, cap: LEADS_LIST_CAP });
   } catch (err) {

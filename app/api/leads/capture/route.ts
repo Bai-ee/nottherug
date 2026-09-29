@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createHash } from 'node:crypto';
-import { fsIncrementField, fsSetDoc, fsGetDoc } from '@/lib/server/firestoreRest';
+import { fsIncrementField, fsMergeDoc, fsGetDoc } from '@/lib/server/firestoreRest';
 import { isValidEmail } from '@/lib/leads/validation';
-import { LEAD_SCHEMA_VERSION } from '@/lib/leads/contract';
+import { HONEYPOT_FIELD_NAME, LEAD_SCHEMA_VERSION } from '@/lib/leads/contract';
 
 /**
  * The first half of the booking-first journey: someone gives an email and
@@ -29,6 +29,8 @@ export const maxDuration = 10;
 const MAX_BODY_BYTES = 4_000;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_PER_WINDOW = 8;
+/** Rate-limit rows are disposable; expiresAt lets a Firestore TTL policy reap them. */
+const RATE_LIMIT_RETENTION_MS = 48 * 60 * 60 * 1000;
 
 /** Only the entry points that actually capture an email may write one. */
 const ALLOWED_SOURCES = new Set(['welcome-modal', 'services-preview', 'home', 'home-rates', 'contact', 'book']);
@@ -52,7 +54,10 @@ async function checkRateLimit(ip: string): Promise<boolean> {
   try {
     const windowStart = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
     const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 24);
-    const count = await fsIncrementField(`leadRateLimits/${ipHash}_${windowStart}`, 'count', 1, { windowStart });
+    const count = await fsIncrementField(`leadRateLimits/${ipHash}_${windowStart}`, 'count', 1, {
+      windowStart,
+      expiresAt: new Date(Date.now() + RATE_LIMIT_RETENTION_MS),
+    });
     return count <= RATE_LIMIT_MAX_PER_WINDOW;
   } catch (err) {
     console.error('[lead:capture] rate limit check failed', err instanceof Error ? err.message : 'unknown');
@@ -83,7 +88,15 @@ export async function POST(req: Request) {
     return errorResponse(400, 'Invalid JSON');
   }
 
-  const input = (parsed ?? {}) as { email?: unknown; source?: unknown; booked?: unknown };
+  const input = (parsed ?? {}) as { email?: unknown; source?: unknown; booked?: unknown; [key: string]: unknown };
+
+  // Same honeypot as the meetgreet form: a filled hidden field means a bot.
+  // Answer success-shaped and store nothing so it learns nothing.
+  const honeypot = input[HONEYPOT_FIELD_NAME];
+  if (typeof honeypot === 'string' && honeypot.trim().length > 0) {
+    return NextResponse.json({ ok: true, id: 'capture' });
+  }
+
   const email = typeof input.email === 'string' ? input.email.trim() : '';
   const source = typeof input.source === 'string' ? input.source : '';
   // The visitor's own browser saying Calendly reported a completion. A hint,
@@ -104,7 +117,9 @@ export async function POST(req: Request) {
     const status = (existing.exists && existing.data?.status === 'converted') ? 'converted' : 'partial';
     const alreadyBooked = existing.exists && existing.data?.bookedSelfReported === true;
 
-    await fsSetDoc(`leads/${id}`, {
+    // Merge, not replace: a re-capture must not wipe convertedLeadId /
+    // convertedAt, which the meetgreet route wrote onto this same document.
+    await fsMergeDoc(`leads/${id}`, {
       id,
       type: 'capture',
       schemaVersion: LEAD_SCHEMA_VERSION,
@@ -115,6 +130,17 @@ export async function POST(req: Request) {
       lastSeenAt: now,
       bookedSelfReported: booked || alreadyBooked,
     });
+
+    // Already converted: the admin table shows the full lead, not this row,
+    // so a booked signal arriving now must land on that lead. Best effort.
+    const convertedLeadId = existing.exists ? existing.data?.convertedLeadId : undefined;
+    if (booked && typeof convertedLeadId === 'string' && convertedLeadId) {
+      try {
+        await fsMergeDoc(`leads/${convertedLeadId}`, { bookedSelfReported: true });
+      } catch (err) {
+        console.error('[lead:capture] booked carry-over failed', err instanceof Error ? err.message : 'unknown');
+      }
+    }
   } catch (err) {
     console.error('[lead:capture] firestore write failed', err instanceof Error ? err.message : 'unknown');
     return errorResponse(500, 'Could not save. Please try again.');
