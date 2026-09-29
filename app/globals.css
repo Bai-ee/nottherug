@@ -3913,8 +3913,8 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   letter-spacing: 0.16em;
   line-height: 1.3;
   color: var(--ink);
-  margin-bottom: 14px;
-  padding-bottom: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
   background: linear-gradient(var(--olive), var(--olive)) left bottom / 28px 2px no-repeat;
 }
 #contact-modal-detail-list .contact-modal-detail-value { font-size: 15px; font-weight: 500; line-height: 1.55; text-wrap: balance; }
@@ -3948,42 +3948,42 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
    The rest is its own: a slide carousel (Embla) whose slides carry the
    headline and a ruled grid of fact cells, then a fixed footer with the
    controls and the action. */
-/* The sheet is exactly as tall as the tallest service: Embla's slides sit in
-   one stretching flex row, so every slide takes the tallest one's height and
-   stepping through the carousel never resizes the sheet. No max-height — when
-   the tallest service is taller than the screen (phones), the overlay scrolls
-   instead of the sheet clipping, so the sheet is top-aligned with auto
-   margins to stay centred when it fits. */
-#service-modal { align-items: flex-start; }
+/* One fixed height for every service — 75% of the screen on desktop, 88% on
+   phones (below) — so the sheet never resizes between slides and never runs
+   off the screen. A service with more copy than that scrolls inside its own
+   slide; the stamp bar and the footer controls stay put. */
 #service-modal-sheet {
   max-width: 640px;
+  height: 75dvh;
   max-height: none;
-  margin: auto 0;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
 }
 /* Embla: the viewport clips, the track is one flex row, and each service is a
-   full-width slide. Every slide is as tall as the tallest, and scrolls on its
-   own when the sheet is shorter than its content. pan-y keeps vertical
+   full-width slide, as tall as the viewport, and scrolls on its own when its
+   content is taller. pan-y keeps vertical
    scrolling with the browser while horizontal drags (touch or mouse) go to the
    carousel. */
 #service-modal-viewport { overflow: hidden; min-height: 0; cursor: grab; }
 #service-modal-viewport:active { cursor: grabbing; }
-#service-modal-track { display: flex; align-items: stretch; touch-action: pan-y pinch-zoom; }
+#service-modal-track { display: flex; height: 100%; touch-action: pan-y pinch-zoom; }
 .service-modal-slide {
   flex: 0 0 100%;
   min-width: 0;
-  /* Column, so the paper sheet below can fill whatever height the tallest
-     slide sets. */
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Column, so the paper sheet below fills the slide when a service is
+     shorter than the sheet. */
   display: flex;
   flex-direction: column;
 }
 .service-modal-slide-heading {
   container-type: inline-size;
-  padding: 10px clamp(16px, 2.4vw, 24px) 0;
+  padding: 4px clamp(16px, 2.4vw, 24px) 0;
 }
 #service-modal .service-modal-title {
   margin: 0;
-  font-size: min(9cqw, 56px);
+  font-size: min(8cqw, 44px);
   white-space: normal;
   text-wrap: balance;
 }
@@ -3991,7 +3991,7 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  padding: 14px clamp(16px, 2.4vw, 24px) 8px;
+  padding: 10px clamp(16px, 2.4vw, 24px) 6px;
 }
 /* Flat paper sheet, as the contact modal's: the ruled lines stay straight. */
 .service-modal-details-sheet {
@@ -4006,10 +4006,13 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   display: flex;
   flex-direction: column;
 }
+/* The dashed rules already mark the sheet's inner edge, so the form body's
+   default 36px padding is only side gutter here. */
 .service-modal-details-sheet .booking-form-body {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  padding: 0 clamp(14px, 2.2vw, 22px);
 }
 /* Three ruled rows for every service: The Walk, the rates panel, and a
    one-line footnote strip. The rates panel is the 1fr row — whatever spare
@@ -4025,7 +4028,7 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 }
 .service-modal-detail-list .contact-modal-detail {
   min-width: 0;
-  padding: 18px 0;
+  padding: 13px 0;
   border-bottom: 1px dashed rgba(36, 35, 33, 0.3);
 }
 /* One rates cell, or two side by side (Dog Walking: one dog / two dogs). */
@@ -4039,14 +4042,14 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 18px 20px 18px 0;
+  padding: 13px 20px 13px 0;
   border-bottom: none;
 }
 /* A lone rates cell centres its prices in the spare height; side-by-side
    cells stay top-aligned so their headers share a line. */
 .service-modal-rates-row .contact-modal-detail:only-child { justify-content: center; }
 .service-modal-rates-row .contact-modal-detail + .contact-modal-detail {
-  padding: 18px 0 18px 20px;
+  padding: 13px 0 13px 20px;
   border-left: 1px dashed rgba(36, 35, 33, 0.3);
 }
 /* Rate lines sit side by side where the cell is wide enough (a single full
@@ -4056,7 +4059,7 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 /* Footnote strip: label and notes on one line. */
 .service-modal-detail-list .service-modal-detail-notes {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px;
-  padding: 14px 0;
+  padding: 10px 0;
 }
 .service-modal-detail-list .service-modal-detail-notes dt { margin-bottom: 0; }
 .service-modal-detail-notes dd { display: grid; gap: 2px; }
@@ -4070,14 +4073,14 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 .service-modal-rate { display: grid; align-content: start; gap: 4px; margin: 0; flex: 1 1 180px; }
 .service-modal-rate-amount {
   font-family: var(--font-display);
-  font-size: clamp(30px, 4.4vw, 38px);
+  font-size: clamp(28px, 3.6vw, 34px);
   line-height: 0.95;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
 /* A lone rates panel has the room: its prices step up a size. */
 .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount {
-  font-size: clamp(36px, 5.6vw, 48px);
+  font-size: clamp(32px, 4.4vw, 40px);
 }
 .service-modal-rate-terms {
   font-size: 13px; line-height: 1.45;
@@ -4088,17 +4091,17 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
    centred and upright. */
 #service-modal-footer-panel {
   display: grid;
-  gap: 14px;
-  padding: 12px clamp(16px, 2.4vw, 24px) clamp(16px, 2.4vw, 24px);
+  gap: 10px;
+  padding: 10px clamp(16px, 2.4vw, 24px) clamp(14px, 2vw, 20px);
 }
 #service-modal-get-started-cta { justify-self: center; justify-content: center; text-align: center; transform: none; }
 #service-modal-get-started-cta:hover { transform: translateY(-1px); }
 #service-modal-get-started-cta:active { transform: scale(0.97); }
 /* Phones: everything steps down a size so as much of a service as possible
-   fits in one screen. The sheet keeps one shared height here too (the
-   tallest service's), so nothing shifts between slides at any width. */
+   fits in one screen, and the sheet takes 88% of the screen height. */
 @media (max-width: 767px) {
   #service-modal { padding: 8px; }
+  #service-modal-sheet { height: 88dvh; }
   #service-modal-bar-panel { padding: 12px 14px 0; }
   #service-modal-close-btn { padding: 5px 9px; }
   #service-modal .service-modal-slide-heading { padding: 6px 14px 0; }
