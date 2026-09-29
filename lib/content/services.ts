@@ -1,7 +1,7 @@
 // Service names, copy, and prices for the home page rates section. The copy
 // here is the owner-approved service verbiage (2026-09-29) and is the source
 // of truth: the featured card, the rate columns, the service detail modal
-// (ServiceDetailDialog), the welcome modal and the footer's rate links all
+// (ServiceDetailDialog) and the footer's rate links all
 // read from these entries. The home page shows only the name, headline price
 // and `fineprint`; everything else lives in the detail modal.
 
@@ -39,7 +39,7 @@ export interface ServicePreviewItem {
   notes?: readonly string[];
 }
 
-/** The headline package. Rendered as the featured rate card AND in the welcome modal. */
+/** The headline package, rendered as the featured rate card. */
 export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
   title: 'Dog Walking',
   copy: '45-minute walks. Small groups of up to three dogs.',
@@ -70,12 +70,6 @@ export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
   ],
   notes: ['All rates are subject to applicable sales tax.'],
 };
-
-/**
- * Compact label for the same package, used where there is no room for the
- * copy line (the welcome modal). Keep the duration matching `copy` above.
- */
-export const GROUP_WALK_SHORT_LABEL = '45-Minute Dog Walking';
 
 /** Small print under the headline price wherever it appears alone. */
 export const GROUP_WALK_PRICE_NOTE = '+ sales tax · 9+ walks a month';

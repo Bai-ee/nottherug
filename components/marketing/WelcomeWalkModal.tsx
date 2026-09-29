@@ -3,11 +3,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
-import {
-  GROUP_WALK_PREVIEW,
-  GROUP_WALK_SHORT_LABEL,
-  GROUP_WALK_PRICE_NOTE,
-} from '@/lib/content/services';
 import { SERVICE_AREA_LABEL } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
 import {
@@ -552,6 +547,7 @@ export default function WelcomeWalkModal() {
                 font-size: min(7.9cqw, 56px);
                 margin: 0;
                 white-space: nowrap;
+                text-align: left;
               }
               /* Left column: skyline collage behind, the carousel card's walker
                  illustration across the full panel width. Static — no hover. */
@@ -628,31 +624,6 @@ export default function WelcomeWalkModal() {
                 text-underline-offset: 5px;
               }
               #welcome-walk-modal-cta-secondary::after { content: none; }
-              #welcome-walk-modal-package-line h3,
-              #welcome-walk-modal-package-line .svc-price { font-size: 19px !important; }
-              /* Unit over the price, right-aligned, matching
-                 #home-group-walk-feature-price-block. */
-              #welcome-walk-modal-price-block {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 1px;
-                text-align: right;
-              }
-              #welcome-walk-modal-unit {
-                font-family: var(--font-body);
-                font-size: 12px;
-                color: var(--mid-gray);
-                line-height: 1;
-              }
-              #welcome-walk-modal-now { margin: 0; line-height: 1; }
-              #welcome-walk-modal-tax-note {
-                font-family: var(--font-type);
-                font-size: 10px;
-                color: var(--mid-gray);
-                text-align: right;
-                margin: 4px 0 0;
-              }
               #welcome-walk-modal-fields { gap: 8px !important; }
               /* Padding lives here, not inline: the stacked layout needs to override
                  the bottom value, and an inline shorthand cannot be overridden. */
@@ -727,19 +698,16 @@ export default function WelcomeWalkModal() {
                 }
                 #welcome-walk-modal-cta-row { justify-content: center !important; gap: 8px !important; }
                 /* Fit the whole dialog in a phone viewport with no internal
-                   scrolling: shorter art strip, smaller title, the tax and
-                   rate fine print dropped (the /book page repeats them),
-                   tighter sheet spacing and compact CTAs. */
+                   scrolling: shorter art strip, smaller title, tighter sheet
+                   spacing and compact CTAs. */
                 #welcome-walk-modal-shell { max-height: calc(100dvh - 12px) !important; }
                 #welcome-walk-modal-art-panel { min-height: 88px !important; }
                 #welcome-walk-modal-heading-panel { padding-top: 4px !important; }
                 #welcome-walk-modal-title,
                 #welcome-walk-modal-questions-title,
                 #welcome-walk-modal-done-title { font-size: clamp(26px, 7.4vw, 34px) !important; line-height: 1 !important; }
-                #welcome-walk-modal-tax-note, #welcome-walk-modal-rate-fineprint { display: none !important; }
                 #welcome-walk-modal-form-panel { padding-top: 6px !important; padding-bottom: 10px !important; }
                 #welcome-walk-modal-sheet .booking-form-body { padding: 10px 12px 12px !important; }
-                #welcome-walk-modal-package-line { margin-bottom: 4px !important; padding-bottom: 6px !important; }
                 #welcome-walk-modal-fields { gap: 6px !important; }
                 #welcome-walk-modal-fields .form-group { margin: 0 !important; }
                 #welcome-walk-modal-cta-primary, #welcome-walk-modal-cta-secondary, #welcome-walk-modal-cta-details {
@@ -1035,36 +1003,6 @@ export default function WelcomeWalkModal() {
                   <form id="welcome-walk-modal-form" onSubmit={handleFormSubmit} noValidate>
                     <div id="welcome-walk-modal-sheet" className="booking-form">
                       <div className="booking-form-body">
-                        {/* Same headline rate the featured Dog Walking card
-                            shows; both read it from lib/content/services.ts. */}
-                        <div
-                          id="welcome-walk-modal-package-line"
-                          style={{
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'space-between',
-                            gap: '16px',
-                            flexWrap: 'wrap',
-                            borderBottom: '1px solid rgba(36, 35, 33, 0.18)',
-                            paddingBottom: '10px',
-                            marginBottom: '4px',
-                          }}
-                        >
-                          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: 0 }}>
-                            {GROUP_WALK_SHORT_LABEL}
-                          </h3>
-                          <div id="welcome-walk-modal-price-block">
-                            <span id="welcome-walk-modal-unit">{GROUP_WALK_PREVIEW.priceUnit}</span>
-                            <div className="svc-price" id="welcome-walk-modal-now">
-                              {GROUP_WALK_PREVIEW.price}
-                            </div>
-                          </div>
-                        </div>
-                        <p id="welcome-walk-modal-tax-note">{GROUP_WALK_PRICE_NOTE}</p>
-                        <p id="welcome-walk-modal-rate-fineprint" className="form-note" style={{ margin: '0 0 12px' }}>
-                          This is your free Meet &amp; Greet. The rate above applies to walks booked after it.
-                        </p>
-
                         <div id="welcome-walk-modal-fields" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                           <div className="form-group">
                             <label htmlFor="welcome-walk-modal-email-input">Email Address</label>
@@ -1183,7 +1121,7 @@ export default function WelcomeWalkModal() {
                                 No Thanks
                               </button>
                               <button type="submit" className="btn btn-primary btn-accent" id="welcome-walk-modal-cta-primary">
-                                Contact Luis, to Get Started
+                                Set Up In Person Meeting
                               </button>
                             </>
                           )}
