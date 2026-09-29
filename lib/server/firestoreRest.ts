@@ -112,6 +112,8 @@ export async function fsSetDoc(path: string, data: Record<string, unknown>): Pro
  * a unit (the mask is per top-level key).
  */
 export async function fsMergeDoc(path: string, data: Record<string, unknown>): Promise<void> {
+  // An empty updateMask means "replace the whole document" — the opposite of a merge.
+  if (Object.keys(data).length === 0) return;
   const token = await getToken();
   const mask = Object.keys(data)
     .map((key) => `updateMask.fieldPaths=${encodeURIComponent(fieldPath(key))}`)

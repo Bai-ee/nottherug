@@ -3,7 +3,7 @@
  * whole document (no updateMask), which is what wiped convertedLeadId on a
  * re-capture (plan 012 F5). Skips, with a reason, when no emulator is reachable.
  */
-import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
 
 const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const PROJECT = 'demo-firestore-merge';
@@ -69,5 +69,15 @@ describe('fsMergeDoc', () => {
     await fsSetDoc('captures/b', { a: 3 });
     const { data } = await fsGetDoc('captures/b');
     expect(data).toEqual({ a: 3 });
+  });
+});
+
+describe('fsMergeDoc with no fields', () => {
+  it('writes nothing (an empty updateMask would replace the whole document)', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    const { fsMergeDoc } = await import('@/lib/server/firestoreRest');
+    await fsMergeDoc('captures/none', {});
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
   });
 });

@@ -1,5 +1,6 @@
 import { fsQueryCollection } from '@/lib/server/firestoreRest';
 import type { LeadRecord } from './contract';
+import { isConvertedCapture, isOutstandingCapture, type AdminLeadRecord } from '@/components/admin/leads/adminLeadRecord';
 
 /** @deprecated use LeadRecord from '@/lib/leads/contract' — kept as an alias for existing imports. */
 export type LeadDoc = LeadRecord;
@@ -15,6 +16,9 @@ export type LeadStats = {
     last7Days: number;
     last30Days: number;
   };
+  /** Open email-only captures (someone gave an email, has not answered the questionnaire).
+   *  Kept out of every lead count above so nobody is counted twice or as an empty lead. */
+  emailsCaptured: { yesterday: number; last7Days: number; last30Days: number };
   byDay: Array<{ date: string; count: number }>;
   bySource: Record<string, number>;
 };
@@ -60,6 +64,7 @@ export async function getLeadStats(rangeDays = 30): Promise<LeadStats> {
   const yesterdayLeads: LeadDoc[] = [];
   let last7 = 0;
   let last30 = 0;
+  const emailsCaptured = { yesterday: 0, last7Days: 0, last30Days: 0 };
 
   const sevenLabels = new Set<string>();
   const thirtyLabels = new Set<string>();
@@ -70,10 +75,19 @@ export async function getLeadStats(rangeDays = 30): Promise<LeadStats> {
   }
 
   for (const lead of all) {
+    // A converted capture's person already has their own lead row.
+    if (isConvertedCapture(lead as AdminLeadRecord)) continue;
     if (!lead.submittedAt) continue;
     const submitted = new Date(lead.submittedAt);
     if (Number.isNaN(submitted.getTime())) continue;
     const dayLabel = isoDateInTZ(submitted, TZ);
+
+    if (isOutstandingCapture(lead as AdminLeadRecord)) {
+      if (dayLabel === yesterdayLabel) emailsCaptured.yesterday++;
+      if (sevenLabels.has(dayLabel)) emailsCaptured.last7Days++;
+      if (thirtyLabels.has(dayLabel)) emailsCaptured.last30Days++;
+      continue;
+    }
 
     if (byDay.has(dayLabel)) byDay.set(dayLabel, byDay.get(dayLabel)! + 1);
     if (sevenLabels.has(dayLabel)) last7++;
@@ -108,6 +122,7 @@ export async function getLeadStats(rangeDays = 30): Promise<LeadStats> {
       last7Days: last7,
       last30Days: last30,
     },
+    emailsCaptured,
     byDay: byDayArr,
     bySource,
   };

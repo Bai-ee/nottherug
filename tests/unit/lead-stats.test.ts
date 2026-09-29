@@ -100,3 +100,22 @@ describe('getLeadStats', () => {
     expect(byDate.get('2026-10-31')).toBe(1);
   });
 });
+
+describe('getLeadStats: captures', () => {
+  it('excludes converted captures, and counts open captures separately from leads', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-15T17:00:00.000Z'));
+    fsQueryCollection.mockResolvedValueOnce([
+      lead('real', '2026-01-14T15:00:00.000Z'),
+      lead('capture_done', '2026-01-14T14:00:00.000Z', { type: 'capture', status: 'converted' } as Partial<LeadRecord>),
+      lead('capture_open', '2026-01-14T13:00:00.000Z', { type: 'capture', status: 'partial', ownerName: undefined } as Partial<LeadRecord>),
+    ]);
+    const { getLeadStats } = await import('@/lib/leads/stats');
+    const stats = await getLeadStats(7);
+    expect(stats.yesterday.count).toBe(1);
+    expect(stats.totals.last7Days).toBe(1);
+    expect(stats.bySource['book-page']).toBe(1);
+    expect(stats.emailsCaptured).toEqual({ yesterday: 1, last7Days: 1, last30Days: 1 });
+    vi.useRealTimers();
+  });
+});
