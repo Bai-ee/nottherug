@@ -60,7 +60,7 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
     pages: [],
 
     // Zero-filled for every live CTA id, matching what the reporting service
-    // returns for a quiet period. As of the locked 16-id contract, CTA_IDS and
+    // returns for a quiet period. CTA_IDS and
     // LIVE_CTA_IDS are the same list (lib/analytics/events.ts) — the nine
     // stale "reserved" ids that used to need filtering out here were removed
     // from the contract entirely, not just excluded from this zero-fill.
@@ -70,7 +70,7 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
       formStarts: 0,
       steps: BOOKING_STEPS.map((step) => ({ step, sessions: 0 })),
       dialogOpened: 0,
-      phoneConsultPath: 0,
+      savedSchedulerNotOpened: 0,
       calendlyScheduled: 0,
     },
 

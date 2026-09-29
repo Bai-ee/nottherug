@@ -15,6 +15,7 @@ vi.mock('@/lib/server/firestoreRest', () => ({
   fsQueryCollection,
   fsGetDoc: vi.fn(),
   fsSetDoc: vi.fn(),
+  fsMergeDoc: vi.fn(),
   fsCreateDoc: vi.fn(),
   fsDeleteDoc: vi.fn(),
   fsIncrementField: vi.fn(),
@@ -88,7 +89,7 @@ describe('GET /admin/leads', () => {
     expect(res.status).toBe(200);
     expect(body.leads).toEqual([{ id: 'a' }]);
     expect(typeof body.cap).toBe('number');
-    expect(fsQueryCollection).toHaveBeenCalledWith('leads', 'submittedAt', 'DESCENDING', body.cap);
+    expect(fsQueryCollection).toHaveBeenCalledWith('leads', 'submittedAt', 'DESCENDING', body.cap * 2);
   });
 
   it('excludes a capture row already converted to a full lead, but keeps outstanding captures and meetgreet leads', async () => {
@@ -105,5 +106,18 @@ describe('GET /admin/leads', () => {
 
     expect(res.status).toBe(200);
     expect(body.leads.map((l: { id: string }) => l.id)).toEqual(['capture_outstanding', 'meetgreet_1']);
+  });
+
+  it('applies the row cap after dropping converted captures', async () => {
+    verifyAdmin.mockResolvedValue('admin@example.test');
+    const converted = Array.from({ length: 300 }, (_, i) => ({ id: `c${i}`, type: 'capture', status: 'converted' }));
+    const real = Array.from({ length: 600 }, (_, i) => ({ id: `m${i}`, type: 'meetgreet' }));
+    fsQueryCollection.mockResolvedValue([...converted, ...real]);
+
+    const { GET } = await import('@/app/admin/leads/route');
+    const body = await (await GET(leadsRequest({ Authorization: 'Bearer good-token' }))).json();
+
+    expect(body.leads).toHaveLength(body.cap);
+    expect(body.leads[0].id).toBe('m0');
   });
 });

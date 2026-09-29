@@ -68,9 +68,9 @@ Where to find things, by question:
   `app/robots.ts` and `app/sitemap.ts` generate `/robots.txt` and `/sitemap.xml` from
   `lib/content/site.ts`'s `PUBLIC_ROUTES` list.
 - **Where does analytics tracking live?** `lib/analytics/track.ts` — a thin, dependency-free
-  `track(event, payload)` that no-ops unless `NEXT_PUBLIC_ANALYTICS_ENDPOINT` is set. It
-  strips anything resembling a name/email/phone/note before sending. See its file comment
-  before adding a new event or a real provider.
+  `track(event, payload)` that no-ops unless `NEXT_PUBLIC_ANALYTICS_ENABLED=true` was set at
+  build time. It posts allowlisted events to the first-party `/api/track` route and strips
+  anything resembling a name/email/phone/note. See its file comment before adding a new event.
 - **Where is the daily founder brief pipeline?** `not-the-rug-brief/` (the retained
   CommonJS pipeline) and `lib/not-the-rug-brief/` (TypeScript reads/types/persistence used
   by the admin dashboard and cron routes). `lib/generator/` and `lib/media/` handle the

@@ -4,6 +4,12 @@ function escape(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+/** Older or partial docs can lack any of these fields; skip what is missing rather than print "undefined". */
+function leadTextLine(l: LeadDoc): string {
+  const who = [l.ownerName, l.dogName ? `(${l.dogName})` : ''].filter(Boolean).join(' ');
+  return ['·', ...[who, l.neighborhood, l.email, l.source].filter(Boolean).flatMap((part, i) => (i === 0 ? [part] : ['·', part]))].join(' ');
+}
+
 function leadRow(l: LeadDoc): string {
   const time = new Date(l.submittedAt).toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' });
   return `<tr>
@@ -55,6 +61,7 @@ export function dailyLeadsDigestEmail(stats: LeadStats): { subject: string; html
         </td>
       </tr>
     </table>
+    <p style="margin:0 0 24px 0;font-size:13px;color:#666;">Emails captured, questionnaire not answered — yesterday: ${stats.emailsCaptured.yesterday} · last 7 days: ${stats.emailsCaptured.last7Days} · last 30 days: ${stats.emailsCaptured.last30Days}</p>
 
     ${stats.yesterday.leads.length ? `
     <h3 style="margin:24px 0 8px 0;font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#888;">Yesterday's leads</h3>
@@ -91,9 +98,10 @@ export function dailyLeadsDigestEmail(stats: LeadStats): { subject: string; html
     `Yesterday: ${stats.yesterday.count}`,
     `Last 7 days: ${stats.totals.last7Days}`,
     `Last 30 days: ${stats.totals.last30Days}`,
+    `Emails captured, questionnaire not answered — yesterday: ${stats.emailsCaptured.yesterday}, last 7 days: ${stats.emailsCaptured.last7Days}, last 30 days: ${stats.emailsCaptured.last30Days}`,
     ``,
     stats.yesterday.leads.length ? `— Yesterday's leads —` : `No leads captured yesterday.`,
-    ...stats.yesterday.leads.map(l => `· ${l.ownerName} (${l.dogName}) · ${l.neighborhood} · ${l.email} · ${l.source}`),
+    ...stats.yesterday.leads.map(leadTextLine),
     ``,
     `— Last 14 days —`,
     ...stats.byDay.slice(0, 14).map(d => `${d.date}  ${d.count}`),

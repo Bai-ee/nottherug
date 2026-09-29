@@ -36,7 +36,12 @@ export function isOutstandingCapture(lead: Pick<AdminLeadRecord, 'type' | 'statu
   return lead.type === 'capture' && !isConvertedCapture(lead);
 }
 
-/** The one line the table and CSV print for a lead's seriousness — words,
+/** The booked hint always comes from the row's OWN `bookedSelfReported`: a
+ *  converted lead carries it itself (the capture route copies it onto the lead,
+ *  app/api/leads/capture/route.ts), and an unconverted capture row is its own
+ *  source. The converted capture is never joined in — it is hidden from the list.
+ *
+ *  The one line the table and CSV print for a lead's seriousness — words,
  *  never a score. `bookedSelfReported` only ever means "the visitor's browser
  *  said so," which is why it is folded into words via describeLeadQuality
  *  rather than shown as a fact on its own. */

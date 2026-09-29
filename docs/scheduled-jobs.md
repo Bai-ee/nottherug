@@ -1,38 +1,28 @@
 # Scheduled jobs: what runs, what does not, and why
 
-Three cron-style handlers exist. **None is scheduled.** This file is the record of that
-decision, because the review found the repository implied otherwise.
+Three cron-style handlers exist. **Only `leads-digest` is scheduled** (plan 012, P4a).
 
-## Nothing is scheduled right now
+## Scheduled
 
-`vercel.json` has an empty `crons` array. Scheduled brief generation is **off**, and
-stays off until its runtime and delivery behaviour are verified — see the open gate
-below. Before this cleanup, `/api/cron/not-the-rug-brief` ran daily at `0 12 * * *`
-without anyone having measured whether it fits its own 60-second limit.
+| Path | Schedule (UTC) | Meaning |
+| --- | --- | --- |
+| `/api/cron/leads-digest` | `0 12 * * *` | Daily lead summary to the founder. 08:00 America/New_York during daylight time, 07:00 in winter — Vercel cron is UTC-only and does not follow DST. |
 
-To turn it back on, restore:
+This is the only job that reports new leads and modal bookings to the founder, so it is
+the one that closes the "nobody is notified" gap. It claims a per-day, per-recipient slot
+before sending, so a duplicate trigger cannot double-send.
 
-```json
-"crons": [{ "path": "/api/cron/not-the-rug-brief", "schedule": "0 12 * * *" }]
-```
-
-That job only generates a brief. **It sends no email.** A generation-only job is not a
-daily email system, and nothing in this repository should describe it as one.
-
-## What is not scheduled, deliberately
+## Not scheduled, deliberately
 
 | Path | Why it is off |
 | --- | --- |
-| `/api/cron/founder-brief` | Emails the latest brief to the founder. Off until the owner confirms they want it, and at what time. |
-| `/api/cron/leads-digest` | Emails a lead summary to the same founder. Off. Running it alongside the founder brief means two emails a day to one person about overlapping things. |
+| `/api/cron/not-the-rug-brief` | Generates the brief; sends no email. Held off until the 60-second limit is measured (see the open gate below). |
+| `/api/cron/founder-brief` | Emails the latest brief to the founder. It would be a second daily email to the same person alongside the leads digest, and is pointless until generation runs. Off until the owner confirms both. |
 
-Both are reachable manually and both refuse any request without the `CRON_SECRET`
-bearer token. Each now claims a per-day, per-recipient slot before sending, so a
-duplicate trigger cannot double-send.
+All three refuse any request without the `CRON_SECRET` bearer token.
 
-The plan's working default is **one founder digest after a successful generation**. If
-the owner wants that, enable `/api/cron/founder-brief` on a schedule that runs after
-generation completes — not before, or it emails yesterday's brief.
+If generation is enabled later, run it before the brief email, not after, or the email
+carries yesterday's brief.
 
 ## Open gate: the 60-second limit is unverified
 

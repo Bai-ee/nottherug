@@ -21,19 +21,26 @@ export const CTA_LABELS: Record<CtaId, string> = {
   welcome_modal_details: 'Welcome modal: Answer questions first',
   contact_modal_schedule: 'Contact modal: Book a Meet & Greet',
   service_modal_get_started: 'Service details modal: Contact Luis to get started',
+  hero_book_mobile: 'Homepage hero: Book (mobile)',
 
   // Contact intent — a click toward talking to Luis, not an email or call.
-  nav_contact: 'Top nav: Get started',
+  nav_get_started: "Top nav: Let's get started",
+  nav_contact_us: 'Top nav: Contact us',
+  hero_contact_desktop: 'Homepage hero: Contact (desktop)',
+  // Legacy ids: stored history keeps them, so they stay listed. nav_contact was
+  // shared by "Let's get started" and both "Contact us" buttons; hero_contact
+  // was Contact on desktop and Book on mobile. Not comparable to the split ids.
+  nav_contact: 'Top nav: Get started / Contact (before split)',
+  hero_contact: 'Homepage hero: Contact / Book (before split)',
   footer_contact: 'Footer: Contact',
-  hero_contact: 'Homepage hero: Book a Meet & Greet',
   neighborhood_detail_contact: 'Williamsburg page: Ask about coverage',
   meetgreet_question_contact: 'Meet & Greet form: Just have a question?',
 
   // tel: links.
-  contact_phone: 'Contact page: Phone tap',
+  contact_phone: 'Phone tap',
 
   // mailto: links.
-  contact_email: 'Contact page: Email tap',
+  contact_email: 'Email tap',
 
   // Service discovery — measures interest in what is offered, before booking.
   hero_view_services: 'Homepage hero: View services',
@@ -66,8 +73,12 @@ function categorize(id: CtaId): CtaCategory {
     case 'welcome_modal_details':
     case 'contact_modal_schedule':
     case 'service_modal_get_started':
+    case 'hero_book_mobile':
       return 'Booking';
 
+    case 'nav_get_started':
+    case 'nav_contact_us':
+    case 'hero_contact_desktop':
     case 'nav_contact':
     case 'footer_contact':
     case 'hero_contact':

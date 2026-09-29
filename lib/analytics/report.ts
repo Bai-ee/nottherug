@@ -110,12 +110,12 @@ export interface BookingFunnel {
   dialogOpened: number;
   /**
    * Distinct sessions that saved a lead WITHOUT ever opening the scheduling
-   * dialog — i.e. chose the phone-consultation path. This is a completed
-   * inquiry, not abandonment (decision 9 / measurement table: "Separate the
-   * phone-consultation path so skipping Calendly is not reported as
-   * abandonment").
+   * dialog ("Saved, scheduler not opened"). Still a completed inquiry, not
+   * abandonment. The phone-consultation option that once produced this shape
+   * has been removed, but the measure (lead_saved and no
+   * scheduling_dialog_opened in the same session) is unchanged and still true.
    */
-  phoneConsultPath: number;
+  savedSchedulerNotOpened: number;
   /** Distinct sessions that opened the dialog AND produced a verified appointment_completed. */
   calendlyScheduled: number;
 }
@@ -409,7 +409,8 @@ function buildDayWindows(startLabel: string, days: number): DayWindow[] {
 // ~100 visits/day" (decision 5) plus headroom, not tuned to the exact number.
 const EVENTS_QUERY_LIMIT: Record<ReportRange, number> = { today: 3000, '7d': 10_000, '30d': 20_000 };
 const LIVE_QUERY_LIMIT = 1000;
-const EARLIEST_SAMPLE_LIMIT = 25;
+const EARLIEST_SAMPLE_LIMIT = 100;
+const EARLIEST_MAX_PAGES = 5;
 
 function filterMode(events: StoredAnalyticsEvent[], includeTest: boolean): StoredAnalyticsEvent[] {
   // mode:'test' traffic (preview/acceptance, decision 10) is excluded from
@@ -456,14 +457,31 @@ const FAR_FUTURE_ISO = '9999-12-31T23:59:59.999Z';
 /**
  * Earliest event ever recorded, in the requested mode — powers "Tracking
  * starts on [date]" so the UI never implies traffic history before
- * collection began. Bounded by a small result-row ceiling (an indexed
- * ascending read), not by narrowing the date range — there is no way to know
- * where the earliest event is without asking.
+ * collection began.
+ *
+ * Mode cannot be filtered inside the Firestore query without a new index:
+ * real events carry no `mode` field at all (a `!= 'test'` filter would drop
+ * every one of them), and `mode == 'test'` plus an ordered `receivedAt` range
+ * needs a composite index this repo does not define. So the mode split stays
+ * in code, but the read is no longer one fixed page: it walks forward in
+ * bounded pages (each page starts at the last receivedAt seen) until a
+ * matching event turns up, capped at EARLIEST_MAX_PAGES. Limitation: if the
+ * oldest EARLIEST_SAMPLE_LIMIT * EARLIEST_MAX_PAGES events are all the other
+ * mode, this reports null (the UI then omits the date) rather than guessing.
  */
 async function fetchTrackingStartDate(includeTest: boolean): Promise<string | null> {
-  const raw = await fsQueryRange(EVENTS_COLLECTION, 'receivedAt', EPOCH_ISO, FAR_FUTURE_ISO, EARLIEST_SAMPLE_LIMIT, 'ASCENDING');
-  const stored = filterMode(dedupeById(raw.map(toStoredEvent).filter((e): e is StoredAnalyticsEvent => e !== null)), includeTest);
-  return stored.length > 0 ? stored[0].receivedAt : null;
+  let start = EPOCH_ISO;
+  for (let page = 0; page < EARLIEST_MAX_PAGES; page++) {
+    const raw = await fsQueryRange(EVENTS_COLLECTION, 'receivedAt', start, FAR_FUTURE_ISO, EARLIEST_SAMPLE_LIMIT, 'ASCENDING');
+    const stored = dedupeById(raw.map(toStoredEvent).filter((e): e is StoredAnalyticsEvent => e !== null));
+    const match = filterMode(stored, includeTest);
+    if (match.length > 0) return match[0].receivedAt;
+    if (raw.length < EARLIEST_SAMPLE_LIMIT || stored.length === 0) return null; // collection exhausted
+    const next = stored[stored.length - 1].receivedAt;
+    if (next <= start) return null; // a full page at one instant cannot advance
+    start = next;
+  }
+  return null;
 }
 
 // ---- Metric builders --------------------------------------------------------
@@ -554,13 +572,13 @@ function buildFunnel(events: StoredAnalyticsEvent[]): BookingFunnel {
   const leadSavedSids = new Set(events.filter((e) => e.event === 'lead_saved').map((e) => e.sid));
   const appointmentCompletedSids = new Set(events.filter((e) => e.event === 'appointment_completed').map((e) => e.sid));
 
-  let phoneConsultPath = 0;
-  for (const sid of leadSavedSids) if (!dialogOpenedSids.has(sid)) phoneConsultPath++;
+  let savedSchedulerNotOpened = 0;
+  for (const sid of leadSavedSids) if (!dialogOpenedSids.has(sid)) savedSchedulerNotOpened++;
 
   let calendlyScheduled = 0;
   for (const sid of dialogOpenedSids) if (appointmentCompletedSids.has(sid)) calendlyScheduled++;
 
-  return { formStarts, steps, dialogOpened: dialogOpenedSids.size, phoneConsultPath, calendlyScheduled };
+  return { formStarts, steps, dialogOpened: dialogOpenedSids.size, savedSchedulerNotOpened, calendlyScheduled };
 }
 
 // ---- Entry point -------------------------------------------------------------

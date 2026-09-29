@@ -19,8 +19,8 @@ function categorySlug(category: CtaCategory): string {
  * Every id rendered here comes from LIVE_CTA_IDS via CTA_LABELS, so a row
  * only ever exists for a control that actually renders on the site — see
  * plans/003-admin-dashboard-and-tracking.md A5 honesty rules. There is no
- * "not yet instrumented" section: CTA_IDS and LIVE_CTA_IDS are now the same
- * 16-id list (lib/analytics/events.ts), so an id with no rendered element
+ * "not yet instrumented" section: CTA_IDS and LIVE_CTA_IDS are the same
+ * list (lib/analytics/events.ts), so an id with no rendered element
  * cannot appear in ctaClicks at all — that section was dead code once the
  * nine stale reserved ids were removed from the contract, and has been
  * deleted rather than kept around unreachable.

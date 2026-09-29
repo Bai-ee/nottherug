@@ -60,7 +60,7 @@ Set on the Vercel project, Preview scope only.
 | `NEXT_PUBLIC_CALENDLY_URL` | the real link, or empty | Empty is a valid test: intake must still succeed |
 | `CRON_SECRET` | any value | Without it every cron route rejects everything |
 | `LAUNCH_MODE` | unset | |
-| `NEXT_PUBLIC_ANALYTICS_ENDPOINT` | unset | `track()` stays a no-op |
+| `NEXT_PUBLIC_ANALYTICS_ENABLED` | unset | `track()` stays a no-op |
 
 `vercel.json` has an empty `crons` array, so no scheduled job runs on the preview. That
 is deliberate and should stay that way until item 7 above is done.

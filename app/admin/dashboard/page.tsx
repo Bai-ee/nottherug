@@ -174,8 +174,8 @@ function AdminAnalyticsDashboardContent({
 
         <TrendSparkline points={view.dailyTrend} />
 
-        {/* Two range-scoped stat cards side by side, homepage grid-2. */}
-        <div id="admin-analytics-stats-row" className="grid-2">
+        {/* Three range-scoped stat cards side by side, homepage grid-3 (one column on mobile). */}
+        <div id="admin-analytics-stats-row" className="grid-3">
           <QualityLeadsStat
             completedQuestionnaires={view.completedQuestionnaires}
             inquiries={view.inquiries}

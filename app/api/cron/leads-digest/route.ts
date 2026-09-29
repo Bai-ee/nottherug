@@ -5,11 +5,8 @@ import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
 import { dailyLeadsDigestEmail } from '@/lib/email/digest-template';
 import { claimDailySend, recordSendOutcome, todayKeyET } from '@/app/api/cron/_lib/sendGuard';
 
-// Not scheduled in vercel.json today — see the P3B report. The working
-// default is one founder digest (founder-brief) after a successful
-// generation; enabling this one too would be a second, separate email for
-// the same audience, which the plan calls out to avoid without an explicit
-// decision to run both.
+// Scheduled daily in vercel.json (plan 012 P4a; see docs/scheduled-jobs.md). The
+// founder-brief route stays off, so this is the one founder email about leads.
 export const runtime = 'nodejs';
 export const maxDuration = 30;
 

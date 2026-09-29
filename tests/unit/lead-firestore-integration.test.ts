@@ -303,3 +303,66 @@ describe('a historical lead still reads through the display contract and CSV', (
     expect(csv).toContain('HYPERLINK');
   });
 });
+
+async function postCapture(body: unknown) {
+  const { POST } = await import('@/app/api/leads/capture/route');
+  return POST(
+    new Request('http://localhost/api/leads/capture', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-forwarded-for': `10.1.0.${Math.floor(Math.random() * 250) + 1}` },
+      body: JSON.stringify(body),
+    })
+  );
+}
+
+describe('capture and conversion against real Firestore', () => {
+  it('keeps convertedLeadId/convertedAt when the same email is captured again', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+
+    const first = await (await postCapture({ email: 'again@example.test', source: 'home' })).json();
+    const lead = await (await post(submission({ email: 'again@example.test' }))).json();
+
+    const converted = (await readLead(first.id)).data!;
+    expect(converted.status).toBe('converted');
+    expect(converted.convertedLeadId).toBe(lead.id);
+    const convertedAt = converted.convertedAt;
+
+    await postCapture({ email: 'again@example.test', source: 'book' });
+    const after = (await readLead(first.id)).data!;
+    expect(after.convertedLeadId).toBe(lead.id);
+    expect(after.convertedAt).toBe(convertedAt);
+    expect(after.status).toBe('converted');
+  });
+
+  it('carries a booked hint from the capture onto the lead at conversion', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+
+    await postCapture({ email: 'booked@example.test', source: 'home', booked: true });
+    const lead = await (await post(submission({ email: 'booked@example.test' }))).json();
+    expect((await readLead(lead.id)).data!.bookedSelfReported).toBe(true);
+  });
+
+  it('puts a later booked capture onto the already-converted lead', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+
+    await postCapture({ email: 'late@example.test', source: 'home' });
+    const lead = await (await post(submission({ email: 'late@example.test' }))).json();
+    expect((await readLead(lead.id)).data!.bookedSelfReported).toBeUndefined();
+
+    await postCapture({ email: 'late@example.test', source: 'book', booked: true });
+    const stored = (await readLead(lead.id)).data!;
+    expect(stored.bookedSelfReported).toBe(true);
+    // The merge must not have disturbed the rest of the lead.
+    expect(stored.ownerName).toBe('Test Owner');
+  });
+
+  it('writes expiresAt on rate-limit rows', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+
+    await postCapture({ email: 'ttl@example.test', source: 'home' });
+    const { fsQueryCollection } = await import('@/lib/server/firestoreRest');
+    const rows = await fsQueryCollection('leadRateLimits', 'windowStart', 'DESCENDING', 5);
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows[0].expiresAt).toBeTruthy();
+  });
+});

@@ -104,6 +104,34 @@ export async function fsSetDoc(path: string, data: Record<string, unknown>): Pro
 }
 
 /**
+ * Merge top-level fields into a document, leaving every other field untouched.
+ *
+ * `fsSetDoc` sends no `updateMask`, so Firestore replaces the whole document.
+ * This variant masks each top-level key, so fields absent from `data` survive.
+ * Creates the document if it does not exist. Nested maps are still replaced as
+ * a unit (the mask is per top-level key).
+ */
+export async function fsMergeDoc(path: string, data: Record<string, unknown>): Promise<void> {
+  // An empty updateMask means "replace the whole document" — the opposite of a merge.
+  if (Object.keys(data).length === 0) return;
+  const token = await getToken();
+  const mask = Object.keys(data)
+    .map((key) => `updateMask.fieldPaths=${encodeURIComponent(fieldPath(key))}`)
+    .join('&');
+  const res = await fetch(`${FS_BASE}/${path}${mask ? `?${mask}` : ''}`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fields: toFields(data) }),
+  });
+  if (!res.ok) throw new Error(`Firestore MERGE ${path}: ${res.status} ${await res.text()}`);
+}
+
+/** Backtick-quote a field name unless it is a plain identifier. */
+function fieldPath(key: string): string {
+  return /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? key : `\`${key.replace(/[\\`]/g, '\\$&')}\``;
+}
+
+/**
  * Create a document only if it does not already exist.
  *
  * Firestore's createDocument endpoint rejects a duplicate id with 409, which is

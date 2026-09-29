@@ -14,13 +14,15 @@ import type { AnalyticsReport } from './report';
  * always greets the owner the same way and the tests can pin each branch.
  */
 export function buildDashboardGreeting(report: AnalyticsReport): string {
-  const { meta, appointmentsScheduled, inquiries, sessions, engagedVisitPct, dailyTrend } = report;
+  const { meta, bookedLeads, inquiries, sessions, engagedVisitPct, dailyTrend } = report;
 
   if (meta.status === 'partial_failure') return 'Some numbers are missing';
   if (meta.status === 'no_data_yet') return 'Nothing tracked yet';
 
-  // Best news first: a booked walk outranks everything else on the page.
-  if (appointmentsScheduled > 0) return 'A walk got booked';
+  // Best news first: a booked walk outranks everything else on the page. Uses
+  // bookedLeads, the same figure the "Appointments Scheduled" card shows, so
+  // the greeting can never say a walk got booked over a card reading zero.
+  if ((bookedLeads ?? 0) > 0) return 'A walk got booked';
   if ((inquiries ?? 0) > 0) return 'Someone asked about walks';
   if (report.inquiryRate.trackedLeadSaved > 0) return 'An inquiry came in';
 

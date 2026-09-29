@@ -130,6 +130,8 @@ export type LeadRecord = {
   allergies?: string;
   phoneConsult?: boolean;
   notifications?: LeadNotifications;
+  /** The visitor said they booked in the welcome modal. Self-reported, unverified. */
+  bookedSelfReported?: boolean;
   /** Legacy survey fields. Never required, never defaulted on write — only rendered when present. */
   spayNeuter?: string;
   dogSocial?: string;
