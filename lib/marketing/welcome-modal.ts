@@ -32,7 +32,6 @@ export type WelcomeModalStorage = Pick<Storage, 'getItem' | 'setItem'>;
  */
 export const WELCOME_MODAL_OPEN_EVENT = 'ntr:open-welcome-modal';
 
-/** Opens the welcome modal from anywhere on the page. No-op on the server. */
 export interface OpenWelcomeWalkModalOptions {
   /** Seeds the modal's email field, so a visitor who already typed it on the
    *  page does not type it twice. */
@@ -42,9 +41,19 @@ export interface OpenWelcomeWalkModalOptions {
   straightToScheduler?: boolean;
 }
 
-export function openWelcomeWalkModal(options?: OpenWelcomeWalkModalOptions): void {
-  if (typeof window === 'undefined') return;
-  window.dispatchEvent(new CustomEvent(WELCOME_MODAL_OPEN_EVENT, { detail: options }));
+/**
+ * Opens the welcome modal from anywhere on the page. Returns whether anything
+ * took the request: the event is cancelable, and the modal (or the marketing
+ * layout's WelcomeModalHost, which loads it) claims it with preventDefault().
+ * A CTA that is also a link cancels its navigation only when this returns
+ * true, so on a page with no modal the link still goes to /book. Always false
+ * on the server.
+ */
+export function openWelcomeWalkModal(options?: OpenWelcomeWalkModalOptions): boolean {
+  if (typeof window === 'undefined') return false;
+  return !window.dispatchEvent(
+    new CustomEvent(WELCOME_MODAL_OPEN_EVENT, { detail: options, cancelable: true })
+  );
 }
 
 /**

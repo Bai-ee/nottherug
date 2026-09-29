@@ -1,6 +1,7 @@
 import PageViewTracker from '@/components/marketing/PageViewTracker';
 import SectionRail from '@/components/marketing/SectionRail';
 import SectionJump from '@/components/marketing/SectionJump';
+import WelcomeModalHost from '@/components/marketing/WelcomeModalHost';
 import '../section-rail.css';
 import '../section-jump.css';
 
@@ -18,6 +19,9 @@ import '../section-jump.css';
 // /book and /contact exactly as they were. Its stylesheet is imported here
 // too, keeping it off the admin bundle.
 //
+// WelcomeModalHost renders nothing until a "Book a Walk" / "Contact Luis" CTA
+// is clicked on a page other than home, then loads the welcome modal on demand.
+//
 // PageViewTracker is the other exception: it renders nothing, so it doesn't
 // disturb that per-page chrome, and this boundary is exactly what keeps it
 // off admin/API routes (plans/003-admin-dashboard-and-tracking.md — "mount
@@ -29,6 +33,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       {children}
       <SectionRail />
       <SectionJump />
+      <WelcomeModalHost />
     </>
   );
 }

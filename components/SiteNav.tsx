@@ -84,21 +84,21 @@ export default function SiteNav() {
   }
 
   /**
-   * "Book a Walk" pops the welcome modal instead of navigating — but only on
-   * the home route, the one page that renders it (see HomePageContent).
-   * Everywhere else the link goes to /book as before, which is also the
-   * pre-hydration and no-JS behaviour on home.
+   * "Book a Walk" pops the welcome modal instead of navigating, on every
+   * route: the home page renders the modal itself (HomePageContent) and the
+   * marketing layout's WelcomeModalHost loads it on demand everywhere else.
+   * The href stays /book for the pre-hydration and no-JS case.
    */
-  const bookOpensModal = pathname === '/';
   function handleBookClick(e: React.MouseEvent<HTMLAnchorElement>, cta: CtaId) {
     trackNavCta(cta);
     // A cmd/ctrl/shift-click means "open this somewhere else" — let the browser
     // do that with the real href instead of opening the modal over this page.
     if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-    if (!bookOpensModal) return;
+    // Only cancel the link when the modal took the request (a page with no
+    // modal host still follows /book).
+    if (!openWelcomeWalkModal()) return;
     e.preventDefault();
     setMobileOpen(false);
-    openWelcomeWalkModal();
   }
 
   /**

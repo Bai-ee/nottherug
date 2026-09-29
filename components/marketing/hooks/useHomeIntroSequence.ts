@@ -155,8 +155,8 @@ export function useHomeIntroSequence(
             finishIntro();
           }, WATCHDOG_MS);
 
-          // The walker heads off the right edge — the direction the mirrored
-          // silhouette faces — then the paper lifts away.
+          // The walker heads off the right edge — the direction the silhouette
+          // faces, dogs first — then the paper lifts away.
           tl.to(walkerRef.current, { xPercent: 42, autoAlpha: 0, duration: 0.7, ease: 'power2.in' })
             .to(
               overlay,
