@@ -4102,6 +4102,9 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child dd > .service-modal-rate:only-child .service-modal-rate-amount {
   font-size: clamp(72px, 26cqi, 140px);
 }
+#service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount-range {
+  font-size: clamp(52px, 17cqi, 104px);
+}
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-terms {
   font-size: 14px;
   margin-top: 4px;

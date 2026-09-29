@@ -326,7 +326,11 @@ function RateLine({ line }: { line: string }) {
   if (!match) return <p className="contact-modal-detail-note">{line}</p>;
   return (
     <p className="service-modal-rate">
-      <span className="service-modal-rate-amount">{match[1]}</span>
+      {/* A range ("$100–110") is twice as wide as a single price, so it
+          takes a smaller scale to fit the same panel (globals.css). */}
+      <span className={`service-modal-rate-amount${match[1].length > 4 ? ' service-modal-rate-amount-range' : ''}`}>
+        {match[1]}
+      </span>
       <span className="service-modal-rate-terms">{match[2]}</span>
     </p>
   );
