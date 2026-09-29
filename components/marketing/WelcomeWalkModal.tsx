@@ -605,7 +605,7 @@ export default function WelcomeWalkModal({
                 position: absolute;
                 inset: 0;
                 z-index: 0;
-                animation: welcome-skyline-track 10s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+                animation: welcome-skyline-track 30s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
               }
               #welcome-walk-modal-art-skyline {
                 position: absolute;
@@ -617,7 +617,7 @@ export default function WelcomeWalkModal({
                 max-width: none;
                 object-fit: cover;
                 object-position: center 45%;
-                animation: welcome-skyline-image 10s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+                animation: welcome-skyline-image 30s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
               }
               @keyframes welcome-skyline-track { from { transform: translateX(0); } to { transform: translateX(100%); } }
               @keyframes welcome-skyline-image { from { transform: translateX(0); } to { transform: translateX(-100%); } }
@@ -642,7 +642,7 @@ export default function WelcomeWalkModal({
               /* The walker and dogs pass in front of the seal. They start on
                  stage, shifted left by a third of their width, and walk to
                  their resting place (right edge on the panel's right edge).
-                 Both layers run 10s on an expo ease that decelerates hard
+                 Both layers run 30s on an expo ease that decelerates hard
                  into the stop (a heavy "ease in" to the final keyframe). Uses the individual translate property so
                  it composes with the phone layout's own transform. */
               #welcome-walk-modal-art-walker {
@@ -654,7 +654,7 @@ export default function WelcomeWalkModal({
                 height: auto;
                 z-index: 3;
                 filter: drop-shadow(0 6px 14px rgba(35,31,24,0.22));
-                animation: welcome-walker-in 10s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+                animation: welcome-walker-in 30s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
               }
               @keyframes welcome-walker-in { from { translate: -35% 0; } to { translate: 0 0; } }
               /* The modal is a condensed instance of the home intake sheet: same
