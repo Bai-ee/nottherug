@@ -27,6 +27,7 @@ export const CTA_LABELS: Record<CtaId, string> = {
   footer_contact: 'Footer: Contact',
   hero_contact: 'Homepage hero: Contact Luis',
   neighborhood_detail_contact: 'Williamsburg page: Ask about coverage',
+  meetgreet_question_contact: 'Meet & Greet form: Just have a question?',
 
   // tel: links.
   contact_phone: 'Contact page: Phone tap',
@@ -71,6 +72,7 @@ function categorize(id: CtaId): CtaCategory {
     case 'footer_contact':
     case 'hero_contact':
     case 'neighborhood_detail_contact':
+    case 'meetgreet_question_contact':
       return 'Contact';
 
     case 'contact_phone':

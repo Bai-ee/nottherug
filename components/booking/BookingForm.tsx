@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { HONEYPOT_FIELD_NAME, LEAD_FIELD_LIMITS } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
@@ -9,6 +8,7 @@ import type { BookingStep } from '@/lib/analytics/events';
 import { clearOnboardingHandoff, getOnboardingHandoffStorage } from '@/lib/booking/onboarding-handoff';
 import { BOOKING_STEPS, StepAboutYou, StepCare, StepQuirks, StepWrapUp, StepYourDog } from './BookingSteps';
 import SchedulingDialog from './SchedulingDialog';
+import ContactUsTrigger from '@/components/marketing/ContactUsTrigger';
 import type { BookingFieldErrors, BookingFormValues, BookingSubmittedSummary, RegisterField } from './types';
 
 type Props = {
@@ -726,13 +726,15 @@ export default function BookingForm({
                     ? 'Request Phone Consultation'
                     : 'Set Up Time'}
             </button>
-            <Link
-              href="/contact"
-              className="btn btn-outline"
+            {/* Opens the Contact Us modal in place, so asking a question never
+                takes the visitor off the form they were filling in. */}
+            <ContactUsTrigger
               id={`${paneId}-general-question-cta`}
+              cta="meetgreet_question_contact"
+              className="btn btn-outline"
             >
               Just Have a Question?
-            </Link>
+            </ContactUsTrigger>
           </div>
         ) : (
         <>
