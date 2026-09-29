@@ -17,7 +17,7 @@ export const CTA_LABELS: Record<CtaId, string> = {
   neighborhood_detail_book: 'Williamsburg page: Book',
   footer_book: 'Footer: Book',
   group_walk_card_submit: 'Homepage group walk card: Get started',
-  welcome_modal_schedule: 'Welcome modal: Pick a time',
+  welcome_modal_schedule: 'Welcome modal: Choose time',
   welcome_modal_details: 'Welcome modal: Answer questions first',
   contact_modal_schedule: 'Contact modal: Schedule a Meet & Greet',
   service_modal_get_started: 'Service details modal: Contact Luis to get started',

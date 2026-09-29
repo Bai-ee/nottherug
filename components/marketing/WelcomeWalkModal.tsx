@@ -357,7 +357,7 @@ export default function WelcomeWalkModal() {
     };
   }, [welcomeDialogVisible]);
 
-  /** Opens the scheduler for a validated email — the Book-Luis CTA and "Pick a time" share this. */
+  /** Opens the scheduler for a validated email — both "Choose Time" CTAs share this. */
   function openScheduler() {
     const trimmed = email.trim();
     if (!trimmed) {
@@ -872,7 +872,7 @@ export default function WelcomeWalkModal() {
               <div id="welcome-walk-modal-heading-panel" style={{ gridArea: 'head', padding: '10px clamp(16px, 2.4vw, 24px) 0' }}>
                 {view === 'gate' && (
                   <h2 id="welcome-walk-modal-title" className="hero-h1">
-                    Book your free <em>Meet &amp; Greet</em>
+                    Set Up an <em>In Person Meeting</em>
                   </h2>
                 )}
                 {/* Same display headline as the gate, in the same slot: the
@@ -1085,7 +1085,7 @@ export default function WelcomeWalkModal() {
                                 id="welcome-walk-modal-cta-secondary"
                                 onClick={handleDismiss}
                               >
-                                No Thanks
+                                Nevermind
                               </button>
                               <button
                                 type="button"
@@ -1099,7 +1099,7 @@ export default function WelcomeWalkModal() {
                           ) : attemptId ? (
                             <>
                               <button type="submit" className="btn btn-primary btn-accent" id="welcome-walk-modal-cta-primary">
-                                Pick a time
+                                Choose Time
                               </button>
                               <button
                                 type="button"
@@ -1118,10 +1118,10 @@ export default function WelcomeWalkModal() {
                                 id="welcome-walk-modal-cta-secondary"
                                 onClick={handleDismiss}
                               >
-                                No Thanks
+                                Nevermind
                               </button>
                               <button type="submit" className="btn btn-primary btn-accent" id="welcome-walk-modal-cta-primary">
-                                Set Up In Person Meeting
+                                Choose Time
                               </button>
                             </>
                           )}
