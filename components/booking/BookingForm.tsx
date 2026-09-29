@@ -690,7 +690,9 @@ export default function BookingForm({
                 notes={form.notes}
                 onNotesChange={(v) => update('notes', v)}
                 phoneConsult={phoneConsult}
-                hidePhoneConsult={bookedDetailsMode}
+                // Off in the full (home page) layout too: that form offers
+                // "Just Have a Question?" for talking first instead.
+                hidePhoneConsult={bookedDetailsMode || fullLayout}
                 onPhoneConsultChange={handlePhoneConsultChange}
                 errors={fieldErrors}
                 alertId={alertId}
