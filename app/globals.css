@@ -314,12 +314,12 @@ nav {
 }
 .mobile-menu-primary-contact-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 #mobile-menu-links-list a:last-child { border-bottom: none; }
-/* Paper-ticket CTA, full width: the nav's Book a Walk treatment (inset rule,
+/* Paper-ticket CTA, as wide as its label: the nav's Book a Walk treatment (inset rule,
    stamp type) with .btn-accent's terracotta fill. Tilt is dropped here per
    the mobile rules in docs/design.md. */
 .mobile-menu .mobile-cta {
-  display: block; margin-top: 18px;
-  text-align: center; padding: 15px 18px;
+  display: block; width: fit-content; margin: 18px auto 0;
+  text-align: center; padding: 15px 28px;
   border-radius: 2px;
   outline: 1px solid rgba(243, 236, 217, 0.5);
   outline-offset: -4px;
@@ -2446,7 +2446,6 @@ footer {
   }
   #hero-cta-primary {
     order: 3;
-    width: 100%;
     justify-content: center;
     margin-bottom: 24px;
   }
@@ -2621,7 +2620,7 @@ footer {
 .home-reviews-clickout:hover { transform: translateY(-1px); }
 .home-reviews-clickout:active { transform: scale(0.97); }
 @media (max-width: 600px) {
-  #home-featured-reviews-clickout-row { flex-direction: column; align-items: stretch; }
+  #home-featured-reviews-clickout-row { flex-direction: column; align-items: center; }
 }
 
 /* ---------- Reviews band, light ----------
@@ -3180,8 +3179,9 @@ footer {
 }
 
 /* Closing sheet's action row: the accented submit and a quiet secondary for
-   anyone who only wants to ask something. Centred as a pair, wrapping to two
-   full-width buttons on a phone rather than shrinking to fit. */
+   anyone who only wants to ask something. Centred as a pair, each as wide as
+   its label, wrapping to two stacked buttons on a phone rather than shrinking
+   to fit. */
 #home-meetgreet-submit-row,
 [data-section='meetgreet-submit-row'] {
   display: flex;
@@ -3197,12 +3197,6 @@ footer {
 [data-section='meetgreet-submit-row'] .btn[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
-}
-@media (max-width: 560px) {
-  [data-section='meetgreet-submit-row'] .btn {
-    flex: 1 1 100%;
-    justify-content: center;
-  }
 }
 /* Four across only while the columns stay readable; below that the grid steps
    down to two and then one, and the separator moves from the left edge to the
@@ -3757,7 +3751,7 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-content-shell { text-align: center; }
   /* Phone CTA pair: Contact Luis is the button, View services the text link. */
   #hero-actions-row { display: contents; }
-  #hero-cta-phone-contact { display: inline-flex; order: 3; width: 100%; justify-content: center; margin-bottom: 16px; }
+  #hero-cta-phone-contact { display: inline-flex; order: 3; justify-content: center; margin-bottom: 16px; }
   #hero-cta-phone-services { display: inline-flex; order: 6; align-self: center; }
   /* No tape strip on the video polaroid at phone widths. */
   #hero-polaroid-frame.taped::before { display: none; }
@@ -3935,8 +3929,9 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 #contact-modal-cta-row { border-top: none; margin-top: 0; padding-top: 20px; }
 /* Upright: .btn-primary tilts -1.2deg, which is right for a paper ticket on
    the page and wrong for the one action in a dialog. Hover lift and press
-   feedback stay, minus the rotation. */
-#contact-modal-schedule-cta { width: 100%; transform: none; }
+   feedback stay, minus the rotation. As wide as its label, centred by the
+   CTA row. */
+#contact-modal-schedule-cta { transform: none; }
 #contact-modal-schedule-cta:hover { transform: translateY(-1px); }
 #contact-modal-schedule-cta:active { transform: scale(0.97); }
 @media (max-width: 560px) {
@@ -4089,23 +4084,21 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   color: var(--muted-ink);
   text-wrap: balance;
 }
-/* Footer: carousel controls, then the one action, full width and upright. */
+/* Footer: carousel controls, then the one action, as wide as its label,
+   centred and upright. */
 #service-modal-footer-panel {
   display: grid;
   gap: 14px;
   padding: 12px clamp(16px, 2.4vw, 24px) clamp(16px, 2.4vw, 24px);
 }
-#service-modal-get-started-cta { width: 100%; justify-content: center; text-align: center; transform: none; }
+#service-modal-get-started-cta { justify-self: center; justify-content: center; text-align: center; transform: none; }
 #service-modal-get-started-cta:hover { transform: translateY(-1px); }
 #service-modal-get-started-cta:active { transform: scale(0.97); }
 /* Phones: everything steps down a size so as much of a service as possible
-   fits in one screen. Slides keep their own height here (the viewport height
-   is set per slide in ServiceDetailDialog), so no service carries another's
-   empty space. */
+   fits in one screen. The sheet keeps one shared height here too (the
+   tallest service's), so nothing shifts between slides at any width. */
 @media (max-width: 767px) {
   #service-modal { padding: 8px; }
-  #service-modal-track { align-items: flex-start; }
-  #service-modal-viewport { transition: height 280ms cubic-bezier(0.25, 1, 0.5, 1); }
   #service-modal-bar-panel { padding: 12px 14px 0; }
   #service-modal-close-btn { padding: 5px 9px; }
   #service-modal .service-modal-slide-heading { padding: 6px 14px 0; }
@@ -4113,6 +4106,10 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   #service-modal .service-modal-slide-body { padding: 10px 14px 4px; }
   #service-modal .service-modal-details-sheet .booking-form-body { padding: 0 12px; }
   #service-modal .service-modal-detail-list .contact-modal-detail { padding: 12px 0; }
+  /* Two-up rates cells keep their gutter either side of the divider. */
+  #service-modal .service-modal-rates-row .contact-modal-detail { padding: 12px 16px 12px 0; }
+  #service-modal .service-modal-rates-row .contact-modal-detail + .contact-modal-detail { padding: 12px 0 12px 16px; }
+  #service-modal .service-modal-rates-row .contact-modal-detail:only-child { padding-right: 0; }
   #service-modal .service-modal-detail-list .contact-modal-detail dt {
     font-size: 11px;
     margin-bottom: 8px;
@@ -4132,9 +4129,9 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 }
 @media (max-width: 560px) {
   .service-modal-rates-row { grid-auto-flow: row; }
-  .service-modal-rates-row .contact-modal-detail,
-  .service-modal-rates-row .contact-modal-detail + .contact-modal-detail {
-    padding: 16px 0;
+  #service-modal .service-modal-rates-row .contact-modal-detail,
+  #service-modal .service-modal-rates-row .contact-modal-detail + .contact-modal-detail {
+    padding: 12px 0;
     border-left: none;
   }
   .service-modal-rates-row .contact-modal-detail + .contact-modal-detail {
@@ -4225,7 +4222,6 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 @media (prefers-reduced-motion: reduce) {
   #contact-modal-sheet,
   #service-modal-sheet { animation: none; }
-  #service-modal-viewport { transition: none; }
   .service-details-btn,
   .service-details-btn-chevron { transition: none; }
 }

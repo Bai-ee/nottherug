@@ -80,33 +80,6 @@ function ServiceCarouselSheet({
     };
   }, [emblaApi, onIndexChange]);
 
-  // Phones: the viewport follows the showing service's own height, so a
-  // short service does not carry the tallest one's empty space and there is
-  // less to scroll. Desktop keeps one shared height so nothing moves there.
-  useEffect(() => {
-    if (!emblaApi) return;
-    const viewport = emblaApi.rootNode();
-    const phone = window.matchMedia('(max-width: 767px)');
-    const fit = () => {
-      if (!phone.matches) {
-        viewport.style.height = '';
-        return;
-      }
-      const slide = emblaApi.slideNodes()[emblaApi.selectedScrollSnap()];
-      viewport.style.height = `${slide.offsetHeight}px`;
-    };
-    fit();
-    emblaApi.on('select', fit);
-    emblaApi.on('reInit', fit);
-    phone.addEventListener('change', fit);
-    return () => {
-      emblaApi.off('select', fit);
-      emblaApi.off('reInit', fit);
-      phone.removeEventListener('change', fit);
-      viewport.style.height = '';
-    };
-  }, [emblaApi]);
-
   // Page behind the sheet stays put while it is open (see useScrollLock).
   useScrollLock(true);
 
