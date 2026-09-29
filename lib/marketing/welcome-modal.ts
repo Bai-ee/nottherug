@@ -11,10 +11,9 @@
 export const WELCOME_MODAL_STORAGE_KEY = 'ntr:welcome-walk-modal:v1';
 
 /**
- * How long a first-time visitor has been on the home page before the modal
- * opens. A timer, not a scroll trigger: the popup must never land on a
- * control the visitor is about to tap, and it never interrupts the first
- * paint.
+ * Fallback for the first-visit auto-open: how long a first-time visitor can
+ * sit on the home page, without scrolling past the featured Group Walk card
+ * (the primary trigger), before the modal opens. Never fires on first paint.
  */
 export const WELCOME_MODAL_DELAY_MS = 20_000;
 
@@ -39,6 +38,9 @@ export interface OpenWelcomeWalkModalOptions {
   /** Skip the gate and land on the scheduler — for entry points that have
    *  already collected an address themselves. */
   straightToScheduler?: boolean;
+  /** Open on the "All set" thank-you view — for a page form whose visitor
+   *  has just booked through its own scheduler. */
+  thankYou?: boolean;
 }
 
 /**

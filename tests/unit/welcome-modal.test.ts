@@ -47,3 +47,23 @@ describe('welcome modal delay', () => {
     expect(WELCOME_MODAL_DELAY_MS).toBe(20_000);
   });
 });
+
+describe('openWelcomeWalkModal', () => {
+  it('carries the thank-you request to the modal and reports whether it was claimed', async () => {
+    const { openWelcomeWalkModal, WELCOME_MODAL_OPEN_EVENT } = await import('@/lib/marketing/welcome-modal');
+    const target = new EventTarget();
+    vi.stubGlobal('window', target);
+    let detail: unknown;
+    const claim = (e: Event) => {
+      detail = (e as CustomEvent).detail;
+      e.preventDefault();
+    };
+
+    expect(openWelcomeWalkModal({ thankYou: true })).toBe(false);
+
+    target.addEventListener(WELCOME_MODAL_OPEN_EVENT, claim);
+    expect(openWelcomeWalkModal({ thankYou: true })).toBe(true);
+    expect(detail).toEqual({ thankYou: true });
+    vi.unstubAllGlobals();
+  });
+});

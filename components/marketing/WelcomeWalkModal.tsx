@@ -199,10 +199,11 @@ export default function WelcomeWalkModal({
   const welcomeDialogVisible = open && view !== 'scheduler';
 
   /**
-   * First-visit auto-open, triggered by the visitor starting to scroll DOWN
-   * the page rather than by a timer: the popup answers engagement instead of
-   * interrupting the fold. Fires at most once — the listener removes itself
-   * the first time the threshold is crossed, and the once-per-browser
+   * First-visit auto-open. Primary trigger: the visitor scrolls past the
+   * featured Group Walk card, which closes the services/rates section — they
+   * have seen the offer, so the Meet & Greet ask answers engagement. Fallback:
+   * the delay timer, for visitors who linger without scrolling that far. Whichever
+   * fires first opens it; both are cleared, and the once-per-browser
    * localStorage flag stops it on every later visit.
    *
    * `?welcome=1` still opens it immediately and without marking it seen, so
@@ -214,23 +215,38 @@ export default function WelcomeWalkModal({
     const storage = readStorage();
     if (forced) {
       // Deferred a tick rather than set synchronously: a setState inside an
-      // effect body cascades an extra render. The timed path below is
+      // effect body cascades an extra render. The auto paths below are
       // already async, so only this branch needs it.
       const timer = window.setTimeout(() => setOpen(true), 0);
       return () => window.clearTimeout(timer);
     }
     if (hasSeenWelcomeModal(storage)) return;
 
-    // First visit: open once the visitor has been on the page for the delay.
-    // A visitor who already opened (or dismissed) the modal in the meantime
-    // (hero CTA, nav Book) made a deliberate choice the timer must not
-    // override, so that is re-checked when it fires.
-    const timer = window.setTimeout(() => {
+    let observer: IntersectionObserver | null = null;
+    function openOnce() {
+      observer?.disconnect();
+      window.clearTimeout(timer);
+      // A visitor who already opened (or dismissed) the modal in the meantime
+      // (hero CTA, nav Book) made a deliberate choice the trigger must not
+      // override, so that is re-checked when it fires.
       if (interactedRef.current) return;
       markWelcomeModalSeen(storage);
       setOpen(true);
-    }, WELCOME_MODAL_DELAY_MS);
-    return () => window.clearTimeout(timer);
+    }
+
+    const card = document.getElementById('home-group-walk-feature-card');
+    if (card && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(([entry]) => {
+        // Card fully above the viewport = scrolled past it (not merely not yet reached).
+        if (!entry.isIntersecting && entry.boundingClientRect.bottom < 0) openOnce();
+      });
+      observer.observe(card);
+    }
+    const timer = window.setTimeout(openOnce, WELCOME_MODAL_DELAY_MS);
+    return () => {
+      observer?.disconnect();
+      window.clearTimeout(timer);
+    };
   }, [manualOnly]);
 
   /**
@@ -247,11 +263,20 @@ export default function WelcomeWalkModal({
       // An entry point that already collected an address (the group walk
       // card) hands it over so the visitor never types it twice, and asks to
       // skip straight to the scheduler.
-      const detail = (event as CustomEvent<{ email?: string; straightToScheduler?: boolean }>).detail;
+      const detail = (event as CustomEvent<OpenWelcomeWalkModalOptions | undefined>).detail;
       if (detail?.email) setEmail(detail.email);
-      if (detail?.straightToScheduler && calendlyUrl) {
+      if (detail?.thankYou) {
+        // A page form already saved the answers and took the booking: only
+        // the thank-you is left to show.
+        setFieldError('');
+        setView('done');
+      } else if (detail?.straightToScheduler && calendlyUrl) {
         setFieldError('');
         setView('scheduler');
+      } else {
+        // A thank-you dismissed with the X or Escape stays on "All set"; a
+        // later Book click is a new visit to the modal, so it starts over.
+        setView((current) => (current === 'done' ? 'gate' : current));
       }
       // Read before setOpen(true): this listener runs synchronously inside
       // openWelcomeWalkModal()'s dispatchEvent call, so document.activeElement

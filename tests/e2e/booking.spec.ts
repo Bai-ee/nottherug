@@ -68,19 +68,18 @@ test.describe('booking form', () => {
     await expect(page.getByText(/^Step 2 of/)).toBeVisible();
   });
 
-  test('phone consultation unchecked: success offers scheduling, not a completed appointment', async ({ page }) => {
+  test('phone consultation unchecked: success thanks the visitor and opens the scheduler', async ({ page }) => {
     await fillThroughWrapUpStep(page);
 
     await page.getByRole('button', { name: 'Book a Meet & Greet' }).click();
 
-    await expect(page.getByText(/be in touch/i)).toBeVisible();
-
-    // Whether NEXT_PUBLIC_CALENDLY_URL is configured for this build or not,
-    // the visitor is offered a scheduling step — either the dialog opens
-    // automatically, or a button to open it is shown. Opening it is not
-    // itself treated as a completed booking (no separate "confirmed" state).
-    const modal = page.locator('#calendly-modal');
-    const scheduleButton = page.getByRole('button', { name: /Schedule your Meet & Greet/ });
-    await expect(modal.or(scheduleButton)).toBeVisible();
+    // One quiet thanks line, and no second "Schedule" call to action: the
+    // scheduler opens by itself when Calendly is configured, and a verified
+    // booking hands off to the welcome modal's thank-you view.
+    await expect(page.getByText(/Thanks for signing up/i)).toBeVisible();
+    await expect(page.getByRole('button', { name: /Schedule your Meet & Greet/ })).toHaveCount(0);
+    if (process.env.NEXT_PUBLIC_CALENDLY_URL) {
+      await expect(page.locator('#calendly-modal')).toBeVisible();
+    }
   });
 });

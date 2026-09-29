@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { HONEYPOT_FIELD_NAME, LEAD_FIELD_LIMITS } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
 import { track } from '@/lib/analytics/track';
 import type { BookingStep } from '@/lib/analytics/events';
 import { clearOnboardingHandoff, getOnboardingHandoffStorage } from '@/lib/booking/onboarding-handoff';
+import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import { BOOKING_STEPS, StepAboutYou, StepCare, StepQuirks, StepWrapUp, StepYourDog } from './BookingSteps';
 import SchedulingDialog from './SchedulingDialog';
 import ContactUsTrigger from '@/components/marketing/ContactUsTrigger';
@@ -415,6 +416,18 @@ export default function BookingForm({
     setFieldErrors({});
   }
 
+  /**
+   * Calendly's verified booking message (SchedulingDialog calls this once per
+   * attempt). The scheduler closes and the welcome modal opens on its "All
+   * set" thank-you view; closing that leaves the page on this form's quiet
+   * thanks line. Stable identity: it sits in SchedulingDialog's message
+   * listener effect dependencies.
+   */
+  const handleBooked = useCallback(() => {
+    setShowCalendly(false);
+    openWelcomeWalkModal({ thankYou: true });
+  }, []);
+
   // The one way the scheduler opens, used by both the auto-open after a save
   // and the manual reopen button, so the two can never disagree about the
   // funnel. Reaching the scheduler is the "schedule" step, once per attempt.
@@ -799,28 +812,16 @@ export default function BookingForm({
         </p>
       </form>
 
+      {/* One quiet line in the form-alert style the welcome modal's email
+          field uses, not a second call to action: a visitor who booked has
+          already been thanked by the modal's "All set" view (handleBooked). */}
       {status === 'success' && submittedSummary && (
-        <p className="form-note" role="status" style={{ color: 'var(--sage-light, #6b8e6b)' }}>
-          ✅ {bookedDetailsMode
-            ? "Got it, thanks! Your Meet & Greet is already booked, so check your Calendly confirmation email for the time and details."
-            : submittedSummary.phoneConsult
-            ? "Thanks! We'll give you a call within 2 hours on weekdays."
-            : "Thanks! We'll be in touch within 2 hours on weekdays."}
+        <p id={`${paneId}-signup-thanks`} className="form-note form-alert" role="status">
+          {submittedSummary.phoneConsult ? 'Thanks for signing up! We’ll give you a call.' : 'Thanks for signing up!'}
         </p>
       )}
       {status === 'error' && (
         <p className="form-note form-alert" role="alert">{errorMsg}</p>
-      )}
-      {status === 'success' && submittedSummary && !showCalendly &&
-        shouldOpenSchedulerAfterSave({ calendlyUrl, phoneConsult: submittedSummary.phoneConsult, bookedDetailsMode }) && (
-        <button
-          type="button"
-          className="btn btn-primary"
-          style={{ width: '100%', justifyContent: 'center', padding: '14px', marginTop: '12px' }}
-          onClick={openScheduling}
-        >
-          Schedule your Meet &amp; Greet →
-        </button>
       )}
 
       <SchedulingDialog
@@ -828,6 +829,7 @@ export default function BookingForm({
         onClose={() => setShowCalendly(false)}
         calendlyUrl={calendlyUrl}
         source={source}
+        onBooked={handleBooked}
         attemptId={`${paneId}-attempt-${attempt}`}
       />
     </div>
