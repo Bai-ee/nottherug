@@ -23,7 +23,13 @@ function report(overrides: Partial<AnalyticsReport>): AnalyticsReport {
 
 describe('buildDashboardGreeting', () => {
   it('leads with a booked walk over everything else', () => {
-    expect(buildDashboardGreeting(report({ appointmentsScheduled: 1, sessions: 40 }))).toBe('A walk got booked');
+    expect(buildDashboardGreeting(report({ bookedLeads: 1, sessions: 40 }))).toBe('A walk got booked');
+  });
+
+  it('agrees with the Appointments Scheduled card: verified events alone do not claim a booking', () => {
+    // The card shows bookedLeads; the greeting must not contradict a zero there.
+    expect(buildDashboardGreeting(report({ bookedLeads: 0, appointmentsScheduled: 2, sessions: 40 }))).not.toBe('A walk got booked');
+    expect(buildDashboardGreeting(report({ bookedLeads: null, appointmentsScheduled: 2, sessions: 40 }))).not.toBe('A walk got booked');
   });
 
   it('reports an inquiry when there is no appointment', () => {
@@ -52,7 +58,7 @@ describe('buildDashboardGreeting', () => {
 
   it('never exceeds four words, whatever the report says', () => {
     const cases: Array<Partial<AnalyticsReport>> = [
-      { appointmentsScheduled: 3 },
+      { bookedLeads: 3 },
       { inquiries: 1 },
       { sessions: 0 },
       { sessions: 5 },

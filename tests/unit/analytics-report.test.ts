@@ -162,7 +162,7 @@ describe('getAnalyticsReport', () => {
       { step: 'schedule', sessions: 1 },
     ]);
     expect(report.funnel.dialogOpened).toBe(1);
-    expect(report.funnel.phoneConsultPath).toBe(1); // sess-b
+    expect(report.funnel.savedSchedulerNotOpened).toBe(1); // sess-b
     expect(report.funnel.calendlyScheduled).toBe(1); // sess-a
 
     expect(report.dailyTrend).toEqual([
@@ -222,6 +222,23 @@ describe('getAnalyticsReport', () => {
     expect(real.inquiries).toBe(7);
   });
 
+  it('finds the earliest event of the requested mode past a full page of the other mode', async () => {
+    // 120 test events (more than one 100-row page) precede the first real one.
+    const fixtures: RawDoc[] = [
+      ...Array.from({ length: 120 }, (_, i) =>
+        ev({ id: `t-${i}`, sid: `st-${i}`, receivedAt: `2025-01-01T00:${String(Math.floor(i / 60)).padStart(2, '0')}:${String(i % 60).padStart(2, '0')}.000Z`, mode: 'test' })
+      ),
+      ev({ id: 'real-1', sid: 'sr', receivedAt: '2025-06-01T00:00:00.000Z' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const real = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z') });
+    expect(real.meta.trackingStartDate).toBe('2025-06-01T00:00:00.000Z');
+    const test = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z'), includeTest: true });
+    expect(test.meta.trackingStartDate).toBe('2025-01-01T00:00:00.000Z');
+  });
+
   it('never reports no_data_yet while the range actually has events', async () => {
     // The earliest-events sample is read across both modes and filtered after
     // the fact, so 25+ older real events hide every test event from it and
@@ -239,7 +256,8 @@ describe('getAnalyticsReport', () => {
     const report = await getAnalyticsReport('today', { now: new Date('2026-01-15T18:00:00.000Z'), includeTest: true });
 
     expect(report.pageviews).toBe(1);
-    expect(report.meta.trackingStartDate).toBeNull();
+    // Paged read walks past the older real events and finds the test event.
+    expect(report.meta.trackingStartDate).toBe('2026-01-15T12:00:00.000Z');
     expect(report.meta.status).toBe('ok'); // never 'no_data_yet' above a non-zero tile
   });
 

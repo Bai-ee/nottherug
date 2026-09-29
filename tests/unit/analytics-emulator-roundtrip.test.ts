@@ -122,7 +122,7 @@ describe('write/read contract against a real emulator', () => {
     expect(rep.funnel.steps.find((s) => s.step === 'schedule')?.sessions).toBe(1);
     expect(rep.funnel.dialogOpened).toBe(1);
     expect(rep.funnel.calendlyScheduled).toBe(1);
-    expect(rep.funnel.phoneConsultPath).toBe(0); // lead_saved happened but the dialog WAS opened
+    expect(rep.funnel.savedSchedulerNotOpened).toBe(0); // lead_saved happened but the dialog WAS opened
     expect(rep.sources.find((s) => s.source === 'campaign:flyer')?.sessions).toBe(1);
 
     // The actual near-miss contract check: the writer must store receivedAt +
@@ -144,7 +144,7 @@ describe('write/read contract against a real emulator', () => {
 
     const rep = await report('today');
     expect(rep.funnel.dialogOpened).toBe(0);
-    expect(rep.funnel.phoneConsultPath).toBe(1);
+    expect(rep.funnel.savedSchedulerNotOpened).toBe(1);
   });
 });
 

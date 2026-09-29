@@ -66,9 +66,13 @@ export const CTA_IDS = [
   // click landed. nav_contact and nav_services are shared by the desktop bar
   // and the mobile menu, which render the same list; only Book is split by
   // width, because that is the one the owner asked to see separately.
-  'nav_contact',
+  'nav_contact', // legacy: shared by "Let's Get Started" and both "Contact Us" buttons
+  'nav_get_started',
+  'nav_contact_us',
   'footer_contact',
-  'hero_contact',
+  'hero_contact', // legacy: was Contact on desktop and Book on mobile
+  'hero_contact_desktop',
+  'hero_book_mobile',
   'neighborhood_detail_contact',
 
   // tel: links. A tap-to-call is intent — it cannot tell us a call connected.

@@ -8,9 +8,8 @@ function humanizeStep(step: string): string {
 
 /**
  * Owner decision 9: the funnel must not end at "dialog opened" — a session
- * that saves a lead without ever opening the scheduling dialog took the
- * phone-consultation path, which is a completed inquiry, not abandonment.
- * That is why phoneConsultPath is shown as its own row rather than folded
+ * that saves a lead without ever opening the scheduling dialog is a
+ * completed inquiry, not abandonment. That is why savedSchedulerNotOpened is shown as its own row rather than folded
  * into a drop-off count.
  *
  * These rows are also not a strict cascade, and the notes under the table say
@@ -50,11 +49,11 @@ export function FunnelPanel({ funnel }: { funnel: BookingFunnel }) {
             <span className="rc-value">{funnel.calendlyScheduled.toLocaleString('en-US')}</span>
           </div>
           <div className="rc-row">
-            <span>Phone-Consultation Path</span>
-            <span className="rc-value">{funnel.phoneConsultPath.toLocaleString('en-US')}</span>
+            <span>Saved, scheduler not opened</span>
+            <span className="rc-value">{funnel.savedSchedulerNotOpened.toLocaleString('en-US')}</span>
           </div>
           <p className="form-note">
-            (saved a lead without opening the dialog — a completed inquiry, not a drop-off)
+            (saved a lead without opening the scheduling dialog — a completed inquiry, not a drop-off)
           </p>
         </div>
 
