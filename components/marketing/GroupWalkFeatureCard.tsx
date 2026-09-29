@@ -316,6 +316,12 @@ export default function GroupWalkFeatureCard({
            the name onto two lines and drop the price under it, left and right
            of each other. Here the name is one centred line directly above the
            price, and the price block centres under it. */
+        /* Small desktops: the art column is narrower than the full layout
+           was tuned for, so the walker and dogs step down and re-centre to
+           sit inside the panel instead of running off both edges. */
+        @media (min-width: 900px) and (max-width: 1279px) {
+          #home-group-walk-feature-art-figure { height: 76%; left: 56%; }
+        }
         @media (min-width: 768px) and (max-width: 899px) {
           #home-group-walk-feature-title-row {
             flex-direction: column;
