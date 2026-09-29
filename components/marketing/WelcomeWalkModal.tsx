@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { SERVICE_AREA_LABEL } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
 import {
@@ -23,6 +24,7 @@ import {
   hasSeenWelcomeModal,
   markWelcomeModalSeen,
   WELCOME_MODAL_OPEN_EVENT,
+  type OpenWelcomeWalkModalOptions,
   type WelcomeModalStorage,
 } from '@/lib/marketing/welcome-modal';
 
@@ -138,10 +140,26 @@ type View =
  * component suspends its own (see `welcomeDialogVisible` below) so only one
  * is ever active at a time.
  */
-export default function WelcomeWalkModal() {
-  const [open, setOpen] = useState(false);
-  const [view, setView] = useState<View>('gate');
-  const [email, setEmail] = useState('');
+export default function WelcomeWalkModal({
+  openOnMount = null,
+  manualOnly = false,
+}: {
+  /**
+   * WelcomeModalHost mounts this modal on pages that do not render it, at the
+   * moment a CTA asks for it — that request (the same options
+   * openWelcomeWalkModal takes) arrives here and opens it straight away.
+   */
+  openOnMount?: OpenWelcomeWalkModalOptions | null;
+  /** Never auto-opens (first-visit scroll trigger, ?welcome=1): only a CTA does. */
+  manualOnly?: boolean;
+} = {}) {
+  const router = useRouter();
+  const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
+  const [open, setOpen] = useState(openOnMount !== null);
+  const [view, setView] = useState<View>(
+    openOnMount?.straightToScheduler && calendlyUrl ? 'scheduler' : 'gate'
+  );
+  const [email, setEmail] = useState(openOnMount?.email ?? '');
   const [fieldError, setFieldError] = useState('');
   const [attemptId, setAttemptId] = useState<string | null>(null);
 
@@ -173,9 +191,8 @@ export default function WelcomeWalkModal() {
   // 15 requires the reopen to stay deliberate. Never read by the
   // once-per-browser localStorage gate or the `?welcome=1` force path, which
   // are unaffected by anything that happens within a session.
-  const interactedRef = useRef(false);
+  const interactedRef = useRef(openOnMount !== null);
 
-  const calendlyUrl = process.env.NEXT_PUBLIC_CALENDLY_URL || '';
   // The scheduler owns the focus trap/scroll lock while it's open — this
   // dialog's own effects below are suspended for that phase so only one of
   // the two is ever active, per plans/005 "one active dialog at a time".
@@ -192,6 +209,7 @@ export default function WelcomeWalkModal() {
    * the modal stays reviewable in a production build.
    */
   useEffect(() => {
+    if (manualOnly) return;
     const forced = isForced();
     const storage = readStorage();
     if (forced) {
@@ -213,7 +231,7 @@ export default function WelcomeWalkModal() {
       setOpen(true);
     }, WELCOME_MODAL_DELAY_MS);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [manualOnly]);
 
   /**
    * Manual opens (the hero CTA) bypass the first-visit gate entirely: they
@@ -223,6 +241,8 @@ export default function WelcomeWalkModal() {
    */
   useEffect(() => {
     function handleOpenRequest(event: Event) {
+      // Claims the request, so the caller knows the modal is handling it.
+      event.preventDefault();
       interactedRef.current = true;
       // An entry point that already collected an address (the group walk
       // card) hands it over so the visitor never types it twice, and asks to
@@ -289,14 +309,19 @@ export default function WelcomeWalkModal() {
     pendingQuestionsScrollRef.current = false;
     const frame = window.requestAnimationFrame(() => {
       const target = document.getElementById(HOME_QUESTIONS_SECTION_ID);
-      if (!target) return;
+      // Pages without the questionnaire hand the visitor to /signup, which is
+      // that same section as a page of its own.
+      if (!target) {
+        router.push('/signup');
+        return;
+      }
       target.scrollIntoView({
         behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
         block: 'start',
       });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [open]);
+  }, [open, router]);
 
   // Focus trap + Escape-to-close + focus restore. Re-runs every time this
   // dialog (re)becomes the visible one — including gate ↔ confirmation
@@ -549,18 +574,53 @@ export default function WelcomeWalkModal() {
                 white-space: nowrap;
                 text-align: left;
               }
-              /* Left column: skyline collage behind, the carousel card's walker
-                 illustration across the full panel width. Static — no hover. */
+              /* Left column, back to front: the skyline collage, a paper wash,
+                 the circular seal, then the walker and dogs on top. On open
+                 the skyline pans and the walker walks in (keyframes below);
+                 both stop at their end positions and restart on the next
+                 open, because the panel only exists while the modal is open. */
               #welcome-walk-modal-art-panel {
                 position: relative;
                 min-height: 300px;
                 overflow: hidden;
-                background:
-                  linear-gradient(rgba(247,241,227,0.30), rgba(247,241,227,0.04)),
-                  url('${SKYLINE_IMAGE}') center 45%/cover no-repeat,
-                  var(--warm-white);
+                background: var(--warm-white);
                 border-right: 1px solid rgba(36,35,33,0.12);
               }
+              #welcome-walk-modal-art-panel::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                pointer-events: none;
+                background: linear-gradient(rgba(247,241,227,0.30), rgba(247,241,227,0.04));
+              }
+              /* Skyline pan: the image starts with its left edge on the panel's
+                 left edge and ends with its right edge on the panel's right
+                 edge. The track moves by the panel's width (translate % of the
+                 track) while the image moves back by its own width (translate
+                 % of the image), so the pair travels exactly panel − image:
+                 leftward whenever the image is wider than the panel. Transforms
+                 only — nothing re-lays out while it runs. */
+              #welcome-walk-modal-art-skyline-track {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                animation: welcome-skyline-track 16s cubic-bezier(0.33, 1, 0.68, 1) 0.2s both;
+              }
+              #welcome-walk-modal-art-skyline {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: auto;
+                min-width: 100%;
+                max-width: none;
+                object-fit: cover;
+                object-position: center 45%;
+                animation: welcome-skyline-image 16s cubic-bezier(0.33, 1, 0.68, 1) 0.2s both;
+              }
+              @keyframes welcome-skyline-track { from { transform: translateX(0); } to { transform: translateX(100%); } }
+              @keyframes welcome-skyline-image { from { transform: translateX(0); } to { transform: translateX(-100%); } }
               /* Circular seal, top of the art column. */
               #welcome-walk-modal-art-badge {
                 position: absolute;
@@ -579,6 +639,10 @@ export default function WelcomeWalkModal() {
                 z-index: 2;
                 pointer-events: none;
               }
+              /* The walker and dogs pass in front of the seal, walking in from
+                 off the left edge to their resting place (right edge on the
+                 panel's right edge). Uses the individual translate property so
+                 it composes with the phone layout's own transform. */
               #welcome-walk-modal-art-walker {
                 position: absolute;
                 left: 0;
@@ -586,8 +650,11 @@ export default function WelcomeWalkModal() {
                 bottom: 0;
                 width: 100%;
                 height: auto;
+                z-index: 3;
                 filter: drop-shadow(0 6px 14px rgba(35,31,24,0.22));
+                animation: welcome-walker-in 10s cubic-bezier(0.25, 1, 0.5, 1) 0.2s both;
               }
+              @keyframes welcome-walker-in { from { translate: -100% 0; } to { translate: 0 0; } }
               /* The modal is a condensed instance of the home intake sheet: same
                  styling, roughly 30% smaller type and spacing so it fits a popup. */
               #welcome-walk-modal-sheet .booking-form-body { padding: clamp(14px, 1.8vw, 20px); }
@@ -788,6 +855,10 @@ export default function WelcomeWalkModal() {
               }
               @media (prefers-reduced-motion: reduce) {
                 #welcome-walk-modal, #welcome-walk-modal-shell { animation: none !important; }
+                /* Art layers sit at their end positions, no travel. */
+                #welcome-walk-modal-art-skyline-track { animation: none; transform: translateX(100%); }
+                #welcome-walk-modal-art-skyline { animation: none; transform: translateX(-100%); }
+                #welcome-walk-modal-art-walker { animation: none; }
                 /* Was ".welcome-walk-modal-cta", a class no element here
                    carries (dead selector) — retargeted at the actual CTA
                    button ids so their hover transitions are actually
@@ -818,6 +889,21 @@ export default function WelcomeWalkModal() {
               }}
             >
               <div id="welcome-walk-modal-art-panel" style={{ gridArea: 'art' }}>
+                {/* Skyline pans on open (rules above). A plain <img>: it is sized
+                    by its height and its own aspect ratio, and moved by two
+                    nested transforms, which next/image's wrapper-free output
+                    would still fight with its width/height sizing. */}
+                <div id="welcome-walk-modal-art-skyline-track" aria-hidden="true">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- CSS-animated pan layer; see comment above */}
+                  <img
+                    id="welcome-walk-modal-art-skyline"
+                    src={SKYLINE_IMAGE}
+                    alt=""
+                    width={1620}
+                    height={971}
+                    decoding="async"
+                  />
+                </div>
                 {/* Both are CSS-sized (rules above): width/height here only
                     reserve the aspect ratio and pick a srcset candidate. */}
                 <Image
