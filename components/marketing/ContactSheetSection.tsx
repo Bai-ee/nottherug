@@ -2,7 +2,7 @@ import MeetGreetForm from '@/components/MeetGreetForm';
 
 /**
  * The "Let's Get Started" questionnaire band: stamp label, heading, the
- * halftone bridge clipping and the full meet & greet form on a paper sheet.
+ * dog collage and the full meet & greet form on a paper sheet.
  * Rendered on the home page (inside its closing band, as an h2) and as the
  * whole body of /signup (as that page's h1). The ids are shared on purpose —
  * every rule in app/globals.css hangs off #home-contact-sheet-* and the two
@@ -28,19 +28,19 @@ export default function ContactSheetSection({
             <div className="stamp-label stamp-label-dark stamp-label-heading">Sign Up 05 · Let’s Get Started</div>
             <Heading>What We&apos;d Like to Know....</Heading>
           </div>
-          {/* Decorative: the halftone bridge clipping fills the empty half
+          {/* Decorative: the dog collage fills the empty half
               of this row on wide screens. Alt is empty on purpose — it
               carries no information the headline doesn't already give. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             id="home-contact-sheet-clipping"
-            src="/img/bg-section-graphic-1.webp"
+            src="/img/backgorund_dogs.png"
             alt=""
             aria-hidden="true"
             loading="lazy"
             decoding="async"
-            width={1620}
-            height={971}
+            width={1536}
+            height={642}
           />
         </div>
         <div id="home-book-form-wrap" className="booking-form-wrap">

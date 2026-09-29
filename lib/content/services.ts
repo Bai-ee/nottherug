@@ -1,125 +1,130 @@
-// Service names, copy, and prices — copied verbatim from app/page.tsx during
-// the P2A route extraction. The home preview and the /services catalog used
-// different names/copy for overlapping services in the source (e.g. "Solo
-// Walk" vs "Solo Visit"); that inconsistency is preserved here rather than
-// unified, per the "do not correct copy" constraint. Flag for P4 owner review.
+// Service names, copy, and prices for the home page rates section. The copy
+// here is the owner-approved service verbiage (2026-09-29) and is the source
+// of truth: the featured card, the rate columns, the service detail modal
+// (ServiceDetailDialog), the welcome modal and the footer's rate links all
+// read from these entries. The home page shows only the name, headline price
+// and `fineprint`; everything else lives in the detail modal.
 
-export type PriceUnit = 'per walk' | '/visit' | '/night';
+export interface RateGroup {
+  label: string;
+  lines: readonly string[];
+}
 
 export interface ServicePreviewItem {
   title: string;
+  /** The service's lead line, verbatim — the first fact in the detail modal. */
   copy: string;
+  /** Headline price: the lowest standard rate. `rateLines`/`rateGroups` carry the full rates. */
   price: string;
-  priceUnit: PriceUnit;
+  priceUnit: string;
   /**
    * Matching value from SERVICE_INTEREST_OPTIONS (lib/leads/contract.ts), for
-   * the Book CTA's booking-form prefill. Card titles don't line up 1:1 with
-   * that list (see file header), so this is set explicitly per card; omitted
-   * where nothing matches (e.g. Cat Visits) and the CTA falls back to "Not
-   * sure yet".
+   * the Book CTA's booking-form prefill.
    */
   serviceInterest?: string;
   /**
    * Title split into exactly two lines for the home rates row, where every
    * name is set on two lines so the prices below them share a baseline.
-   * Wrapping cannot guarantee that (names range from "Cat Visits" to
-   * "Boarding & Overnight Sitting"), so the break is authored here.
    */
   nameLines?: [string, string];
-  /**
-   * One-line summary for that same row, kept to a similar length across
-   * services. `copy` stays the full description used elsewhere.
-   */
+  /** One short line under the price on the home page. Must fit on one line. */
   fineprint?: string;
+  /** Body paragraphs for the detail modal, in reading order. */
+  details?: readonly string[];
+  /** Full rate lines, verbatim, when one headline price is not the whole story. */
+  rateLines?: readonly string[];
+  /** Rates split by who they cover (Dog Walking: one dog / two dogs). */
+  rateGroups?: readonly RateGroup[];
+  /** Closing notes: discounts, sales tax. */
+  notes?: readonly string[];
 }
 
-// Home page "rates preview" — two rows of three, no icon or badge.
-/** The headline package. Rendered in the rates row AND in the welcome modal. */
+/** The headline package. Rendered as the featured rate card AND in the welcome modal. */
 export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
-  title: 'Group Walk',
-  copy: '45-minute walk with up to three dogs max.',
+  title: 'Dog Walking',
+  copy: '45-minute walks. Small groups of up to three dogs.',
   price: '$33',
   priceUnit: 'per walk',
   serviceInterest: 'Daily Group Walks',
-  nameLines: ['Group', 'Walk'],
+  nameLines: ['Dog', 'Walking'],
   fineprint: '45 minutes, three dogs max',
+  details: [
+    'Experienced walkers who get to know your dog’s personality and pace. Each walk includes fresh water, treats, clean paws, and a photo and update so you know how it went. Feeding and medication can be arranged in advance.',
+  ],
+  rateGroups: [
+    {
+      label: 'One dog',
+      lines: [
+        '$33 per walk for 9 or more walks per month',
+        '$35 per walk for 8 or fewer walks per month',
+      ],
+    },
+    {
+      label: 'Two dogs from the same household',
+      lines: [
+        '$48 per walk for 9 or more walks per month',
+        '$50 per walk for 8 or fewer walks per month',
+        'Rates cover both dogs walking together.',
+      ],
+    },
+  ],
+  notes: ['All rates are subject to applicable sales tax.'],
 };
 
 /**
  * Compact label for the same package, used where there is no room for the
  * copy line (the welcome modal). Keep the duration matching `copy` above.
  */
-export const GROUP_WALK_SHORT_LABEL = '45 Min Group Rate';
+export const GROUP_WALK_SHORT_LABEL = '45-Minute Dog Walking';
 
-/**
- * First-walk promotion on the headline package. It lives here rather than in
- * the card that renders it because two surfaces advertise it — the featured
- * rate card on the home page (GroupWalkFeatureCard) and the welcome modal's
- * package line — and they had already drifted: the card offered 20% off
- * while the modal quoted the undiscounted rate.
- */
-export const FIRST_WALK_DISCOUNT = 0.2;
+/** Small print under the headline price wherever it appears alone. */
+export const GROUP_WALK_PRICE_NOTE = '+ sales tax · 9+ walks a month';
 
-/** `$33` as a number, for the discount maths. */
-export const GROUP_WALK_FULL_PRICE = Number(GROUP_WALK_PREVIEW.price.replace(/[^0-9.]/g, ''));
-
-/** What the first walk actually costs, rounded to the dollar. */
-export const GROUP_WALK_FIRST_WALK_PRICE = Math.round(
-  GROUP_WALK_FULL_PRICE * (1 - FIRST_WALK_DISCOUNT),
-);
-
-export const FIRST_WALK_PROMO_LINE = '20% off your first walk';
-export const FIRST_WALK_PROMO_BADGE = `-${Math.round(FIRST_WALK_DISCOUNT * 100)}%`;
-export const FIRST_WALK_TAX_NOTE = '+ sales tax · first walk only';
-
-export const HOME_SERVICE_PREVIEW_ROW_1: ServicePreviewItem[] = [
+/** Rates other than Dog Walking, shown as columns beside the featured card, in this order. */
+export const HOME_OTHER_RATES: ServicePreviewItem[] = [
   {
-    title: 'Senior Dog Visits',
-    copy: 'Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs.',
-    price: '$35',
-    priceUnit: '/visit',
-    serviceInterest: 'Senior Dog Care',
-    nameLines: ['Senior', 'Dog Walks'],
-    fineprint: '20+ minutes, gentle pace',
-  },
-  GROUP_WALK_PREVIEW,
-  {
-    title: 'Solo Walk',
-    copy: 'A private 60-minute walk.',
-    price: '$60',
-    priceUnit: 'per walk',
-    serviceInterest: 'Solo Visits',
-    nameLines: ['Solo', 'Walk'],
-    fineprint: '60 minutes, one-on-one',
-  },
-];
-
-export const HOME_SERVICE_PREVIEW_ROW_2: ServicePreviewItem[] = [
-  {
-    title: 'Puppy Walk',
-    copy: 'Designed for puppies still learning.',
-    price: '$35',
-    priceUnit: 'per walk',
-    serviceInterest: 'Puppy Visits',
-    nameLines: ['Puppy', 'Walk'],
-    fineprint: 'Short walks, still learning',
-  },
-  {
-    title: 'Boarding & Overnight Sitting',
-    copy: "Loving overnight care in your dog's own home, where they can stick to their routine and sleep in familiar surroundings while you're away.",
+    title: 'Boarding & Dog Sitting',
+    copy: 'Familiar care while you’re away.',
     price: '$100',
-    priceUnit: '/night',
+    priceUnit: 'from, per day',
     serviceInterest: 'Boarding / Sitting',
-    nameLines: ['Boarding &', 'Sitting'],
-    fineprint: 'Overnight care, their home',
+    nameLines: ['Boarding &', 'Dog Sitting'],
+    fineprint: 'Familiar care while you’re away',
+    details: [
+      'Available exclusively to our dog-walking clients, so your dog stays in the care of a team they already know. We’ll go over feeding, walks, sleeping arrangements, and any special needs beforehand to help keep their routine consistent and their stay comfortable.',
+    ],
+    rateLines: ['$100–110 per day'],
+    notes: ['Discounts available for stays longer than seven days.', 'Plus applicable sales tax.'],
   },
   {
-    title: 'Cat Visits',
-    copy: "Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We'll also water plants, bring in the mail, and keep an eye on your home while you're away.",
+    title: 'Puppy Walks',
+    copy: 'For puppies ages 2–6 months. One-on-one care for their first routines.',
     price: '$35',
-    priceUnit: '/visit',
-    nameLines: ['Cat', 'Visits'],
-    fineprint: 'Food, litter, playtime',
+    priceUnit: 'per walk',
+    serviceInterest: 'Puppy Walks',
+    nameLines: ['Puppy', 'Walks'],
+    fineprint: 'For puppies ages 2–6 months',
+    details: [
+      'Potty breaks, play, and gentle encouragement while you’re away. Our solo walks support potty training, early social skills, and everyday routines through positive reinforcement.',
+      'We’ll work with you to plan walks around your puppy’s age, needs, and your schedule. Multiple daily walks are available, with reduced rates for the second and third walks on the same day.',
+      'As your puppy grows, we’ll adjust their schedule together and introduce small-group walks when they’re ready.',
+    ],
+    notes: ['Plus applicable sales tax.'],
+  },
+  {
+    title: 'Senior & Special Needs Walks',
+    copy: '20-minute walks. Gentle care at your dog’s pace.',
+    price: '$25',
+    priceUnit: 'per walk',
+    serviceInterest: 'Senior Dog Care',
+    nameLines: ['Senior &', 'Special Needs'],
+    fineprint: '20 minutes, at your dog’s pace',
+    details: [
+      'For dogs who benefit from a shorter outing and a little extra attention. We make time for potty breaks and sniffing, with fresh water, treats, clean paws, and a photo and update after each walk. Feeding and medication can be arranged in advance.',
+      'Choose a walk with a compatible dog friend or a solo walk for one-on-one care.',
+    ],
+    rateLines: ['$25 per walk with a dog friend', '$35 per walk for solo care'],
+    notes: ['Plus applicable sales tax.'],
   },
 ];
 
@@ -156,59 +161,5 @@ export const ALWAYS_INCLUDED: Array<{
     icon: 'chat',
     title: 'Direct Communication',
     copy: 'Text or call your walker directly — no support tickets, no bots.',
-  },
-];
-
-export interface ServiceCatalogItem extends ServicePreviewItem {
-  icon: string;
-  badge?: string;
-}
-
-// /services page grid — six cards with icon art and an optional badge.
-export const SERVICE_CATALOG: ServiceCatalogItem[] = [
-  {
-    title: 'Small Group Visit',
-    copy: '45-minute visit with up to three dogs max. GPS tracked, personalized report card included, and paws cleaned before returning home.',
-    price: '$33',
-    priceUnit: '/visit',
-    icon: '/img/icons/service-small-group.svg',
-    badge: 'Most Popular',
-  },
-  {
-    title: 'Solo Visit',
-    copy: 'A private 60-minute visit for nervous, anxious, or reactive dogs, or pups who simply do better with one-on-one attention. Built around patience, consistency, and positive reinforcement.',
-    price: '$60',
-    priceUnit: '/visit',
-    icon: '/img/icons/service-solo.svg',
-    badge: 'Premium',
-  },
-  {
-    title: 'Puppy Visits',
-    copy: 'Designed for puppies still learning the ropes. Visits focus on potty breaks, enrichment, socialization, and positive reinforcement. Discounts available for multiple daily visits.',
-    price: '$35',
-    priceUnit: '/visit',
-    icon: '/img/icons/service-puppy.svg',
-  },
-  {
-    title: 'Senior Dog Visits',
-    copy: 'Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.',
-    price: '$35',
-    priceUnit: '/visit',
-    icon: '/img/icons/service-senior.svg',
-  },
-  {
-    title: 'Boarding & Overnight Sitting',
-    copy: "Loving overnight care in your dog's own home, where they can stick to their routine and sleep in familiar surroundings while you're away.",
-    price: '$100',
-    priceUnit: '/night',
-    icon: '/img/icons/service-boarding.svg',
-    badge: '7+ day discounts',
-  },
-  {
-    title: 'Cat Visits',
-    copy: "Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We'll also water plants, bring in the mail, and keep an eye on your home while you're away.",
-    price: '$35',
-    priceUnit: '/visit',
-    icon: '/img/icons/service-cat.svg',
   },
 ];

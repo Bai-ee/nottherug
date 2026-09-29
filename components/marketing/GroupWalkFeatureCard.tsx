@@ -3,10 +3,8 @@
 import { useState, type FormEvent } from 'react';
 import {
   GROUP_WALK_PREVIEW,
-  GROUP_WALK_FIRST_WALK_PRICE,
-  FIRST_WALK_PROMO_LINE,
-  FIRST_WALK_PROMO_BADGE,
-  FIRST_WALK_TAX_NOTE,
+  GROUP_WALK_PRICE_NOTE,
+  type ServicePreviewItem,
 } from '@/lib/content/services';
 import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import { isValidEmail } from '@/lib/leads/validation';
@@ -36,8 +34,9 @@ const SKYLINE_IMAGE = '/img/bg-section-graphic-1.webp';
 
 
 /**
- * Featured Group Walk card — a wide promo rectangle above the smaller rate
- * cards, with the first-walk discount called out and an inline email + phone
+ * Featured Dog Walking card — a wide rectangle beside the smaller rate
+ * cards, with a "Rates & Details" label that opens the full write-up in
+ * ServiceDetailDialog (owned by ServicesPreview) and an inline email + phone
  * capture that hands off to /book prefilled, exactly as the welcome modal
  * does. Field styling is shared with that modal and the home intake sheet
  * (see #home-group-walk-feature-card in globals.css), so the three cannot
@@ -48,9 +47,13 @@ const SKYLINE_IMAGE = '/img/bg-section-graphic-1.webp';
  * importing that carousel, which stays off per
  * plans/002-production-readiness.md P2A.
  */
-export default function GroupWalkFeatureCard() {
+export default function GroupWalkFeatureCard({
+  onOpenDetails,
+}: {
+  onOpenDetails: (item: ServicePreviewItem) => void;
+}) {
   // Layered hover choreography ported from the disabled carousel, driven by
-  // the CTA below rather than the card as a whole.
+  // pointer hover on the whole card and keyboard focus on the CTA.
   const { cardRef, backdropRef, walkerRef, priceRef, ctaRef, setPawRef, onEnter, onLeave } = useGroupWalkCardHover();
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -86,7 +89,9 @@ export default function GroupWalkFeatureCard() {
   }
 
   return (
-    <div id="home-group-walk-feature-card" ref={cardRef}>
+    // Pointer hover anywhere on the card runs the choreography; keyboard
+    // focus on the CTA runs it too, so a tabbing visitor sees the same thing.
+    <div id="home-group-walk-feature-card" ref={cardRef} onMouseEnter={onEnter} onMouseLeave={onLeave}>
       <style>{`
         /* Border matches the smaller rate cards (.service-card) — hairline ink
            at 12% on paper, no coloured rule. */
@@ -165,26 +170,6 @@ export default function GroupWalkFeatureCard() {
           will-change: transform;
           filter: drop-shadow(0 6px 14px rgba(35,31,24,0.22));
         }
-        #home-group-walk-feature-promo-ribbon {
-          position: absolute;
-          top: 28px;
-          left: -46px;
-          width: 196px;
-          padding: 9px 0;
-          background: var(--olive);
-          color: var(--paper);
-          font-family: var(--font-stamp);
-          font-size: 16px;
-          font-weight: 600;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          text-align: center;
-          transform: rotate(-45deg);
-          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-          /* Behind the walker layer (z-index 3) so the figure passes in front
-             of the banner, above the skyline and its wash. */
-          z-index: 2;
-        }
         /* Denser than the old card: bigger type, tighter gaps. Plain paper —
            the skyline watermark that used to fill the right side is gone. */
         #home-group-walk-feature-content {
@@ -195,9 +180,9 @@ export default function GroupWalkFeatureCard() {
           justify-content: center;
           gap: 10px;
         }
-        /* Keeps the copy above the card's diagonal promo banner (z-index 0). */
+        /* Keeps the copy above the paw trail (z-index 0). */
         #home-group-walk-feature-content > * { position: relative; z-index: 1; }
-        /* Promo line and pill share one line; the pill pins right. */
+        /* Summary line and the details label share one line; the label pins right. */
         #home-group-walk-feature-headline-row {
           display: flex;
           align-items: center;
@@ -207,7 +192,7 @@ export default function GroupWalkFeatureCard() {
           flex-wrap: nowrap;
         }
         #home-group-walk-feature-promo-line { min-width: 0; }
-        #home-group-walk-feature-headline-row .phase-tag { flex-shrink: 0; }
+        #home-group-walk-feature-details-btn { flex-shrink: 0; }
         /* Name left, price block right — the price is the first read. */
         #home-group-walk-feature-title-row {
           display: flex;
@@ -229,18 +214,11 @@ export default function GroupWalkFeatureCard() {
           text-align: right;
           margin-top: 20px;
         }
-        /* Old price and the unit sit together on one line above the new price. */
+        /* The unit sits on its own line above the price. */
         #home-group-walk-feature-was-row {
           display: flex;
           align-items: baseline;
           gap: 6px;
-        }
-        #home-group-walk-feature-was {
-          font-family: var(--font-type);
-          font-size: 14px;
-          color: var(--mid-gray);
-          text-decoration: line-through;
-          line-height: 1;
         }
         #home-group-walk-feature-unit {
           font-family: var(--font-body);
@@ -296,7 +274,7 @@ export default function GroupWalkFeatureCard() {
            title row: this box is 6ch wide, the price block beside it is a
            fixed ~191px, so anything above ~5vw wraps the price under the
            name in the 768-840px band, just above the stacked breakpoint. The top margin is
-           the struck-through price line above it (14px + the 2px block gap). */
+           the unit line above the price (14px + the 2px block gap). */
         #home-group-walk-feature-title {
           font-family: var(--font-display);
           font-size: clamp(34px, 5vw, 72px);
@@ -386,7 +364,6 @@ export default function GroupWalkFeatureCard() {
           loading="lazy"
         />
         <div id="home-group-walk-feature-art-wash" aria-hidden="true" />
-        <div id="home-group-walk-feature-promo-ribbon" aria-hidden="true">20% Off</div>
         <div id="home-group-walk-feature-art-figure">
           {/* Same GSAP ref-animation as the backdrop above (walkerRef: rest/hover
               xPercent + scale in useGroupWalkCardHover). */}
@@ -439,19 +416,28 @@ export default function GroupWalkFeatureCard() {
         </div>
 
         <div id="home-group-walk-feature-headline-row">
-          <p id="home-group-walk-feature-promo-line">{FIRST_WALK_PROMO_LINE}</p>
-          <span className="phase-tag">{FIRST_WALK_PROMO_BADGE}</span>
+          <p id="home-group-walk-feature-promo-line">{GROUP_WALK_PREVIEW.fineprint}</p>
+          <button
+            type="button"
+            id="home-group-walk-feature-details-btn"
+            className="service-details-btn"
+            aria-haspopup="dialog"
+            aria-label={`${GROUP_WALK_PREVIEW.title}: full details and rates`}
+            onClick={() => onOpenDetails(GROUP_WALK_PREVIEW)}
+          >
+            Rates &amp; Details
+            <span className="service-details-btn-chevron" aria-hidden="true">›</span>
+          </button>
         </div>
 
         <div id="home-group-walk-feature-title-row">
           <h3 id="home-group-walk-feature-title">{GROUP_WALK_PREVIEW.title}</h3>
           <div id="home-group-walk-feature-price-block">
             <div id="home-group-walk-feature-was-row">
-              <span id="home-group-walk-feature-was">{GROUP_WALK_PREVIEW.price}</span>
               <span id="home-group-walk-feature-unit">{GROUP_WALK_PREVIEW.priceUnit}</span>
             </div>
-            <div id="home-group-walk-feature-now" ref={priceRef}>${GROUP_WALK_FIRST_WALK_PRICE}</div>
-            <span id="home-group-walk-feature-tax-note">{FIRST_WALK_TAX_NOTE}</span>
+            <div id="home-group-walk-feature-now" ref={priceRef}>{GROUP_WALK_PREVIEW.price}</div>
+            <span id="home-group-walk-feature-tax-note">{GROUP_WALK_PRICE_NOTE}</span>
           </div>
         </div>
 
@@ -504,15 +490,13 @@ export default function GroupWalkFeatureCard() {
             </p>
           )}
 
-          {/* The whole card's hover choreography hangs off this one button —
-              pointer and keyboard both, so a tabbing visitor sees it too. */}
+          {/* Keyboard focus here runs the card's hover choreography (pointer
+              hover is on the card root), so a tabbing visitor sees it too. */}
           <button
             type="submit"
             className="btn btn-primary btn-accent service-card-cta"
             style={{ marginTop: '12px' }}
             ref={ctaRef}
-            onMouseEnter={onEnter}
-            onMouseLeave={onLeave}
             onFocus={onEnter}
             onBlur={onLeave}
           >

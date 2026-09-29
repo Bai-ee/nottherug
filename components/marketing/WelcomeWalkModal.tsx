@@ -6,10 +6,7 @@ import Image from 'next/image';
 import {
   GROUP_WALK_PREVIEW,
   GROUP_WALK_SHORT_LABEL,
-  GROUP_WALK_FIRST_WALK_PRICE,
-  FIRST_WALK_PROMO_LINE,
-  FIRST_WALK_PROMO_BADGE,
-  FIRST_WALK_TAX_NOTE,
+  GROUP_WALK_PRICE_NOTE,
 } from '@/lib/content/services';
 import { SERVICE_AREA_LABEL } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
@@ -633,46 +630,14 @@ export default function WelcomeWalkModal() {
               #welcome-walk-modal-cta-secondary::after { content: none; }
               #welcome-walk-modal-package-line h3,
               #welcome-walk-modal-package-line .svc-price { font-size: 19px !important; }
-              /* Promo row — the card's headline row at modal scale. */
-              #welcome-walk-modal-promo-row {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin-bottom: 6px;
-              }
-              #welcome-walk-modal-promo-line {
-                font-family: var(--font-stamp);
-                font-size: 12px;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                color: var(--olive);
-                margin: 0;
-              }
-              #welcome-walk-modal-promo-row .phase-tag {
-                font-size: 11px;
-                padding: 2px 9px;
-                margin-bottom: 0;
-              }
-              /* Struck full price sits over the discounted one, right-aligned,
-                 matching #home-group-walk-feature-price-block. */
+              /* Unit over the price, right-aligned, matching
+                 #home-group-walk-feature-price-block. */
               #welcome-walk-modal-price-block {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
                 gap: 1px;
                 text-align: right;
-              }
-              #welcome-walk-modal-was-row {
-                display: flex;
-                align-items: baseline;
-                gap: 5px;
-              }
-              #welcome-walk-modal-was {
-                font-family: var(--font-type);
-                font-size: 12px;
-                color: var(--mid-gray);
-                text-decoration: line-through;
-                line-height: 1;
               }
               #welcome-walk-modal-unit {
                 font-family: var(--font-body);
@@ -774,7 +739,6 @@ export default function WelcomeWalkModal() {
                 #welcome-walk-modal-tax-note, #welcome-walk-modal-rate-fineprint { display: none !important; }
                 #welcome-walk-modal-form-panel { padding-top: 6px !important; padding-bottom: 10px !important; }
                 #welcome-walk-modal-sheet .booking-form-body { padding: 10px 12px 12px !important; }
-                #welcome-walk-modal-promo-row { margin-bottom: 2px !important; }
                 #welcome-walk-modal-package-line { margin-bottom: 4px !important; padding-bottom: 6px !important; }
                 #welcome-walk-modal-fields { gap: 6px !important; }
                 #welcome-walk-modal-fields .form-group { margin: 0 !important; }
@@ -1071,14 +1035,8 @@ export default function WelcomeWalkModal() {
                   <form id="welcome-walk-modal-form" onSubmit={handleFormSubmit} noValidate>
                     <div id="welcome-walk-modal-sheet" className="booking-form">
                       <div className="booking-form-body">
-                        {/* Same first-walk promo the featured rate card runs
-                            (#home-group-walk-feature-headline-row): promo line,
-                            -20% tag, struck full price over the discounted one.
-                            Both read the figures from lib/content/services.ts. */}
-                        <div id="welcome-walk-modal-promo-row">
-                          <p id="welcome-walk-modal-promo-line">{FIRST_WALK_PROMO_LINE}</p>
-                          <span className="phase-tag">{FIRST_WALK_PROMO_BADGE}</span>
-                        </div>
+                        {/* Same headline rate the featured Dog Walking card
+                            shows; both read it from lib/content/services.ts. */}
                         <div
                           id="welcome-walk-modal-package-line"
                           style={{
@@ -1096,16 +1054,13 @@ export default function WelcomeWalkModal() {
                             {GROUP_WALK_SHORT_LABEL}
                           </h3>
                           <div id="welcome-walk-modal-price-block">
-                            <div id="welcome-walk-modal-was-row">
-                              <span id="welcome-walk-modal-was">{GROUP_WALK_PREVIEW.price}</span>
-                              <span id="welcome-walk-modal-unit">{GROUP_WALK_PREVIEW.priceUnit}</span>
-                            </div>
+                            <span id="welcome-walk-modal-unit">{GROUP_WALK_PREVIEW.priceUnit}</span>
                             <div className="svc-price" id="welcome-walk-modal-now">
-                              ${GROUP_WALK_FIRST_WALK_PRICE}
+                              {GROUP_WALK_PREVIEW.price}
                             </div>
                           </div>
                         </div>
-                        <p id="welcome-walk-modal-tax-note">{FIRST_WALK_TAX_NOTE}</p>
+                        <p id="welcome-walk-modal-tax-note">{GROUP_WALK_PRICE_NOTE}</p>
                         <p id="welcome-walk-modal-rate-fineprint" className="form-note" style={{ margin: '0 0 12px' }}>
                           This is your free Meet &amp; Greet. The rate above applies to walks booked after it.
                         </p>

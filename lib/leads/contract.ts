@@ -35,9 +35,8 @@ export const NEIGHBORHOOD_OPTIONS = [
 
 export const SERVICE_INTEREST_OPTIONS = [
   'Daily Group Walks',
-  'Puppy Visits',
+  'Puppy Walks',
   'Senior Dog Care',
-  'Solo Visits',
   'Boarding / Sitting',
   'Not sure yet',
   'Walk & Talk Sessions',

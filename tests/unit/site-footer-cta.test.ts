@@ -83,24 +83,22 @@ describe('SiteFooter CTA wiring', () => {
   // All six rate links share footer_services on purpose: the id measures
   // "the footer sent someone to the rates", and a per-rate split would imply
   // the owner makes a decision from it. There is no such decision.
-  it('wires footer_services to all six rate links, each pointing at its rate card', async () => {
+  it('wires footer_services to all four rate links, each pointing at its rate card', async () => {
     const { default: SiteFooter } = await import('@/components/marketing/SiteFooter');
     const { default: TrackedCtaLink } = await import('@/components/marketing/TrackedCtaLink');
     const tree = SiteFooter();
 
     const serviceLinks = findByType(tree, TrackedCtaLink).filter((el) => el.props.cta === 'footer_services');
-    expect(serviceLinks).toHaveLength(6);
+    expect(serviceLinks).toHaveLength(4);
     for (const link of serviceLinks) {
       expect(link.props.href).toMatch(/^\/#home-/);
     }
     const ids = serviceLinks.map((l) => l.props.id).sort();
     expect(ids).toEqual([
-      'footer-rates-link-boarding-sitting',
-      'footer-rates-link-cat-visits',
-      'footer-rates-link-group-walk',
-      'footer-rates-link-puppy-walk',
-      'footer-rates-link-senior-dog-visits',
-      'footer-rates-link-solo-walk',
+      'footer-rates-link-boarding-dog-sitting',
+      'footer-rates-link-dog-walking',
+      'footer-rates-link-puppy-walks',
+      'footer-rates-link-senior-special-needs',
     ]);
   });
 
@@ -124,8 +122,8 @@ describe('SiteFooter CTA wiring', () => {
     // The Instagram/Yelp/Google buttons are plain <a> elements — plan 004
     // excludes outbound proof links until they answer a business question.
     const tracked = findByType(tree, TrackedCtaLink);
-    // Six rates + the Book CTA. Contact Us is a ContactUsTrigger now, and the
+    // Four rates + the Book CTA. Contact Us is a ContactUsTrigger now, and the
     // phone/email details are TrackedCtaAnchor — neither is a TrackedCtaLink.
-    expect(tracked).toHaveLength(7);
+    expect(tracked).toHaveLength(5);
   });
 });

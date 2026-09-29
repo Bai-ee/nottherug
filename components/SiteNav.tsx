@@ -203,6 +203,16 @@ export default function SiteNav() {
 
       <div className="mobile-menu" id="mobile-menu" data-open={mobileOpen ? 'true' : 'false'}>
         <div id="mobile-menu-links-list">
+        {/* A button, not a route: it opens the contact modal in place, like the
+            bar's Contact Us. First row, above What We Do. */}
+        <ContactUsTrigger
+          id="mobile-menu-contact-trigger"
+          cta="nav_contact"
+          className="mobile-menu-primary-contact-btn"
+          onOpen={() => setMobileOpen(false)}
+        >
+          Contact Us
+        </ContactUsTrigger>
         {NAV_LINKS.map((link) => (
           <Link
             key={link.href}
@@ -217,14 +227,6 @@ export default function SiteNav() {
         </div>
         <Link href="/book" id="mobile-menu-book-cta" className="mobile-cta btn-accent" onClick={(e) => handleBookClick(e, 'mobile_menu_book')}>Book a Walk</Link>
         <div id="mobile-menu-utility-row">
-          <ContactUsTrigger
-            id="mobile-menu-contact-trigger"
-            cta="nav_contact"
-            className="mobile-menu-contact-btn"
-            onOpen={() => setMobileOpen(false)}
-          >
-            Contact Us
-          </ContactUsTrigger>
           <Link href="/admin" id="mobile-menu-login-link">Login</Link>
           <a
             id="mobile-menu-instagram-link"

@@ -24,24 +24,24 @@ import type { CtaId } from '@/lib/analytics/events';
 // band — the CTA button below covers it), "Our Story" (its band was removed)
 // and the placeholder Privacy/Terms links, which were href="#".
 //
-// Layout note: the dog collage overlays the footer's bottom-right corner (see
-// `#main-footer::after` in globals.css), so everything under the link row is
-// held to the left half — nothing reads over the artwork.
+// Layout note: the Brooklyn Bridge collage (#footer-art-shell) is the footer's
+// focal point — a full-strength print at the centre of the grid on desktop, on
+// top of everything at tablet and phone. The brand block, the link columns, the
+// CTA and the legal line are all grid areas around it (see FOOTER in
+// globals.css); nothing reads over the artwork.
 
 // Both lists, and the columns themselves, run in page order — the rates in the
-// order the cards are laid out (Group Walk is the featured card and renders
-// below the other five), the company entries in the order their bands appear.
-// All six rate links report under one id, footer_services: the number the
+// order the cards are laid out (Dog Walking is the featured card and renders
+// below the other three), the company entries in the order their bands appear.
+// All four rate links report under one id, footer_services: the number the
 // owner acts on is "did the footer send anyone to the rates", not which rate
 // card they landed on. The per-link `id` is a DOM handle for styling and for
 // the wiring test, not a second analytics id.
 const FOOTER_RATES: Array<{ href: string; label: string; id: string }> = [
-  { href: '/#home-rate-solo-walk', label: 'Solo Walk', id: 'footer-rates-link-solo-walk' },
-  { href: '/#home-rate-senior-dog-visits', label: 'Senior Dog Visits', id: 'footer-rates-link-senior-dog-visits' },
-  { href: '/#home-rate-puppy-walk', label: 'Puppy Walk', id: 'footer-rates-link-puppy-walk' },
-  { href: '/#home-rate-boarding-overnight-sitting', label: 'Boarding & Sitting', id: 'footer-rates-link-boarding-sitting' },
-  { href: '/#home-rate-cat-visits', label: 'Cat Visits', id: 'footer-rates-link-cat-visits' },
-  { href: '/#home-group-walk-feature-card', label: 'Group Walk', id: 'footer-rates-link-group-walk' },
+  { href: '/#home-rate-boarding-dog-sitting', label: 'Boarding & Dog Sitting', id: 'footer-rates-link-boarding-dog-sitting' },
+  { href: '/#home-rate-puppy-walks', label: 'Puppy Walks', id: 'footer-rates-link-puppy-walks' },
+  { href: '/#home-rate-senior-special-needs-walks', label: 'Senior & Special Needs', id: 'footer-rates-link-senior-special-needs' },
+  { href: '/#home-group-walk-feature-card', label: 'Dog Walking', id: 'footer-rates-link-dog-walking' },
 ];
 
 // Contact left this list when it became a modal trigger (ContactUsTrigger,
@@ -63,19 +63,20 @@ export default function SiteFooter() {
       <div className="container">
         <div id="footer-content-zone">
           <div className="footer-grid">
-            <div className="footer-brand">
-              {/* Cream circle badge in place of the wordmark — the footer runs
-                  olive, and the disc is the one lockup that reads on it.
-                  #footer-logo-badge (globals.css) sizes it with a CSS clamp
-                  (168-224px), height auto — a static, CSS-only box. */}
+            {/* The collage carries its own "Not The Rug · NYC Dog Walking" label,
+                so it stands in for the cream circle badge this footer used to
+                lead with. Static, sized by CSS (#footer-art-image). */}
+            <div id="footer-art-shell">
               <Image
-                id="footer-logo-badge"
-                src="/logos/notRugYellow.png"
-                alt="Not The Rug — NYC dog walking"
-                width={1096}
-                height={1099}
-                sizes="(max-width: 767px) 168px, 14vw"
+                id="footer-art-image"
+                src="/img/bg-section-graphic-1.webp"
+                alt="Not The Rug — NYC dog walking. A collage of the Brooklyn Bridge and the Manhattan skyline."
+                width={1620}
+                height={971}
+                sizes="(max-width: 767px) 100vw, (max-width: 1100px) 720px, 46vw"
               />
+            </div>
+            <div className="footer-brand" id="footer-brand-block">
               <p className="footer-tagline">Brooklyn&apos;s most trusted neighborhood dog walking service. Williamsburg-based since 2011. Small groups, consistent walkers, genuine care.</p>
               <div className="footer-social">
                 <a
@@ -144,11 +145,9 @@ export default function SiteFooter() {
               </ul>
             </div>
             {/* The same four facts the contact modal carries, in the same
-                order, each held to a line or two: the dog collage overlays
-                this corner of the footer (#main-footer::after), so a column
-                that runs long here reads over the artwork. The street address
-                stays on the legal line below, and the full service-area
-                caveat stays in the modal. */}
+                order, each held to a line or two. The street address stays
+                on the legal line below, and the full service-area caveat
+                stays in the modal. */}
             <div className="footer-col" id="footer-col-contact">
               <h4>Contact</h4>
               <ul id="footer-contact-list">
@@ -184,22 +183,18 @@ export default function SiteFooter() {
                 </li>
               </ul>
             </div>
-          </div>
-          {/* No rules in here: the hairline above this row and the
-              "Brooklyn · Est. 2011" rule under it read as clutter against the
-              background artwork. Spacing separates the blocks instead. */}
-          <div id="footer-cta-shell" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '20px', paddingTop: '8px', marginBottom: '28px' }}>
-            <TrackedCtaLink
-              href="/book"
-              id="footer-book-luis-cta"
-              className="btn btn-primary btn-sm btn-accent"
-              style={{ whiteSpace: 'nowrap' }}
-              cta="footer_book"
-             
-            >Contact Luis</TrackedCtaLink>
-          </div>
-          <div className="footer-bottom">
-            <div className="footer-copy">© 2026 Not The Rug · 281 N 7th St, Ste 13, Brooklyn, NY 11211 · b/t Havemeyer St &amp; Meeker Ave · All rights reserved</div>
+            {/* No rules in here: spacing separates the blocks. */}
+            <div id="footer-cta-shell">
+              <TrackedCtaLink
+                href="/book"
+                id="footer-book-luis-cta"
+                className="btn btn-primary btn-sm btn-accent"
+                cta="footer_book"
+              >Contact Luis, to set up a walk</TrackedCtaLink>
+            </div>
+            <div className="footer-bottom">
+              <div className="footer-copy">© 2026 Not The Rug · 281 N 7th St, Ste 13, Brooklyn, NY 11211 · b/t Havemeyer St &amp; Meeker Ave · All rights reserved</div>
+            </div>
           </div>
         </div>
       </div>

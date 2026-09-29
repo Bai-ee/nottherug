@@ -60,6 +60,12 @@ export const CTA_IDS = [
   // Continuing to the questionnaire AFTER a booking goes to the same page but
   // is a different act, and is deliberately not counted here.
   'welcome_modal_details',
+  // The Contact Us modal's primary action: it hands off to the same
+  // email → scheduler → questionnaire flow as the welcome modal.
+  'contact_modal_schedule',
+  // The service detail modal's "Contact Luis, to Get Started": same hand-off
+  // to the welcome flow, from someone who was reading a service's rates.
+  'service_modal_get_started',
 
   // Contact intent. On the homepage these are in-page anchors, not the
   // /contact route, so the id says where the visitor clicked, not where the

@@ -1,26 +1,17 @@
 'use client';
 
-import { useRef } from 'react';
-import {
-  GROUP_WALK_PREVIEW,
-  HOME_SERVICE_PREVIEW_ROW_1,
-  HOME_SERVICE_PREVIEW_ROW_2,
-  type ServicePreviewItem,
-} from '@/lib/content/services';
+import { useRef, useState } from 'react';
+import { GROUP_WALK_PREVIEW, HOME_OTHER_RATES, type ServicePreviewItem } from '@/lib/content/services';
 // import MeetGreetForm from '@/components/MeetGreetForm'; // restore with #home-rates-intake below
 import GroupWalkFeatureCard from './GroupWalkFeatureCard';
+import ServiceDetailDialog from './ServiceDetailDialog';
 import { useRateStickerParallax } from './hooks/useRateStickerParallax';
 
-/** Rates other than Group Walk, which gets its own featured treatment above them. */
-const OTHER_CARDS = [...HOME_SERVICE_PREVIEW_ROW_1, ...HOME_SERVICE_PREVIEW_ROW_2].filter(
-  (item) => item !== GROUP_WALK_PREVIEW
-);
 
 /**
  * One stamped sticker per secondary rate, in the same olive/stamp treatment as
- * the featured card's "20% Off" corner ribbon. Presentation only: the labels
- * reuse the /services catalog badges where one already exists (Premium,
- * 7+ day discounts) so the two pages agree.
+ * the featured card's details label. Each sticker is a button: it opens the
+ * service's full write-up in ServiceDetailDialog.
  *
  * Every sticker sits directly under its rate's description. They used to
  * alternate above the name / below the description so the row would not read
@@ -28,14 +19,15 @@ const OTHER_CARDS = [...HOME_SERVICE_PREVIEW_ROW_1, ...HOME_SERVICE_PREVIEW_ROW_
  * as a mistake — one placement at every breakpoint instead.
  */
 const RATE_STICKERS: Record<string, string> = {
-  'Solo Walk': 'Premium',
-  'Senior Dog Visits': 'Gentle Pace',
-  'Puppy Walk': 'Puppy Pace',
-  'Boarding & Overnight Sitting': '7+ Day Discounts',
-  'Cat Visits': 'Cats Too',
+  'Boarding & Dog Sitting': '7+ Day Discounts',
+  'Puppy Walks': 'Puppy Pace',
+  'Senior & Special Needs Walks': 'Gentle Pace',
 };
 
 /** kebab-case id fragment so each sticker is addressable for later tuning. */
+/** Carousel order in the service modal: the featured package, then the rest as laid out. */
+const DETAIL_SERVICES: readonly ServicePreviewItem[] = [GROUP_WALK_PREVIEW, ...HOME_OTHER_RATES];
+
 function stickerSlug(title: string) {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
@@ -47,20 +39,30 @@ function stickerSlug(title: string) {
  * treatment as the featured Group Walk card — name, oversized price, and the
  * service copy reduced to fine print underneath.
  */
-export function PreviewCard({ item }: { item: ServicePreviewItem }) {
+export function PreviewCard({
+  item,
+  onOpenDetails,
+}: {
+  item: ServicePreviewItem;
+  onOpenDetails: (item: ServicePreviewItem) => void;
+}) {
   const stickerLabel = RATE_STICKERS[item.title];
   return (
     // id per rate so the footer's Services column can link straight at the
     // rate it names instead of dropping the reader at the top of the section.
     <div className="home-rate-item" id={`home-rate-${stickerSlug(item.title)}`}>
       {stickerLabel && (
-        <span
+        <button
+          type="button"
           id={`home-rate-sticker-${stickerSlug(item.title)}`}
-          className="home-rate-sticker"
-          aria-hidden="true"
+          className="home-rate-sticker service-details-btn"
+          aria-haspopup="dialog"
+          aria-label={`${item.title}: full details and rates`}
+          onClick={() => onOpenDetails(item)}
         >
           {stickerLabel}
-        </span>
+          <span className="service-details-btn-chevron" aria-hidden="true">›</span>
+        </button>
       )}
       <h3 className="home-rate-name">
         {item.nameLines ? (
@@ -89,6 +91,10 @@ export default function ServicesPreview() {
   // inside this row (see hooks/useRateStickerParallax.ts).
   const ratesRowRef = useRef<HTMLDivElement | null>(null);
   useRateStickerParallax(ratesRowRef);
+  // One carousel dialog for the whole section; the stickers and the featured
+  // card's label each open it on their own service.
+  const [detailIndex, setDetailIndex] = useState<number | null>(null);
+  const openDetails = (item: ServicePreviewItem) => setDetailIndex(DETAIL_SERVICES.indexOf(item));
 
   return (
     <section className="section" id="home-personalized-care-section">
@@ -102,7 +108,7 @@ export default function ServicesPreview() {
 
              One wrapping flex row rather than a grid: three across from 768px up,
              two on small tablets, one on phones — and because the row is
-             centred, a partial final row (the 5th rate) centres itself with
+             centred, a partial final row centres itself with
              no second container. */
           #home-rates-preview-other-cards {
             display: flex;
@@ -111,29 +117,17 @@ export default function ServicesPreview() {
             gap: 28px;
             margin-top: clamp(40px, 6vw, 84px);
           }
-          /* Stamped stickers, one per rate (see RATE_STICKERS above). Same
-             olive/stamp language as the featured card's corner ribbon, at
-             label scale. They sit in the column's own flow, directly under
+          /* Stamped stickers, one per rate (see RATE_STICKERS above). Their
+             look and hover/focus states come from .service-details-btn in
+             globals.css; this rule only places them. They sit in the column's own flow, directly under
              its description, so a label can never drift into the gap between
-             two rates. The order property puts the span last while it stays
+             two rates. The order property puts the button last while it stays
              the column's first child in the JSX. The tilt is set in
              hooks/useRateStickerParallax.ts, not here: gsap writes the whole
              transform inline while it tweens y, which beats a stylesheet
              rotate(). */
           #home-rates-preview-other-cards .home-rate-sticker {
             align-self: center;
-            padding: 4px 9px;
-            background: var(--olive);
-            color: var(--paper);
-            font-family: var(--font-stamp);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            white-space: nowrap;
-            border-radius: 3px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.22);
-            pointer-events: none;
             order: 99;
             margin-top: 4px;
           }
@@ -182,8 +176,8 @@ export default function ServicesPreview() {
             /* Narrower columns: smaller stamp so the label never outruns the
                description line it sits against. */
             #home-rates-preview-other-cards .home-rate-sticker {
-              font-size: 10px;
-              padding: 3px 8px;
+              font-size: 11px;
+              padding: 4px 10px;
             }
           }
           @media (max-width: 767px) {
@@ -194,15 +188,12 @@ export default function ServicesPreview() {
           @media (max-width: 600px) {
             #home-rates-preview-other-cards { gap: 22px; }
             #home-rates-preview-other-cards .home-rate-item { flex-basis: 100%; }
-            /* Vertical orientation only: the premium rate opens the stack.
-               Above this width it keeps its middle spot in the row. */
-            #home-rates-preview-other-cards #home-rate-solo-walk { order: -1; }
           }
 
         `}</style>
         <div id="home-rates-preview-other-cards" ref={ratesRowRef}>
-          {OTHER_CARDS.map((item) => (
-            <PreviewCard key={item.title} item={item} />
+          {HOME_OTHER_RATES.map((item) => (
+            <PreviewCard key={item.title} item={item} onOpenDetails={openDetails} />
           ))}
         </div>
 
@@ -210,7 +201,7 @@ export default function ServicesPreview() {
             trial — it sat above them before. Revert by moving this block back
             above #home-rates-preview-other-cards. */}
         <div id="home-rates-preview-featured-row" style={{ marginTop: 'clamp(40px, 6vw, 84px)' }}>
-          <GroupWalkFeatureCard />
+          <GroupWalkFeatureCard onOpenDetails={openDetails} />
         </div>
 
         {/* COMMENTED OUT — the in-section intake sheet ("First" + the 5-step
@@ -231,6 +222,12 @@ export default function ServicesPreview() {
 
         */}
       </div>
+      <ServiceDetailDialog
+        services={DETAIL_SERVICES}
+        index={detailIndex}
+        onIndexChange={setDetailIndex}
+        onClose={() => setDetailIndex(null)}
+      />
     </section>
   );
 }

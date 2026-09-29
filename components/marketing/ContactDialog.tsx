@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import {
   PHONE_DISPLAY,
   PHONE_HREF,
@@ -15,6 +16,8 @@ import {
   SERVICE_AREA_SHORT,
 } from '@/lib/content/contact';
 import TrackedCtaAnchor from './TrackedCtaAnchor';
+import { useScrollLock } from './hooks/useScrollLock';
+import TrackedCtaLink from './TrackedCtaLink';
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -26,33 +29,30 @@ type Props = {
 
 /**
  * The formal contact card as a modal: the same four facts the /contact page
- * carries (phone, email, service area, hours), stated once each with no
- * surrounding sales copy. Opened only by the Contact Us entries in the site
- * nav and the footer (see ContactUsTrigger) — every other contact link still
- * goes to the /contact route.
+ * carries (phone, email, service area, hours), stated once each, plus one
+ * primary action — "Schedule a Meet & Greet". Opened only by the Contact Us
+ * entries in the site nav and the footer (see ContactUsTrigger) — every other
+ * contact link still goes to the /contact route.
  *
- * Built on the same shape as the booking SchedulingDialog — portal to
- * <body>, olive header band with the wordmark, paper sheet, Escape and
- * click-outside to close — so the two modals on this site read as one
- * pattern. It does not borrow that dialog's scroll-to-top: this sheet is
- * short and centered, so the page underneath can stay where it was.
+ * Wears the right-hand column of the welcome/booking modal (WelcomeWalkModal):
+ * the "Serving Williamsburg" stamp and × close on top, the display headline,
+ * then the details on the same pasted-paper sheet. Portal to <body>, Escape
+ * and click-outside to close. It does not borrow SchedulingDialog's
+ * scroll-to-top: this sheet is short and centered, so the page underneath can
+ * stay where it was.
+ *
+ * The Schedule CTA hands off to the welcome modal's flow (email → Calendly →
+ * questionnaire), which only the home route renders — the same rule SiteNav's
+ * "Book a Walk" follows. Everywhere else the link goes to /book.
  */
 export default function ContactDialog({ open, onClose }: Props) {
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  const pathname = usePathname();
 
-  // Body scroll lock. The page keeps its scroll position — the sheet is
-  // centered in the viewport, so nothing has to move underneath it.
-  useEffect(() => {
-    if (!open) return;
-    const { body } = document;
-    const previousOverflow = body.style.overflow;
-    body.style.overflow = 'hidden';
-    return () => {
-      body.style.overflow = previousOverflow;
-    };
-  }, [open]);
+  // Page behind the sheet stays put while it is open (see useScrollLock).
+  useScrollLock(open);
 
   // Focus trap + Escape, and focus goes back to whatever opened the dialog.
   useEffect(() => {
@@ -102,15 +102,10 @@ export default function ContactDialog({ open, onClose }: Props) {
       }}
     >
       <div id="contact-modal-sheet" ref={sheetRef}>
-        <div id="contact-modal-header">
-          <Image
-            id="contact-modal-logo"
-            src="/img/horiz_logo_off_white.png"
-            alt="Not The Rug"
-            width={498}
-            height={88}
-            sizes="200px"
-          />
+        <div id="contact-modal-bar-panel">
+          <span className="stamp-label" id="contact-modal-area-stamp">
+            Serving Williamsburg
+          </span>
           <button
             ref={closeButtonRef}
             type="button"
@@ -118,64 +113,101 @@ export default function ContactDialog({ open, onClose }: Props) {
             aria-label="Close"
             onClick={onClose}
           >
-            Close ×
+            ×
           </button>
         </div>
 
-        <div id="contact-modal-body">
-          <h2 id="contact-modal-title">Contact Not The Rug</h2>
+        <div id="contact-modal-heading-panel">
+          <h2 id="contact-modal-title" className="hero-h1">
+            Contact <em>Not The Rug</em>
+          </h2>
+        </div>
 
-          <dl id="contact-modal-detail-list">
-            <div className="contact-modal-detail">
-              <dt>Call or Text</dt>
-              <dd>
-                <TrackedCtaAnchor
-                  href={PHONE_HREF}
-                  id="contact-modal-phone-link"
-                  cta="contact_phone"
-                  className="contact-modal-detail-value"
+        <div id="contact-modal-form-panel">
+          <div id="contact-modal-details-sheet" className="booking-form">
+            <div className="booking-form-body">
+              <dl id="contact-modal-detail-list">
+                <div className="contact-modal-detail">
+                  <dt>
+                    Call or Text
+                  </dt>
+                  <dd>
+                    <TrackedCtaAnchor
+                      href={PHONE_HREF}
+                      id="contact-modal-phone-link"
+                      cta="contact_phone"
+                      className="contact-modal-detail-value contact-modal-detail-value-lead"
+                    >
+                      {PHONE_DISPLAY}
+                    </TrackedCtaAnchor>
+                    <p className="contact-modal-detail-note">Fastest reply. Luis answers personally.</p>
+                  </dd>
+                </div>
+
+                <div className="contact-modal-detail">
+                  <dt>
+                    Email
+                  </dt>
+                  <dd>
+                    <TrackedCtaAnchor
+                      href={EMAIL_HREF}
+                      id="contact-modal-email-link"
+                      cta="contact_email"
+                      className="contact-modal-detail-value contact-modal-detail-value-lead"
+                    >
+                      {EMAIL_DISPLAY}
+                    </TrackedCtaAnchor>
+                    <p className="contact-modal-detail-note">New client intake and detailed questions.</p>
+                  </dd>
+                </div>
+
+                <div className="contact-modal-detail">
+                  <dt>
+                    Service Area
+                  </dt>
+                  <dd>
+                    <p className="contact-modal-detail-value">{SERVICE_AREA_SHORT}</p>
+                    <p className="contact-modal-detail-note">
+                      {ADDRESS_LINE_1}
+                      <br />
+                      {ADDRESS_LINE_2}
+                    </p>
+                  </dd>
+                </div>
+
+                <div className="contact-modal-detail">
+                  <dt>
+                    Response Hours
+                  </dt>
+                  <dd>
+                    <p className="contact-modal-detail-value">{RESPONSE_HOURS}</p>
+                    <p className="contact-modal-detail-note">{RESPONSE_TIME_NOTE}</p>
+                  </dd>
+                </div>
+              </dl>
+
+              <div id="contact-modal-cta-row">
+                <TrackedCtaLink
+                  href="/book"
+                  id="contact-modal-schedule-cta"
+                  className="btn btn-primary btn-accent"
+                  cta="contact_modal_schedule"
+                  onClick={(e) => {
+                    // A cmd/ctrl/shift-click means "open this somewhere else":
+                    // let the browser follow the real href.
+                    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+                    // Only the home route renders the welcome modal.
+                    if (pathname !== '/') return;
+                    e.preventDefault();
+                    onClose();
+                    openWelcomeWalkModal();
+                  }}
                 >
-                  {PHONE_DISPLAY}
-                </TrackedCtaAnchor>
-                <p className="contact-modal-detail-note">Fastest reply. Luis answers personally.</p>
-              </dd>
+                  Schedule a Meet &amp; Greet
+                </TrackedCtaLink>
+              </div>
             </div>
-
-            <div className="contact-modal-detail">
-              <dt>Email</dt>
-              <dd>
-                <TrackedCtaAnchor
-                  href={EMAIL_HREF}
-                  id="contact-modal-email-link"
-                  cta="contact_email"
-                  className="contact-modal-detail-value"
-                >
-                  {EMAIL_DISPLAY}
-                </TrackedCtaAnchor>
-                <p className="contact-modal-detail-note">New client intake and detailed questions.</p>
-              </dd>
-            </div>
-
-            <div className="contact-modal-detail">
-              <dt>Service Area</dt>
-              <dd>
-                <p className="contact-modal-detail-value">{SERVICE_AREA_SHORT}</p>
-                <p className="contact-modal-detail-note">
-                  {ADDRESS_LINE_1}
-                  <br />
-                  {ADDRESS_LINE_2}
-                </p>
-              </dd>
-            </div>
-
-            <div className="contact-modal-detail">
-              <dt>Response Hours</dt>
-              <dd>
-                <p className="contact-modal-detail-value">{RESPONSE_HOURS}</p>
-                <p className="contact-modal-detail-note">{RESPONSE_TIME_NOTE}</p>
-              </dd>
-            </div>
-          </dl>
+          </div>
         </div>
       </div>
     </div>,

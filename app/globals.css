@@ -289,7 +289,14 @@ nav {
   overscroll-behavior: contain;
 }
 .mobile-menu[data-open='true'] { display: block; }
-.mobile-menu a {
+/* Contact Us is a button (it opens the contact modal), so it drops the button
+   chrome here and then takes the same row treatment as the links below. */
+.mobile-menu-primary-contact-btn {
+  width: 100%; text-align: left; cursor: pointer;
+  background: none; border: none;
+}
+.mobile-menu a,
+.mobile-menu-primary-contact-btn {
   display: block; padding: 13px 2px;
   font-family: var(--font-stamp);
   font-size: 15px; font-weight: 500;
@@ -301,9 +308,11 @@ nav {
   transition: color .2s ease, padding-left .2s ease;
 }
 /* Tap feedback only — :active stays, the cursor changes nothing. */
-.mobile-menu a:active {
+.mobile-menu a:active,
+.mobile-menu-primary-contact-btn:active {
   color: var(--paper);
 }
+.mobile-menu-primary-contact-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 #mobile-menu-links-list a:last-child { border-bottom: none; }
 /* Paper-ticket CTA, full width: the nav's Book a Walk treatment (inset rule,
    stamp type) with .btn-accent's terracotta fill. Tilt is dropped here per
@@ -610,8 +619,8 @@ footer {
      veil read noticeably darker than the section above, where the photo lifts
      the green by ~15%.
 
-     The dog collage is no longer in this stack; it is an overlay layer on
-     #main-footer::after below. */
+     The Bridge collage is not in this stack; it is a real element,
+     #footer-art-shell, laid out below. */
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.85), rgba(79, 90, 61, 0.85)),
@@ -621,68 +630,52 @@ footer {
   padding: 76px 0 40px;
   position: relative;
 }
-/* Dog collage — an overlay pinned to the footer's bottom-right corner, sitting
-   above the olive veil so it reads as pasted onto the green rather than sunk
-   into it. It is its own layer, not a background image on the footer, for two
-   reasons: the home page's closing band clears the footer background outright
-   (#home-closing-band-shell #main-footer), which used to take the dogs with
-   it, and a real element can carry an opacity the copy stays readable over.
-   Height-locked to 78% of the footer, so it scales with the band instead of
-   with the viewport. */
-#main-footer::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: min(1080px, 82%);
-  height: 78%;
-  background: url('/img/backgorund_dogs.png') right bottom / contain no-repeat;
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Full container width (it used to sit in an 820px box). The link row spans
-   all of it; everything under the row is held to the left half, clear of the
-   dog collage in the bottom-right corner. z-index keeps the copy over the
-   collage overlay, which is a later sibling in paint order. */
-#footer-content-zone { max-width: none; position: relative; z-index: 1; }
+/* The Brooklyn Bridge collage is the footer's focal point: a real element at
+   full strength (#footer-art-shell), not a faded overlay, and the grid is laid
+   out around it. Desktop: the print stays modest and sits right, the brand
+   block balances it on the left, and the three link columns run the full
+   width of the page beneath both, then the CTA and the legal line. Tablet:
+   art full width on top, brand centred under it, three link columns. Phone:
+   art on top, two link columns, Contact full width. Grid areas do all the
+   moving; the DOM order is fixed. The print's own transparent margin lets it
+   bleed a little past its column. On the home and signup closing band the art
+   is also pulled up over the seam with the section above (see
+   #home-closing-band-shell #footer-art-shell), which hides the crease where
+   the two background photos meet. */
+#main-footer { --footer-gutter: 32px; padding-top: 56px; overflow-x: clip; }
+#footer-content-zone { max-width: none; position: relative; }
 .footer-grid {
-  display: grid; grid-template-columns: 1.7fr 1fr 0.85fr 1fr;
-  gap: clamp(32px, 4vw, 72px); padding-bottom: 56px; align-items: start;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    "cta     art      art"
+    "brand   art      art"
+    "rates   company  contact"
+    "legal   legal    legal";
+  column-gap: clamp(24px, 3vw, 56px);
+  row-gap: 40px;
+  align-items: start;
 }
-.footer-brand { max-width: 340px; }
-/* The art-safe column: the CTA, the Est. rule and the legal line all stop
-   before the artwork starts. */
-#footer-cta-shell,
-.footer-bottom { max-width: min(660px, 58%); }
-/* Declared here rather than inline on the element, so the phone tier's
-   `center` can win. */
-#footer-cta-shell { justify-content: flex-start; }
-/* Tablet: the 20vw push carries the dogs off the right edge and drags the
-   paper scrap in behind the copy, so the collage anchors right and shrinks
-   instead. The link grid is two columns at this width (below), which leaves
-   the bottom-right corner free. */
-@media (max-width: 1100px) {
-  #main-footer::after { height: 58%; }
-  #footer-cta-shell,
-  .footer-bottom { max-width: min(560px, 64%); }
+#footer-art-shell {
+  grid-area: art;
+  justify-self: end;
+  width: 107%;
+  margin-right: -3.5%;
+  /* Seats the paper print on the olive: a soft contact shadow, no border. */
+  filter: drop-shadow(0 16px 24px rgba(20, 24, 12, 0.35));
 }
-/* Circle brand badge, cream disc on the olive footer (was a 24px display-serif
-   wordmark). Same asset the hero polaroid and the welcome modal use in their
-   green variant. */
-#footer-logo-badge {
-  display: block;
-  /* Twice the old clamp (84-112px): the disc is the footer's only lockup, and
-     at the old size it read as a bullet next to the tagline. */
-  width: clamp(168px, 14vw, 224px);
-  height: auto;
-  margin-bottom: 20px;
-}
+#footer-art-image { display: block; width: 100%; height: auto; }
+#footer-brand-block { grid-area: brand; align-self: start; max-width: 340px; }
+#footer-col-rates { grid-area: rates; }
+#footer-col-company { grid-area: company; }
+#footer-col-contact { grid-area: contact; }
+#footer-cta-shell { grid-area: cta; justify-self: start; align-self: end; display: flex; }
+#footer-book-luis-cta { white-space: nowrap; }
+.footer-bottom { grid-area: legal; padding-top: 12px; text-align: center; }
 .footer-tagline {
   font-family: var(--font-type);
-  font-size: 15px; color: rgba(255,255,255,0.7);
-  line-height: 1.7; max-width: 280px; margin-bottom: 24px;
+  font-size: 15px; color: rgba(255,255,255,0.78);
+  line-height: 1.7; max-width: 320px; margin-bottom: 24px;
 }
 .footer-social { display: flex; gap: 12px; }
 .social-btn {
@@ -695,20 +688,48 @@ footer {
 .footer-col h4 {
   font-family: var(--font-body); font-size: 13px;
   font-weight: 500; letter-spacing: 0.3px;
-  text-transform: none; color: rgba(255,255,255,0.6);
+  text-transform: none; color: rgba(255,255,255,0.72);
   margin-bottom: 18px;
 }
 .footer-col li { margin-bottom: 10px; }
 .footer-col li a {
-  font-size: 14px; color: rgba(255,255,255,0.75);
+  font-size: 14px; color: rgba(255,255,255,0.8);
   transition: color .2s;
 }
 .footer-col li a:hover { color: white; }
-.footer-bottom {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 32px;
+.footer-copy { font-size: 13px; color: rgba(255,255,255,0.7); }
+/* Tablet: the art leads, everything else is arranged under it. */
+@media (max-width: 1100px) {
+  .footer-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      "art    art      art"
+      "brand  brand    brand"
+      "rates  company  contact"
+      "cta    cta      cta"
+      "legal  legal    legal";
+    column-gap: 32px;
+  }
+  /* The art runs the full width of the footer (out through the container's
+     gutters — the print carries ~6% transparent margin per side, so 112%
+     puts the paper itself at the screen edges) and its torn top edge is
+     pulled up over the footer's seam with the section above, hiding the
+     crease where the two background photos meet. */
+  .footer-grid { row-gap: 24px; }
+  #footer-art-shell {
+    width: calc((100% + 2 * var(--footer-gutter)) * 1.12);
+    max-width: none;
+    justify-self: center;
+    margin-inline: 0;
+  }
+  #home-closing-band-shell #footer-art-shell {
+    margin-top: calc(-0.1075 * (100% + 2 * var(--footer-gutter)) - 12px);
+  }
+  #footer-cta-shell { justify-self: center; align-self: start; justify-content: center; }
+  #footer-brand-block { max-width: 100%; text-align: center; }
+  .footer-tagline { max-width: 52ch; margin-left: auto; margin-right: auto; }
+  .footer-social { justify-content: center; }
 }
-.footer-copy { font-size: 13px; color: rgba(255,255,255,0.45); }
 
 /* ============================================================
    PAGE: HOME
@@ -869,17 +890,34 @@ footer {
    bg4 read as flat olive at this strength, which left the sheet floating on an
    empty field. The photo gives the band something to sit against. */
 #home-closing-band-shell {
+  background: var(--sage-dark);
+}
+/* Each member paints the same photo + veil over its own box: the sheet covers
+   its area, the footer fits the photo to its own height (cover) instead of
+   stretching one image over the full shell, which upscaled it and blurred it. */
+#home-closing-band-shell #home-contact-sheet-section {
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
     linear-gradient(rgba(79, 90, 61, 0.80), rgba(79, 90, 61, 0.80)),
-    url('/img/bg-section-2-cover.webp') center / cover no-repeat;
+    url('/img/bg-section-2-cover.webp') center / cover no-repeat,
+    var(--sage-dark);
 }
-/* Members paint nothing of their own: a second surface over the shared one is
-   exactly the crease this shell removes. Scoped to the shell so the footer
-   keeps its own treatment on every other route. */
-#home-closing-band-shell #home-contact-sheet-section,
 #home-closing-band-shell #main-footer {
-  background: none;
+  background:
+    url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
+    linear-gradient(rgba(79, 90, 61, 0.80), rgba(79, 90, 61, 0.80)),
+    url('/img/bg-section-2-cover.webp') center / cover no-repeat,
+    var(--sage-dark);
+}
+/* The art's torn top edge is pulled up over the seam between the sheet and the
+   footer. Pull-up = the print's transparent top margin plus the paper's rise
+   (~16% of the art's height; height = 0.6 x width) + 12px, so the seam sits
+   just inside the paper and the tape still clears the sheet's card above.
+   Tied to the art's own size, so it holds at every width. Desktop art is 107%
+   of its grid area; tablet/phone art is (area + 2 gutters) x 1.12 (below). */
+#home-closing-band-shell #main-footer { padding-top: 0; }
+@media (min-width: 1101px) {
+  #home-closing-band-shell #footer-art-shell { margin-top: calc(-0.1026 * 100% - 12px); }
 }
 /* Reviews runs on cream, continuing the marquee directly above it (which is
    already --warm-white): the quotes scroll past on paper, then the band they
@@ -1033,19 +1071,18 @@ footer {
   position: relative;
   display: flex; align-items: flex-start; gap: 0;
   padding: 32px 28px;
-  /* Grain over charcoal — same recipe as the reviews green band
-     (#home-featured-reviews-section) minus its photo layer, on ink. */
+  /* Grain over deep olive — the site's --olive (#4f5a3d) taken down about a
+     quarter, so the band reads as dark green rather than charcoal. */
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(var(--ink), var(--ink));
+    linear-gradient(#3b4630, #3b4630);
   border-radius: var(--radius);
   margin-top: 48px;
 }
-/* Inverted proof band: charcoal surface, cream figures, gold stars. The hero
+/* Inverted proof band: dark green surface, cream figures throughout. The hero
    is now the only place this strip appears — the reviews band's copy of it was
    replaced by its two platform clickouts. */
 #hero-stats-strip .hero-stat-num { color: var(--cream); }
-#hero-stats-strip [data-variant="star"] .hero-stat-num { color: var(--gold); }
 #hero-stats-strip .hero-stat-label { color: rgba(243,236,217,0.62); }
 #hero-stats-strip .hero-stat-divider {
   background: linear-gradient(to bottom, rgba(243,236,217,0.28) 0%, transparent 100%);
@@ -1932,10 +1969,6 @@ footer {
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
-  /* Below the four-across row the brand block takes a row of its own and the
-     three link columns stay side by side — Rates and Company never stack. */
-  .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 36px; }
-  .footer-brand { grid-column: 1 / -1; max-width: 420px; }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .hiw-steps { grid-template-columns: repeat(2, 1fr); gap: 40px; }
   .reviews-masonry { columns: 2; }
@@ -2006,41 +2039,35 @@ footer {
   .grid-2, .grid-3, .grid-4, .services-grid, .hiw-steps { grid-template-columns: 1fr; }
   .cta-band { flex-direction: column; padding: 40px 28px; }
   .cta-band h2 { max-width: 100%; }
-  /* Phone footer: centred and edge to edge. The desktop layout ranges
-     everything left and caps the CTA/legal rows so they clear the dog collage
-     on the right — at this width the collage is centred behind the content,
-     so those caps only produced a column of empty paper. */
-  #footer-content-zone { max-width: 100%; text-align: center; }
-  .footer-grid { gap: 28px; justify-items: center; }
-  .footer-brand { max-width: 100%; }
-  #footer-logo-badge { margin-left: auto; margin-right: auto; }
-  .footer-tagline { max-width: 42ch; margin-left: auto; margin-right: auto; }
-  .footer-social { justify-content: center; }
-  #footer-cta-shell {
-    max-width: 100%;
-    justify-content: center;
-    text-align: center;
+  /* Phone/small-tablet footer: art on top, brand centred under it, then the
+     three link columns side by side, compact and left-aligned (they never
+     drop to a second row above 520px; below that see the block at the end of
+     the file). */
+  #footer-content-zone { max-width: 100%; }
+  .footer-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      "art     art      art"
+      "brand   brand    brand"
+      "rates   company  contact"
+      "cta     cta      cta"
+      "legal   legal    legal";
+    gap: 28px 16px;
+    justify-items: stretch;
   }
-  .footer-bottom {
-    max-width: 100%;
-    flex-direction: column;
-    gap: 12px;
-    text-align: center;
-  }
-  /* Narrow screens: same collage as desktop, but height-locked and centred
-     instead of offset — at this width a 20vw push would carry the dogs off
-     the edge, and full-width scaling leaves them a sliver along the bottom. */
-  /* Phone: the collage centres (a right-justified push would carry the dogs
-     off a 375px screen) and the legal line is full width here, so it runs
-     over the artwork. Held back to a watermark at this tier so the copy
-     stays readable; the desktop tier keeps the stronger read, where the
-     CTA and legal rows are capped clear of the right-hand artwork. */
-  #main-footer::after {
-    width: 100%;
-    height: 280px;
-    background-position: center bottom;
-    opacity: 0.28;
-  }
+  #main-footer { --footer-gutter: 20px; }
+  .footer-grid { row-gap: 20px; }
+  #footer-art-shell { justify-self: center; }
+  #footer-brand-block { max-width: 100%; text-align: center; }
+  .footer-col { width: 100%; text-align: left; }
+  .footer-col h4 { margin-bottom: 12px; }
+  .footer-col li { margin-bottom: 8px; }
+  .footer-col li a, .footer-link-btn { font-size: 13px; }
+  #footer-contact-list { gap: 10px; }
+  .footer-contact-label { font-size: 9px; }
+  .footer-contact-value { font-size: 13px; overflow-wrap: anywhere; }
+  #footer-cta-shell { max-width: 100%; }
+  .footer-bottom { max-width: 100%; text-align: center; }
   .form-row { grid-template-columns: 1fr; }
   .reviews-masonry { columns: 1; }
   .package-tiers { grid-template-columns: 1fr; }
@@ -2055,12 +2082,6 @@ footer {
   /* Center card content (mobile only) — Standard of Care + home services preview */
   #standard-of-care-grid > div { text-align: center; }
   .services-grid .service-card { align-items: center; text-align: center; }
-}
-/* Phones: two columns is all that fits. Service Area is last in the source
-   order, so Rates and Company — the two long lists — share the first row and
-   it drops to the second on its own. */
-@media (max-width: 560px) {
-  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
 }
 
 
@@ -2668,7 +2689,7 @@ footer {
      both edges. No vw here on purpose: 100vw includes the scrollbar, which
      made the page itself pannable. */
   padding-inline: max(32px, calc((100% - var(--max-w)) / 2 + 32px));
-  padding-top: 14px;
+  padding-top: 0;
 }
 #home-team-scroller::-webkit-scrollbar { display: none; }
 /* Grid, not a max-content flex track: the whole roster is meant to be visible
@@ -2695,7 +2716,13 @@ footer {
   min-width: 0;
 }
 /* Caption at tile scale, as on the Instagram prints. */
-.home-team-chip .polaroid-caption { font-size: 12px; }
+.home-team-chip .polaroid-caption {
+  font-size: 12px;
+  /* Same box as .instagram-tile-caption (two lines of 1.4, padding included),
+     so a print in either strip is the same size. Name and role are a touch
+     taller than that box and rest in the print's own bottom padding. */
+  height: calc(2 * 1.4em);
+}
 .home-team-chip-photo {
   /* Square, like the Instagram tiles (.instagram-tile-window): six equal
      squares hold the row flat whatever the source crop is. */
@@ -2803,26 +2830,23 @@ footer {
        eats the padding that lines it up with the heading. Same value as the
        padding above, so the resting position IS the aligned one. */
     scroll-padding-inline: max(32px, calc((100% - var(--max-w)) / 2 + 32px));
-    /* Trailing room so the last chip can scroll clear of the right gutter. */
-    padding-right: 28%;
+    /* Trailing room so the last chip can scroll clear of the right gutter —
+       the same 32px #home-instagram-grid ends with. */
+    padding-right: 32px;
   }
   #home-team-scroller-track {
     display: flex;
     /* Chips size themselves below; a flex track must not stretch them. */
     grid-template-columns: none;
+    /* Same bottom room as #home-instagram-grid at this breakpoint. */
+    padding-bottom: 16px;
   }
-
-  /* Same box, same placement for every chip in the strip: no alternating
-     lean here (the tilt classes would otherwise outrank the phone-wide
-     .polaroid reset above), so the first chip sits square on the heading's
-     edge and each one after it lines up exactly. */
-  .home-team-chip.polaroid-tilt-left,
-  .home-team-chip.polaroid-tilt-right { --polaroid-tilt: 0deg; }
+  /* The chips keep the alternating lean the Instagram prints have. */
 }
 /* Phone gutter is 20px (.container), not the 32px the strip assumes above,
    so the first chip starts exactly on the heading's left edge. */
 @media (max-width: 768px) {
-  #home-team-scroller { padding-left: 20px; scroll-padding-inline-start: 20px; }
+  #home-team-scroller { padding-left: 20px; padding-right: 24px; scroll-padding-inline-start: 20px; }
   /* Same full-bleed correction for the Instagram strip: its -32px assumes the
      desktop gutter, so on a phone the first print hung 12px off the left edge
      while its own heading sat at 20px. */
@@ -2831,10 +2855,9 @@ footer {
 .home-team-chip-role {
   font-family: var(--font-type);
   font-size: 11px;
-  line-height: 1.5;
+  line-height: 1.2;
   letter-spacing: 0.04em;
   color: var(--muted-ink);
-  margin-top: 4px;
 }
 /* The outline button keeps its own paper fill and olive ink — inheriting the
    band's cream type here would print cream on cream. */
@@ -2859,54 +2882,46 @@ footer {
 }
 
 /* ---------- Section 2: meet & greet intake sheet ---------- */
-/* Stamp + headline on the left, halftone bridge clipping on the right: the
-   headline only ever filled half this row, and the green ran empty beside it
-   down to the form. The hairline still runs the container's full width. */
+/* Stamp + headline on top, the dog collage under them at the container's full
+   width. The hairline runs the same width beneath it. */
 #home-contact-sheet-header {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: clamp(24px, 4vw, 64px);
+  flex-direction: column;
+  align-items: stretch;
+  gap: clamp(24px, 4vw, 40px);
   padding-bottom: 20px;
   margin-bottom: 56px;
   border-bottom: 1px solid var(--zine-rule-dark);
 }
 #home-contact-sheet-header-copy { min-width: 0; }
-/* The clipping is a torn paper scan with its own tape and halftone, so it
-   needs no tape layer of its own — just the paste angle and a paper shadow.
+/* The dog collage is a transparent cut-out, so it needs no tape layer of its
+   own — just the paste angle and a paper shadow.
    width/height:auto override the global `img` rule (100%/100% + cover), which
    would otherwise stretch it to the flex line's height. */
 #home-contact-sheet-clipping {
   flex: 0 0 auto;
-  /* Roughly double its old size at the widest screens (was 280/32vw/440), and
-     it keeps scaling with the viewport in between rather than snapping. */
-  width: clamp(360px, 46vw, 880px);
+  /* The full container column at every width. */
+  width: 100%;
   height: auto;
   object-fit: contain;
+  /* The PNG opens with ~19% of its height as empty green (birds and a leaf
+     only), which read as a hole under the headline. Pulled up by a share of the
+     column width (margin % resolves against it), so the pull scales with the
+     image; the artwork is transparent there, so nothing covers the headline. */
+  margin-top: -6%;
   margin-bottom: 6px;
   transform: rotate(-1.2deg);
   filter: drop-shadow(0 6px 14px var(--shadow-paper));
   opacity: 0.94;
   pointer-events: none;
 }
-/* Intake header: below this width the clipping and the headline are fighting
-   for the same line, so the row stacks and the artwork straightens out. */
+/* Intake header: below this width the artwork straightens out, so its rotated
+   corners stay inside the column. */
 @media (max-width: 900px) {
-  #home-contact-sheet-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 24px;
-  }
   #home-contact-sheet-clipping {
-    /* Stacked above the headline, so it can take the full column. */
-    width: min(100%, 560px);
-    margin: 0 auto;
+    margin-bottom: 0;
     transform: none;
   }
-}
-/* Phones: the column is tight enough without a decorative band in it. */
-@media (max-width: 640px) {
-  #home-contact-sheet-clipping { display: none; }
 }
 /* The steps open this band (see HomePageContent), so the form's own stamp
    needs the gap a section break used to give it. */
@@ -2965,6 +2980,7 @@ footer {
    (::before) is not clipped by .booking-form's overflow:hidden. */
 #home-book-form-wrap #home-contact-sheet-form-sheet,
 #welcome-walk-modal-sheet,
+#contact-modal-details-sheet,
 #home-rates-intake-sheet {
   background: #faf6ec url('/textures/paper-grain.png');
   background-size: 300px 300px;
@@ -3472,6 +3488,9 @@ footer {
        the last one can scroll clear of the right edge. */
     margin: 0 -32px;
     padding: 8px 32px 16px;
+    /* Without this, mandatory snapping resolves the first print to the strip's
+       edge and eats the 32px padding, so it sat flush left of its heading. */
+    scroll-padding-inline-start: 32px;
     scrollbar-width: none;
   }
   #home-instagram-grid::-webkit-scrollbar { display: none; }
@@ -3691,7 +3710,9 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-polaroid-caption { padding-top: 12px; font-size: 12px; }
   #hero-polaroid-frame { padding-bottom: 12px; }
   #hero-polaroid-badge { width: 64px; height: 64px; right: -8px; bottom: 30px; }
-  #hero-content-shell { padding: 0 20px 28px; }
+  /* Top padding gives the headline air under the video caption; it was 0, which
+     left the two about 4px apart. */
+  #hero-content-shell { padding: 24px 20px 28px; }
   #hero-eyebrow-stamp-row { margin-bottom: 10px; }
   #hero-headline.hero-h1 { font-size: clamp(36px, 10vw, 46px); line-height: 1.02; margin-bottom: 14px; }
   #hero-cta-primary { margin-bottom: 16px; }
@@ -3723,12 +3744,11 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   }
   #main-nav #nav-logo-img,
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
-  #hero-actions-row .hero-desktop-copy,
-  #hero-polaroid-caption .hero-desktop-copy { display: none; }
-  /* Caption reads "McCarren Park", centred under the video. */
+  #hero-actions-row .hero-desktop-copy { display: none; }
+  /* Caption reads "Williamsburg, Brooklyn", centred under the video. */
   #hero-polaroid-caption { text-align: center; justify-content: center; }
-  /* Same headline as desktop on two lines: "Your dog deserves" /
-     "someone they know." (1st and 3rd hard break hidden). */
+  /* Same headline as desktop on two lines: "Their favorite part of the day." /
+     "Your peace of mind." (1st and 3rd hard break hidden). */
   #hero-headline br:nth-of-type(1),
   #hero-headline br:nth-of-type(3) { display: none; }
   #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); order: 1; margin-bottom: 12px; text-align: center; }
@@ -3760,51 +3780,77 @@ html[data-home-intro='loading'] body { overflow: hidden; }
    the wordmark over a paper sheet — at a quarter of the size, because all it
    carries is four facts.
    ============================================================ */
-#contact-modal {
+/* Contact Us modal — the right-hand column of the welcome/booking modal
+   (components/marketing/WelcomeWalkModal.tsx) as its own single column: stamp
+   + × close on top, display headline, then the details on the same pasted
+   paper sheet. Same overlay, shell, close button and headline treatment as
+   that modal. */
+#contact-modal,
+#service-modal {
   position: fixed; inset: 0; z-index: 9999;
   display: flex; align-items: center; justify-content: center;
-  padding: clamp(12px, 3vw, 28px);
-  background: rgba(28, 28, 26, 0.82);
+  padding: clamp(12px, 3vw, 32px);
+  background: rgba(28, 28, 26, 0.78);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
-#contact-modal-sheet {
-  width: min(520px, 100%);
-  background: var(--paper);
-  border: 1px solid var(--olive);
-  border-radius: 4px;
+#contact-modal-sheet,
+#service-modal-sheet {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  width: 100%;
+  max-width: 560px;
+  max-height: 92dvh;
+  background: var(--warm-white);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
   overflow: hidden;
-  animation: contact-modal-enter 180ms ease-out;
+  animation: contact-modal-enter 350ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-#contact-modal-header {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 14px clamp(16px, 3vw, 24px);
-  background: var(--olive);
+#contact-modal-bar-panel,
+#service-modal-bar-panel {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: clamp(14px, 2.2vw, 20px) clamp(16px, 2.4vw, 24px) 0;
 }
-#contact-modal-logo { height: 28px; width: auto; display: block; object-fit: contain; }
-#contact-modal-close-btn {
+#contact-modal-close-btn,
+#service-modal-close-btn {
+  position: relative;
   flex-shrink: 0;
-  /* 44px is the tap target; the type inside stays small. */
-  min-height: 44px; min-width: 44px;
-  padding: 0 14px;
-  font-family: var(--font-stamp);
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  border: 1px solid var(--olive);
+  border-radius: 4px;
+  background: var(--olive);
   color: var(--paper);
-  background: transparent;
-  border: 1px solid rgba(243, 236, 217, 0.45);
-  border-radius: 3px;
+  font-size: 16px; line-height: 1;
+  padding: 6px 10px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-#contact-modal-close-btn:hover { background: rgba(243, 236, 217, 0.12); }
-#contact-modal-close-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+/* Invisible tap-target extension; the visible button keeps its size. */
+#contact-modal-close-btn::before,
+#service-modal-close-btn::before { content: ''; position: absolute; inset: -9px; }
+#contact-modal-close-btn:hover,
+#service-modal-close-btn:hover {
+  /* Same darker-olive step as the rate labels (.service-details-btn). */
+  background: color-mix(in oklab, var(--olive) 80%, black);
+  border-color: color-mix(in oklab, var(--olive) 80%, black);
+}
+#contact-modal-close-btn:focus-visible,
+#service-modal-close-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
 
-#contact-modal-body { padding: clamp(20px, 4vw, 28px); }
-#contact-modal-title {
-  font-family: var(--font-display);
-  font-size: 22px; line-height: 1.2; color: var(--charcoal);
-  margin-bottom: 22px;
+#contact-modal-heading-panel {
+  container-type: inline-size;
+  padding: 10px clamp(16px, 2.4vw, 24px) 0;
 }
-#contact-modal-detail-list { display: grid; gap: 18px; }
+#contact-modal-title {
+  margin: 0;
+  font-size: min(9cqw, 56px);
+  white-space: nowrap;
+}
+#contact-modal-form-panel {
+  padding: 10px clamp(16px, 2.4vw, 24px) clamp(16px, 2.4vw, 24px);
+  overflow-y: auto;
+}
+#contact-modal-detail-list { display: grid; gap: 16px; }
 /* Label above value, one fact per row: the formal register here comes from
    the list holding its line, not from extra copy. */
 .contact-modal-detail dt {
@@ -3824,13 +3870,364 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   margin-top: 4px;
   font-size: 13px; line-height: 1.5; color: var(--mid-gray);
 }
+/* Same dashed rule and centered action row as the booking modal's CTA row. */
+#contact-modal-cta-row {
+  display: flex; justify-content: center;
+  border-top: 1px dashed var(--light-gray);
+  padding-top: 16px;
+  margin-top: 18px;
+}
+#contact-modal-schedule-cta { justify-content: center; text-align: center; }
+@media (max-width: 767px) {
+  #contact-modal-sheet,
+  #service-modal-sheet { max-height: calc(100dvh - 12px); }
+  #contact-modal-title { font-size: clamp(26px, 7.4vw, 34px); line-height: 1; }
+  #contact-modal-details-sheet .booking-form-body { padding: 12px; }
+}
+
+/* CONTACT MODAL — modular layout. The four facts are separate cells of one
+   ruled grid (dashed hairlines, the perforated-ticket edge the paper
+   components use), not four lines of one paragraph and not four nested cards:
+   each cell has an icon + stamp label, a lead value, and a note. Scoped to the
+   contact modal's own ids; the service modal shares the base classes above and
+   keeps its stacked list. */
+#contact-modal-sheet { max-width: 640px; }
+/* Flat sheet: the shared paste-tilt would skew the ruled lines and soften the
+   type in a dialog whose whole job is to be read. */
+#contact-modal-details-sheet { transform: none; }
+#contact-modal-detail-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px dashed rgba(36, 35, 33, 0.3);
+}
+#contact-modal-detail-list .contact-modal-detail {
+  min-width: 0;
+  padding: 20px 20px 20px 0;
+  border-bottom: 1px dashed rgba(36, 35, 33, 0.3);
+}
+#contact-modal-detail-list .contact-modal-detail:nth-child(even) {
+  padding: 20px 0 20px 20px;
+  border-left: 1px dashed rgba(36, 35, 33, 0.3);
+}
+/* Cell headers, shared with the service modal: ink stamp caps with a short
+   olive rule under them, so each fact reads as a defined block without an
+   icon. */
+#contact-modal-detail-list .contact-modal-detail dt,
+.service-modal-detail-list .contact-modal-detail dt {
+  display: block;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  background: linear-gradient(var(--olive), var(--olive)) left bottom / 28px 2px no-repeat;
+}
+#contact-modal-detail-list .contact-modal-detail-value { font-size: 15px; font-weight: 500; line-height: 1.55; text-wrap: balance; }
+#contact-modal-detail-list .contact-modal-detail-value-lead {
+  font-family: var(--font-display);
+  font-size: clamp(17px, 2.6vw, 20px);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+#contact-modal-detail-list .contact-modal-detail-note { margin-top: 10px; line-height: 1.65; color: var(--muted-ink); }
+/* The list's bottom rule is the CTA row's top rule: no doubled line. */
+#contact-modal-cta-row { border-top: none; margin-top: 0; padding-top: 20px; }
+/* Upright: .btn-primary tilts -1.2deg, which is right for a paper ticket on
+   the page and wrong for the one action in a dialog. Hover lift and press
+   feedback stay, minus the rotation. */
+#contact-modal-schedule-cta { width: 100%; transform: none; }
+#contact-modal-schedule-cta:hover { transform: translateY(-1px); }
+#contact-modal-schedule-cta:active { transform: scale(0.97); }
+@media (max-width: 560px) {
+  #contact-modal-detail-list { grid-template-columns: minmax(0, 1fr); }
+  #contact-modal-detail-list .contact-modal-detail,
+  #contact-modal-detail-list .contact-modal-detail:nth-child(even) {
+    padding: 16px 0;
+    border-left: none;
+  }
+}
+
+/* SERVICE DETAIL MODAL (components/marketing/ServiceDetailDialog.tsx) shares
+   the overlay, shell, stamp bar and close button with the contact modal above.
+   The rest is its own: a slide carousel (Embla) whose slides carry the
+   headline and a ruled grid of fact cells, then a fixed footer with the
+   controls and the action. */
+/* The sheet is exactly as tall as the tallest service: Embla's slides sit in
+   one stretching flex row, so every slide takes the tallest one's height and
+   stepping through the carousel never resizes the sheet. No max-height — when
+   the tallest service is taller than the screen (phones), the overlay scrolls
+   instead of the sheet clipping, so the sheet is top-aligned with auto
+   margins to stay centred when it fits. */
+#service-modal { align-items: flex-start; }
+#service-modal-sheet {
+  max-width: 640px;
+  max-height: none;
+  margin: auto 0;
+  grid-template-rows: auto auto auto;
+}
+/* Embla: the viewport clips, the track is one flex row, and each service is a
+   full-width slide. Every slide is as tall as the tallest, and scrolls on its
+   own when the sheet is shorter than its content. pan-y keeps vertical
+   scrolling with the browser while horizontal drags (touch or mouse) go to the
+   carousel. */
+#service-modal-viewport { overflow: hidden; min-height: 0; cursor: grab; }
+#service-modal-viewport:active { cursor: grabbing; }
+#service-modal-track { display: flex; align-items: stretch; touch-action: pan-y pinch-zoom; }
+.service-modal-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  /* Column, so the paper sheet below can fill whatever height the tallest
+     slide sets. */
+  display: flex;
+  flex-direction: column;
+}
+.service-modal-slide-heading {
+  container-type: inline-size;
+  padding: 10px clamp(16px, 2.4vw, 24px) 0;
+}
+#service-modal .service-modal-title {
+  margin: 0;
+  font-size: min(9cqw, 56px);
+  white-space: normal;
+  text-wrap: balance;
+}
+.service-modal-slide-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 14px clamp(16px, 2.4vw, 24px) 8px;
+}
+/* Flat paper sheet, as the contact modal's: the ruled lines stay straight. */
+.service-modal-details-sheet {
+  flex: 1 1 auto;
+  background: #faf6ec url('/textures/paper-grain.png');
+  background-size: 300px 300px;
+  border: 1px solid rgba(36, 35, 33, 0.5);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.service-modal-details-sheet .booking-form-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+/* Three ruled rows for every service: The Walk, the rates panel, and a
+   one-line footnote strip. The rates panel is the 1fr row — whatever spare
+   height a shorter service has goes there, with the prices centred in it, so
+   the space reads as a price panel rather than a gap under the copy. */
+.service-modal-detail-list {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  border-top: 1px dashed rgba(36, 35, 33, 0.3);
+}
+.service-modal-detail-list .contact-modal-detail {
+  min-width: 0;
+  padding: 18px 0;
+  border-bottom: 1px dashed rgba(36, 35, 33, 0.3);
+}
+/* One rates cell, or two side by side (Dog Walking: one dog / two dogs). */
+.service-modal-rates-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  border-bottom: 1px dashed rgba(36, 35, 33, 0.3);
+}
+.service-modal-rates-row .contact-modal-detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 18px 20px 18px 0;
+  border-bottom: none;
+}
+/* A lone rates cell centres its prices in the spare height; side-by-side
+   cells stay top-aligned so their headers share a line. */
+.service-modal-rates-row .contact-modal-detail:only-child { justify-content: center; }
+.service-modal-rates-row .contact-modal-detail + .contact-modal-detail {
+  padding: 18px 0 18px 20px;
+  border-left: 1px dashed rgba(36, 35, 33, 0.3);
+}
+/* Rate lines sit side by side where the cell is wide enough (a single full
+   width rates cell), and stack in the narrower two-up cells. */
+.service-modal-rates-row dd { display: flex; flex-wrap: wrap; gap: 16px 40px; }
+.service-modal-rates-row dd .contact-modal-detail-note { flex-basis: 100%; margin-top: 0; }
+/* Footnote strip: label and notes on one line. */
+.service-modal-detail-list .service-modal-detail-notes {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px;
+  padding: 14px 0;
+}
+.service-modal-detail-list .service-modal-detail-notes dt { margin-bottom: 0; }
+.service-modal-detail-notes dd { display: grid; gap: 2px; }
+.service-modal-detail-notes .contact-modal-detail-note { margin-top: 0; }
+.service-modal-detail-list .contact-modal-detail-value { font-size: 15px; font-weight: 500; line-height: 1.55; text-wrap: balance; }
+.service-modal-detail-list .contact-modal-detail-value + .contact-modal-detail-value { margin-top: 10px; }
+.service-modal-detail-list .contact-modal-detail-note { margin-top: 10px; line-height: 1.65; color: var(--muted-ink); }
+.service-modal-detail-list .contact-modal-detail-note:first-child { margin-top: 0; }
+/* Rates: the price leads each line, large in the display face, with its terms
+   small beneath — so the number is the first thing read in the cell. */
+.service-modal-rate { display: grid; align-content: start; gap: 4px; margin: 0; flex: 1 1 180px; }
+.service-modal-rate-amount {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.4vw, 38px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+/* A lone rates panel has the room: its prices step up a size. */
+.service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount {
+  font-size: clamp(36px, 5.6vw, 48px);
+}
+.service-modal-rate-terms {
+  font-size: 13px; line-height: 1.45;
+  color: var(--muted-ink);
+  text-wrap: balance;
+}
+/* Footer: carousel controls, then the one action, full width and upright. */
+#service-modal-footer-panel {
+  display: grid;
+  gap: 14px;
+  padding: 12px clamp(16px, 2.4vw, 24px) clamp(16px, 2.4vw, 24px);
+}
+#service-modal-get-started-cta { width: 100%; justify-content: center; text-align: center; transform: none; }
+#service-modal-get-started-cta:hover { transform: translateY(-1px); }
+#service-modal-get-started-cta:active { transform: scale(0.97); }
+/* Phones: everything steps down a size so as much of a service as possible
+   fits in one screen. Slides keep their own height here (the viewport height
+   is set per slide in ServiceDetailDialog), so no service carries another's
+   empty space. */
+@media (max-width: 767px) {
+  #service-modal { padding: 8px; }
+  #service-modal-track { align-items: flex-start; }
+  #service-modal-viewport { transition: height 280ms cubic-bezier(0.25, 1, 0.5, 1); }
+  #service-modal-bar-panel { padding: 12px 14px 0; }
+  #service-modal-close-btn { padding: 5px 9px; }
+  #service-modal .service-modal-slide-heading { padding: 6px 14px 0; }
+  #service-modal .service-modal-title { font-size: clamp(24px, 7vw, 30px); line-height: 1; }
+  #service-modal .service-modal-slide-body { padding: 10px 14px 4px; }
+  #service-modal .service-modal-details-sheet .booking-form-body { padding: 0 12px; }
+  #service-modal .service-modal-detail-list .contact-modal-detail { padding: 12px 0; }
+  #service-modal .service-modal-detail-list .contact-modal-detail dt {
+    font-size: 11px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+  #service-modal .service-modal-detail-list .contact-modal-detail-value { font-size: 14px; line-height: 1.45; }
+  #service-modal .service-modal-detail-list .contact-modal-detail-note { font-size: 13px; line-height: 1.5; margin-top: 6px; }
+  #service-modal .service-modal-detail-list .contact-modal-detail-note:first-child { margin-top: 0; }
+  #service-modal .service-modal-rates-row dd { gap: 10px 20px; }
+  #service-modal .service-modal-rate { flex-basis: 120px; gap: 2px; }
+  #service-modal .service-modal-rate-amount,
+  #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount { font-size: 28px; }
+  #service-modal .service-modal-rate-terms { font-size: 12px; }
+  #service-modal .service-modal-detail-list .service-modal-detail-notes { padding: 10px 0; }
+  #service-modal-footer-panel { gap: 10px; padding: 10px 14px 14px; }
+  #service-modal-get-started-cta { padding-top: 11px; padding-bottom: 11px; }
+}
+@media (max-width: 560px) {
+  .service-modal-rates-row { grid-auto-flow: row; }
+  .service-modal-rates-row .contact-modal-detail,
+  .service-modal-rates-row .contact-modal-detail + .contact-modal-detail {
+    padding: 16px 0;
+    border-left: none;
+  }
+  .service-modal-rates-row .contact-modal-detail + .contact-modal-detail {
+    border-top: 1px dashed rgba(36, 35, 33, 0.3);
+  }
+}
+
+/* Carousel controls in the footer: ‹ and › wear the close button's olive
+   box; the dots mark the service showing. */
+#service-modal-carousel-nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.service-modal-step-btn {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px; height: 32px;
+  border: 1px solid var(--olive);
+  border-radius: 4px;
+  background: var(--olive);
+  color: var(--paper);
+  font-size: 22px; line-height: 1;
+  padding: 0 0 3px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.service-modal-step-btn::before { content: ''; position: absolute; inset: -6px; }
+.service-modal-step-btn:hover {
+  background: color-mix(in oklab, var(--olive) 80%, black);
+  border-color: color-mix(in oklab, var(--olive) 80%, black);
+}
+.service-modal-step-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+#service-modal-carousel-dots { display: flex; align-items: center; gap: 4px; }
+.service-modal-dot {
+  position: relative;
+  width: 18px; height: 18px;
+  padding: 0; border: 0; background: transparent;
+}
+.service-modal-dot::after {
+  content: '';
+  position: absolute; left: 50%; top: 50%;
+  width: 8px; height: 8px; margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  border: 1px solid var(--olive);
+  transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.service-modal-dot:hover::after { background: rgba(79, 90, 61, 0.35); }
+.service-modal-dot[aria-current='true']::after { background: var(--olive); transform: scale(1.25); }
+.service-modal-dot:focus-visible { outline: 2px solid var(--olive); outline-offset: 0; border-radius: 50%; }
+#service-modal-carousel-count {
+  margin-left: 8px;
+  font-family: var(--font-stamp);
+  font-size: 10px; letter-spacing: 0.14em;
+  color: var(--mid-gray);
+}
+/* The olive "›" labels on the home rates that open the service modal. Same
+   stamp look as the rate stickers; they are real buttons, so they get a
+   pointer, a darker olive on hover, a focus ring, and an invisible
+   tap-target extension around the small visible label. */
+.service-details-btn {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 11px;
+  border: 0; border-radius: 3px;
+  background: var(--olive);
+  color: var(--paper);
+  font-family: var(--font-stamp);
+  font-size: 12.5px; font-weight: 600; line-height: 1.2;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.service-details-btn::before { content: ''; position: absolute; inset: -10px -6px; }
+.service-details-btn:hover { background: color-mix(in oklab, var(--olive) 80%, black); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28); }
+.service-details-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 3px; }
+.service-details-btn-chevron {
+  display: inline-block;
+  font-size: 1.25em; line-height: 0.8;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.service-details-btn:hover .service-details-btn-chevron,
+.service-details-btn:focus-visible .service-details-btn-chevron { transform: translateX(2px); }
 
 @keyframes contact-modal-enter {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  #contact-modal-sheet { animation: none; }
+  #contact-modal-sheet,
+  #service-modal-sheet { animation: none; }
+  #service-modal-viewport { transition: none; }
+  .service-details-btn,
+  .service-details-btn-chevron { transition: none; }
 }
 
 /* ============================================================
@@ -3843,10 +4240,10 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   display: block;
   font-family: var(--font-stamp);
   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.68);
   margin-bottom: 2px;
 }
-.footer-contact-value { display: block; font-size: 14px; color: rgba(255, 255, 255, 0.75); }
+.footer-contact-value { display: block; font-size: 14px; color: rgba(255, 255, 255, 0.85); }
 a.footer-contact-value:hover { color: white; }
 .footer-contact-note { display: block; font-size: 12px; line-height: 1.5; color: rgba(255, 255, 255, 0.45); }
 
@@ -3865,17 +4262,6 @@ a.footer-contact-value:hover { color: white; }
 .nav-contact-btn:hover { color: white; background: rgba(255, 255, 255, 0.1); }
 .nav-contact-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-#mobile-menu-utility-row .mobile-menu-contact-btn {
-  padding: 4px 2px;
-  font-family: inherit;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: rgba(243, 236, 217, 0.62);
-  background: none; border: none;
-}
-#mobile-menu-utility-row .mobile-menu-contact-btn:hover { color: var(--paper); }
-#mobile-menu-utility-row .mobile-menu-contact-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-
 .footer-link-btn {
   padding: 0; background: none; border: none;
   font-family: inherit; font-size: 14px; text-align: left;
@@ -3889,4 +4275,21 @@ a.footer-contact-value:hover { color: white; }
    type to clear the wordmark (measured 52px over at 1280px). */
 @media (min-width: 769px) and (max-width: 1360px) {
   .nav-links a { font-size: 12px; padding: 7px 5px; }
+}
+
+/* Narrow phones (under 520px): three columns no longer fit, so Services and
+   Company stay side by side and Contact runs beneath them as a compact
+   two-across grid — still left-aligned, never a centred single stack. */
+@media (max-width: 519px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "art     art"
+      "brand   brand"
+      "rates   company"
+      "contact contact"
+      "cta     cta"
+      "legal   legal";
+  }
+  #footer-contact-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
 }
