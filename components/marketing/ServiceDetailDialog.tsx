@@ -267,20 +267,11 @@ function ServiceSlide({
       <div className="service-modal-slide-body">
         <div className="booking-form service-modal-details-sheet">
           <div className="booking-form-body">
-            {/* Three rows for every service: The Walk, the rates panel, and a
-                footnote strip. The rates panel takes any spare height (see
+            {/* Three rows for every service: the rates panel first (the
+                prices are the first read), then The Walk, then a footnote
+                strip. The rates panel takes any spare height (see
                 globals.css), so shorter services still fill the sheet. */}
             <dl className="service-modal-detail-list">
-              <div className="contact-modal-detail service-modal-detail-walk">
-                <dt>The Walk</dt>
-                <dd>
-                  <p className="contact-modal-detail-value">{service.copy}</p>
-                  {service.details?.map((line) => (
-                    <p key={line} className="contact-modal-detail-note">{line}</p>
-                  ))}
-                </dd>
-              </div>
-
               <div className="service-modal-rates-row">
                 {(service.rateGroups ?? [{ label: 'Rates', lines: rateLines }]).map((group) => (
                   <div className="contact-modal-detail service-modal-detail-rates" key={group.label}>
@@ -292,6 +283,16 @@ function ServiceSlide({
                     </dd>
                   </div>
                 ))}
+              </div>
+
+              <div className="contact-modal-detail service-modal-detail-walk">
+                <dt>The Walk</dt>
+                <dd>
+                  <p className="contact-modal-detail-value">{service.copy}</p>
+                  {service.details?.map((line) => (
+                    <p key={line} className="contact-modal-detail-note">{line}</p>
+                  ))}
+                </dd>
               </div>
 
               {service.notes && service.notes.length > 0 && (

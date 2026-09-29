@@ -3948,14 +3948,16 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
    The rest is its own: a slide carousel (Embla) whose slides carry the
    headline and a ruled grid of fact cells, then a fixed footer with the
    controls and the action. */
-/* One fixed height for every service — 75% of the screen on desktop, 88% on
-   phones (below) — so the sheet never resizes between slides and never runs
-   off the screen. A service with more copy than that scrolls inside its own
-   slide; the stamp bar and the footer controls stay put. */
+/* One height for every service: as tall as the tallest service's content
+   (the track's intrinsic height is its tallest slide), capped at 75% of the
+   screen on desktop and 88% on phones (below). So the sheet is as compact as
+   the copy allows, never resizes between slides, and never runs off the
+   screen; past the cap a service scrolls inside its own slide while the stamp
+   bar and footer controls stay put. */
 #service-modal-sheet {
   max-width: 640px;
-  height: 75dvh;
-  max-height: none;
+  height: auto;
+  max-height: 75dvh;
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 /* Embla: the viewport clips, the track is one flex row, and each service is a
@@ -4014,15 +4016,15 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   flex-direction: column;
   padding: 0 clamp(14px, 2.2vw, 22px);
 }
-/* Three ruled rows for every service: The Walk, the rates panel, and a
-   one-line footnote strip. The rates panel is the 1fr row — whatever spare
+/* Three ruled rows for every service: the rates panel on top, The Walk, and
+   a one-line footnote strip. The rates panel is the 1fr row — whatever spare
    height a shorter service has goes there, with the prices centred in it, so
-   the space reads as a price panel rather than a gap under the copy. */
+   the space reads as a price panel rather than a gap. */
 .service-modal-detail-list {
   flex: 1 1 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1fr auto auto;
   gap: 0;
   border-top: 1px dashed rgba(36, 35, 33, 0.3);
 }
@@ -4073,14 +4075,14 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 .service-modal-rate { display: grid; align-content: start; gap: 4px; margin: 0; flex: 1 1 180px; }
 .service-modal-rate-amount {
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.6vw, 34px);
+  font-size: clamp(36px, 5vw, 46px);
   line-height: 0.95;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
 /* A lone rates panel has the room: its prices step up a size. */
 .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount {
-  font-size: clamp(32px, 4.4vw, 40px);
+  font-size: clamp(42px, 6vw, 56px);
 }
 .service-modal-rate-terms {
   font-size: 13px; line-height: 1.45;
@@ -4101,7 +4103,7 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
    fits in one screen, and the sheet takes 88% of the screen height. */
 @media (max-width: 767px) {
   #service-modal { padding: 8px; }
-  #service-modal-sheet { height: 88dvh; }
+  #service-modal-sheet { max-height: 88dvh; }
   #service-modal-bar-panel { padding: 12px 14px 0; }
   #service-modal-close-btn { padding: 5px 9px; }
   #service-modal .service-modal-slide-heading { padding: 6px 14px 0; }
@@ -4124,7 +4126,7 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   #service-modal .service-modal-rates-row dd { gap: 10px 20px; }
   #service-modal .service-modal-rate { flex-basis: 120px; gap: 2px; }
   #service-modal .service-modal-rate-amount,
-  #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount { font-size: 28px; }
+  #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount { font-size: 34px; }
   #service-modal .service-modal-rate-terms { font-size: 12px; }
   #service-modal .service-modal-detail-list .service-modal-detail-notes { padding: 10px 0; }
   #service-modal-footer-panel { gap: 10px; padding: 10px 14px 14px; }
