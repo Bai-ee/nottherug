@@ -377,6 +377,10 @@ export default function BookingForm({
     );
   }
 
+  // Full layout keeps its submit disabled until every required field is
+  // valid, so the button itself says whether the form is ready.
+  const formComplete = Object.keys(validateAllSteps()).length === 0;
+
   function focusFirstError(errors: BookingFieldErrors) {
     const firstKey = Object.keys(errors).find((k) => errors[k]);
     if (firstKey) fieldRefs.current[firstKey]?.focus();
@@ -712,7 +716,7 @@ export default function BookingForm({
               type="submit"
               className="btn btn-primary btn-accent booking-forward-btn"
               id={`${paneId}-submit-button`}
-              disabled={status === 'submitting'}
+              disabled={status === 'submitting' || !formComplete}
             >
               {status === 'submitting'
                 ? 'Sending…'
@@ -720,7 +724,7 @@ export default function BookingForm({
                   ? "Send My Dog's Details"
                   : phoneConsult
                     ? 'Request Phone Consultation'
-                    : 'Request My Free Meet & Greet'}
+                    : 'Set Up Time'}
             </button>
             <Link
               href="/contact"
@@ -771,7 +775,7 @@ export default function BookingForm({
                   ? "Send My Dog's Details"
                   : phoneConsult
                     ? 'Request Phone Consultation'
-                    : 'Request My Free Meet & Greet'}
+                    : 'Set Up Time'}
             </button>
           )}
         </div>
