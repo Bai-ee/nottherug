@@ -24,8 +24,8 @@ const DEGRADED_LABEL: Record<'leads' | 'events', string> = {
 export function TrackingDisabledBanner() {
   return (
     <div id="admin-analytics-tracking-disabled-banner" className="card card-pad">
-      <span className="badge badge-gold">Tracking Off</span>
-      <p className="text-gold">
+      <span id="admin-analytics-tracking-disabled-tag" className="badge badge-gold">Tracking Off</span>
+      <p id="admin-analytics-tracking-disabled-body" className="text-gold">
         Tracking is off right now. This does not mean the website has no visitors — it means visits are not being
         recorded yet. Numbers below (if any) are from before tracking was turned off.
       </p>

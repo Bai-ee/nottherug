@@ -643,8 +643,10 @@ export default function WelcomeWalkModal({
                 pointer-events: none;
               }
               /* The walker and dogs pass in front of the seal. They start on
-                 stage, shifted left by a third of their width, and walk to
-                 their resting place (right edge on the panel's right edge).
+                 stage, shifted left by a twentieth of their width (just far
+                 enough to read as arriving, with the figure already in frame),
+                 and walk to their resting place (right edge on the panel's
+                 right edge).
                  Both layers run 50s on a sine ease-out: near-even speed the
                  whole way, softening only as they arrive. Uses the individual
                  translate property so it composes with the phone layout's own
@@ -660,7 +662,7 @@ export default function WelcomeWalkModal({
                 filter: drop-shadow(0 6px 14px rgba(35,31,24,0.22));
                 animation: welcome-walker-in 50s cubic-bezier(0.61, 1, 0.88, 1) 0.2s both;
               }
-              @keyframes welcome-walker-in { from { translate: -35% 0; } to { translate: 0 0; } }
+              @keyframes welcome-walker-in { from { translate: -5% 0; } to { translate: 0 0; } }
               /* The modal is a condensed instance of the home intake sheet: same
                  styling, roughly 30% smaller type and spacing so it fits a popup. */
               #welcome-walk-modal-sheet .booking-form-body { padding: clamp(14px, 1.8vw, 20px); }
