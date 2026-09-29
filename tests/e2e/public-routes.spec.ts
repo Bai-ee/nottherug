@@ -203,7 +203,7 @@ test.describe('public routes', () => {
     await expect(page).toHaveURL(/\/admin$/);
   });
 
-  test('every "book" CTA reaches /book', async ({ page, isMobile }) => {
+  test('every "book" CTA opens booking in place', async ({ page, isMobile }) => {
     // The nav-links row is behind the hamburger on mobile, so the nav CTA is
     // reached through the menu there. Same control, same handler either way.
     async function clickNavBookCta() {
@@ -217,8 +217,10 @@ test.describe('public routes', () => {
 
     await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
+    // Home's "Book a Meet & Greet" links open their booking dialog in place.
     await page.getByRole('link', { name: /Book a Meet & Greet/ }).first().click();
-    await expect(page).toHaveURL(/\/book$/);
+    await expect(page.getByRole('dialog').first()).toBeVisible();
+    await expect(page).toHaveURL(/\/$/);
 
     // The nav "Book a Walk" pops the welcome-walk modal instead of
     // navigating, on every marketing page: home renders the modal itself and
