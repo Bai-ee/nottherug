@@ -1058,10 +1058,9 @@ export default function WelcomeWalkModal() {
                         <p
                           id="welcome-walk-modal-field-error"
                           role="alert"
-                          className="form-note form-alert-slot"
-                          style={{ color: '#c0392b', textAlign: 'left' }}
+                          className="form-note form-alert form-alert-slot"
                         >
-                          {fieldError && `⚠️ ${fieldError}`}
+                          {fieldError}
                         </p>
 
                         <div

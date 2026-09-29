@@ -117,6 +117,13 @@ export default function GroupWalkFeatureCard({
         #home-group-walk-feature-art-panel {
           position: relative;
           overflow: hidden;
+          /* Its own stacking context and compositing layer: the card scales and
+             lifts on hover while the skyline and walker animate inside this
+             clip, and without this the browser re-rasterises the clipped edge
+             every frame — the shimmering left edge. */
+          isolation: isolate;
+          contain: paint;
+          transform: translateZ(0);
           min-height: 300px;
           /* No fill: the skyline is its own layer below, so it can drift on
              hover. The card's paper grain shows through as before. */
@@ -304,6 +311,35 @@ export default function GroupWalkFeatureCard({
           transform: none;
           transition: background-color 0.2s ease, color 0.2s ease;
         }
+        /* Narrow two-column band (art beside the copy, 768-899px): the copy
+           column is too tight for the name beside the price, which used to wrap
+           the name onto two lines and drop the price under it, left and right
+           of each other. Here the name is one centred line directly above the
+           price, and the price block centres under it. */
+        @media (min-width: 768px) and (max-width: 899px) {
+          #home-group-walk-feature-title-row {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+            padding-bottom: 10px;
+          }
+          #home-group-walk-feature-title {
+            max-width: none;
+            white-space: nowrap;
+            margin: 0;
+          }
+          #home-group-walk-feature-price-block { align-items: center; text-align: center; margin-top: 0; }
+          #home-group-walk-feature-now { transform-origin: 50% 50%; }
+          /* The art column is only ~330px wide here, so the walker scales down
+             and sits centred in it instead of being cropped hard at its left
+             edge. */
+          #home-group-walk-feature-art-figure { height: 66%; left: 54%; }
+          /* Right side gets air: more padding, and the phone field gives up
+             width to the email field. */
+          #home-group-walk-feature-content { padding-right: 26px; }
+          #home-group-walk-feature-fields { grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr); gap: 10px; }
+        }
         @media (max-width: 767px) {
           #home-group-walk-feature-card { grid-template-columns: 1fr; }
           /* The strip takes the illustration's own 499:238 ratio instead of a
@@ -484,10 +520,10 @@ export default function GroupWalkFeatureCard({
           <p
             id="home-group-walk-feature-error"
             role="alert"
-            className="form-note form-alert-slot"
-            style={{ color: '#c0392b', textAlign: 'left', marginTop: '6px' }}
+            className="form-note form-alert form-alert-slot"
+            style={{ marginTop: '6px' }}
           >
-            {error && `⚠️ ${error}`}
+            {error}
           </p>
 
           {/* Keyboard focus here runs the card's hover choreography (pointer

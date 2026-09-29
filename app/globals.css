@@ -1927,6 +1927,25 @@ footer {
   background-repeat: no-repeat; background-position: right 14px center;
 }
 .form-note { font-family: var(--font-type); font-size: 12px; color: var(--mid-gray); text-align: center; margin-top: 12px; }
+/* Form error messages: stamp caps in a deep terracotta (the brand terracotta
+   is too light for 11px text on cream), led by a short inked dash instead of
+   a warning emoji — the same mark as the modal headers' underline. */
+.form-alert {
+  font-family: var(--font-stamp);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  color: #9e4a33;
+}
+.form-alert:not(:empty)::before {
+  content: '';
+  display: inline-block;
+  width: 14px; height: 2px;
+  margin: 0 8px 2px 0;
+  vertical-align: middle;
+  background: currentColor;
+}
 /* A form's inline error line, rendered at all times and empty until there is
    an error: the reserved line means showing a message never moves the form. */
 .form-alert-slot { min-height: 1.5em; line-height: 1.5; }
@@ -4329,4 +4348,11 @@ a.footer-contact-value:hover { color: white; }
       "legal   legal";
   }
   #footer-contact-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  /* Mirrored around a centre line: the left column hugs the left edge and the
+     right column hugs the right edge, so the content grows outward from the
+     middle. Contact follows the same rule across its two-up grid. */
+  #footer-col-company { text-align: right; }
+  #footer-contact-list .footer-contact-item:nth-child(odd) { text-align: left; }
+  #footer-contact-list .footer-contact-item:nth-child(even) { text-align: right; }
+  #footer-col-contact h4 { text-align: left; }
 }

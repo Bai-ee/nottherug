@@ -698,8 +698,8 @@ export default function BookingForm({
 
         {/* Always rendered, empty until a step fails validation, so the
             message never shifts the actions below (.form-alert-slot). */}
-        <p id={alertId} role="alert" className="form-note form-alert-slot" style={{ color: '#c0392b', textAlign: 'left' }}>
-          {stepAlertMessage && `⚠️ ${stepAlertMessage}`}
+        <p id={alertId} role="alert" className="form-note form-alert form-alert-slot">
+          {stepAlertMessage}
         </p>
 
         {/* Full layout closes on two actions: the accented submit, and a quiet
@@ -796,7 +796,7 @@ export default function BookingForm({
         </p>
       )}
       {status === 'error' && (
-        <p className="form-note" role="alert" style={{ color: '#c0392b' }}>⚠️ {errorMsg}</p>
+        <p className="form-note form-alert" role="alert">{errorMsg}</p>
       )}
       {status === 'success' && submittedSummary && !showCalendly &&
         shouldOpenSchedulerAfterSave({ calendlyUrl, phoneConsult: submittedSummary.phoneConsult, bookedDetailsMode }) && (
