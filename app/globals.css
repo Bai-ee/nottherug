@@ -4075,7 +4075,7 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 .service-modal-rate { display: grid; align-content: start; gap: 4px; margin: 0; flex: 1 1 180px; }
 .service-modal-rate-amount {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 46px);
+  font-size: clamp(44px, 6.4vw, 60px);
   line-height: 0.95;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -4096,11 +4096,11 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
    phone size below. */
 .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate { justify-items: center; text-align: center; }
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount {
-  font-size: clamp(44px, 11cqi, 80px);
+  font-size: clamp(60px, 19cqi, 112px);
   line-height: 0.9;
 }
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child dd > .service-modal-rate:only-child .service-modal-rate-amount {
-  font-size: clamp(52px, 16cqi, 96px);
+  font-size: clamp(72px, 26cqi, 140px);
 }
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-terms {
   font-size: 14px;
@@ -4151,8 +4151,7 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   #service-modal .service-modal-detail-list .contact-modal-detail-note:first-child { margin-top: 0; }
   #service-modal .service-modal-rates-row dd { gap: 10px 20px; }
   #service-modal .service-modal-rate { flex-basis: 120px; gap: 2px; }
-  #service-modal .service-modal-rate-amount,
-  #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount { font-size: 34px; }
+  #service-modal .service-modal-rate-amount { font-size: 42px; }
   #service-modal .service-modal-rate-terms { font-size: 12px; }
   #service-modal .service-modal-detail-list .service-modal-detail-notes { padding: 10px 0; }
   #service-modal-footer-panel { gap: 10px; padding: 10px 14px 14px; }
