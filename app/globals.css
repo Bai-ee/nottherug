@@ -3983,8 +3983,10 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   container-type: inline-size;
   padding: 4px clamp(16px, 2.4vw, 24px) 0;
 }
+/* Left-aligned under the stamp, as the contact modal's headline. */
 #service-modal .service-modal-title {
   margin: 0;
+  text-align: left;
   font-size: min(8cqw, 44px);
   white-space: normal;
   text-wrap: balance;
@@ -4094,7 +4096,10 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
    so it fills the space at every breakpoint. A single price (Puppy, Boarding)
    gets the whole width and steps up again. Specific enough to outrank the
    phone size below. */
-.service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate { justify-items: center; text-align: center; }
+/* Every price centres in its share of the panel (Dog Walking's one dog / two
+   dogs columns included); the headers above stay left. */
+.service-modal-rates-row .service-modal-rate { justify-items: center; text-align: center; }
+.service-modal-rates-row dd .contact-modal-detail-note { text-align: center; }
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount {
   font-size: clamp(60px, 19cqi, 112px);
   line-height: 0.9;
