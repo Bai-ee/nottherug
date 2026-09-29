@@ -3,6 +3,10 @@
 **Timestamp:** 2026-09-18 01:25 CDT
 **Repo:** `/Users/bballi/Documents/Repos/NotTheRug-welcome-modal` (the checkout serving `localhost:3000`)
 **Branch:** `feat/welcome-modal` · HEAD `41bdf95 Record the one intended schedule and the unverified duration gate`
+> Registry thread: `~/.claude/threads/2026-09-21-nottherug-homepage-ui.md`
+> Registry thread (intake form, nav + section numbering): `~/.claude/threads/2026-09-21-nottherug-home-intake.md`
+> (terminal: Not The Rug Homepage UI Pass) — live state, traps and the ordered open items.
+
 **Nothing committed this session.** Every change below is in the working tree.
 
 > **Repo note:** the Claude session's working directory was `/Users/bballi/Documents/Repos/NotTheRug`, but
