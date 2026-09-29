@@ -255,8 +255,10 @@ nav {
 .dropdown-menu a:hover { background: var(--cream) !important; }
 
 /* Mobile menu */
+/* Two bars, not three. SiteNav still renders three spans; the third is
+   hidden here, so the markup can drop it without any visual change. */
 .nav-hamburger {
-  display: none; flex-direction: column; gap: 5px;
+  display: none; flex-direction: column; gap: 6px;
   padding: 8px; cursor: pointer;
 }
 .nav-hamburger span {
@@ -264,11 +266,12 @@ nav {
   background: var(--paper); border-radius: 2px;
   transition: transform .25s ease, opacity .2s ease;
 }
-/* Open: top and bottom bars cross, middle fades — the toggle reads as "close"
-   without swapping the markup for an icon. */
-.nav-hamburger[data-open='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.nav-hamburger[data-open='true'] span:nth-child(2) { opacity: 0; }
-.nav-hamburger[data-open='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-hamburger span:nth-child(3) { display: none; }
+/* Open: the two bars cross into an x (each moves half the 6px gap plus half
+   a bar toward the middle), so the toggle reads as "close" without swapping
+   the markup for an icon. */
+.nav-hamburger[data-open='true'] span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+.nav-hamburger[data-open='true'] span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
 /* The sheet the hamburger opens. Same olive-stock-with-grain surface as the
    inverted panels in the page body (#home-rates-intake-sheet), stamp-type
    rows, and the paper-ticket CTA the bar uses — so it reads as this site's
@@ -3699,15 +3702,14 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   /* brightness(0) flattens the illustration to solid ink — the silhouette. */
   filter: brightness(0);
   opacity: 0.3;
-  /* Mirrored: the source art walks left, and the walker leaves to the right.
-     Carried in the keyframes as well, since a running CSS animation on
-     transform replaces this declaration outright rather than composing. */
-  transform: scaleX(-1);
+  /* Not mirrored: the source art walks to the right, the same way the walker
+     leaves (useHomeIntroSequence slides the shell off the right edge), so the
+     dogs lead and the walker moves forward. */
   animation: home-intro-walker-bob 2.4s ease-in-out infinite;
 }
 @keyframes home-intro-walker-bob {
-  0%, 100% { transform: scaleX(-1) translateY(0); }
-  50% { transform: scaleX(-1) translateY(-7px); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
 }
 
 @media (max-width: 640px) {
