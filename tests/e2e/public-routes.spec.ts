@@ -11,7 +11,7 @@ import { suppressWelcomeModal } from './helpers/welcomeModal';
 // CSS, so `textContent` runs the words together ("Your dogdeserves…"). These
 // patterns are matched against the normalized innerText (see expectH1) — the
 // sentence a visitor actually reads — hence the /i flag.
-const HOME_H1 = /^Your dog deserves someone they know\.$/i;
+const HOME_H1 = /^Their favorite part of the day\. Your peace of mind\.$/i;
 const ABOUT_H1 = /^15 years of walks, one neighborhood$/i;
 const SAFETY_H1 = /^Why trust matters more than price$/i;
 
@@ -220,23 +220,23 @@ test.describe('public routes', () => {
     await page.getByRole('link', { name: /Book a Meet & Greet/ }).first().click();
     await expect(page).toHaveURL(/\/book$/);
 
-    // The nav "Book a Walk" is the one booking control that deliberately does
-    // not navigate on home: SiteNav.handleBookClick pops the welcome-walk
-    // modal there instead, and the URL stays on the home page.
+    // The nav "Book a Walk" pops the welcome-walk modal instead of
+    // navigating, on every marketing page: home renders the modal itself and
+    // the layout's WelcomeModalHost loads it everywhere else. The URL stays put.
     await gotoSettled(page, '/');
     await clickNavBookCta();
     await expect(page.locator('#welcome-walk-modal')).toBeVisible();
     await expect(page).toHaveURL(/\/$/);
 
-    // Off home — the only page that renders the modal — the same control is a
-    // plain link to /book, which is also home's pre-hydration behaviour.
     await page.goto('/about');
     await clickNavBookCta();
-    await expect(page).toHaveURL(/\/book$/);
+    await expect(page.locator('#welcome-walk-modal')).toBeVisible();
+    await expect(page).toHaveURL(/\/about$/);
 
     await page.goto('/neighborhoods/williamsburg');
     await page.getByRole('link', { name: /Book a Walk in Williamsburg/ }).click();
-    await expect(page).toHaveURL(/\/book$/);
+    await expect(page.locator('#welcome-walk-modal')).toBeVisible();
+    await expect(page).toHaveURL(/\/neighborhoods\/williamsburg$/);
   });
 
   test('no alert() fires while browsing the former fake-form pages', async ({ page }) => {
@@ -297,9 +297,8 @@ test.describe('no horizontal overflow at any checked width', () => {
 test.describe('keyboard access', () => {
   test('desktop nav is reachable and operable by keyboard', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
-    // On home the nav CTA opens the welcome-walk modal rather than leaving the
-    // page, so keyboard operability is proved on both of its outcomes: the
-    // modal here, and the /book navigation the same control does off home.
+    // The nav CTA opens the welcome-walk modal rather than leaving the page,
+    // on home and off it, so keyboard operability is proved on both.
     await gotoSettled(page, '/');
     const homeBookCta = page.locator('#main-nav .nav-cta');
     await homeBookCta.focus();
@@ -313,7 +312,8 @@ test.describe('keyboard access', () => {
     await bookCta.focus();
     await expect(bookCta).toBeFocused();
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(/\/book$/);
+    await expect(page.locator('#welcome-walk-modal')).toBeVisible();
+    await expect(page).toHaveURL(/\/about$/);
   });
 
   test('mobile hamburger toggle opens the menu on Enter, not just click', async ({ page, isMobile }) => {
