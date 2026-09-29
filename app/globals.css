@@ -4080,6 +4080,9 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
   letter-spacing: -0.01em;
   color: var(--ink);
 }
+/* A single price (Puppy, Boarding) centres in its panel; the RATES header
+   above it stays left, in line with every other header. */
+.service-modal-rates-row dd > .service-modal-rate:only-child { justify-items: center; text-align: center; }
 /* A lone rates panel has the room: its prices step up a size. */
 .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount {
   font-size: clamp(42px, 6vw, 56px);
