@@ -166,13 +166,19 @@
 
 /* Sign Out lives in the nav now; it is a button, so it does not pick up the
    .nav-links a styling on its own. */
-/* The admin bar always opens as the sheet, at every width. Nine entries with
-   real names make a ~1050px row, and the pasted paper logo is ~390px of the
-   1240px container, so the two can never share a line — right-aligned, the
-   row reached back under the logo and hid Site Performance and Scheduled
-   Leads entirely. The sheet lists all nine with room for the padlocks. */
+/* Up to 1100px (the marketing nav's own breakpoint) the admin bar opens as
+   the sheet (#admin-nav-hamburger-toggle), which lists every entry with room
+   for the padlocks. Above that the row
+   sits in the bar like the marketing nav, carrying only the entries that
+   navigate: with the four locked ones too it runs ~1050px, which cannot share
+   a line with the ~390px pasted paper logo, so they stay in the sheet only. */
 #main-nav .nav-links { display: none; }
 #main-nav .nav-hamburger { display: flex; margin-left: auto; }
+@media (min-width: 1101px) {
+  #main-nav[data-admin-nav] .nav-links { display: flex; }
+  #main-nav[data-admin-nav] .nav-links .admin-nav-locked { display: none; }
+  #main-nav[data-admin-nav] .nav-hamburger { display: none; }
+}
 
 /* ── ADMIN NAV: NO HOVER, LOCKED ENTRIES ────────────────────────────────────
    The marketing nav lights up on hover because it invites a click. This one
