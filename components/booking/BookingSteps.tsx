@@ -343,7 +343,7 @@ export function StepWrapUp({
 }: WrapUpProps) {
   return (
     <>
-      <div className="form-group" style={{ marginBottom: '20px' }}>
+      <div className="form-group" style={{ marginBottom: hidePhoneConsult ? 0 : '20px' }}>
         <label htmlFor={`${paneId}-notes`}>Anything we should know?</label>
         <textarea
           id={`${paneId}-notes`}

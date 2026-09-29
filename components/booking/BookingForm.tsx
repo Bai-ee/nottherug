@@ -702,11 +702,16 @@ export default function BookingForm({
           </div>
         </div>
 
-        {/* Always rendered, empty until a step fails validation, so the
-            message never shifts the actions below (.form-alert-slot). */}
-        <p id={alertId} role="alert" className="form-note form-alert form-alert-slot">
-          {stepAlertMessage}
-        </p>
+        {/* Stepped layout: always rendered, empty until a step fails
+            validation, so the message never shifts the actions below
+            (.form-alert-slot). The full layout's submit stays disabled until
+            the form is valid, so it never shows a step error and reserves no
+            line. */}
+        {!fullLayout && (
+          <p id={alertId} role="alert" className="form-note form-alert form-alert-slot">
+            {stepAlertMessage}
+          </p>
+        )}
 
         {/* Full layout closes on two actions: the accented submit, and a quiet
             way out for someone who only has a question and does not want to

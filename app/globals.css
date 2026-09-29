@@ -3211,8 +3211,8 @@ footer {
   align-items: center;
   justify-content: center;
   gap: 14px;
-  margin-top: 24px;
-  padding-top: 24px;
+  margin-top: 20px;
+  padding-top: 20px;
   border-top: 1px dashed var(--light-gray);
 }
 [data-section='meetgreet-submit-row'] .btn { padding: 15px 30px; }
