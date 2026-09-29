@@ -1115,16 +1115,16 @@ export default function WelcomeWalkModal() {
                           </p>
                         )}
 
-                        {fieldError && (
-                          <p
-                            id="welcome-walk-modal-field-error"
-                            role="alert"
-                            className="form-note"
-                            style={{ color: '#c0392b', textAlign: 'left' }}
-                          >
-                            ⚠️ {fieldError}
-                          </p>
-                        )}
+                        {/* Always rendered, empty until there is an error, so
+                            the message never shifts the sheet (.form-alert-slot). */}
+                        <p
+                          id="welcome-walk-modal-field-error"
+                          role="alert"
+                          className="form-note form-alert-slot"
+                          style={{ color: '#c0392b', textAlign: 'left' }}
+                        >
+                          {fieldError && `⚠️ ${fieldError}`}
+                        </p>
 
                         <div
                           id="welcome-walk-modal-cta-row"

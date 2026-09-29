@@ -1927,6 +1927,9 @@ footer {
   background-repeat: no-repeat; background-position: right 14px center;
 }
 .form-note { font-family: var(--font-type); font-size: 12px; color: var(--mid-gray); text-align: center; margin-top: 12px; }
+/* A form's inline error line, rendered at all times and empty until there is
+   an error: the reserved line means showing a message never moves the form. */
+.form-alert-slot { min-height: 1.5em; line-height: 1.5; }
 
 .phase-callout {
   background: linear-gradient(135deg, var(--cream) 0%, #EDE8E0 100%);

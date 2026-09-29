@@ -292,14 +292,14 @@ export default function GroupWalkFeatureCard({
           grid-template-columns: 1fr 1fr;
           gap: 12px;
         }
-        /* The card's CTA drops the .btn-primary paper-ticket tilt — at full
-           width an angled block reads as a mistake.
+        /* The card's CTA drops the .btn-primary paper-ticket tilt — an angled
+           submit under the card's fields reads as a mistake. It is as wide as
+           its own label, like every CTA on the site.
            No transform transition and no :hover/:active transform rules here:
            hooks/useGroupWalkCardHover.ts drives this button's transform on
            every frame, and a CSS transition on the same property fights those
            writes (the browser eases toward a target GSAP has already moved). */
         #home-group-walk-feature-card .btn {
-          width: 100%;
           justify-content: center;
           transform: none;
           transition: background-color 0.2s ease, color 0.2s ease;
@@ -479,16 +479,16 @@ export default function GroupWalkFeatureCard({
             </div>
           </div>
 
-          {error && (
-            <p
-              id="home-group-walk-feature-error"
-              role="alert"
-              className="form-note"
-              style={{ color: '#c0392b', textAlign: 'left', marginTop: '6px' }}
-            >
-              ⚠️ {error}
-            </p>
-          )}
+          {/* Always rendered, empty until there is an error, so the message
+              never pushes the button down (.form-alert-slot reserves its line). */}
+          <p
+            id="home-group-walk-feature-error"
+            role="alert"
+            className="form-note form-alert-slot"
+            style={{ color: '#c0392b', textAlign: 'left', marginTop: '6px' }}
+          >
+            {error && `⚠️ ${error}`}
+          </p>
 
           {/* Keyboard focus here runs the card's hover choreography (pointer
               hover is on the card root), so a tabbing visitor sees it too. */}

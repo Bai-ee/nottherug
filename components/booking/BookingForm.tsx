@@ -696,11 +696,11 @@ export default function BookingForm({
           </div>
         </div>
 
-        {stepAlertMessage && (
-          <p id={alertId} role="alert" className="form-note" style={{ color: '#c0392b', textAlign: 'left' }}>
-            ⚠️ {stepAlertMessage}
-          </p>
-        )}
+        {/* Always rendered, empty until a step fails validation, so the
+            message never shifts the actions below (.form-alert-slot). */}
+        <p id={alertId} role="alert" className="form-note form-alert-slot" style={{ color: '#c0392b', textAlign: 'left' }}>
+          {stepAlertMessage && `⚠️ ${stepAlertMessage}`}
+        </p>
 
         {/* Full layout closes on two actions: the accented submit, and a quiet
             way out for someone who only has a question and does not want to
