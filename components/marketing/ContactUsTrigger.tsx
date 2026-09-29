@@ -9,8 +9,9 @@ import ContactDialog from './ContactDialog';
 type Props = {
   /** DOM handle for the trigger itself; the dialog's ids are its own. */
   id: string;
-  /** nav_contact from the site nav, footer_contact from the footer. */
-  cta: CtaId;
+  /** nav_contact from the site nav, footer_contact from the footer. Omit to
+   *  open the dialog without reporting a click (recruiting, not a customer CTA). */
+  cta?: CtaId;
   className?: string;
   /** Runs when the dialog opens — the site nav uses it to close its menu. */
   onOpen?: () => void;
@@ -45,6 +46,7 @@ export default function ContactUsTrigger({ id, cta, className, onOpen, children 
           onOpen?.();
           // Same event the link it replaced reported, so the owner's contact
           // numbers stay continuous across this change.
+          if (!cta) return;
           try {
             track('cta_click', { cta, page: pathname });
           } catch (err) {

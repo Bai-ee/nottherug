@@ -20,6 +20,7 @@ import { useNavScrollShadow } from '@/components/marketing/hooks/useNavScrollSha
 const NAV_LINKS: Array<{ href: string; label: string; locked?: boolean }> = [
   { href: '/admin/dashboard', label: 'Site Performance' },
   { href: '/admin/dashboard/leads', label: 'Scheduled Leads' },
+  { href: '/admin/dashboard/applications', label: 'Team Applications' },
   // Locked: the tools behind these are not ready for the owner to use on
   // their own yet. They stay listed so the sections are not a surprise later,
   // but they do not navigate and are not focusable.

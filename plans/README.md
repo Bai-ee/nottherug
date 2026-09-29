@@ -11,6 +11,7 @@
 | [008](008-2026-09-18-paw-walk-and-band-session.md) | Paw walk + band layout session, 2026-09-18 | MEDIUM | UNCOMMITTED |
 | [009](009-full-tracking-dashboard-integration.md) | Full tracking and custom dashboard integration | HIGH | IN PROGRESS |
 | [010](010-production-final-mile-optimization.md) | Production final-mile code quality and performance optimization | HIGH | IMPLEMENTED 2026-09-19 — see its "Release evidence" section |
+| [011](011-backup-walker-bench.md) | Backup walker bench: recruit, stack, dispatch | FEATURE | PHASES 0–2 BUILT 2026-09-29, AWAITING REVIEW |
 
 ## Execution order
 

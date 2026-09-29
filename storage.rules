@@ -11,6 +11,8 @@ service firebase.storage {
     // these rules. No client — admin or public — reads or writes here, and
     // objects under this prefix are never issued a public download token
     // (see storageUploadPrivate in lib/server/firebaseStorage.ts).
+    // Backup-walker resumes live here too, under private/bench-resumes/
+    // (plans/011): the admin resume route streams them to a verified admin.
     match /private/{allPaths=**} {
       allow read, write: if false;
     }
