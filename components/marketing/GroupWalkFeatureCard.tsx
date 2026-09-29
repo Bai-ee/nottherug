@@ -306,7 +306,12 @@ export default function GroupWalkFeatureCard({
            hooks/useGroupWalkCardHover.ts drives this button's transform on
            every frame, and a CSS transition on the same property fights those
            writes (the browser eases toward a target GSAP has already moved). */
+        /* As wide as its label and centred in the form column. */
         #home-group-walk-feature-card .btn {
+          display: flex;
+          width: fit-content;
+          margin-left: auto;
+          margin-right: auto;
           justify-content: center;
           transform: none;
           transition: background-color 0.2s ease, color 0.2s ease;
