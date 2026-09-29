@@ -36,7 +36,7 @@ export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; c
   { href: '/#home-team-section', label: 'Who Does It', dataPage: 'about' },
   { href: '/#home-closing-parks-row', label: 'Where We Do It', dataPage: 'neighborhoods' },
   { href: '/#home-how-it-works-block', label: 'How It Works', dataPage: 'how-it-works' },
-  { href: '/#home-contact-sheet-section', label: 'Let’s Get Started', dataPage: 'contact', cta: 'nav_contact' },
+  { href: '/#home-contact-sheet-section', label: 'Let’s Get Started', dataPage: 'contact', cta: 'nav_get_started' },
   { href: '/signup', label: 'Sign Up', dataPage: 'signup' },
 ];
 
@@ -165,7 +165,7 @@ export default function SiteNav() {
             ))}
             {/* A button, not a route: Contact Us opens the contact modal in
                 place. The /contact page is still reachable on its own. */}
-            <ContactUsTrigger id="nav-contact-us-trigger" cta="nav_contact" className="nav-contact-btn">
+            <ContactUsTrigger id="nav-contact-us-trigger" cta="nav_contact_us" className="nav-contact-btn">
               Contact Us
             </ContactUsTrigger>
             <Link href="/admin" id="nav-admin-login-link">Login</Link>
@@ -207,7 +207,7 @@ export default function SiteNav() {
             bar's Contact Us. First row, above What We Do. */}
         <ContactUsTrigger
           id="mobile-menu-contact-trigger"
-          cta="nav_contact"
+          cta="nav_contact_us"
           className="mobile-menu-primary-contact-btn"
           onOpen={() => setMobileOpen(false)}
         >

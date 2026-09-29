@@ -24,7 +24,7 @@ describe('SiteNav NAV_LINKS wiring', () => {
     expect(withCta).toHaveLength(2);
     expect(withCta).toEqual([
       expect.objectContaining({ href: '/#home-personalized-care-section', cta: 'nav_services' }),
-      expect.objectContaining({ href: '/#home-contact-sheet-section', cta: 'nav_contact' }),
+      expect.objectContaining({ href: '/#home-contact-sheet-section', cta: 'nav_get_started' }),
     ]);
   });
 

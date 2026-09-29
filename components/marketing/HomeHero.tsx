@@ -155,7 +155,7 @@ export default function HomeHero() {
             href="/contact"
             className="btn btn-ghost hero-desktop-copy"
             id="hero-cta-secondary"
-            cta="hero_contact"
+            cta="hero_contact_desktop"
             onClick={openContactModal}
           >
             Contact Luis
@@ -164,7 +164,7 @@ export default function HomeHero() {
             href="/contact"
             className="btn btn-primary btn-accent hero-phone-copy"
             id="hero-cta-phone-contact"
-            cta="hero_contact"
+            cta="hero_book_mobile"
             onClick={openContactModal}
           >
             Book a Meet &amp; Greet
