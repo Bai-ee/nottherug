@@ -47,7 +47,9 @@
    (including ScrollTrigger's own position management and showPage's
    scrollTo(0,0)) into a browser-driven animation, which fights scrub/pin.
    Callers that genuinely want easing pass `behavior: 'smooth'` themselves. */
-html { overflow-x: hidden; }
+/* iOS inflates text it thinks is too small to read, which widened the
+   nowrap hero headline past the phone screen. Keep type at the sizes set here. */
+html { overflow-x: hidden; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   font-family: var(--font-body);
   /* grain baked into the background — sits under all content (docs/design.md) */
@@ -2070,7 +2072,10 @@ footer {
   .container { padding: 0 20px; }
   h1 { font-size: clamp(30px, 8vw, 44px); }
   .hero-h1 { font-size: clamp(44px, 12vw, 60px); }
-  .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; height: auto; min-height: auto; }
+  /* minmax(0, 1fr), not 1fr: a plain 1fr track grows to its widest unbreakable
+     child (the nowrap headline), which widened the whole stacked hero past the
+     screen and pushed it right. */
+  .hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; height: auto; min-height: auto; }
   /* Stacked layout puts the headline over the walker illustration, so on
      mobile it moves under the cream veil (faint) instead of sitting at full
      strength above it like it does on desktop. */
@@ -3866,7 +3871,9 @@ html[data-home-intro='loading'] body { overflow: hidden; }
      "Your peace of mind." (1st and 3rd hard break hidden). */
   #hero-headline br:nth-of-type(1),
   #hero-headline br:nth-of-type(3) { display: none; }
-  #hero-headline.hero-h1 { font-size: clamp(32px, 9.4vw, 44px); order: 1; margin-bottom: 12px; text-align: center; }
+  /* Line one is about 9.3em wide and never wraps, so the size follows the
+     space inside the 20px side padding instead of a bare vw. */
+  #hero-headline.hero-h1 { font-size: clamp(26px, calc((100vw - 40px) / 9.8), 44px); order: 1; margin-bottom: 12px; text-align: center; }
   /* Stamp label sits under the headline, everything centred. */
   #hero-eyebrow-stamp-row { order: 2; justify-content: center; margin: 0 0 18px; }
   #hero-content-shell { text-align: center; }
