@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import Link from 'next/link';
-import { INSTAGRAM_URL } from '@/lib/content/site';
+import { GOOGLE_WRITE_REVIEW_URL, INSTAGRAM_URL } from '@/lib/content/site';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { usePathname } from 'next/navigation';
@@ -31,14 +31,16 @@ import ContactUsTrigger from './marketing/ContactUsTrigger';
 // `cta` is set only on the two entries the owner reports on (service interest
 // and contact intent); the rest stay untracked on purpose. Exported so the
 // wiring is testable without a DOM renderer — see tests/unit/site-nav-links.test.ts.
-export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; cta?: CtaId }> = [
+export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; cta?: CtaId; external?: boolean }> = [
   { href: '/#home-personalized-care-section', label: 'What We Do', dataPage: 'services', cta: 'nav_services' },
   { href: '/#home-team-section', label: 'Who Does It', dataPage: 'about' },
   { href: '/#home-closing-parks-row', label: 'Where We Do It', dataPage: 'neighborhoods' },
   { href: '/#home-how-it-works-block', label: 'How It Works', dataPage: 'how-it-works' },
   { href: '/#home-contact-sheet-section', label: 'Let’s Get Started', dataPage: 'contact', cta: 'nav_get_started' },
-  { href: '/signup', label: 'Sign Up', dataPage: 'signup' },
   { href: '/walk-with-us', label: 'Join Our Team', dataPage: 'walk-with-us' },
+  // Google's own write-a-review form (Google allows a business to ask; Yelp
+  // does not, so Yelp is never linked as a place to leave one).
+  { href: GOOGLE_WRITE_REVIEW_URL, label: 'Leave a Review', dataPage: 'review', external: true },
 ];
 
 // SiteNav is already a Client Component and every tracked control in it already
@@ -149,7 +151,11 @@ export default function SiteNav() {
             />
           </Link>
           <div className="nav-links">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map((link) => link.external ? (
+              <a key={link.href} href={link.href} data-page={link.dataPage} target="_blank" rel="noopener">
+                {link.label}
+              </a>
+            ) : (
               <Link
                 key={link.href}
                 href={link.href}
@@ -214,7 +220,9 @@ export default function SiteNav() {
         >
           Contact Us
         </ContactUsTrigger>
-        {NAV_LINKS.map((link) => (
+        {NAV_LINKS.map((link) => link.external ? (
+          <a key={link.href} href={link.href} target="_blank" rel="noopener" onClick={() => setMobileOpen(false)}>{link.label}</a>
+        ) : (
           <Link
             key={link.href}
             href={link.href}
