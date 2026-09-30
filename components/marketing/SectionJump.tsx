@@ -163,7 +163,7 @@ export default function SectionJump() {
 
       <nav id="section-jump-menu" aria-label="Page sections" ref={menuRef}>
         <ul id="section-jump-list">
-          {links.map((link) => (
+          {links.map((link, i) => (
             <li key={link.id} className="section-jump-row">
               <button
                 type="button"
@@ -175,7 +175,16 @@ export default function SectionJump() {
                 tabIndex={open ? 0 : -1}
                 onClick={() => handleSelect(link.id)}
               >
-                <span className="section-jump-item-marker" aria-hidden="true" />
+                {/* eslint-disable-next-line @next/next/no-img-element -- 2KB decorative print at a fixed CSS size */}
+                <img
+                  className="section-jump-item-paw"
+                  src={i % 2 === 0 ? '/img/paw-rail-left.webp' : '/img/paw-rail-right.webp'}
+                  alt=""
+                  width={48}
+                  height={51}
+                  aria-hidden="true"
+                  decoding="async"
+                />
                 <span className="section-jump-item-label">{link.label}</span>
               </button>
             </li>
@@ -193,23 +202,20 @@ export default function SectionJump() {
         onClick={() => (open ? closeMenu() : setOpen(true))}
       >
         {/* Both glyphs stay mounted and cross-fade, so the swap has no reflow.
-            A map pin, not three bars: this is "where am I on the page", and the
-            hamburger already means "go to another page". */}
-        <svg
+            A paw print, not three bars: it is the same print the section trail
+            uses on desktop, and the hamburger already means "go to another
+            page". */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- 2KB decorative print at a fixed CSS size */}
+        <img
           id="section-jump-trigger-icon-pin"
           className="section-jump-trigger-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          src="/img/paw-rail-left.webp"
+          alt=""
+          width={48}
+          height={51}
           aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M12 21.5c4.2-4.6 6.3-8 6.3-10.7a6.3 6.3 0 1 0-12.6 0c0 2.7 2.1 6.1 6.3 10.7Z" />
-          <circle cx="12" cy="10.6" r="2.4" />
-        </svg>
+          decoding="async"
+        />
         <svg
           id="section-jump-trigger-icon-close"
           className="section-jump-trigger-icon"

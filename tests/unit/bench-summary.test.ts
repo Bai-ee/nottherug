@@ -46,6 +46,7 @@ const person = {
     whyOnCall: 'Freelance schedule.',
     experienceSummary: '',
     anythingElse: '',
+    questionsForUs: '',
   },
 };
 

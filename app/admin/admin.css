@@ -178,6 +178,8 @@
   #main-nav[data-admin-nav] .nav-links { display: flex; }
   #main-nav[data-admin-nav] .nav-links .admin-nav-locked { display: none; }
   #main-nav[data-admin-nav] .nav-hamburger { display: none; }
+  /* Its sheet can't be opened at this width; never leave it hanging open. */
+  #main-nav[data-admin-nav] + .mobile-menu { display: none; }
 }
 
 /* ── ADMIN NAV: NO HOVER, LOCKED ENTRIES ────────────────────────────────────

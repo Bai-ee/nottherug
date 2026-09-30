@@ -24,7 +24,7 @@ const ON_CALL_TERMS = [
   {
     key: 'notice',
     emphasized: false,
-    stamp: 'Substitute walkers',
+    stamp: 'Premium rates',
     title: 'Available on short notice?',
     body: 'Substitute shifts earn a premium above our standard rate. You cover walks within 24 hours when a scheduled walker is unavailable or has an emergency. You pick the days and times you can cover, and we reach you when a shift opens.',
   },

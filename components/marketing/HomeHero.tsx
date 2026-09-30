@@ -162,28 +162,29 @@ export default function HomeHero() {
           </TrackedCtaAnchor>
         </div>
       </div>
-      {/* Word of mouth first: unprompted Reddit recommendations, then the
-          Google and Yelp ratings. Numbers and links: lib/content/site.ts. */}
+      {/* Tenure first, then word of mouth: unprompted Reddit
+          recommendations, then the Google and Yelp ratings. Numbers and
+          links: lib/content/site.ts. */}
       <div className="hero-stats" id="hero-stats-strip">
+        <div className="hero-stat-item" id="hero-stat-years">
+          <div className="hero-stat-num">15+</div>
+          <div className="hero-stat-label">Years in<br />Williamsburg</div>
+        </div>
+        <div className="hero-stat-divider" aria-hidden="true"></div>
         <a className="hero-stat-item hero-stat-link" id="hero-stat-reddit" data-variant="star" href={REDDIT_RECOMMENDATIONS_URL} target="_blank" rel="noopener">
           <div className="hero-stat-num">{REDDIT_UPVOTES}<UpvoteIcon size="0.8em" /></div>
           <div className="hero-stat-label">Upvotes<br />on Reddit</div>
         </a>
         <div className="hero-stat-divider" aria-hidden="true"></div>
         <a className="hero-stat-item hero-stat-link" id="hero-stat-google" data-variant="star" href={REVIEW_RATINGS.google.url} target="_blank" rel="noopener">
-          <div className="hero-stat-num">{REVIEW_RATINGS.google.rating}★</div>
+          <div className="hero-stat-num">{REVIEW_RATINGS.google.rating}<span className="hero-stat-star" aria-hidden="true">★</span></div>
           <div className="hero-stat-label">Google<br />rating</div>
         </a>
         <div className="hero-stat-divider" aria-hidden="true"></div>
         <a className="hero-stat-item hero-stat-link" id="hero-stat-yelp" data-variant="star" href={REVIEW_RATINGS.yelp.url} target="_blank" rel="noopener">
-          <div className="hero-stat-num">{REVIEW_RATINGS.yelp.rating}★</div>
+          <div className="hero-stat-num">{REVIEW_RATINGS.yelp.rating}<span className="hero-stat-star" aria-hidden="true">★</span></div>
           <div className="hero-stat-label">Yelp<br />rating</div>
         </a>
-        <div className="hero-stat-divider" aria-hidden="true"></div>
-        <div className="hero-stat-item">
-          <div className="hero-stat-num">15+</div>
-          <div className="hero-stat-label">Years in<br />Williamsburg</div>
-        </div>
       </div>
     </section>
   );

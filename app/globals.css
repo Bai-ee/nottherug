@@ -179,15 +179,11 @@ nav {
 .nav-links {
   display: flex; align-items: center; gap: 0;
 }
-/* 8px of side padding, not 12: the bar carries six destinations plus Contact
-   Us, Login, Instagram and the CTA, and the paper logo sign deliberately
-   overhangs the band — at 12px the first link ran underneath it and could not
-   be clicked. */
+/* The bar carries five destinations; everything else lives in the menu, so
+   the entries get real type and spacing again. */
 .nav-links a {
-  /* 3px pads and 12px type: with Join Our Team and Leave a Review in the
-     row it otherwise runs under the paper wordmark at every desktop width. */
-  padding: 7px 3px; border-radius: 4px;
-  font-size: 11.5px; font-weight: 500;
+  padding: 7px 9px; border-radius: 4px;
+  font-size: 13.5px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255,255,255,0.7);
   transition: all .2s;
@@ -199,10 +195,19 @@ nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* 4px sides, like the text links: the full row has to clear the paper logo. */
-  padding: 7px 4px;
+  padding: 7px 6px;
   line-height: 0;
+  color: rgba(255,255,255,0.8);
 }
+#nav-instagram-link:hover { color: white; }
+/* Book a Walk, Instagram and the menu toggle: on the bar at every width,
+   pinned right after the links (or to the right edge when the links hide). */
+#nav-actions-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-left: 18px;
+  flex-shrink: 0;
+}
+#nav-actions-row .nav-hamburger { display: flex; margin-left: 0; }
 /* Same fix in the sheet, where the glyph sits beside its label. */
 #mobile-menu-instagram-link {
   display: flex;
@@ -467,11 +472,11 @@ h3 { font-size: clamp(22px, 2vw, 30px); }
   color: var(--paper) !important;
 }
 
-/* Footer's terracotta CTA. It needs its own hover: .btn-accent:hover goes
-   olive, which disappears against the green footer. */
+/* Footer's terracotta CTA hovers green like every other Book button, but the
+   lighter sage: olive disappears against the olive footer. */
 #footer-book-luis-cta:hover {
-  background-color: var(--terracotta-light) !important;
-  color: var(--ink) !important;
+  background-color: var(--sage) !important;
+  color: var(--paper) !important;
 }
 .btn-ghost { color: var(--charcoal); padding: 14px 0; }
 .btn-ghost:hover { color: var(--sage-dark); }
@@ -2000,20 +2005,43 @@ footer {
   .reviews-masonry { columns: 2; }
 }
 
-/* Above the hamburger breakpoint the sheet is never shown, whatever its open
-   state says: widening the window past it with the menu open used to leave
-   the sheet hanging under the full desktop bar. */
-@media (min-width: 1320px) {
-  .mobile-menu,
-  .mobile-menu[data-open='true'] { display: none; }
+/* The bar's five links need ~560px beside the pasted paper logo; below that
+   they hide and the actions row takes the right edge. The menu is always
+   there, so nothing becomes unreachable. */
+@media (max-width: 1099px) {
+  #nav-bar-links { display: none; }
+  #nav-actions-row { margin-left: auto; }
 }
-
-/* Nav collapses to the hamburger below 1320px: the row (seven destinations,
-   Contact Us, Login, Instagram and the CTA) needs ~820px beside the pasted
-   paper logo, and under that it slides beneath the logo instead of wrapping. */
-@media (max-width: 1319px) {
-  .nav-links { display: none; }
-  .nav-hamburger { display: flex; }
+/* Phones: the logo, Book a Walk, Instagram and the toggle share ~350px, so
+   Book a Walk goes compact, and below 420px Instagram steps into the menu's
+   closing row (#mobile-menu-instagram-link) to keep clear of the logo. */
+@media (max-width: 480px) {
+  #nav-actions-row { gap: 6px; }
+  #nav-actions-row #nav-book-cta {
+    padding: 8px 11px !important;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+}
+@media (max-width: 420px) {
+  #nav-actions-row #nav-instagram-link { display: none; }
+}
+/* The narrowest phones (320px): Book a Walk steps into the menu too; the
+   hero's own Book a Meet & Greet sits right below the bar. */
+@media (max-width: 359px) {
+  #nav-actions-row #nav-book-cta { display: none; }
+}
+/* Tablet and up: the menu is a panel dropping from the toggle, not a
+   full-width sheet over the page. */
+@media (min-width: 769px) {
+  .mobile-menu {
+    left: auto;
+    right: max(16px, calc((100vw - var(--max-w)) / 2 + 16px));
+    width: 340px;
+    border: 2px solid var(--ink);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+  }
 }
 
 @media (max-width: 1100px) {
@@ -2644,6 +2672,7 @@ footer {
   #home-featured-reviews-section .review-card[data-source='reddit']::after { right: -16px; }
 }
 #hero-stats-strip .hero-stat-num .upvote-icon { margin-left: 4px; vertical-align: -0.05em; }
+#hero-stats-strip .hero-stat-num .hero-stat-star { font-size: 0.6em; margin-left: 3px; vertical-align: 0.28em; }
 #home-featured-reviews-section .review-text {
   color: var(--muted-ink);
   line-height: 1.8;
@@ -4378,9 +4407,9 @@ a.footer-contact-value:hover { color: white; }
    rather than navigating), so in each place it has to shed the button chrome
    and wear the styling of the links it sits among. */
 .nav-contact-btn {
-  padding: 7px 3px; border-radius: 4px;
+  padding: 7px 9px; border-radius: 4px;
   font-family: inherit;
-  font-size: 11.5px; font-weight: 500;
+  font-size: 13.5px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.7);
   background: none; border: none;

@@ -92,6 +92,7 @@
   grid-area: 1 / 1;
   width: 23px;
   height: 23px;
+  object-fit: contain;
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 #section-jump-trigger-icon-close {
@@ -153,21 +154,15 @@
   gap: 8px;
 }
 
-/* The fan itself: rows nearest the trigger sit furthest right, so the stack's
-   left edge traces a shallow arc around the button rather than a flat column.
-   Keyed off nth-last-child so the curve holds for any route's list length. */
-.section-jump-row:nth-last-child(5) { margin-left: 7px; }
-.section-jump-row:nth-last-child(4) { margin-left: 14px; }
-.section-jump-row:nth-last-child(3) { margin-left: 23px; }
-.section-jump-row:nth-last-child(2) { margin-left: 34px; }
-.section-jump-row:nth-last-child(1) { margin-left: 47px; }
+/* One straight column: every row starts on the trigger's left edge, so the
+   list stacks directly above the button it opens from. */
 
 .section-jump-item {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 11px 16px 10px;
-  /* Visible pill is ~34px tall; ::before below extends the real hit area
+  padding: 11px 18px 10px;
+  /* Visible pill is ~40px tall; ::before below extends the real hit area
      toward the 44px mobile tap-target guideline without resizing it. */
   position: relative;
   border-radius: 999px;
@@ -176,7 +171,7 @@
   border: 1.5px solid rgba(79, 90, 61, 0.35);
   box-shadow: 0 3px 10px rgba(35, 31, 24, 0.2);
   font-family: var(--font-stamp);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -209,22 +204,25 @@
 #section-jump-root[data-open='true'] .section-jump-row:nth-last-child(6) .section-jump-item { transition-delay: 130ms; }
 #section-jump-root[data-open='true'] .section-jump-row:nth-last-child(n + 7) .section-jump-item { transition-delay: 156ms; }
 
-/* "You are here" — the filled marker carries the state for anyone who can't
-   read the color difference. */
-.section-jump-item-marker {
+/* Each row leads with a paw print, the same prints the desktop rail steps up
+   with. "You are here" is a light print on the dark pill, so the state never
+   rests on color alone. */
+.section-jump-item-paw {
   flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1.5px solid currentColor;
+  width: 16px;
+  height: auto;
+  opacity: 0.55;
 }
 .section-jump-item[aria-current='true'] {
   background: var(--sage-dark);
   color: var(--paper);
   border-color: var(--sage-dark);
 }
-.section-jump-item[aria-current='true'] .section-jump-item-marker {
-  background: currentColor;
+.section-jump-item[aria-current='true'] .section-jump-item-paw {
+  opacity: 0.92;
+  /* Flatten the olive ink to black, then to white: a plain invert turns it
+     lavender. */
+  filter: brightness(0) invert(1);
 }
 
 #section-jump-trigger:focus-visible,

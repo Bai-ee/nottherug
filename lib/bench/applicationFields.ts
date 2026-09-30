@@ -96,6 +96,8 @@ export const APPLICATION_FIELDS: ApplicationField[] = [
   { key: 'experienceSummary', label: 'Experience summary', value: (p) => a(p).experienceSummary },
   { key: 'resume', label: 'Resume on file', value: (p) => (p.resumePath ? 'Yes' : 'No') },
   { key: 'anythingElse', label: 'Anything else', value: (p) => a(p).anythingElse },
+  // Older applications predate this question.
+  { key: 'questionsForUs', label: 'Their questions for us', value: (p) => a(p).questionsForUs ?? '' },
   { key: 'notes', label: "Luis's notes", value: (p) => p.notes ?? '' },
   { key: 'id', label: 'Application ID', value: (p) => p.id },
 ];

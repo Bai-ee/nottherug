@@ -15,7 +15,7 @@
  * with nav_book and mobile_menu_book) and so are not covered here.
  */
 import { describe, it, expect } from 'vitest';
-import { NAV_LINKS } from '@/components/SiteNav';
+import { BAR_LINKS, NAV_LINKS } from '@/components/SiteNav';
 import { CTA_IDS } from '@/lib/analytics/events';
 
 describe('SiteNav NAV_LINKS wiring', () => {
@@ -37,5 +37,11 @@ describe('SiteNav NAV_LINKS wiring', () => {
     // link that never shipped, must not come back.
     expect(ctas).not.toContain('nav_phone');
     expect(ctas).not.toContain('nav_how_it_works');
+  });
+
+  it('keeps the bar to the main destinations, each also reachable from the menu', () => {
+    expect(BAR_LINKS.map((l) => l.label)).toEqual(['Services', 'About', 'Reviews', 'Join Our Team']);
+    const menuHrefs = NAV_LINKS.map((l) => l.href);
+    for (const link of BAR_LINKS) expect(menuHrefs).toContain(link.href);
   });
 });

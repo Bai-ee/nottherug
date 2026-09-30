@@ -92,6 +92,15 @@ describe('parseApplication', () => {
     expect(!result.ok && result.errors.map((e) => e.field)).toContain('confirmed');
   });
 
+  it('stores the applicant’s own questions for us, and leaves them optional', () => {
+    const asked = parseApplication(applicationPayload(), DEFAULT_BENCH_SETTINGS);
+    expect(asked.ok && asked.data.answers.questionsForUs).toBe('Do you walk dogs in the rain?');
+    const none = parseApplication(applicationPayload({ questionsForUs: '' }), DEFAULT_BENCH_SETTINGS);
+    expect(none.ok && none.data.answers.questionsForUs).toBe('');
+    const tooLong = parseApplication(applicationPayload({ questionsForUs: 'x'.repeat(3001) }), DEFAULT_BENCH_SETTINGS);
+    expect(!tooLong.ok && tooLong.errors.map((e) => e.field)).toContain('questionsForUs');
+  });
+
   it('keeps the optional questions optional', () => {
     const result = parseApplication(
       applicationPayload({ recurringCommitments: '', experienceSummary: '', anythingElse: '' }),

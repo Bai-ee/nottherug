@@ -151,21 +151,18 @@ test.describe('public routes', () => {
     await expectH1(page, HOME_H1);
   });
 
-  // The bar carries five plain-language entries (SiteNav.NAV_LINKS); each
-  // still lands on the band that answers it. Scoped to .nav-links because the
-  // footer links to the same anchors under its own labels. Safety, Reviews and
-  // Contact are footer-only now; the standalone routes they used to point at
-  // are still live.
-  test('desktop nav links reach their home-page band', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
+  // The bar carries the main destinations (SiteNav.BAR_LINKS); every other
+  // entry lives in the hamburger menu. Scoped to .nav-links because the footer
+  // links to the same anchors under its own labels.
+  test('desktop nav links reach their destination', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'the bar links hide below 1100px; the menu carries them');
     await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
     for (const [label, expectedPath] of [
-      ['What We Do', '/#home-personalized-care-section'],
-      ['Who Does It', '/#home-team-section'],
-      ['Where We Do It', WILLIAMSBURG_ANCHOR],
-      ['How It Works', HOW_IT_WORKS_ANCHOR],
-      ['Let’s Get Started', '/#home-contact-sheet-section'],
+      ['Services', '/#home-personalized-care-section'],
+      ['About', '/#home-team-section'],
+      ['Reviews', '/#home-featured-reviews-section'],
+      ['Join Our Team', '/walk-with-us'],
     ] as const) {
       await page.locator('.nav-links').getByRole('link', { name: label }).click();
       await expect(page).toHaveURL(new RegExp(`${expectedPath.replace(/[/]/g, '\\/')}$`));
@@ -173,11 +170,11 @@ test.describe('public routes', () => {
     }
   });
 
-  test('the nav "Where We Do It" entry scrolls to the home parks list', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop nav-links row is hidden behind the hamburger on mobile');
+  test('the menu "Where We Do It" entry scrolls to the home parks list', async ({ page }) => {
     await suppressWelcomeModal(page);
     await gotoSettled(page, '/');
-    await page.locator('.nav-links').getByRole('link', { name: 'Where We Do It' }).click();
+    await page.locator('#nav-hamburger-toggle').click();
+    await page.locator('#mobile-menu').getByRole('link', { name: 'Where We Do It' }).click();
     await expect(page).toHaveURL(new RegExp(`${WILLIAMSBURG_ANCHOR.replace(/[/]/g, '\\/')}$`));
     await expect(page.locator('#home-closing-parks-row')).toBeInViewport();
   });
@@ -203,16 +200,11 @@ test.describe('public routes', () => {
     await expect(page).toHaveURL(/\/admin$/);
   });
 
-  test('every "book" CTA opens booking in place', async ({ page, isMobile }) => {
-    // The nav-links row is behind the hamburger on mobile, so the nav CTA is
-    // reached through the menu there. Same control, same handler either way.
+  test('every "book" CTA opens booking in place', async ({ page }) => {
+    // Book a Walk sits on the bar at every width the test devices use (it
+    // only steps into the menu below 360px).
     async function clickNavBookCta() {
-      if (!isMobile) {
-        await page.locator('#nav-book-cta').click();
-        return;
-      }
-      await page.locator('#nav-hamburger-toggle').click();
-      await page.locator('#mobile-menu-book-cta').click();
+      await page.locator('#nav-book-cta').click();
     }
 
     await suppressWelcomeModal(page);

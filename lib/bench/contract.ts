@@ -306,6 +306,8 @@ export type OnCallAnswers = {
   whyOnCall: string;
   experienceSummary: string;
   anythingElse: string;
+  /** The applicant's own questions for Not The Rug; optional. */
+  questionsForUs: string;
 };
 
 /** What a validated public application produces. */

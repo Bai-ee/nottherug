@@ -229,6 +229,7 @@ export function PersonCard({
             <Field label="Why this schedule fits them" block>{a.whyOnCall || '—'}</Field>
             {a.experienceSummary ? <Field label="Experience summary" block>{a.experienceSummary}</Field> : null}
             {a.anythingElse ? <Field label="Anything else" block>{a.anythingElse}</Field> : null}
+            {a.questionsForUs ? <Field label="Their questions for us" block>{a.questionsForUs}</Field> : null}
           </div>
 
           <div id={`${domId}-availability`}>

@@ -10,30 +10,31 @@ import { useNavScrollShadow } from './marketing/hooks/useNavScrollShadow';
 import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import ContactUsTrigger from './marketing/ContactUsTrigger';
 
+type NavLink = { href: string; label: string; dataPage: string; cta?: CtaId; external?: boolean };
+
 /**
- * Every nav item now points at a section of the home page: the standalone
- * Services / How It Works / About / Safety / Reviews routes are represented
- * there, so the nav scrolls rather than navigates. `dataPage` keeps the old
- * page keys, which the active-state and analytics hooks still read.
+ * The bar carries only the main destinations; the hamburger (shown at every
+ * width) carries everything. Hash links land on a band of the home page and
+ * scroll there when already on home; `dataPage` keeps the page keys the
+ * active-state and analytics hooks read. `cta` is set only where the owner
+ * reports on the click (service interest and contact intent).
  */
-// Five plain-language entries instead of seven section names: the bar answers
-// what, who, where and how, then asks for the walk. Each one lands on the band
-// that holds the answer, listed in the order those bands appear on the page, so
-// the nav reads as a table of contents rather than a menu with its own sequence.
-//
-// The last two are a pair: "How It Works" opens the process steps, and
-// "Let's Get Started" drops on the intake form directly below them — read the
-// steps, then fill the sheet.
-//
-// Deliberately not in the bar: Safety (its credentials are inside the band
-// "Where We Do It" opens) and Reviews — the footer carries the full list of
-// section links.
-// `cta` is set only on the two entries the owner reports on (service interest
-// and contact intent); the rest stay untracked on purpose. Exported so the
-// wiring is testable without a DOM renderer — see tests/unit/site-nav-links.test.ts.
-export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; cta?: CtaId; external?: boolean }> = [
+export const BAR_LINKS: NavLink[] = [
+  { href: '/#home-personalized-care-section', label: 'Services', dataPage: 'services', cta: 'nav_services' },
+  { href: '/#home-team-section', label: 'About', dataPage: 'about' },
+  { href: '/#home-featured-reviews-section', label: 'Reviews', dataPage: 'reviews' },
+  { href: '/walk-with-us', label: 'Join Our Team', dataPage: 'walk-with-us' },
+];
+
+/**
+ * The full menu, in the order the bands appear on the home page, then the
+ * two off-page destinations. Exported so the wiring is testable without a DOM
+ * renderer — see tests/unit/site-nav-links.test.ts.
+ */
+export const NAV_LINKS: NavLink[] = [
   { href: '/#home-personalized-care-section', label: 'What We Do', dataPage: 'services', cta: 'nav_services' },
   { href: '/#home-team-section', label: 'Who Does It', dataPage: 'about' },
+  { href: '/#home-featured-reviews-section', label: 'Reviews', dataPage: 'reviews' },
   { href: '/#home-closing-parks-row', label: 'Where We Do It', dataPage: 'neighborhoods' },
   { href: '/#home-how-it-works-block', label: 'How It Works', dataPage: 'how-it-works' },
   { href: '/#home-contact-sheet-section', label: 'Let’s Get Started', dataPage: 'contact', cta: 'nav_get_started' },
@@ -150,12 +151,8 @@ export default function SiteNav() {
               fetchPriority="high"
             />
           </Link>
-          <div className="nav-links">
-            {NAV_LINKS.map((link) => link.external ? (
-              <a key={link.href} href={link.href} data-page={link.dataPage} target="_blank" rel="noopener">
-                {link.label}
-              </a>
-            ) : (
+          <div className="nav-links" id="nav-bar-links">
+            {BAR_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -170,12 +167,16 @@ export default function SiteNav() {
                 {link.label}
               </Link>
             ))}
-            {/* A button, not a route: Contact Us opens the contact modal in
-                place. The /contact page is still reachable on its own. */}
+            {/* A button, not a route: Contact opens the contact modal in place.
+                The /contact page is still reachable on its own. */}
             <ContactUsTrigger id="nav-contact-us-trigger" cta="nav_contact_us" className="nav-contact-btn">
-              Contact Us
+              Contact
             </ContactUsTrigger>
-            <Link href="/admin" id="nav-admin-login-link">Login</Link>
+          </div>
+          {/* Always on the bar, at every width: the booking ask, Instagram,
+              then the menu that holds everything else. */}
+          <div id="nav-actions-row">
+            <Link href="/book" id="nav-book-cta" className="nav-cta btn-accent" data-page="book" onClick={(e) => handleBookClick(e, 'nav_book')}>Book a Walk</Link>
             <a
               id="nav-instagram-link"
               href={INSTAGRAM_URL}
@@ -185,26 +186,21 @@ export default function SiteNav() {
             >
               <InstagramGlyph />
             </a>
-            <Link href="/book" id="nav-book-cta" className="nav-cta btn-accent" data-page="book" onClick={(e) => handleBookClick(e, 'nav_book')}>Book a Walk</Link>
+            {/* Real <button>: aria-label names it, and native Enter/Space
+                activation replaces a hand-rolled onKeyDown. */}
+            <button
+              type="button"
+              id="nav-hamburger-toggle"
+              className="nav-hamburger"
+              data-open={mobileOpen ? 'true' : 'false'}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setMobileOpen((v) => !v)}
+            >
+              <span></span><span></span><span></span>
+            </button>
           </div>
-          {/* Real <button>, not a div role="button": every selector below is
-              class/attribute-based (.nav-hamburger, [data-open]), not tag-based,
-              so this keeps its styling. aria-label gives it the accessible
-              name it never had (the three bars are unlabeled decoration) — the
-              browser's native Enter/Space activation replaces the old
-              hand-rolled onKeyDown. */}
-          <button
-            type="button"
-            id="nav-hamburger-toggle"
-            className="nav-hamburger"
-            data-open={mobileOpen ? 'true' : 'false'}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            onClick={() => setMobileOpen((v) => !v)}
-          >
-            <span></span><span></span><span></span>
-          </button>
         </div>
       </nav>
 

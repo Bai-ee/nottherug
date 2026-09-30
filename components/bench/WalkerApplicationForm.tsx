@@ -54,7 +54,7 @@ const TEXT_FIELDS = [
   'experience', 'specialDogExperience', 'multiDogComfort', 'physicalDuties',
   'willingTraining', 'phoneProtocol', 'phoneProtocolExplain',
   'scenarioRefusesToLeave', 'scenarioLooseHarness', 'scenarioCantMakeShift',
-  'whyOnCall', 'experienceSummary', 'anythingElse',
+  'whyOnCall', 'experienceSummary', 'anythingElse', 'questionsForUs',
 ] as const;
 
 type TextField = (typeof TEXT_FIELDS)[number];
@@ -681,6 +681,7 @@ export default function WalkerApplicationForm({
                 <textarea id={`${paneId}-field-experienceSummary`} aria-label="Relevant experience summary" className="form-control walker-follow-up" rows={3} maxLength={BENCH_FIELD_LIMITS.paragraph} placeholder="Or summarize your relevant experience here" value={values.experienceSummary} onChange={(e) => set('experienceSummary', e.target.value)} {...aria('experienceSummary')} />
               </div>
               {question('anythingElse', 'Anything else you’d like us to know?', { kind: 'paragraph', optional: true })}
+              {question('questionsForUs', 'Do you have any questions for us?', { kind: 'paragraph', optional: true, hint: 'About the role, the dogs, pay, training, anything.' })}
 
               <label id={`${paneId}-confirm-row`} htmlFor={`${paneId}-field-confirmed`} className={confirmed ? 'is-on' : undefined}>
                 <input id={`${paneId}-field-confirmed`} type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} style={{ accentColor: 'var(--sage-dark)', width: '16px', height: '16px', flexShrink: 0, marginTop: '2px' }} {...aria('confirmed')} />

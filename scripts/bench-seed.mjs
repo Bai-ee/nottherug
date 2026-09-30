@@ -132,6 +132,7 @@ for (const [stage, count] of STAGES) {
         whyOnCall: 'My schedule changes week to week, so this work fits.',
         experienceSummary: '',
         anythingElse: '',
+        questionsForUs: i % 4 === 0 ? 'How soon could I start shadowing?' : '',
       },
       confirmedAt: created,
       knockoutReason: stage === 'rejected' && n === 0 ? 'no_availability' : null,

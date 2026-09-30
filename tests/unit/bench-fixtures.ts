@@ -43,6 +43,7 @@ export function applicationPayload(overrides: Record<string, unknown> = {}) {
     whyOnCall: 'I freelance and my weekdays are flexible.',
     experienceSummary: '',
     anythingElse: '',
+    questionsForUs: 'Do you walk dogs in the rain?',
     smsConsent: true,
     confirmed: true,
     source: 'indeed',

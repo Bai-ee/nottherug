@@ -163,7 +163,7 @@ export const APPLICATION_STEP_FIELDS: string[][] = [
     'willingTraining', 'phoneProtocol', 'phoneProtocolExplain',
     'scenarioRefusesToLeave', 'scenarioLooseHarness', 'scenarioCantMakeShift',
   ],
-  ['whyOnCall', 'experienceSummary', 'anythingElse', 'confirmed'],
+  ['whyOnCall', 'experienceSummary', 'anythingElse', 'questionsForUs', 'confirmed'],
 ];
 
 /**
@@ -244,6 +244,7 @@ export function parseApplication(
   const whyOnCall = text('whyOnCall', 'Why does this schedule fit you?', L.paragraph);
   const experienceSummary = text('experienceSummary', 'Experience summary', L.paragraph, false);
   const anythingElse = text('anythingElse', 'Anything else', L.paragraph, false);
+  const questionsForUs = text('questionsForUs', 'Your questions for us', L.paragraph, false);
   const confirmed = input.confirmed === true;
   if (!confirmed) errors.push({ field: 'confirmed', message: 'Please confirm the statement above to apply' });
 
@@ -285,6 +286,7 @@ export function parseApplication(
     whyOnCall,
     experienceSummary,
     anythingElse,
+    questionsForUs,
   };
 
   return {

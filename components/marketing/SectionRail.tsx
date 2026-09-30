@@ -1,86 +1,66 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { getSectionLinks } from '@/lib/navigation/sections';
 import { scrollToSectionId } from '@/lib/navigation/scrollToSection';
 import { useActiveSection } from './hooks/useActiveSection';
 
-// Desktop-only left rail: one dot per registered section, plus a fill that
-// tracks page scroll. Routes with no entry in the section-nav contract render
-// nothing (getSectionLinks returns an empty array), so this can be mounted
-// once for the whole marketing site. The mobile counterpart is SectionJump.
+// Desktop-only left rail: one paw print per registered section, stepping up
+// the gutter left-right-left like the home page's scroll paw trail (the same
+// prints, at rail size: public/img/paw-rail-{left,right}.webp, cut from
+// pawl.png / pawr.png). Each print is the button for its section. Routes with
+// no entry in the section-nav contract render nothing (getSectionLinks returns
+// an empty array), so this can be mounted once for the whole marketing site.
+// The mobile counterpart is SectionJump.
 //
-// The rail is hidden below 1200px in CSS rather than by a matchMedia branch
+// The rail is hidden below 1280px in CSS rather than by a matchMedia branch
 // here, so server and client markup always agree (no hydration mismatch) and
 // a resize past the breakpoint costs nothing.
+const PAW_SRC = { left: '/img/paw-rail-left.webp', right: '/img/paw-rail-right.webp' } as const;
+
 export default function SectionRail() {
   const pathname = usePathname();
   const links = getSectionLinks(pathname);
   const activeId = useActiveSection(links);
-  const fillRef = useRef<HTMLDivElement | null>(null);
-
-  // Scroll progress is written straight to the fill's transform instead of
-  // through state: this runs on every scroll frame, and a re-render per frame
-  // would drag the whole rail (and its markers) through React for one number.
-  useEffect(() => {
-    if (links.length === 0) return;
-    const fill = fillRef.current;
-    if (!fill) return;
-
-    let frame = 0;
-    const paint = () => {
-      frame = 0;
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
-      fill.style.transform = `scaleY(${progress})`;
-    };
-    // Coalesce to one paint per frame — scroll events can outpace the
-    // compositor on trackpads, and resize matters because scrollable height
-    // (the denominator) changes with the viewport.
-    const schedule = () => {
-      if (frame === 0) frame = requestAnimationFrame(paint);
-    };
-
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule, { passive: true });
-    paint();
-
-    return () => {
-      if (frame !== 0) cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', schedule);
-      window.removeEventListener('resize', schedule);
-    };
-  }, [links]);
+  const activeIndex = links.findIndex((link) => link.id === activeId);
 
   if (links.length === 0) return null;
 
   return (
     <nav id="section-rail-shell" aria-label="Page sections">
-      <div id="section-rail-track">
-        <div id="section-rail-fill" ref={fillRef} />
-        <ul id="section-rail-marker-list">
-          {links.map((link) => (
-            <li key={link.id} className="section-rail-marker-item">
-              <button
-                type="button"
-                id={`section-rail-marker-${link.id}`}
-                className="section-rail-marker"
-                // Only the current marker carries aria-current, so screen
-                // readers announce one position rather than a state per dot.
-                aria-current={link.id === activeId ? 'true' : undefined}
-                aria-label={`Go to ${link.label}`}
-                onClick={() => scrollToSectionId(link.id)}
-              >
-                <span className="section-rail-marker-dot" aria-hidden="true" />
-                <span className="section-rail-marker-label" aria-hidden="true">
-                  {link.label}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul id="section-rail-marker-list">
+        {links.map((link, i) => (
+          <li key={link.id} className="section-rail-marker-item">
+            <button
+              type="button"
+              id={`section-rail-marker-${link.id}`}
+              className="section-rail-marker"
+              data-foot={i % 2 === 0 ? 'left' : 'right'}
+              // Sections above the current one read as prints already made.
+              data-passed={activeIndex > -1 && i < activeIndex ? 'true' : undefined}
+              // Only the current marker carries aria-current, so screen
+              // readers announce one position rather than a state per print.
+              aria-current={link.id === activeId ? 'true' : undefined}
+              aria-label={`Go to ${link.label}`}
+              onClick={() => scrollToSectionId(link.id)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- 2KB decorative print at a fixed CSS size; next/image adds runtime for nothing here */}
+              <img
+                className="section-rail-marker-paw"
+                src={i % 2 === 0 ? PAW_SRC.left : PAW_SRC.right}
+                alt=""
+                width={48}
+                height={51}
+                aria-hidden="true"
+                decoding="async"
+              />
+              <span className="section-rail-marker-label" aria-hidden="true">
+                {link.label}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 }
