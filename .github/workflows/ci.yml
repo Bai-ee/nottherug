@@ -62,7 +62,8 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # The mobile project emulates an iPhone 13, which runs in WebKit.
+      - run: npx playwright install --with-deps chromium webkit
 
       # Build-time placeholders. The build loads the Firebase Admin module
       # (lib/firebase-admin.ts initialises at import) and reads the public
