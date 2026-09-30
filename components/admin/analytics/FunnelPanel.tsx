@@ -56,19 +56,6 @@ export function FunnelPanel({ funnel }: { funnel: BookingFunnel }) {
             (saved a lead without opening the scheduling dialog — a completed inquiry, not a drop-off)
           </p>
         </div>
-
-        <div className="divider" />
-
-        <div id="admin-analytics-funnel-notes">
-          <p className="form-note">
-            Form Started also counts the short form on the home page, which has no question steps of its own, so it is
-            normally higher than the step rows below it.
-          </p>
-          <p className="form-note">
-            Scheduling Dialog Opened also counts people who picked a time straight from the welcome pop-up without
-            answering the questions, so it can be higher than the step above it.
-          </p>
-        </div>
       </div>
     </section>
   );

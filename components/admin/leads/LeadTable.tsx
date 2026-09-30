@@ -326,7 +326,7 @@ export function LeadTable({
               type="button"
               className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary"
               id={`admin-lead-card-toggle-${rowKey}`}
-              style={{ marginTop: 12, padding: '10px 0' }}
+              style={{ marginTop: 12, padding: '10px 28px' }}
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleExpand(rowKey);

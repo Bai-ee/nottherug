@@ -11,10 +11,10 @@ import { LeadTable } from '@/components/admin/leads/LeadTable';
 
 /** Which layout the owner last chose. Per-viewer convenience only, so every
  *  access is guarded: a private window or blocked storage must not break the
- *  page, it just starts on cards.
+ *  page, it just starts on the list.
  *
  *  Read through useSyncExternalStore rather than an effect: the server has no
- *  localStorage, so its snapshot is always 'cards', and the client swaps in
+ *  localStorage, so its snapshot is always 'rows', and the client swaps in
  *  the stored value without a hydration mismatch or a set-state-in-effect. */
 const VIEW_STORAGE_KEY = 'ntr.admin.leads.view';
 
@@ -35,9 +35,9 @@ function subscribeView(onChange: () => void) {
 function readStoredView(): LeadsView {
   try {
     const saved = window.localStorage.getItem(VIEW_STORAGE_KEY);
-    return saved === 'rows' ? 'rows' : 'cards';
+    return saved === 'cards' ? 'cards' : 'rows';
   } catch {
-    return 'cards';
+    return 'rows';
   }
 }
 
@@ -141,7 +141,7 @@ function LeadsPageContent({
     return [...searched].sort(byCompletenessDesc);
   }, [searched, sortBy]);
 
-  const view = useSyncExternalStore(subscribeView, readStoredView, () => 'cards' as LeadsView);
+  const view = useSyncExternalStore(subscribeView, readStoredView, () => 'rows' as LeadsView);
 
   return (
     <AdminShell

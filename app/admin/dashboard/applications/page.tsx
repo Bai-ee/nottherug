@@ -42,9 +42,9 @@ function subscribeView(onChange: () => void) {
 
 function readStoredView(): View {
   try {
-    return window.localStorage.getItem(VIEW_STORAGE_KEY) === 'rows' ? 'rows' : 'cards';
+    return window.localStorage.getItem(VIEW_STORAGE_KEY) === 'cards' ? 'cards' : 'rows';
   } catch {
-    return 'cards';
+    return 'rows';
   }
 }
 
@@ -127,7 +127,7 @@ function ApplicationsPageContent({ email, getToken, signOut }: { email: string; 
     return sortBy === 'queue' ? [...list].sort(compareReviewQueue) : list;
   }, [people, query, stageFilter, sortBy]);
 
-  const view = useSyncExternalStore(subscribeView, readStoredView, () => 'cards' as View);
+  const view = useSyncExternalStore(subscribeView, readStoredView, () => 'rows' as View);
   const newCount = people.filter((p) => p.stage === 'applied' || p.stage === 'review').length;
 
   const card = (p: BenchRow) =>
