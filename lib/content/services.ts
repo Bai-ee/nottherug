@@ -71,6 +71,13 @@ export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
   notes: ['All rates are subject to applicable sales tax.'],
 };
 
+/**
+ * Compact label for the same package, used where there is no room for the
+ * copy line (the welcome modal's first-visit pop-up). Keep the duration
+ * matching `copy` above.
+ */
+export const GROUP_WALK_SHORT_LABEL = '45-Minute Dog Walking';
+
 /** Small print under the headline price wherever it appears alone. */
 export const GROUP_WALK_PRICE_NOTE = '+ sales tax · 9+ walks a month';
 

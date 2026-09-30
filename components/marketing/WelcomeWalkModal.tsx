@@ -18,6 +18,7 @@ import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { captureLeadEmail } from '@/lib/leads/captureClient';
 import MeetGreetForm from '@/components/MeetGreetForm';
+import { GROUP_WALK_PREVIEW, GROUP_WALK_PRICE_NOTE, GROUP_WALK_SHORT_LABEL } from '@/lib/content/services';
 import { PHONE_DISPLAY, PHONE_HREF, EMAIL_DISPLAY, EMAIL_HREF } from '@/lib/content/contact';
 import {
   WELCOME_MODAL_DELAY_MS,
@@ -196,6 +197,10 @@ export default function WelcomeWalkModal({
   // The scheduler owns the focus trap/scroll lock while it's open — this
   // dialog's own effects below are suspended for that phase so only one of
   // the two is ever active, per plans/005 "one active dialog at a time".
+  /** True when the modal opened itself (first visit, or ?welcome=1): that
+   *  version leads with the Dog Walking package and its rate. A Book click
+   *  clears it and asks for the booking alone. */
+  const [promo, setPromo] = useState(false);
   const welcomeDialogVisible = open && view !== 'scheduler';
 
   /**
@@ -217,7 +222,10 @@ export default function WelcomeWalkModal({
       // Deferred a tick rather than set synchronously: a setState inside an
       // effect body cascades an extra render. The auto paths below are
       // already async, so only this branch needs it.
-      const timer = window.setTimeout(() => setOpen(true), 0);
+      const timer = window.setTimeout(() => {
+        setPromo(true);
+        setOpen(true);
+      }, 0);
       return () => window.clearTimeout(timer);
     }
     if (hasSeenWelcomeModal(storage)) return;
@@ -231,6 +239,7 @@ export default function WelcomeWalkModal({
       // override, so that is re-checked when it fires.
       if (interactedRef.current) return;
       markWelcomeModalSeen(storage);
+      setPromo(true);
       setOpen(true);
     }
 
@@ -260,6 +269,7 @@ export default function WelcomeWalkModal({
       // Claims the request, so the caller knows the modal is handling it.
       event.preventDefault();
       interactedRef.current = true;
+      setPromo(false);
       // An entry point that already collected an address (the group walk
       // card) hands it over so the visitor never types it twice, and asks to
       // skip straight to the scheduler.
@@ -274,9 +284,12 @@ export default function WelcomeWalkModal({
         setFieldError('');
         setView('scheduler');
       } else {
-        // A thank-you dismissed with the X or Escape stays on "All set"; a
-        // later Book click is a new visit to the modal, so it starts over.
-        setView((current) => (current === 'done' ? 'gate' : current));
+        // A Book click always starts at the booking ask. The post-booking
+        // views ("Did you book?", "Almost done", "All set") belong to the
+        // booking that produced them; one left open or dismissed earlier in
+        // the visit must not greet the next click.
+        setFieldError('');
+        setView('gate');
       }
       // Read before setOpen(true): this listener runs synchronously inside
       // openWelcomeWalkModal()'s dispatchEvent call, so document.activeElement
@@ -724,6 +737,31 @@ export default function WelcomeWalkModal({
                 text-underline-offset: 5px;
               }
               #welcome-walk-modal-cta-secondary::after { content: none; }
+              #welcome-walk-modal-package-line h3,
+              #welcome-walk-modal-package-line .svc-price { font-size: 19px !important; }
+              /* Unit over the price, right-aligned, matching
+                 #home-group-walk-feature-price-block. */
+              #welcome-walk-modal-price-block {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 1px;
+                text-align: right;
+              }
+              #welcome-walk-modal-unit {
+                font-family: var(--font-body);
+                font-size: 12px;
+                color: var(--mid-gray);
+                line-height: 1;
+              }
+              #welcome-walk-modal-now { margin: 0; line-height: 1; }
+              #welcome-walk-modal-tax-note {
+                font-family: var(--font-type);
+                font-size: 10px;
+                color: var(--mid-gray);
+                text-align: right;
+                margin: 4px 0 0;
+              }
               #welcome-walk-modal-fields { gap: 8px !important; }
               /* Padding lives here, not inline: the stacked layout needs to override
                  the bottom value, and an inline shorthand cannot be overridden. */
@@ -808,6 +846,8 @@ export default function WelcomeWalkModal({
                 #welcome-walk-modal-done-title { font-size: clamp(26px, 7.4vw, 34px) !important; line-height: 1 !important; }
                 #welcome-walk-modal-form-panel { padding-top: 6px !important; padding-bottom: 10px !important; }
                 #welcome-walk-modal-sheet .booking-form-body { padding: 10px 12px 12px !important; }
+                #welcome-walk-modal-tax-note, #welcome-walk-modal-rate-fineprint { display: none !important; }
+                #welcome-walk-modal-package-line { margin-bottom: 4px !important; padding-bottom: 6px !important; }
                 #welcome-walk-modal-fields { gap: 6px !important; }
                 #welcome-walk-modal-fields .form-group { margin: 0 !important; }
                 #welcome-walk-modal-cta-primary, #welcome-walk-modal-cta-secondary, #welcome-walk-modal-cta-details {
@@ -1122,6 +1162,42 @@ export default function WelcomeWalkModal({
                   <form id="welcome-walk-modal-form" onSubmit={handleFormSubmit} noValidate>
                     <div id="welcome-walk-modal-sheet" className="booking-form">
                       <div className="booking-form-body">
+                        {/* The automatic first-visit pop-up promotes the Dog
+                            Walking package; a Book click goes straight to the
+                            booking ask without the rate. */}
+                        {promo ? (
+                          <div id="welcome-walk-modal-promo">
+                            {/* Same headline rate the featured Dog Walking card
+                                shows; both read it from lib/content/services.ts. */}
+                            <div
+                              id="welcome-walk-modal-package-line"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'flex-end',
+                                justifyContent: 'space-between',
+                                gap: '16px',
+                                flexWrap: 'wrap',
+                                borderBottom: '1px solid rgba(36, 35, 33, 0.18)',
+                                paddingBottom: '10px',
+                                marginBottom: '4px',
+                              }}
+                            >
+                              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: 0 }}>
+                                {GROUP_WALK_SHORT_LABEL}
+                              </h3>
+                              <div id="welcome-walk-modal-price-block">
+                                <span id="welcome-walk-modal-unit">{GROUP_WALK_PREVIEW.priceUnit}</span>
+                                <div className="svc-price" id="welcome-walk-modal-now">
+                                  {GROUP_WALK_PREVIEW.price}
+                                </div>
+                              </div>
+                            </div>
+                            <p id="welcome-walk-modal-tax-note">{GROUP_WALK_PRICE_NOTE}</p>
+                            <p id="welcome-walk-modal-rate-fineprint" className="form-note" style={{ margin: '0 0 12px' }}>
+                              This is your free Meet &amp; Greet. The rate above applies to walks booked after it.
+                            </p>
+                          </div>
+                        ) : null}
                         <div id="welcome-walk-modal-fields" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                           <div className="form-group">
                             <label htmlFor="welcome-walk-modal-email-input">Email Address</label>
