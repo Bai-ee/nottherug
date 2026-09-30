@@ -93,6 +93,10 @@ export default function SiteNav() {
    * marketing layout's WelcomeModalHost loads it on demand everywhere else.
    * The href stays /book for the pre-hydration and no-JS case.
    */
+  // The admin sign-in page reuses this bar; booking is not an action there,
+  // so the button keeps its place and colour but does nothing.
+  const bookDisabled = pathname?.startsWith('/admin') ?? false;
+
   function handleBookClick(e: React.MouseEvent<HTMLAnchorElement>, cta: CtaId) {
     trackNavCta(cta);
     // A cmd/ctrl/shift-click means "open this somewhere else" — let the browser
@@ -176,7 +180,11 @@ export default function SiteNav() {
           {/* Always on the bar, at every width: the booking ask, Instagram,
               then the menu that holds everything else. */}
           <div id="nav-actions-row">
-            <Link href="/book" id="nav-book-cta" className="nav-cta btn-accent" data-page="book" onClick={(e) => handleBookClick(e, 'nav_book')}>Book a Walk</Link>
+            {bookDisabled ? (
+              <span id="nav-book-cta" className="nav-cta btn-accent" data-page="book" aria-disabled="true">Book a Walk</span>
+            ) : (
+              <Link href="/book" id="nav-book-cta" className="nav-cta btn-accent" data-page="book" onClick={(e) => handleBookClick(e, 'nav_book')}>Book a Walk</Link>
+            )}
             <a
               id="nav-instagram-link"
               href={INSTAGRAM_URL}
@@ -230,7 +238,11 @@ export default function SiteNav() {
           >{link.label}</Link>
         ))}
         </div>
-        <Link href="/book" id="mobile-menu-book-cta" className="mobile-cta btn-accent" onClick={(e) => handleBookClick(e, 'mobile_menu_book')}>Book a Walk</Link>
+        {bookDisabled ? (
+          <span id="mobile-menu-book-cta" className="mobile-cta btn-accent" aria-disabled="true">Book a Walk</span>
+        ) : (
+          <Link href="/book" id="mobile-menu-book-cta" className="mobile-cta btn-accent" onClick={(e) => handleBookClick(e, 'mobile_menu_book')}>Book a Walk</Link>
+        )}
         <div id="mobile-menu-utility-row">
           <Link href="/admin" id="mobile-menu-login-link">Login</Link>
           <a

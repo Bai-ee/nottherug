@@ -18,7 +18,7 @@ import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { captureLeadEmail } from '@/lib/leads/captureClient';
 import MeetGreetForm from '@/components/MeetGreetForm';
-import { GROUP_WALK_PREVIEW, GROUP_WALK_PRICE_NOTE, GROUP_WALK_SHORT_LABEL } from '@/lib/content/services';
+import { GROUP_WALK_PREVIEW, GROUP_WALK_SHORT_LABEL } from '@/lib/content/services';
 import { PHONE_DISPLAY, PHONE_HREF, EMAIL_DISPLAY, EMAIL_HREF } from '@/lib/content/contact';
 import {
   WELCOME_MODAL_DELAY_MS,
@@ -202,6 +202,9 @@ export default function WelcomeWalkModal({
    *  clears it and asks for the booking alone. */
   const [promo, setPromo] = useState(false);
   const welcomeDialogVisible = open && view !== 'scheduler';
+  /** The self-opened version starts as a small teaser card (plan, price, one
+   *  button); its button expands into the full booking modal below. */
+  const teaser = promo && view === 'gate';
 
   /**
    * First-visit auto-open. Primary trigger: the visitor scrolls past the
@@ -552,7 +555,132 @@ export default function WelcomeWalkModal({
 
   return (
     <>
-      {welcomeDialogVisible &&
+      {welcomeDialogVisible && teaser &&
+        createPortal(
+          <div
+            id="welcome-walk-teaser"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="welcome-walk-teaser-title"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) handleDismiss();
+            }}
+          >
+            <style>{`
+              #welcome-walk-teaser {
+                position: fixed;
+                inset: 0;
+                z-index: 9998;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                background: rgba(28, 28, 26, 0.45);
+                animation: welcomeTeaserFade 0.2s ease both;
+              }
+              #welcome-walk-teaser-card {
+                width: 100%;
+                max-width: 360px;
+                max-height: 40dvh;
+                overflow-y: auto;
+                display: grid;
+                gap: 10px;
+                padding: 16px 18px 18px;
+                background: var(--warm-white);
+                border: 1px solid var(--ink);
+                border-radius: var(--radius);
+                box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+                animation: welcomeTeaserRise 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+              }
+              #welcome-walk-teaser-header-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+              }
+              #welcome-walk-teaser-close {
+                flex-shrink: 0;
+                border: 1px solid var(--light-gray);
+                border-radius: 4px;
+                background: transparent;
+                color: var(--mid-gray);
+                font-size: 16px;
+                line-height: 1;
+                padding: 6px 10px;
+              }
+              #welcome-walk-teaser-plan-row {
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                gap: 12px;
+              }
+              #welcome-walk-teaser-title {
+                font-family: var(--font-display);
+                font-size: 20px;
+                line-height: 1.15;
+                margin: 0;
+              }
+              #welcome-walk-teaser-copy { margin: 4px 0 0; font-size: 14px; color: var(--mid-gray); }
+              #welcome-walk-teaser-price-block { text-align: right; flex-shrink: 0; }
+              #welcome-walk-teaser-price-block .svc-price { font-size: 28px; line-height: 1; }
+              #welcome-walk-teaser-price-block .svc-price span { display: block; font-size: 12px; margin-top: 2px; }
+              #welcome-walk-teaser-cta { width: 100%; justify-content: center; }
+              #welcome-walk-teaser .hit-slop-44 { position: relative; }
+              #welcome-walk-teaser .hit-slop-44::before { content: ''; position: absolute; inset: -9px; }
+              @keyframes welcomeTeaserFade { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes welcomeTeaserRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+              /* Phones: a bottom sheet, out of the way of the page. */
+              @media (max-width: 640px) {
+                #welcome-walk-teaser { align-items: flex-end; padding: 12px; }
+              }
+              @media (prefers-reduced-motion: reduce) {
+                #welcome-walk-teaser, #welcome-walk-teaser-card { animation: none; }
+              }
+            `}</style>
+            <div ref={dialogRef} id="welcome-walk-teaser-card">
+              <div id="welcome-walk-teaser-header-row">
+                <span className="stamp-label">Serving Williamsburg</span>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  aria-label="Close"
+                  id="welcome-walk-teaser-close"
+                  className="hit-slop-44"
+                  onClick={handleDismiss}
+                >
+                  ×
+                </button>
+              </div>
+              <div id="welcome-walk-teaser-plan-row">
+                <div>
+                  <h2 id="welcome-walk-teaser-title">{GROUP_WALK_SHORT_LABEL}</h2>
+                  <p id="welcome-walk-teaser-copy">{GROUP_WALK_PREVIEW.copy}</p>
+                </div>
+                <div id="welcome-walk-teaser-price-block">
+                  <div className="svc-price">
+                    {GROUP_WALK_PREVIEW.price}
+                    <span>{GROUP_WALK_PREVIEW.priceUnit}</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                id="welcome-walk-teaser-cta"
+                className="btn btn-primary booking-forward-btn btn-accent"
+                onClick={() => {
+                  setPromo(false);
+                  // The clicked button unmounts with the teaser; land focus
+                  // on the full modal's close control instead of <body>.
+                  window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+                }}
+              >
+                Set up a free Meet &amp; Greet
+              </button>
+            </div>
+          </div>,
+          document.body,
+        )}
+      {welcomeDialogVisible && !teaser &&
         createPortal(
           <div
             id="welcome-walk-modal"
@@ -737,31 +865,6 @@ export default function WelcomeWalkModal({
                 text-underline-offset: 5px;
               }
               #welcome-walk-modal-cta-secondary::after { content: none; }
-              #welcome-walk-modal-package-line h3,
-              #welcome-walk-modal-package-line .svc-price { font-size: 19px !important; }
-              /* Unit over the price, right-aligned, matching
-                 #home-group-walk-feature-price-block. */
-              #welcome-walk-modal-price-block {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 1px;
-                text-align: right;
-              }
-              #welcome-walk-modal-unit {
-                font-family: var(--font-body);
-                font-size: 12px;
-                color: var(--mid-gray);
-                line-height: 1;
-              }
-              #welcome-walk-modal-now { margin: 0; line-height: 1; }
-              #welcome-walk-modal-tax-note {
-                font-family: var(--font-type);
-                font-size: 10px;
-                color: var(--mid-gray);
-                text-align: right;
-                margin: 4px 0 0;
-              }
               #welcome-walk-modal-fields { gap: 8px !important; }
               /* Padding lives here, not inline: the stacked layout needs to override
                  the bottom value, and an inline shorthand cannot be overridden. */
@@ -846,8 +949,6 @@ export default function WelcomeWalkModal({
                 #welcome-walk-modal-done-title { font-size: clamp(26px, 7.4vw, 34px) !important; line-height: 1 !important; }
                 #welcome-walk-modal-form-panel { padding-top: 6px !important; padding-bottom: 10px !important; }
                 #welcome-walk-modal-sheet .booking-form-body { padding: 10px 12px 12px !important; }
-                #welcome-walk-modal-tax-note, #welcome-walk-modal-rate-fineprint { display: none !important; }
-                #welcome-walk-modal-package-line { margin-bottom: 4px !important; padding-bottom: 6px !important; }
                 #welcome-walk-modal-fields { gap: 6px !important; }
                 #welcome-walk-modal-fields .form-group { margin: 0 !important; }
                 #welcome-walk-modal-cta-primary, #welcome-walk-modal-cta-secondary, #welcome-walk-modal-cta-details {
@@ -1162,42 +1263,6 @@ export default function WelcomeWalkModal({
                   <form id="welcome-walk-modal-form" onSubmit={handleFormSubmit} noValidate>
                     <div id="welcome-walk-modal-sheet" className="booking-form">
                       <div className="booking-form-body">
-                        {/* The automatic first-visit pop-up promotes the Dog
-                            Walking package; a Book click goes straight to the
-                            booking ask without the rate. */}
-                        {promo ? (
-                          <div id="welcome-walk-modal-promo">
-                            {/* Same headline rate the featured Dog Walking card
-                                shows; both read it from lib/content/services.ts. */}
-                            <div
-                              id="welcome-walk-modal-package-line"
-                              style={{
-                                display: 'flex',
-                                alignItems: 'flex-end',
-                                justifyContent: 'space-between',
-                                gap: '16px',
-                                flexWrap: 'wrap',
-                                borderBottom: '1px solid rgba(36, 35, 33, 0.18)',
-                                paddingBottom: '10px',
-                                marginBottom: '4px',
-                              }}
-                            >
-                              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: 0 }}>
-                                {GROUP_WALK_SHORT_LABEL}
-                              </h3>
-                              <div id="welcome-walk-modal-price-block">
-                                <span id="welcome-walk-modal-unit">{GROUP_WALK_PREVIEW.priceUnit}</span>
-                                <div className="svc-price" id="welcome-walk-modal-now">
-                                  {GROUP_WALK_PREVIEW.price}
-                                </div>
-                              </div>
-                            </div>
-                            <p id="welcome-walk-modal-tax-note">{GROUP_WALK_PRICE_NOTE}</p>
-                            <p id="welcome-walk-modal-rate-fineprint" className="form-note" style={{ margin: '0 0 12px' }}>
-                              This is your free Meet &amp; Greet. The rate above applies to walks booked after it.
-                            </p>
-                          </div>
-                        ) : null}
                         <div id="welcome-walk-modal-fields" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                           <div className="form-group">
                             <label htmlFor="welcome-walk-modal-email-input">Email Address</label>

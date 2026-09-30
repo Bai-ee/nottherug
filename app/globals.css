@@ -221,6 +221,12 @@ nav {
   background: rgba(255,255,255,0.1);
 }
 /* Paper-label CTA — quiet echo of the taped nav logo (printed inner rule, slight tilt) */
+/* Admin sign-in: Book a Walk stays in place and orange, but is inert. */
+.nav-cta[aria-disabled="true"],
+.mobile-cta[aria-disabled="true"] {
+  pointer-events: none;
+  cursor: default;
+}
 .nav-cta {
   background: #f7f1e3 url('/textures/paper-grain.png') !important;
   background-size: 300px 300px !important;
