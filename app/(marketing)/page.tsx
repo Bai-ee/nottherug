@@ -2,12 +2,13 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import HomePageContent from '@/components/marketing/HomePageContent';
 import { resolveLegacyMarketingPath } from '@/lib/content/legacy-routes';
-import { buildPageMetadata } from '@/lib/content/site';
+import { buildPageMetadata, OG_IMAGES } from '@/lib/content/site';
 
 const PAGE_PATH = '/';
 
 export const metadata: Metadata = buildPageMetadata({
   path: PAGE_PATH,
+  ogImage: OG_IMAGES.home,
   title: 'Not The Rug — Williamsburg Dog Walking Since 2011',
   description:
     "Not The Rug is Williamsburg's most trusted dog walking service. No strangers, no first-time handlers — just experienced professionals who show up consistently.",

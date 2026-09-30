@@ -1,5 +1,15 @@
 import { Space_Mono } from 'next/font/google';
+import type { Metadata } from 'next';
+import { buildPageMetadata, OG_IMAGES } from '@/lib/content/site';
 import './admin.css';
+
+export const metadata: Metadata = buildPageMetadata({
+  path: '/admin',
+  title: 'Admin',
+  description: 'Not The Rug admin dashboard.',
+  noIndex: true,
+  ogImage: OG_IMAGES.admin,
+});
 
 // Dense numeric/tabular text in the admin dashboard. Moved here from the root
 // layout (plans/010 P3.5) — nothing under `--font-mono-data` is referenced by

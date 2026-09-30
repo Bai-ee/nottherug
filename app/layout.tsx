@@ -43,7 +43,8 @@ const courierPrime = Courier_Prime({
 // every public page for a font only the admin dashboard is meant to use.
 
 const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
-const OG_IMAGE = `${SITE_URL}/img/og_meta_img_contact.png`;
+const OG_IMAGE = '/img/og_meta_mainpage.png';
+const OG_IMAGE_SIZE = { width: 548, height: 315 };
 
 const SITE_NAME = 'Not The Rug';
 const SITE_DESCRIPTION =
@@ -65,7 +66,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: `${SITE_NAME} — Williamsburg Dog Walking Since 2011`,
     description: SITE_DESCRIPTION,
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_DESCRIPTION }],
+    images: [{ url: OG_IMAGE, ...OG_IMAGE_SIZE, alt: SITE_DESCRIPTION }],
   },
   twitter: {
     card: 'summary_large_image',

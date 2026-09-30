@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import WalkWithUsPageContent from '@/components/marketing/WalkWithUsPageContent';
-import { buildPageMetadata } from '@/lib/content/site';
+import { buildPageMetadata, OG_IMAGES } from '@/lib/content/site';
 import { getBenchSettingsOrDefault } from '@/lib/server/bench';
 import { readSource, readUtm } from '@/lib/bench/validation';
 
@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 // Linked from Indeed posts, not the site nav or the sitemap (plans/011 §12 #4).
 export const metadata: Metadata = buildPageMetadata({
   path: '/walk-with-us',
+  ogImage: OG_IMAGES.join,
   title: 'Join Our Team | Dog Walker Application',
   description: 'Apply to join the Not The Rug dog walking team in Williamsburg, Brooklyn, including substitute walker roles. Premium pay across all positions.',
 });

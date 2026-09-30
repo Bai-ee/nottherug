@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import BookingOnboardingIntake from '@/components/booking/BookingOnboardingIntake';
 import { parseBookingPrefill } from '@/lib/leads/prefill';
-import { buildPageMetadata } from '@/lib/content/site';
+import { buildPageMetadata, OG_IMAGES } from '@/lib/content/site';
 
 export const metadata: Metadata = buildPageMetadata({
   path: '/book',
+  ogImage: OG_IMAGES.book,
   title: 'Book a Walk — Free Meet & Greet',
   description: 'No commitment, no charge. We come to you, meet your dog, and answer every question.',
 });

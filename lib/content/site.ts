@@ -6,7 +6,19 @@ import type { Metadata } from 'next';
 
 export const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
 export const SITE_NAME = 'Not The Rug';
-export const OG_IMAGE_CONTACT = `${SITE_URL}/img/og_meta_img_contact.png`;
+// Link-preview images, one per page type. Relative paths: Next resolves them
+// against `metadataBase`, so a trailing slash on PUBLIC_BASE_URL can't produce
+// a `//img/...` URL (which 308-redirects and some preview bots won't follow).
+export const OG_IMAGES = {
+  default: '/img/og_meta_img_contact.png',
+  home: '/img/og_meta_mainpage.png',
+  book: '/img/og_meta_book.png',
+  join: '/img/og_meta_join.png',
+  admin: '/img/og_meta_admin.png',
+} as const;
+/** Every og_meta_*.png is exported at this size. */
+export const OG_IMAGE_SIZE = { width: 548, height: 315 } as const;
+export const OG_IMAGE_CONTACT = OG_IMAGES.default;
 
 export const YELP_URL = 'https://www.yelp.com/biz/not-the-rug-brooklyn-8';
 /** The Google Business Profile (Maps listing), by place id: where visitors read Google reviews. */
@@ -82,11 +94,14 @@ export function buildPageMetadata({
   description,
   noIndex,
   absoluteTitle,
+  ogImage = OG_IMAGES.default,
 }: {
   path: string;
   title: string;
   description: string;
   noIndex?: boolean;
+  /** Link-preview image path (see OG_IMAGES); defaults to the contact image. */
+  ogImage?: string;
   /**
    * app/layout.tsx applies a `%s · Not The Rug` title template to every page
    * title, so every route's `title` here should be brand-suffix-free (e.g.
@@ -109,13 +124,13 @@ export function buildPageMetadata({
       url,
       title,
       description,
-      images: [{ url: OG_IMAGE_CONTACT, width: 1200, height: 630, alt: description }],
+      images: [{ url: ogImage, ...OG_IMAGE_SIZE, alt: description }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [OG_IMAGE_CONTACT],
+      images: [ogImage],
     },
   };
 }
