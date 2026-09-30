@@ -49,18 +49,22 @@ export function AdminSessionProvider({ children }: { children: React.ReactNode }
         setState({ status: 'signed-out' });
         return;
       }
+      // Ready as soon as Firebase knows who is signed in, so the page renders
+      // its zero-state straight away. The client whitelist read used to gate
+      // this and could stall for ~30s on mobile Safari; it now runs in the
+      // background and only downgrades to 'forbidden'. The server's
+      // verifyAdmin() on every admin route remains the real check, so a
+      // non-admin still gets no data during that window.
+      const email = firebaseUser.email;
+      setState({ status: 'ready', user: firebaseUser, email });
       try {
-        const snap = await getDoc(doc(db, 'admins', firebaseUser.email));
-        if (!snap.exists()) {
-          setState({ status: 'forbidden', email: firebaseUser.email });
-          return;
+        const snap = await getDoc(doc(db, 'admins', email));
+        if (!snap.exists() && userRef.current === firebaseUser) {
+          setState({ status: 'forbidden', email });
         }
-        setState({ status: 'ready', user: firebaseUser, email: firebaseUser.email });
       } catch (err) {
-        setState({
-          status: 'network-error',
-          message: err instanceof Error ? err.message : 'Could not verify admin access.',
-        });
+        // Not fatal: the admin API calls surface their own errors.
+        console.error('[admin] whitelist check failed', err instanceof Error ? err.message : 'unknown');
       }
     });
     return () => unsub();

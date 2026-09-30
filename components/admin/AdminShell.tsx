@@ -23,6 +23,7 @@ export function AdminShell({
   actions,
   lastRefreshed,
   trackingStartedAt,
+  syncing = false,
   layout = 'flow',
   children,
 }: {
@@ -38,6 +39,9 @@ export function AdminShell({
   lastRefreshed?: Date | null;
   /** Passed straight to the footer; only the analytics dashboard has one. */
   trackingStartedAt?: string | null;
+  /** Shows a small "Syncing live data" signal under the title while the
+   *  page's data request is in flight; the page renders its zero state meanwhile. */
+  syncing?: boolean;
   /** 'fixed' is the generator's full-viewport canvas layout. */
   layout?: 'flow' | 'fixed';
   children: ReactNode;
@@ -53,6 +57,9 @@ export function AdminShell({
               {/* Same stamped label the home page prints over its sections. */}
               <div className="stamp-label stamp-label-heading">Admin · {title}</div>
               <h1 id="admin-page-title">{headline ?? title}</h1>
+              <p id="admin-page-header-sync-status" role="status" aria-live="polite" data-syncing={syncing}>
+                {syncing ? 'Syncing live data…' : null}
+              </p>
             </div>
 
             {actions ? (

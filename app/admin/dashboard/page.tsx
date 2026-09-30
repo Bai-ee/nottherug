@@ -131,6 +131,7 @@ function AdminAnalyticsDashboardContent({
       onSignOut={signOut}
       lastRefreshed={lastRefreshed}
       trackingStartedAt={view.meta.trackingStartDate}
+      syncing={loading}
     >
       {/* Restyled onto the marketing design system (see app/admin/admin.css)
           — every panel below is a paper card; #admin-analytics-dashboard-grid
@@ -139,7 +140,6 @@ function AdminAnalyticsDashboardContent({
 
         {!trackingEnabled ? <TrackingDisabledBanner /> : null}
 
-        {loading && !synced ? <LoadingBanner /> : null}
         {error ? <ErrorBanner message={error} onRetry={retry} /> : null}
 
         {synced ? <ReportMetaBanner meta={view.meta} /> : null}

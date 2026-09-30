@@ -17,11 +17,9 @@ export function AdminGuard({ children }: { children: (session: ReadySession) => 
 
   switch (state.status) {
     case 'loading':
-      // Deliberately not a screen. Verifying an existing session is usually
-      // instant, and a full-page card in front of the dashboard made every
-      // visit feel like signing in again. This is a small corner indicator
-      // that CSS holds back for a moment, so a session that resolves quickly
-      // shows nothing at all.
+      // Only covers Firebase restoring the signed-in user (the whitelist
+      // check no longer blocks — see AdminSession). A small centred label
+      // that CSS holds back for a moment, so a quick restore shows nothing.
       return (
         <div id="admin-session-checking-indicator" role="status" aria-live="polite">
           <span className="stamp-label">Checking session…</span>

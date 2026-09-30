@@ -33,13 +33,47 @@
 #admin-page-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 #admin-page-header-email { margin: 0; }
 
+/* Live-data signal under the page title: the dashboard renders its zero
+   state immediately and this says real numbers are on the way. Empty (and
+   collapsed) once the request settles. */
+#admin-page-header-sync-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  font-family: var(--font-stamp);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mid-gray);
+}
+#admin-page-header-sync-status[data-syncing="false"] { display: none; }
+#admin-page-header-sync-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: admin-sync-pulse 1s ease-in-out infinite alternate;
+}
+@keyframes admin-sync-pulse {
+  from { opacity: 0.25; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #admin-page-header-sync-status::before { animation: none; }
+}
+
 /* Verifying a session is not a destination: no card, no dimming, nothing to
    read. It waits 400ms before appearing at all, so the common case — a valid
    session that resolves immediately — never shows it. */
 #admin-session-checking-indicator {
   position: fixed;
-  top: calc(var(--nav-h) + 12px);
-  right: 16px;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
   z-index: 50;
   opacity: 0;
   animation: admin-checking-fade-in 160ms ease 400ms forwards;
