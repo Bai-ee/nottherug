@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { REDDIT_RECOMMENDATIONS_URL, REDDIT_UPVOTES, REVIEW_RATINGS } from '@/lib/content/site';
+import UpvoteIcon from './UpvoteIcon';
 import Image from 'next/image';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
 import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
@@ -160,20 +162,22 @@ export default function HomeHero() {
           </TrackedCtaAnchor>
         </div>
       </div>
+      {/* Word of mouth first: unprompted Reddit recommendations, then the
+          Google and Yelp ratings. Numbers and links: lib/content/site.ts. */}
       <div className="hero-stats" id="hero-stats-strip">
-        <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://www.yelp.com/biz/not-the-rug-brooklyn-8" target="_blank" rel="noopener">
-          <div className="hero-stat-num">5★</div>
-          <div className="hero-stat-label">Yelp<br />rating</div>
+        <a className="hero-stat-item hero-stat-link" id="hero-stat-reddit" data-variant="star" href={REDDIT_RECOMMENDATIONS_URL} target="_blank" rel="noopener">
+          <div className="hero-stat-num">{REDDIT_UPVOTES}<UpvoteIcon size="0.8em" /></div>
+          <div className="hero-stat-label">Upvotes<br />on Reddit</div>
         </a>
         <div className="hero-stat-divider" aria-hidden="true"></div>
-        <a className="hero-stat-item hero-stat-link" data-variant="star" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-          <div className="hero-stat-num">5★</div>
+        <a className="hero-stat-item hero-stat-link" id="hero-stat-google" data-variant="star" href={REVIEW_RATINGS.google.url} target="_blank" rel="noopener">
+          <div className="hero-stat-num">{REVIEW_RATINGS.google.rating}★</div>
           <div className="hero-stat-label">Google<br />rating</div>
         </a>
         <div className="hero-stat-divider" aria-hidden="true"></div>
-        <a className="hero-stat-item hero-stat-link" href="https://share.google/xbrJjkZt4eoHUOxBl" target="_blank" rel="noopener">
-          <div className="hero-stat-num">79</div>
-          <div className="hero-stat-label">Verified<br />reviews</div>
+        <a className="hero-stat-item hero-stat-link" id="hero-stat-yelp" data-variant="star" href={REVIEW_RATINGS.yelp.url} target="_blank" rel="noopener">
+          <div className="hero-stat-num">{REVIEW_RATINGS.yelp.rating}★</div>
+          <div className="hero-stat-label">Yelp<br />rating</div>
         </a>
         <div className="hero-stat-divider" aria-hidden="true"></div>
         <div className="hero-stat-item">

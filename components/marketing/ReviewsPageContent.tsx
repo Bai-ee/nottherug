@@ -5,7 +5,7 @@ import SiteNav from '@/components/SiteNav';
 import SiteFooter from './SiteFooter';
 import ReviewsMasonry from './ReviewsMasonry';
 import { useSectionReveals } from './hooks/useSectionReveals';
-import { INSTAGRAM_PLACEHOLDER_URL, YELP_URL, GOOGLE_REVIEW_URL } from '@/lib/content/site';
+import { INSTAGRAM_PLACEHOLDER_URL, YELP_URL, GOOGLE_WRITE_REVIEW_URL, REDDIT_RECOMMENDATIONS_URL, REVIEW_RATINGS } from '@/lib/content/site';
 
 export default function ReviewsPageContent() {
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -20,17 +20,17 @@ export default function ReviewsPageContent() {
           <div className="label" style={{ color: 'var(--sage-light)' }}>Client Reviews</div>
           <h1 style={{ color: 'white' }}>What Brooklyn<br />dog owners say</h1>
           <div className="reviews-hero-stats">
-            <div>
-              <div className="review-big-num">5.0</div>
+            <a id="reviews-hero-google-rating" className="reviews-hero-rating-link" href={REVIEW_RATINGS.google.url} target="_blank" rel="noopener">
+              <div className="review-big-num">{REVIEW_RATINGS.google.rating}</div>
               <div className="stars" style={{ fontSize: '20px', marginTop: '4px' }}>★★★★★</div>
-              <div className="review-source-label">Google Rating</div>
-            </div>
+              <div className="review-source-label">Google Rating · {REVIEW_RATINGS.google.count} Reviews</div>
+            </a>
             <div className="reviews-divider"></div>
-            <div>
-              <div className="review-big-num">5.0</div>
+            <a id="reviews-hero-yelp-rating" className="reviews-hero-rating-link" href={REVIEW_RATINGS.yelp.url} target="_blank" rel="noopener">
+              <div className="review-big-num">{REVIEW_RATINGS.yelp.rating}</div>
               <div className="stars" style={{ fontSize: '20px', marginTop: '4px' }}>★★★★★</div>
-              <div className="review-source-label">Yelp Rating · 34 Reviews</div>
-            </div>
+              <div className="review-source-label">Yelp Rating · {REVIEW_RATINGS.yelp.count} Reviews</div>
+            </a>
             <div className="reviews-divider"></div>
             <div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '52px', color: 'white', lineHeight: 1 }}>15</div>
@@ -57,8 +57,11 @@ export default function ReviewsPageContent() {
             <h3>Loved working with us?</h3>
             <p style={{ color: 'var(--mid-gray)', margin: '12px 0 28px' }}>Your review helps other Brooklyn dog owners find trustworthy care — and it means the world to our team.</p>
             <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a className="btn btn-primary" href={GOOGLE_REVIEW_URL} target="_blank" rel="noopener">Review on Google</a>
-              <a className="btn btn-outline" href={YELP_URL} target="_blank" rel="noopener">Review on Yelp</a>
+              {/* Google lets a business ask for reviews; Yelp forbids it, so
+                  Yelp stays a place to read them and Reddit a showcase. */}
+              <a className="btn btn-primary btn-accent" id="reviews-leave-review-cta" href={GOOGLE_WRITE_REVIEW_URL} target="_blank" rel="noopener">Leave a Review</a>
+              <a className="btn btn-outline" id="reviews-reddit-cta" href={REDDIT_RECOMMENDATIONS_URL} target="_blank" rel="noopener">Recommended on Reddit</a>
+              <a className="btn btn-outline" id="reviews-read-yelp-cta" href={YELP_URL} target="_blank" rel="noopener">Read on Yelp · ★ {REVIEW_RATINGS.yelp.rating}</a>
             </div>
           </div>
         </div>

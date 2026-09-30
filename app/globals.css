@@ -184,10 +184,10 @@ nav {
    overhangs the band — at 12px the first link ran underneath it and could not
    be clicked. */
 .nav-links a {
-  /* 4px pads and 12px type: with Sign Up and Join Our Team in the row it
-     otherwise ran ~70px under the paper wordmark at every desktop width. */
-  padding: 7px 4px; border-radius: 4px;
-  font-size: 12px; font-weight: 500;
+  /* 3px pads and 12px type: with Join Our Team and Leave a Review in the
+     row it otherwise runs under the paper wordmark at every desktop width. */
+  padding: 7px 3px; border-radius: 4px;
+  font-size: 11.5px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255,255,255,0.7);
   transition: all .2s;
@@ -199,7 +199,8 @@ nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 7px 10px;
+  /* 4px sides, like the text links: the full row has to clear the paper logo. */
+  padding: 7px 4px;
   line-height: 0;
 }
 /* Same fix in the sheet, where the glyph sits beside its label. */
@@ -2002,15 +2003,15 @@ footer {
 /* Above the hamburger breakpoint the sheet is never shown, whatever its open
    state says: widening the window past it with the menu open used to leave
    the sheet hanging under the full desktop bar. */
-@media (min-width: 1280px) {
+@media (min-width: 1320px) {
   .mobile-menu,
   .mobile-menu[data-open='true'] { display: none; }
 }
 
-/* Nav collapses to the hamburger below 1280px: the row (seven destinations,
-   Contact Us, Login, Instagram and the CTA) needs ~800px beside the pasted
+/* Nav collapses to the hamburger below 1320px: the row (seven destinations,
+   Contact Us, Login, Instagram and the CTA) needs ~820px beside the pasted
    paper logo, and under that it slides beneath the logo instead of wrapping. */
-@media (max-width: 1279px) {
+@media (max-width: 1319px) {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
 }
@@ -2586,6 +2587,63 @@ footer {
 /* No tape scan on these: the poster treatment has no card to tape down. */
 #page-home #home-featured-reviews-section .review-card::before { content: none; }
 #home-featured-reviews-section .stars { letter-spacing: 3px; }
+/* Unrated voices (Reddit) keep the star row's height and its gold: an upvote
+   arrow and the upvote count read as that platform's version of the stars,
+   so every quote in the row starts at the same baseline. */
+#home-featured-reviews-section .review-platform-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-stamp);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  /* The star row's own line box (14px glyphs at the body's 1.6). */
+  line-height: calc(14px * 1.6);
+  color: var(--gold);
+}
+/* The Reddit voice leads the row, so it wears a light gold wash and a gold
+   rule on top: unprompted word of mouth, set a little apart. */
+/* The wash is a layer behind the card, reaching past its edges, so the text
+   gets room inside it without the card's own padding (and with it the quote
+   baseline the row shares) changing. */
+#home-featured-reviews-section .review-card[data-source='reddit'] { position: relative; }
+#home-featured-reviews-section .review-card[data-source='reddit']::after {
+  content: '';
+  position: absolute;
+  inset: -14px 0 -14px -16px;
+  background: rgba(196, 160, 82, 0.1);
+  border-top: 3px solid var(--gold);
+  border-radius: 2px;
+  pointer-events: none;
+}
+#home-featured-reviews-section .review-card[data-source='reddit'] > * { position: relative; z-index: 1; }
+#home-featured-reviews-section .review-card[data-source='reddit'] .review-text { color: var(--ink); }
+/* A thread card stacks its comments: each quote, then its author in small
+   stamp caps, a hairline between them. The first keeps the row's shared
+   quote top; the byline below names the thread. */
+#home-featured-reviews-section .review-thread { display: flex; flex-direction: column; }
+#home-featured-reviews-section .review-thread-comment + .review-thread-comment {
+  margin-top: 0;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(196, 160, 82, 0.5);
+}
+#home-featured-reviews-section .review-thread-comment { margin-bottom: 14px; }
+#home-featured-reviews-section .review-thread-author {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-stamp);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
+}
+@media (max-width: 600px) {
+  #home-featured-reviews-section .review-card[data-source='reddit']::after { right: -16px; }
+}
+#hero-stats-strip .hero-stat-num .upvote-icon { margin-left: 4px; vertical-align: -0.05em; }
 #home-featured-reviews-section .review-text {
   color: var(--muted-ink);
   line-height: 1.8;
@@ -2649,6 +2707,17 @@ footer {
    lift is declared here, since .btn-accent leaves transform alone. */
 .home-reviews-clickout:hover { transform: translateY(-1px); }
 .home-reviews-clickout:active { transform: scale(0.97); }
+#home-featured-reviews-other-platform {
+  position: relative;
+  z-index: 1;
+  margin: 14px 0 0;
+  text-align: center;
+  font-family: var(--font-stamp);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+#home-featured-reviews-other-platform a { color: var(--sage-dark); text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 600px) {
   #home-featured-reviews-clickout-row { flex-direction: column; align-items: center; }
 }
@@ -4309,9 +4378,9 @@ a.footer-contact-value:hover { color: white; }
    rather than navigating), so in each place it has to shed the button chrome
    and wear the styling of the links it sits among. */
 .nav-contact-btn {
-  padding: 7px 4px; border-radius: 4px;
+  padding: 7px 3px; border-radius: 4px;
   font-family: inherit;
-  font-size: 12px; font-weight: 500;
+  font-size: 11.5px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.7);
   background: none; border: none;
@@ -4355,3 +4424,8 @@ a.footer-contact-value:hover { color: white; }
   #footer-contact-list .footer-contact-item:nth-child(even) { text-align: right; }
   #footer-col-contact h4 { text-align: left; }
 }
+
+/* /reviews hero: each platform's rating block is a link to its reviews. */
+.reviews-hero-rating-link { display: block; color: inherit; text-decoration: none; border-radius: 6px; transition: opacity 0.2s; }
+.reviews-hero-rating-link:hover { opacity: 0.85; }
+.reviews-hero-rating-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
