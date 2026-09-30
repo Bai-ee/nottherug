@@ -130,53 +130,33 @@ export default function HomeHero() {
           Their favorite <br />part of the day. <br /><em>Your peace</em> <br /><em>of mind.</em>
         </h1>
         <p className="hero-p" id="hero-intro-copy">Trusted by Williamsburg dog owners since 2011. Experienced walkers, small groups, and personal attention, with reliable care you can count on and an update after every visit.</p>
-        {/* Desktop shows View Services (button) + Contact Luis (text link);
-            phones show Contact Luis (button) + View services (text link).
-            Both pairs are in the markup and globals.css shows one pair per
-            breakpoint, so each analytics id has exactly one visible control
-            at any width. Handlers are shared above. */}
+        {/* One pair at every width: Book a Meet & Greet is the button and
+            View Services the secondary link, in that order. Handlers are
+            shared above. */}
         <div className="hero-actions" id="hero-actions-row">
-          {/* Primary action keeps the reader on the page: it scrolls down to
-              the services rundown. The href is the real anchor so it still
-              works before hydration and with JS off. */}
-          <TrackedCtaAnchor
-            href="#home-personalized-care-section"
-            className="btn btn-primary btn-accent hero-desktop-copy"
-            id="hero-cta-primary"
-            cta="hero_view_services"
-            onClick={scrollToServices}
-          >
-            View Services
-          </TrackedCtaAnchor>
           {/* Opens the welcome modal (group walk offer + intake). The href
               stays a real link so the button still works before hydration and
               with JS off — /contact carries the same meet & greet form. */}
           <TrackedCtaLink
             href="/contact"
-            className="btn btn-ghost hero-desktop-copy"
-            id="hero-cta-secondary"
-            cta="hero_contact_desktop"
-            onClick={openContactModal}
-          >
-            Contact Luis
-          </TrackedCtaLink>
-          <TrackedCtaLink
-            href="/contact"
-            className="btn btn-primary btn-accent hero-phone-copy"
-            id="hero-cta-phone-contact"
-            cta="hero_book_mobile"
+            className="btn btn-primary btn-accent"
+            id="hero-cta-primary"
+            cta="hero_book"
             onClick={openContactModal}
           >
             Book a Meet &amp; Greet
           </TrackedCtaLink>
+          {/* Keeps the reader on the page: scrolls down to the services
+              rundown. The href is the real anchor so it still works before
+              hydration and with JS off. */}
           <TrackedCtaAnchor
             href="#home-personalized-care-section"
-            className="btn btn-ghost hero-phone-copy"
-            id="hero-cta-phone-services"
+            className="btn btn-ghost"
+            id="hero-cta-secondary"
             cta="hero_view_services"
             onClick={scrollToServices}
           >
-            View services
+            View Services
           </TrackedCtaAnchor>
         </div>
       </div>

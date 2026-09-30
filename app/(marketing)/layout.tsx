@@ -19,7 +19,7 @@ import '../section-jump.css';
 // /book and /contact exactly as they were. Its stylesheet is imported here
 // too, keeping it off the admin bundle.
 //
-// WelcomeModalHost renders nothing until a "Book a Walk" / "Contact Luis" CTA
+// WelcomeModalHost renders nothing until a "Book a Walk" / "Book a Meet & Greet" CTA
 // is clicked on a page other than home, then loads the welcome modal on demand.
 //
 // PageViewTracker is the other exception: it renders nothing, so it doesn't

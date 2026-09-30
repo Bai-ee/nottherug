@@ -10,7 +10,7 @@ type Props = ComponentProps<typeof Link> & {
   /** Which CTA this is — must be one of the locked, rendered ids in lib/analytics/events.ts. */
   cta: CtaId;
   /**
-   * The "Book a Walk" / "Contact Luis" family: opens the Set Up an In Person
+   * The "Book a Walk" / "Book a Meet & Greet" family: opens the Set Up an In Person
    * Meeting modal in place. The href stays a real link, so a cmd/ctrl/shift
    * click, no-JS and pre-hydration still reach the booking page.
    */

@@ -14,7 +14,7 @@ import {
 const WelcomeWalkModal = dynamic(() => import('./WelcomeWalkModal'), { ssr: false });
 
 /**
- * Makes every "Book a Walk" / "Contact Luis" CTA open the Set Up an In Person
+ * Makes every "Book a Walk" / "Book a Meet & Greet" CTA open the Set Up an In Person
  * Meeting modal on every marketing page, not just the home page.
  *
  * The home page renders the modal itself (HomePageContent), so this host does

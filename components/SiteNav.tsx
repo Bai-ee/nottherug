@@ -38,6 +38,7 @@ export const NAV_LINKS: Array<{ href: string; label: string; dataPage: string; c
   { href: '/#home-how-it-works-block', label: 'How It Works', dataPage: 'how-it-works' },
   { href: '/#home-contact-sheet-section', label: 'Let’s Get Started', dataPage: 'contact', cta: 'nav_get_started' },
   { href: '/signup', label: 'Sign Up', dataPage: 'signup' },
+  { href: '/walk-with-us', label: 'Join Our Team', dataPage: 'walk-with-us' },
 ];
 
 // SiteNav is already a Client Component and every tracked control in it already

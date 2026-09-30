@@ -13,8 +13,9 @@ describe('CTA_LABELS', () => {
   it('labels the split ids', () => {
     expect(CTA_LABELS.nav_get_started).toBe("Top nav: Let's get started");
     expect(CTA_LABELS.nav_contact_us).toBe('Top nav: Contact us');
-    expect(CTA_LABELS.hero_contact_desktop).toBe('Homepage hero: Contact (desktop)');
-    expect(CTA_LABELS.hero_book_mobile).toBe('Homepage hero: Book (mobile)');
+    expect(CTA_LABELS.hero_contact_desktop).toBe('Homepage hero: Contact Luis (desktop, before one pair)');
+    expect(CTA_LABELS.hero_book_mobile).toBe('Homepage hero: Book (phone, before one pair)');
+    expect(CTA_LABELS.hero_book).toBe('Homepage hero: Book a Meet & Greet');
   });
 
   it('marks the pre-split ids as legacy', () => {
@@ -32,7 +33,7 @@ describe('CTA_LABELS', () => {
     const all = Object.values(groups).flat();
     expect(all.length).toBe(CTA_IDS.length);
     expect(new Set(all).size).toBe(CTA_IDS.length);
-    expect(groups.Booking).toContain('hero_book_mobile');
+    expect(groups.Booking).toEqual(expect.arrayContaining(['hero_book', 'hero_book_mobile']));
     expect(groups.Contact).toEqual(expect.arrayContaining(['nav_get_started', 'nav_contact_us', 'hero_contact_desktop', 'nav_contact', 'hero_contact']));
   });
 });

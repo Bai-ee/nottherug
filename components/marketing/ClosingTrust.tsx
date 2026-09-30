@@ -1,5 +1,5 @@
 import { WILLIAMSBURG } from '@/lib/content/coverage';
-import { EMAIL_HREF } from '@/lib/content/contact';
+import Link from 'next/link';
 import AlwaysIncluded from './AlwaysIncluded';
 import InstagramGrid from './InstagramGrid';
 import TrackedCtaLink from './TrackedCtaLink';
@@ -36,16 +36,11 @@ export default function ClosingTrust() {
               {/* The "Join Our Team" link below stays untracked on purpose:
                   it is recruiting, not a customer action. */}
               <TrackedCtaLink href="/book" className="btn btn-primary btn-accent" id="home-closing-book-luis-cta" cta="closing_trust_book" opensWelcomeModal>Book a Meet &amp; Greet</TrackedCtaLink>
-              {/* Secondary action beside the client CTA — walkers, not clients.
-                  There is no careers route, so it opens a mail to Luis with the
-                  subject filled in; swap the href if a hiring page lands. */}
-              <a
-                id="home-closing-join-team-cta"
-                className="btn btn-outline"
-                href={`${EMAIL_HREF}?subject=${encodeURIComponent('Joining the Not The Rug team')}`}
-              >
+              {/* Secondary action beside the client CTA — walkers, not clients:
+                  the Join Our Team application page. */}
+              <Link id="home-closing-join-team-cta" className="btn btn-outline" href="/walk-with-us">
                 Join Our Team
-              </a>
+              </Link>
             </div>
           </div>
           <div id="home-closing-safety-list">

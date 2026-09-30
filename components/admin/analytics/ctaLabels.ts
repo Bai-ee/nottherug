@@ -20,13 +20,14 @@ export const CTA_LABELS: Record<CtaId, string> = {
   welcome_modal_schedule: 'Welcome modal: Choose time',
   welcome_modal_details: 'Welcome modal: Answer questions first',
   contact_modal_schedule: 'Contact modal: Book a Meet & Greet',
-  service_modal_get_started: 'Service details modal: Contact Luis to get started',
-  hero_book_mobile: 'Homepage hero: Book (mobile)',
+  service_modal_get_started: 'Service details modal: Book a Meet & Greet',
+  hero_book: 'Homepage hero: Book a Meet & Greet',
+  hero_book_mobile: 'Homepage hero: Book (phone, before one pair)',
 
   // Contact intent — a click toward talking to Luis, not an email or call.
   nav_get_started: "Top nav: Let's get started",
   nav_contact_us: 'Top nav: Contact us',
-  hero_contact_desktop: 'Homepage hero: Contact (desktop)',
+  hero_contact_desktop: 'Homepage hero: Contact Luis (desktop, before one pair)',
   // Legacy ids: stored history keeps them, so they stay listed. nav_contact was
   // shared by "Let's get started" and both "Contact us" buttons; hero_contact
   // was Contact on desktop and Book on mobile. Not comparable to the split ids.
@@ -73,6 +74,7 @@ function categorize(id: CtaId): CtaCategory {
     case 'welcome_modal_details':
     case 'contact_modal_schedule':
     case 'service_modal_get_started':
+    case 'hero_book':
     case 'hero_book_mobile':
       return 'Booking';
 

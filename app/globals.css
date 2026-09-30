@@ -177,17 +177,17 @@ nav {
   opacity: 1;
 }
 .nav-links {
-  display: flex; align-items: center; gap: 2px;
+  display: flex; align-items: center; gap: 0;
 }
 /* 8px of side padding, not 12: the bar carries six destinations plus Contact
    Us, Login, Instagram and the CTA, and the paper logo sign deliberately
    overhangs the band — at 12px the first link ran underneath it and could not
    be clicked. */
 .nav-links a {
-  /* 5px, not 8px: with the Sign Up entry the row was overlapping the paper
-     wordmark by ~32px at 1440px; the tighter pads give it back its slack. */
-  padding: 7px 5px; border-radius: 4px;
-  font-size: 13px; font-weight: 500;
+  /* 4px pads and 12px type: with Sign Up and Join Our Team in the row it
+     otherwise ran ~70px under the paper wordmark at every desktop width. */
+  padding: 7px 4px; border-radius: 4px;
+  font-size: 12px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255,255,255,0.7);
   transition: all .2s;
@@ -2000,17 +2000,22 @@ footer {
 }
 
 /* Above the hamburger breakpoint the sheet is never shown, whatever its open
-   state says: widening the window past 1100px with the menu open used to
-   leave the sheet hanging under the full desktop bar. */
-@media (min-width: 1101px) {
+   state says: widening the window past it with the menu open used to leave
+   the sheet hanging under the full desktop bar. */
+@media (min-width: 1280px) {
   .mobile-menu,
   .mobile-menu[data-open='true'] { display: none; }
 }
 
-/* Nav collapses to hamburger before links wrap to two lines (~990px single-line need) */
-@media (max-width: 1100px) {
+/* Nav collapses to the hamburger below 1280px: the row (seven destinations,
+   Contact Us, Login, Instagram and the CTA) needs ~800px beside the pasted
+   paper logo, and under that it slides beneath the logo instead of wrapping. */
+@media (max-width: 1279px) {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
+}
+
+@media (max-width: 1100px) {
   /* Below the large breakpoint: badge returns to right side at its original size.
      id selector so it beats the later-defined base .polaroid-badge rule. */
   #hero-polaroid-badge {
@@ -3736,19 +3741,14 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #hero-cta-primary { margin-bottom: 16px; }
 }
 
-/* Hero phone-only controls (the phone CTA pair in HomeHero.tsx) are hidden
-   until the phone breakpoint below. */
-.hero .hero-phone-copy { display: none; }
-
 /* ── PHONE NAV WORDMARK + TWO-LINE HEADLINE ───────────────────────────────
    Phones only. The paper wordmark is locked at one in-band size in every
    nav state (top of page and scrolled) so it never drops, tucks or hangs
    below the band. The home loading screen still plays at this width; its
    nav drop lands on this same locked position.
    The hero keeps its headline (set on two centred lines), moves the
-   Williamsburg stamp under it, and swaps the CTA pair: "Contact Luis, to set
-   up a walk" as the button and "View services" as the text link. Both CTA
-   sets live in HomeHero.tsx; this block shows one and hides the other. */
+   Williamsburg stamp under it, and stacks the same CTA pair every width
+   shows: Book a Meet & Greet as the button, View Services under it. */
 @media (max-width: 768px) {
   #main-nav .nav-logo,
   #main-nav.nav-scrolled .nav-logo {
@@ -3762,7 +3762,6 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   }
   #main-nav #nav-logo-img,
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
-  #hero-actions-row .hero-desktop-copy { display: none; }
   /* Caption reads "Williamsburg, Brooklyn", centred under the video. */
   #hero-polaroid-caption { text-align: center; justify-content: center; }
   /* Same headline as desktop on two lines: "Their favorite part of the day." /
@@ -3773,10 +3772,10 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   /* Stamp label sits under the headline, everything centred. */
   #hero-eyebrow-stamp-row { order: 2; justify-content: center; margin: 0 0 18px; }
   #hero-content-shell { text-align: center; }
-  /* Phone CTA pair: Contact Luis is the button, View services the text link. */
+  /* Phone CTA stack: Book a Meet & Greet, then View Services. */
   #hero-actions-row { display: contents; }
-  #hero-cta-phone-contact { display: inline-flex; order: 3; justify-content: center; margin-bottom: 16px; }
-  #hero-cta-phone-services { display: inline-flex; order: 6; align-self: center; }
+  #hero-cta-primary { display: inline-flex; order: 3; justify-content: center; margin-bottom: 16px; }
+  #hero-cta-secondary { display: inline-flex; order: 6; align-self: center; }
   /* No tape strip on the video polaroid at phone widths. */
   #hero-polaroid-frame.taped::before { display: none; }
   /* Phones drop the walker illustration behind the hero (the mobile .hero
@@ -4310,9 +4309,9 @@ a.footer-contact-value:hover { color: white; }
    rather than navigating), so in each place it has to shed the button chrome
    and wear the styling of the links it sits among. */
 .nav-contact-btn {
-  padding: 7px 8px; border-radius: 4px;
+  padding: 7px 4px; border-radius: 4px;
   font-family: inherit;
-  font-size: 13px; font-weight: 500;
+  font-size: 12px; font-weight: 500;
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.7);
   background: none; border: none;
@@ -4332,9 +4331,6 @@ a.footer-contact-value:hover { color: white; }
 
 /* Narrow desktops: the six-entry nav row plus its CTAs needs a point less
    type to clear the wordmark (measured 52px over at 1280px). */
-@media (min-width: 769px) and (max-width: 1360px) {
-  .nav-links a { font-size: 12px; padding: 7px 5px; }
-}
 
 /* Narrow phones (under 520px): three columns no longer fit, so Services and
    Company stay side by side and Contact runs beneath them as a compact

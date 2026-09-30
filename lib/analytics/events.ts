@@ -65,7 +65,7 @@ export const CTA_IDS = [
   // The Contact Us modal's primary action: it hands off to the same
   // email → scheduler → questionnaire flow as the welcome modal.
   'contact_modal_schedule',
-  // The service detail modal's "Contact Luis, to Get Started": same hand-off
+  // The service detail modal's "Book a Meet & Greet": same hand-off
   // to the welcome flow, from someone who was reading a service's rates.
   'service_modal_get_started',
 
@@ -79,8 +79,9 @@ export const CTA_IDS = [
   'nav_contact_us',
   'footer_contact',
   'hero_contact', // legacy: was Contact on desktop and Book on mobile
-  'hero_contact_desktop',
-  'hero_book_mobile',
+  'hero_contact_desktop', // legacy: desktop "Contact Luis" before the hero became one pair
+  'hero_book_mobile', // legacy: phone-only Book before the hero became one pair
+  'hero_book',
   'neighborhood_detail_contact',
   // The meet & greet form's "Just Have a Question?", which opens the Contact
   // Us modal instead of the questionnaire.
