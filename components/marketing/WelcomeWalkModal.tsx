@@ -575,7 +575,7 @@ export default function WelcomeWalkModal({
                 align-items: center;
                 justify-content: center;
                 padding: 16px;
-                background: rgba(28, 28, 26, 0.45);
+                background: rgba(28, 28, 26, 0.675);
                 animation: welcomeTeaserFade 0.2s ease both;
               }
               #welcome-walk-teaser-card {
@@ -602,10 +602,10 @@ export default function WelcomeWalkModal({
               }
               #welcome-walk-teaser-close {
                 flex-shrink: 0;
-                border: 1px solid var(--light-gray);
+                border: 1px solid var(--olive);
                 border-radius: 4px;
-                background: transparent;
-                color: var(--mid-gray);
+                background: var(--olive);
+                color: var(--warm-white);
                 font-size: 16px;
                 line-height: 1;
                 padding: 6px 10px;

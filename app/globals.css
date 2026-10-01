@@ -3873,8 +3873,8 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
   /* Caption reads "Williamsburg, Brooklyn", centred under the video. */
   #hero-polaroid-caption { text-align: center; justify-content: center; }
-  /* Same headline as desktop on two lines: "Their favorite part of the day." /
-     "Your peace of mind." (1st and 3rd hard break hidden). */
+  /* Same headline as desktop on two lines: "Your peace of mind is" /
+     "their favorite part of the day." (1st and 3rd hard break hidden). */
   #hero-headline br:nth-of-type(1),
   #hero-headline br:nth-of-type(3) { display: none; }
   /* Line one is about 9.3em wide and never wraps, so the size follows the

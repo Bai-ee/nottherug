@@ -11,7 +11,7 @@ import { suppressWelcomeModal } from './helpers/welcomeModal';
 // CSS, so `textContent` runs the words together ("Your dogdeserves…"). These
 // patterns are matched against the normalized innerText (see expectH1) — the
 // sentence a visitor actually reads — hence the /i flag.
-const HOME_H1 = /^Their favorite part of the day\. Your peace of mind\.$/i;
+const HOME_H1 = /^Your peace of mind is their favorite part of the day\.$/i;
 const ABOUT_H1 = /^15 years of walks, one neighborhood$/i;
 const SAFETY_H1 = /^Why trust matters more than price$/i;
 

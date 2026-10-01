@@ -129,7 +129,7 @@ export default function HomeHero() {
               once the entrance animation rebuilds the markup. The spaces
               before each <br> matter: phones hide the 1st and 3rd break
               (globals.css) to set the same headline on two centred lines. */}
-          Their favorite <br />part of the day. <br /><em>Your peace</em> <br /><em>of mind.</em>
+          <em>Your peace</em> <br /><em>of mind is</em> <br />their favorite <br />part of the day.
         </h1>
         <p className="hero-p" id="hero-intro-copy">Trusted by Williamsburg dog owners since 2011. Experienced walkers, small groups, and personal attention, with reliable care you can count on and an update after every visit.</p>
         {/* One pair at every width: Book a Meet & Greet is the button and
