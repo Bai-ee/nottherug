@@ -581,7 +581,9 @@ export default function WelcomeWalkModal({
               #welcome-walk-teaser-card {
                 width: 100%;
                 max-width: 360px;
-                max-height: 40dvh;
+                /* Sized by its content (about a quarter of a phone screen);
+                   this cap only guards very short landscape screens. */
+                max-height: calc(100dvh - 32px);
                 overflow-y: auto;
                 display: grid;
                 gap: 10px;
@@ -629,9 +631,14 @@ export default function WelcomeWalkModal({
               #welcome-walk-teaser .hit-slop-44::before { content: ''; position: absolute; inset: -9px; }
               @keyframes welcomeTeaserFade { from { opacity: 0; } to { opacity: 1; } }
               @keyframes welcomeTeaserRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-              /* Phones: a bottom sheet, out of the way of the page. */
-              @media (max-width: 640px) {
-                #welcome-walk-teaser { align-items: flex-end; padding: 12px; }
+              /* Phones: still centred, tighter type and spacing. */
+              @media (max-width: 480px) {
+                #welcome-walk-teaser { padding: 16px; }
+                #welcome-walk-teaser-card { max-width: 340px; gap: 8px; padding: 14px 14px 16px; }
+                #welcome-walk-teaser-title { font-size: 18px; }
+                #welcome-walk-teaser-copy { font-size: 13px; line-height: 1.4; }
+                #welcome-walk-teaser-price-block .svc-price { font-size: 26px; }
+                #welcome-walk-teaser-cta { padding-top: 12px; padding-bottom: 12px; font-size: 14px; }
               }
               @media (prefers-reduced-motion: reduce) {
                 #welcome-walk-teaser, #welcome-walk-teaser-card { animation: none; }
