@@ -1,4 +1,10 @@
-import { fsGetDoc, fsQueryCollection, fsSetDoc } from '@/lib/server/firestoreRest';
+import {
+  fsGetDoc,
+  fsMergeDoc,
+  fsQueryCollection,
+  fsSetDoc,
+  type FsRequestOptions,
+} from '@/lib/server/firestoreRest';
 import {
   BENCH_COLLECTIONS,
   BENCH_SETTINGS_DOC,
@@ -41,13 +47,36 @@ export async function listBenchPeople(): Promise<BenchPerson[]> {
   return rows as unknown as BenchPerson[];
 }
 
-export async function getBenchPerson(id: string): Promise<BenchPerson | null> {
-  const doc = await fsGetDoc(`${BENCH_COLLECTIONS.people}/${id}`);
-  return doc.exists && doc.data ? (doc.data as unknown as BenchPerson) : null;
+export async function getBenchPerson(id: string, opts?: FsRequestOptions): Promise<BenchPerson | null> {
+  return (await getBenchPersonWithMeta(id, opts)).person;
 }
 
-export async function saveBenchPerson(person: BenchPerson): Promise<void> {
-  await fsSetDoc(`${BENCH_COLLECTIONS.people}/${person.id}`, person as unknown as Record<string, unknown>);
+/** The person plus the document's updateTime, the token a conditional write is checked against. */
+export async function getBenchPersonWithMeta(
+  id: string,
+  opts?: FsRequestOptions,
+): Promise<{ person: BenchPerson | null; updateTime?: string }> {
+  const doc = await fsGetDoc(`${BENCH_COLLECTIONS.people}/${id}`, opts);
+  if (!doc.exists || !doc.data) return { person: null };
+  return { person: doc.data as unknown as BenchPerson, updateTime: doc.updateTime };
+}
+
+export type BenchPersonPrecondition = { updateTime: string } | { exists: boolean };
+
+/**
+ * Field-scoped write: only the keys in `fields` change, so a writer can never
+ * overwrite what another writer owns (an admin's stage or notes, an applicant's
+ * resume fields). A precondition is required, so this can neither resurrect a
+ * deleted person nor apply a read-modify-write on top of a newer version.
+ * Brand-new people are created with fsCreateDoc in the apply route; there is
+ * deliberately no whole-record save.
+ */
+export async function mergeBenchPerson(
+  id: string,
+  fields: Partial<BenchPerson>,
+  opts: FsRequestOptions & { precondition: BenchPersonPrecondition },
+): Promise<void> {
+  await fsMergeDoc(`${BENCH_COLLECTIONS.people}/${id}`, fields as Record<string, unknown>, opts);
 }
 
 /** Person ids are opaque and server-issued; this guards route params before they become a Firestore path. */

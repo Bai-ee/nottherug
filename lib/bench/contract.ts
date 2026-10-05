@@ -356,6 +356,9 @@ export type BenchPerson = {
   /** Server-only: hash of the single-use token the applicant's browser uploads a resume with. Never sent to the admin UI. */
   resumeUploadTokenHash?: string | null;
   resumeUploadExpiresAt?: string | null;
+  /** Server-only: set when a resume upload claims the token. Finalization only proceeds while it still matches. Present without resumePath means the attempt was interrupted or failed. */
+  resumeAttemptId?: string | null;
+  resumeAttemptAt?: string | null;
   aiSummary: string | null;
   smsConsentAt: string | null;
   smsOptedOut: boolean;

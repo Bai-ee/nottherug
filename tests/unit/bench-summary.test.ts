@@ -4,9 +4,12 @@
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
+const fsGetDoc = vi.fn();
+const fsMergeDoc = vi.fn();
 vi.mock('@/lib/server/firestoreRest', () => ({
-  fsGetDoc: vi.fn(),
+  fsGetDoc,
   fsSetDoc: vi.fn(),
+  fsMergeDoc,
   fsQueryCollection: vi.fn(),
 }));
 
@@ -51,6 +54,8 @@ const person = {
 };
 
 afterEach(() => {
+  fsGetDoc.mockReset();
+  fsMergeDoc.mockReset();
   delete process.env.BENCH_AI_SUMMARIES_ENABLED;
   delete process.env.ANTHROPIC_API_KEY;
   vi.unstubAllGlobals();
@@ -89,5 +94,22 @@ describe('bench AI summary', () => {
     const sent = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(sent.model).toBe('claude-opus-5-5');
     expect(sent.system).toContain('Do not score, rate, rank or recommend');
+  });
+
+  it('stores only aiSummary, and only while the person exists, never the record it read', async () => {
+    process.env.BENCH_AI_SUMMARIES_ENABLED = 'true';
+    process.env.ANTHROPIC_API_KEY = 'test-key';
+    fsGetDoc.mockResolvedValueOnce({ exists: true, data: { id: 'bench_x', ...person, notes: 'stale note' }, updateTime: 't1' });
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({ stop_reason: 'end_turn', content: [{ type: 'text', text: 'Summary: ok' }] }))));
+
+    const { summarizeApplication } = await import('@/lib/server/benchSummary');
+    await summarizeApplication('bench_x', { morning: 'Morning' });
+
+    expect(fsMergeDoc).toHaveBeenCalledTimes(1);
+    const [path, fields, opts] = fsMergeDoc.mock.calls[0];
+    expect(path).toBe('benchPeople/bench_x');
+    expect(Object.keys(fields).sort()).toEqual(['aiSummary', 'updatedAt']);
+    expect(fields.aiSummary).toBe('Summary: ok');
+    expect(opts.precondition).toEqual({ exists: true });
   });
 });

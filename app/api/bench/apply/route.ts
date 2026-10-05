@@ -1,5 +1,5 @@
 import { after, NextResponse } from 'next/server';
-import { fsCreateDoc, fsSetDoc } from '@/lib/server/firestoreRest';
+import { fsCreateDoc, withOptimisticRetry } from '@/lib/server/firestoreRest';
 import {
   BENCH_COLLECTIONS,
   BENCH_SCHEMA_VERSION,
@@ -12,7 +12,12 @@ import {
 import { areasForApplicant, parseApplication } from '@/lib/bench/validation';
 import { knockoutReason } from '@/lib/bench/knockouts';
 import { computeCoverage, gapSlotsFilled } from '@/lib/bench/coverage';
-import { getBenchSettingsOrDefault, listBenchPeople } from '@/lib/server/bench';
+import {
+  getBenchPersonWithMeta,
+  getBenchSettingsOrDefault,
+  listBenchPeople,
+  mergeBenchPerson,
+} from '@/lib/server/bench';
 import {
   benchPersonIdForEmail,
   checkBenchRateLimit,
@@ -58,6 +63,33 @@ async function qualifiesForAutoInvite(person: BenchPerson, settings: BenchSettin
     console.error('[bench:apply] coverage read failed', err instanceof Error ? err.message : 'unknown');
     return false;
   }
+}
+
+/**
+ * Records the email outcome, and the auto-invite stage move, without replacing
+ * the record: an admin may already be working on this person. Only
+ * `notifications` (and, for an auto-invite that is still at the stage it was
+ * created in, `stage` + `stageHistory`) is written, conditional on the version
+ * just read. The email is never re-sent on a retry; only this write is.
+ */
+async function persistNotifications(
+  id: string,
+  notifications: Record<string, NotificationOutcome>,
+  autoInvite: { at: string; by: string } | null,
+): Promise<void> {
+  await withOptimisticRetry(async () => {
+    const { person, updateTime } = await getBenchPersonWithMeta(id, { timeoutMs: 5_000 });
+    if (!person || !updateTime) return;
+    const fields: Partial<BenchPerson> = {
+      notifications: { ...(person.notifications ?? {}), ...notifications },
+      updatedAt: new Date().toISOString(),
+    };
+    if (autoInvite && person.stage === 'review') {
+      fields.stage = 'shadow_invited';
+      fields.stageHistory = [...person.stageHistory, { stage: 'shadow_invited', at: autoInvite.at, by: autoInvite.by }];
+    }
+    await mergeBenchPerson(id, fields, { precondition: { updateTime }, timeoutMs: 5_000 });
+  });
 }
 
 export async function POST(req: Request) {
@@ -137,11 +169,11 @@ export async function POST(req: Request) {
   if (!created) return NextResponse.json({ ok: true, id, duplicate: true });
 
   const notifications: Record<string, NotificationOutcome> = {};
+  let autoInvite = false;
   if (knockout) {
     notifications.closed = await sendApplicantEmail(person.email, applicationClosedEmail(person), 'apply-closed');
   } else if (await qualifiesForAutoInvite(person, settings)) {
-    person.stage = 'shadow_invited';
-    person.stageHistory = [...person.stageHistory, { stage: 'shadow_invited', at: now, by: 'auto-invite' }];
+    autoInvite = true;
     notifications.shadowInvite = await sendApplicantEmail(
       person.email,
       shadowInviteEmail(person, settings.shadowBookingUrl),
@@ -152,11 +184,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await fsSetDoc(`${BENCH_COLLECTIONS.people}/${id}`, {
-      ...person,
-      notifications,
-      updatedAt: new Date().toISOString(),
-    } as unknown as Record<string, unknown>);
+    await persistNotifications(id, notifications, autoInvite ? { at: now, by: 'auto-invite' } : null);
   } catch (err) {
     // The application itself is saved; only the email outcome did not persist.
     console.error('[bench:apply] notification persist failed', err instanceof Error ? err.message : 'unknown');

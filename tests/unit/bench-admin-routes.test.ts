@@ -10,11 +10,8 @@ const verifyAdmin = vi.fn(async () => 'luis@nottherug.test');
 vi.mock('@/lib/server/verifyAdmin', () => ({ verifyAdmin }));
 
 let docs: Map<string, Record<string, unknown>>;
-vi.mock('@/lib/server/firestoreRest', () => ({
-  fsGetDoc: vi.fn(async (path: string) => {
-    const data = docs.get(path);
-    return data ? { exists: true, data } : { exists: false };
-  }),
+vi.mock('@/lib/server/firestoreRest', async () => ({
+  ...(await import('./bench-fs-fake')).firestoreContractFake(() => docs),
   fsSetDoc: vi.fn(async (path: string, data: Record<string, unknown>) => {
     docs.set(path, data);
   }),
