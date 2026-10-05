@@ -1,0 +1,254 @@
+
+> nextapp@0.1.0 test:e2e
+> playwright test
+
+
+Running 220 tests using 7 workers
+
+  ✓    6 [desktop] › tests/e2e/admin-auth.spec.ts:38:7 › admin auth gate › the signed-out link points back to the admin sign-in page (708ms)
+  -    8 [desktop] › tests/e2e/analytics-journey.spec.ts:47:7 › analytics journey (real browser -> /api/track) › a visit, a footer CTA and a form keystroke each report exactly once
+  -    9 [desktop] › tests/e2e/analytics-journey.spec.ts:99:7 › analytics journey (real browser -> /api/track) › no personal data reaches the tracking endpoint
+  ✓    1 [desktop] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/photos reaches a signed-out state, not admin data (720ms)
+  ✓    2 [desktop] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/leads reaches a signed-out state, not admin data (721ms)
+  ✓    7 [desktop] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/brief reaches a signed-out state, not admin data (725ms)
+  ✓    3 [desktop] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/preview/founder-brief reaches a signed-out state, not admin data (731ms)
+  ✓    4 [desktop] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/generator reaches a signed-out state, not admin data (735ms)
+  ✓    5 [desktop] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard reaches a signed-out state, not admin data (739ms)
+  -   10 [desktop] › tests/e2e/analytics-pageview.spec.ts:33:7 › analytics pageview (real browser -> /api/track) › a homepage visit fires a page_view POST to /api/track
+  -   17 [desktop] › tests/e2e/contact-modal.spec.ts:56:5 › mobile menu Contact Us opens the modal and closes the menu behind it
+  ✓   18 [desktop] › tests/e2e/contact-modal.spec.ts:67:5 › /contact is still a route, not a modal (807ms)
+  ✓   11 [desktop] › tests/e2e/booking.spec.ts:47:7 › booking form › a progress dot cannot skip ahead of a step that has not validated (1.0s)
+  ✓   19 [desktop] › tests/e2e/error-boundaries.spec.ts:21:7 › 404 boundary › an unknown path renders the intentional 404 page with a 404 status (209ms)
+  ✓   15 [desktop] › tests/e2e/contact-modal.spec.ts:19:7 › footer Contact Us opens the modal without navigating (1.8s)
+  -   22 [desktop] › tests/e2e/error-boundaries.spec.ts:80:7 › mobile section-jump keyboard journey › Tab is trapped inside the open menu
+  ✓   14 [desktop] › tests/e2e/contact-modal.spec.ts:19:7 › site nav Contact Us opens the modal without navigating (1.9s)
+  ✓   21 [desktop] › tests/e2e/error-boundaries.spec.ts:63:7 › welcome-walk modal keyboard journey › Tab is trapped inside the modal (887ms)
+  ✓   16 [desktop] › tests/e2e/contact-modal.spec.ts:40:5 › the modal traps focus and hands the page back its scroll on close (2.1s)
+  ✓   23 [desktop] › tests/e2e/error-boundaries.spec.ts:102:7 › prefers-reduced-motion › welcome-walk modal is fully visible immediately, with no fade/rise animation (723ms)
+  ✓   20 [desktop] › tests/e2e/error-boundaries.spec.ts:34:7 › welcome-walk modal keyboard journey › Escape closes the modal and returns focus to the control that opened it (1.7s)
+  ✓   13 [desktop] › tests/e2e/booking.spec.ts:67:7 › booking form › phone consultation unchecked: success thanks the visitor and opens the scheduler (3.3s)
+  ✓   12 [desktop] › tests/e2e/booking.spec.ts:37:7 › booking form › phone consultation checked: success message promises a call, Calendly never opens (3.4s)
+  ✓   27 [desktop] › tests/e2e/home-entrance.spec.ts:123:5 › video is requested only after load and the viewport picks the right size (1.1s)
+  ✓   30 [desktop] › tests/e2e/home-entrance.spec.ts:171:5 › keyboard can reach and activate the primary CTA (831ms)
+  ✓   24 [desktop] › tests/e2e/home-entrance.spec.ts:73:5 › headline and primary CTA are visible and operable within 1.5s of DOMContentLoaded (2.7s)
+  ✓   25 [desktop] › tests/e2e/home-entrance.spec.ts:92:5 › reduced motion: final state at once, no intro, no video request (3.1s)
+  ✓   26 [desktop] › tests/e2e/home-entrance.spec.ts:109:5 › data-saving signal: poster only, no video request (3.2s)
+  ✓   28 [desktop] › tests/e2e/home-entrance.spec.ts:134:5 › GSAP chunk blocked: CTA and headline stay visible and the page has no entrance (3.1s)
+  ✓   35 [desktop] › tests/e2e/home-image-delivery.spec.ts:48:7 › home image delivery › paw walk renders from WebP prints with no horizontal overflow (650ms)
+  ✓   37 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /about loads directly with a 200 and its own <h1> (157ms)
+  ✓   38 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /safety loads directly with a 200 and its own <h1> (154ms)
+  ✓   39 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /neighborhoods/williamsburg loads directly with a 200 and its own <h1> (135ms)
+  ✓   40 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /reviews loads directly with a 200 and its own <h1> (170ms)
+  ✓   31 [desktop] › tests/e2e/home-entrance.spec.ts:190:7 › no horizontal overflow at 375px after the intro (2.9s)
+  ✓   41 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /book loads directly with a 200 and its own <h1> (132ms)
+  ✓   42 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /contact loads directly with a 200 and its own <h1> (150ms)
+  ✓   29 [desktop] › tests/e2e/home-entrance.spec.ts:162:5 › video request aborted: CTA still visible and operable (3.6s)
+  ✓   43 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /signup loads directly with a 200 and its own <h1> (188ms)
+  ✓   44 [desktop] › tests/e2e/public-routes.spec.ts:92:7 › public routes › refresh preserves the page (no client-side-only routing) (249ms)
+  ✓   34 [desktop] › tests/e2e/home-image-delivery.spec.ts:16:7 › home image delivery › team portraits are not requested until scrolled near, then load and show (1.9s)
+  ✓   32 [desktop] › tests/e2e/home-entrance.spec.ts:190:7 › no horizontal overflow at 768px after the intro (3.0s)
+  ✓   36 [desktop] › tests/e2e/public-routes.spec.ts:85:9 › public routes › / loads directly with a 200 and its own <h1> (1.4s)
+  ✓   47 [desktop] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=about redirects to /about (271ms)
+  ✓   48 [desktop] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=safety redirects to /safety (279ms)
+  ✓   33 [desktop] › tests/e2e/home-entrance.spec.ts:190:7 › no horizontal overflow at 1440px after the intro (3.0s)
+  ✓   51 [desktop] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=contact redirects to /contact (417ms)
+  ✓   49 [desktop] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=reviews redirects to /reviews (454ms)
+  ✓   50 [desktop] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=book redirects to /book (457ms)
+  ✓   52 [desktop] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?hood=williamsburg redirects to /neighborhoods/williamsburg (404ms)
+  ✓   46 [desktop] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=how-it-works redirects to /#home-how-it-works-block (1.1s)
+  ✓   53 [desktop] › tests/e2e/public-routes.spec.ts:132:7 › public routes › retired /services redirects to the home rates panel (1.7s)
+  -   59 [desktop] › tests/e2e/public-routes.spec.ts:183:7 › public routes › mobile hamburger menu opens and its links navigate
+  ✓   55 [desktop] › tests/e2e/public-routes.spec.ts:143:7 › public routes › legacy ?page=home stays on the homepage (no redirect loop) (1.9s)
+  ✓   54 [desktop] › tests/e2e/public-routes.spec.ts:138:7 › public routes › legacy ?page=services lands on the home rates panel (1.9s)
+  ✓   56 [desktop] › tests/e2e/public-routes.spec.ts:149:7 › public routes › unknown legacy params fall back to the homepage (1.9s)
+  ✓   45 [desktop] › tests/e2e/public-routes.spec.ts:99:7 › public routes › browser back/forward restores the right page (3.2s)
+  ✓   62 [desktop] › tests/e2e/public-routes.spec.ts:245:7 › public routes › /playground/service-cards returns 404 in production (617ms)
+  ✓   58 [desktop] › tests/e2e/public-routes.spec.ts:174:7 › public routes › the menu "Where We Do It" entry scrolls to the home parks list (2.6s)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓   63 [desktop] › tests/e2e/public-routes.spec.ts:257:7 › public routes › disabled homepage sections never render (1.2s)
+  ✓   61 [desktop] › tests/e2e/public-routes.spec.ts:237:7 › public routes › no alert() fires while browsing the former fake-form pages (1.5s)
+  ✓   65 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /about at 375px has no horizontal overflow (1.1s)
+  ✓   66 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /safety at 375px has no horizontal overflow (939ms)
+  ✓   67 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /neighborhoods/williamsburg at 375px has no horizontal overflow (755ms)
+  ✓   57 [desktop] › tests/e2e/public-routes.spec.ts:158:7 › public routes › desktop nav links reach their destination (3.8s)
+  ✓   68 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /reviews at 375px has no horizontal overflow (651ms)
+  ✓   64 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › / at 375px has no horizontal overflow (1.8s)
+  ✓   69 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /book at 375px has no horizontal overflow (640ms)
+  ✓   70 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /contact at 375px has no horizontal overflow (636ms)
+  ✓   71 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /signup at 375px has no horizontal overflow (665ms)
+  ✓   73 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /about at 768px has no horizontal overflow (678ms)
+  ✓   74 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /safety at 768px has no horizontal overflow (638ms)
+  ✓   75 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /neighborhoods/williamsburg at 768px has no horizontal overflow (634ms)
+  ✓   76 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /reviews at 768px has no horizontal overflow (676ms)
+  ✓   77 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /book at 768px has no horizontal overflow (675ms)
+  ✓   78 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /contact at 768px has no horizontal overflow (643ms)
+  ✓   72 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › / at 768px has no horizontal overflow (1.4s)
+  ✓   79 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /signup at 768px has no horizontal overflow (667ms)
+  ✓   81 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /about at 1440px has no horizontal overflow (654ms)
+  ✓   60 [desktop] › tests/e2e/public-routes.spec.ts:204:7 › public routes › every "book" CTA opens booking in place (4.3s)
+  ✓   82 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /safety at 1440px has no horizontal overflow (676ms)
+  ✓   83 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /neighborhoods/williamsburg at 1440px has no horizontal overflow (766ms)
+  ✓   84 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /reviews at 1440px has no horizontal overflow (733ms)
+  -   89 [desktop] › tests/e2e/public-routes.spec.ts:314:7 › keyboard access › mobile hamburger toggle opens the menu on Enter, not just click
+  ✓   85 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /book at 1440px has no horizontal overflow (702ms)
+  ✓   92 [desktop] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=services -> 307 /#home-personalized-care-section (14ms)
+  ✓   93 [desktop] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=how-it-works -> 307 /#home-how-it-works-block (30ms)
+  ✓   94 [desktop] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=about&utm_source=mail -> 307 /about (16ms)
+  ✓   95 [desktop] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?hood=williamsburg&page=about -> 307 /neighborhoods/williamsburg (19ms)
+  ✓   96 [desktop] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=about&page=safety -> 307 /about (4ms)
+  ✓   97 [desktop] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › / is served without a redirect (7ms)
+  ✓   98 [desktop] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?welcome=1 is served without a redirect (6ms)
+  ✓   99 [desktop] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?utm_source=a&utm_campaign=b is served without a redirect (7ms)
+  ✓  100 [desktop] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?page=home is served without a redirect (7ms)
+  ✓  101 [desktop] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?page=nope is served without a redirect (6ms)
+  ✓   90 [desktop] › tests/e2e/public-routes.spec.ts:324:7 › keyboard access › booking form fields are reachable by Tab (293ms)
+  ✓   86 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /contact at 1440px has no horizontal overflow (670ms)
+  -  104 [desktop] › tests/e2e/section-nav.spec.ts:66:7 › mobile section jump › stays out of the way over the hero, then jumps to a section
+  ✓   87 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /signup at 1440px has no horizontal overflow (712ms)
+  -  105 [desktop] › tests/e2e/section-nav.spec.ts:101:7 › mobile section jump › closes on Escape and returns focus to the trigger
+  ✓  103 [desktop] › tests/e2e/section-nav.spec.ts:57:7 › desktop section rail › renders nothing on a route with no registered sections (241ms)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓   91 [desktop] › tests/e2e/public-routes.spec.ts:340:7 › prefers-reduced-motion › home hero content is visible immediately, not waiting on an animation (632ms)
+  ✓  106 [desktop] › tests/e2e/walk-with-us.spec.ts:19:7 › on-call walker application › leads with the on-call terms (264ms)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓  110 [desktop] › tests/e2e/walk-with-us.spec.ts:124:7 › on-call walker application › has no horizontal scroll at this width (467ms)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓  109 [desktop] › tests/e2e/walk-with-us.spec.ts:118:7 › on-call walker application › Contact Us opens the contact modal (706ms)
+  ✓  107 [desktop] › tests/e2e/walk-with-us.spec.ts:27:7 › on-call walker application › keeps partial answers across a refresh (875ms)
+  ✓  102 [desktop] › tests/e2e/section-nav.spec.ts:32:7 › desktop section rail › lands a clicked section flush under the fixed nav (1.2s)
+  ✓   88 [desktop] › tests/e2e/public-routes.spec.ts:293:7 › keyboard access › desktop nav is reachable and operable by keyboard (2.5s)
+  ✓  113 [mobile] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/photos reaches a signed-out state, not admin data (775ms)
+  ✓  112 [mobile] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/leads reaches a signed-out state, not admin data (841ms)
+  ✓  114 [mobile] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/generator reaches a signed-out state, not admin data (820ms)
+  -  118 [mobile] › tests/e2e/analytics-journey.spec.ts:47:7 › analytics journey (real browser -> /api/track) › a visit, a footer CTA and a form keystroke each report exactly once
+  -  119 [mobile] › tests/e2e/analytics-journey.spec.ts:99:7 › analytics journey (real browser -> /api/track) › no personal data reaches the tracking endpoint
+  ✓  111 [mobile] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard reaches a signed-out state, not admin data (929ms)
+  -  120 [mobile] › tests/e2e/analytics-pageview.spec.ts:33:7 › analytics pageview (real browser -> /api/track) › a homepage visit fires a page_view POST to /api/track
+  ✓  116 [mobile] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/preview/founder-brief reaches a signed-out state, not admin data (417ms)
+  ✓  117 [mobile] › tests/e2e/admin-auth.spec.ts:38:7 › admin auth gate › the signed-out link points back to the admin sign-in page (528ms)
+  ✓  115 [mobile] › tests/e2e/admin-auth.spec.ts:20:9 › admin auth gate › unauthenticated visit to /admin/dashboard/brief reaches a signed-out state, not admin data (629ms)
+  ✓  108 [desktop] › tests/e2e/walk-with-us.spec.ts:38:7 › on-call walker application › lists every question, validates, and submits every answer (3.0s)
+  -  124 [mobile] › tests/e2e/contact-modal.spec.ts:19:7 › site nav Contact Us opens the modal without navigating
+  -  125 [mobile] › tests/e2e/contact-modal.spec.ts:19:7 › footer Contact Us opens the modal without navigating
+  ✓  127 [mobile] › tests/e2e/contact-modal.spec.ts:67:5 › /contact is still a route, not a modal (367ms)
+  ✓  122 [mobile] › tests/e2e/booking.spec.ts:47:7 › booking form › a progress dot cannot skip ahead of a step that has not validated (1.1s)
+  ✓  129 [mobile] › tests/e2e/error-boundaries.spec.ts:21:7 › 404 boundary › an unknown path renders the intentional 404 page with a 404 status (321ms)
+  -  128 [mobile] › tests/e2e/contact-modal.spec.ts:40:5 › the modal traps focus and hands the page back its scroll on close
+  -  131 [mobile] › tests/e2e/error-boundaries.spec.ts:63:7 › welcome-walk modal keyboard journey › Tab is trapped inside the modal
+  ✓  126 [mobile] › tests/e2e/contact-modal.spec.ts:56:5 › mobile menu Contact Us opens the modal and closes the menu behind it (2.0s)
+  ✓  132 [mobile] › tests/e2e/error-boundaries.spec.ts:80:7 › mobile section-jump keyboard journey › Tab is trapped inside the open menu (1.1s)
+  ✓  133 [mobile] › tests/e2e/error-boundaries.spec.ts:102:7 › prefers-reduced-motion › welcome-walk modal is fully visible immediately, with no fade/rise animation (1.0s)
+  ✓  130 [mobile] › tests/e2e/error-boundaries.spec.ts:34:7 › welcome-walk modal keyboard journey › Escape closes the modal and returns focus to the control that opened it (2.0s)
+  ✓  121 [mobile] › tests/e2e/booking.spec.ts:37:7 › booking form › phone consultation checked: success message promises a call, Calendly never opens (3.9s)
+  ✓  123 [mobile] › tests/e2e/booking.spec.ts:67:7 › booking form › phone consultation unchecked: success thanks the visitor and opens the scheduler (4.2s)
+  ✓  137 [mobile] › tests/e2e/home-entrance.spec.ts:123:5 › video is requested only after load and the viewport picks the right size (2.2s)
+  ✓   80 [desktop] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › / at 1440px has no horizontal overflow (9.6s)
+  ✓  135 [mobile] › tests/e2e/home-entrance.spec.ts:73:5 › headline and primary CTA are visible and operable within 1.5s of DOMContentLoaded (2.9s)
+  -  140 [mobile] › tests/e2e/home-entrance.spec.ts:171:5 › keyboard can reach and activate the primary CTA
+  ✓  134 [mobile] › tests/e2e/home-entrance.spec.ts:92:5 › reduced motion: final state at once, no intro, no video request (3.4s)
+  ✓  136 [mobile] › tests/e2e/home-entrance.spec.ts:109:5 › data-saving signal: poster only, no video request (3.4s)
+  ✓  138 [mobile] › tests/e2e/home-entrance.spec.ts:134:5 › GSAP chunk blocked: CTA and headline stay visible and the page has no entrance (3.3s)
+  ✓  145 [mobile] › tests/e2e/home-image-delivery.spec.ts:48:7 › home image delivery › paw walk renders from WebP prints with no horizontal overflow (1.2s)
+  ✓  147 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /about loads directly with a 200 and its own <h1> (362ms)
+  ✓  139 [mobile] › tests/e2e/home-entrance.spec.ts:162:5 › video request aborted: CTA still visible and operable (3.5s)
+  ✓  148 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /safety loads directly with a 200 and its own <h1> (268ms)
+  ✓  149 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /neighborhoods/williamsburg loads directly with a 200 and its own <h1> (337ms)
+  ✓  150 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /reviews loads directly with a 200 and its own <h1> (365ms)
+  ✓  144 [mobile] › tests/e2e/home-image-delivery.spec.ts:16:7 › home image delivery › team portraits are not requested until scrolled near, then load and show (2.3s)
+  ✓  141 [mobile] › tests/e2e/home-entrance.spec.ts:190:7 › no horizontal overflow at 768px after the intro (2.9s)
+  ✓  151 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /book loads directly with a 200 and its own <h1> (314ms)
+  ✓  146 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › / loads directly with a 200 and its own <h1> (1.4s)
+  ✓  152 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /contact loads directly with a 200 and its own <h1> (324ms)
+  ✓  153 [mobile] › tests/e2e/public-routes.spec.ts:85:9 › public routes › /signup loads directly with a 200 and its own <h1> (321ms)
+  ✓  154 [mobile] › tests/e2e/public-routes.spec.ts:92:7 › public routes › refresh preserves the page (no client-side-only routing) (415ms)
+  ✓  142 [mobile] › tests/e2e/home-entrance.spec.ts:190:7 › no horizontal overflow at 1440px after the intro (3.4s)
+  ✓  158 [mobile] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=safety redirects to /safety (329ms)
+  ✓  157 [mobile] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=about redirects to /about (401ms)
+  ✓  143 [mobile] › tests/e2e/home-entrance.spec.ts:190:7 › no horizontal overflow at 375px after the intro (3.2s)
+  ✓  159 [mobile] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=reviews redirects to /reviews (343ms)
+  ✓  160 [mobile] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=book redirects to /book (324ms)
+  ✓  161 [mobile] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=contact redirects to /contact (358ms)
+  ✓  162 [mobile] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?hood=williamsburg redirects to /neighborhoods/williamsburg (347ms)
+  -  167 [mobile] › tests/e2e/public-routes.spec.ts:158:7 › public routes › desktop nav links reach their destination
+  ✓  156 [mobile] › tests/e2e/public-routes.spec.ts:126:9 › public routes › legacy /?page=how-it-works redirects to /#home-how-it-works-block (1.0s)
+  ✓  164 [mobile] › tests/e2e/public-routes.spec.ts:138:7 › public routes › legacy ?page=services lands on the home rates panel (1.1s)
+  ✓  163 [mobile] › tests/e2e/public-routes.spec.ts:132:7 › public routes › retired /services redirects to the home rates panel (1.6s)
+  ✓  165 [mobile] › tests/e2e/public-routes.spec.ts:143:7 › public routes › legacy ?page=home stays on the homepage (no redirect loop) (1.5s)
+  ✓  166 [mobile] › tests/e2e/public-routes.spec.ts:149:7 › public routes › unknown legacy params fall back to the homepage (1.5s)
+  ✓  172 [mobile] › tests/e2e/public-routes.spec.ts:245:7 › public routes › /playground/service-cards returns 404 in production (207ms)
+  ✓  168 [mobile] › tests/e2e/public-routes.spec.ts:174:7 › public routes › the menu "Where We Do It" entry scrolls to the home parks list (1.8s)
+  ✓  173 [mobile] › tests/e2e/public-routes.spec.ts:257:7 › public routes › disabled homepage sections never render (586ms)
+  ✓  155 [mobile] › tests/e2e/public-routes.spec.ts:99:7 › public routes › browser back/forward restores the right page (3.0s)
+  ✓  169 [mobile] › tests/e2e/public-routes.spec.ts:183:7 › public routes › mobile hamburger menu opens and its links navigate (2.0s)
+  ✓  171 [mobile] › tests/e2e/public-routes.spec.ts:237:7 › public routes › no alert() fires while browsing the former fake-form pages (865ms)
+  ✓  176 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /safety at 375px has no horizontal overflow (884ms)
+  ✓  175 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /about at 375px has no horizontal overflow (924ms)
+  ✓  177 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /neighborhoods/williamsburg at 375px has no horizontal overflow (899ms)
+  ✓  178 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /reviews at 375px has no horizontal overflow (900ms)
+  ✓  179 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /book at 375px has no horizontal overflow (1.2s)
+  ✓  174 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › / at 375px has no horizontal overflow (2.1s)
+  ✓  180 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /contact at 375px has no horizontal overflow (803ms)
+  ✓  181 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /signup at 375px has no horizontal overflow (834ms)
+  ✓  183 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /about at 768px has no horizontal overflow (855ms)
+  ✓  184 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /safety at 768px has no horizontal overflow (790ms)
+  ✓  185 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /neighborhoods/williamsburg at 768px has no horizontal overflow (851ms)
+  ✓  186 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /reviews at 768px has no horizontal overflow (875ms)
+  ✓  170 [mobile] › tests/e2e/public-routes.spec.ts:204:7 › public routes › every "book" CTA opens booking in place (3.8s)
+  ✓  188 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /contact at 768px has no horizontal overflow (973ms)
+  ✓  182 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › / at 768px has no horizontal overflow (2.0s)
+  ✓  187 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /book at 768px has no horizontal overflow (1.2s)
+  ✓  189 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /signup at 768px has no horizontal overflow (870ms)
+  ✓  190 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › / at 1440px has no horizontal overflow (942ms)
+  ✓  191 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /about at 1440px has no horizontal overflow (894ms)
+  ✓  192 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /safety at 1440px has no horizontal overflow (918ms)
+  -  198 [mobile] › tests/e2e/public-routes.spec.ts:293:7 › keyboard access › desktop nav is reachable and operable by keyboard
+  ✓  193 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /neighborhoods/williamsburg at 1440px has no horizontal overflow (922ms)
+  ✓  195 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /reviews at 1440px has no horizontal overflow (996ms)
+  ✓  202 [mobile] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=services -> 307 /#home-personalized-care-section (8ms)
+  ✓  203 [mobile] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=how-it-works -> 307 /#home-how-it-works-block (4ms)
+  ✓  204 [mobile] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=about&utm_source=mail -> 307 /about (5ms)
+  ✓  196 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /contact at 1440px has no horizontal overflow (983ms)
+  ✓  205 [mobile] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?hood=williamsburg&page=about -> 307 /neighborhoods/williamsburg (9ms)
+  ✓  206 [mobile] › tests/e2e/public-routes.spec.ts:367:9 › legacy link redirects (proxy) › /?page=about&page=safety -> 307 /about (12ms)
+  ✓  207 [mobile] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › / is served without a redirect (13ms)
+  ✓  209 [mobile] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?utm_source=a&utm_campaign=b is served without a redirect (9ms)
+  ✓  200 [mobile] › tests/e2e/public-routes.spec.ts:324:7 › keyboard access › booking form fields are reachable by Tab (403ms)
+  ✓  208 [mobile] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?welcome=1 is served without a redirect (25ms)
+  -  212 [mobile] › tests/e2e/section-nav.spec.ts:32:7 › desktop section rail › lands a clicked section flush under the fixed nav
+  ✓  210 [mobile] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?page=home is served without a redirect (8ms)
+  -  213 [mobile] › tests/e2e/section-nav.spec.ts:57:7 › desktop section rail › renders nothing on a route with no registered sections
+  ✓  211 [mobile] › tests/e2e/public-routes.spec.ts:375:9 › legacy link redirects (proxy) › /?page=nope is served without a redirect (19ms)
+  ✓  197 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /signup at 1440px has no horizontal overflow (867ms)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓  216 [mobile] › tests/e2e/walk-with-us.spec.ts:19:7 › on-call walker application › leads with the on-call terms (641ms)
+  ✓  201 [mobile] › tests/e2e/public-routes.spec.ts:340:7 › prefers-reduced-motion › home hero content is visible immediately, not waiting on an animation (882ms)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓  217 [mobile] › tests/e2e/walk-with-us.spec.ts:27:7 › on-call walker application › keeps partial answers across a refresh (589ms)
+  ✓  194 [mobile] › tests/e2e/public-routes.spec.ts:280:11 › no horizontal overflow at any checked width › /book at 1440px has no horizontal overflow (2.1s)
+  ✓  215 [mobile] › tests/e2e/section-nav.spec.ts:101:7 › mobile section jump › closes on Escape and returns focus to the trigger (1.0s)
+  ✓  199 [mobile] › tests/e2e/public-routes.spec.ts:314:7 › keyboard access › mobile hamburger toggle opens the menu on Enter, not just click (1.5s)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓  219 [mobile] › tests/e2e/walk-with-us.spec.ts:118:7 › on-call walker application › Contact Us opens the contact modal (450ms)
+[WebServer] [bench] settings read failed, using defaults invalid_grant: Invalid grant: account not found
+  ✓  220 [mobile] › tests/e2e/walk-with-us.spec.ts:124:7 › on-call walker application › has no horizontal scroll at this width (348ms)
+  ✓  214 [mobile] › tests/e2e/section-nav.spec.ts:66:7 › mobile section jump › stays out of the way over the hero, then jumps to a section (2.1s)
+  ✓  218 [mobile] › tests/e2e/walk-with-us.spec.ts:38:7 › on-call walker application › lists every question, validates, and submits every answer (2.2s)
+::notice title=🎭 Playwright Run Summary::  21 skipped%0A  199 passed (37.2s)
+
+  21 skipped
+  199 passed (37.2s)

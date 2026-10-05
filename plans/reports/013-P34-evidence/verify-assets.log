@@ -1,0 +1,5 @@
+
+> nextapp@0.1.0 verify:assets
+> node scripts/verify-asset-manifest.mjs
+
+asset-manifest verification passed.
