@@ -4,6 +4,12 @@ import { fsCreateDoc, fsGetDoc, fsIncrementField, fsMergeDoc } from '@/lib/serve
 import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
+import {
+  callTimeout,
+  captureIdForEmail,
+  carryBookedHintToLead,
+  recordConversion,
+} from '@/lib/server/leadTransitions';
 import { parseLeadSubmission } from '@/lib/leads/validation';
 import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput, type NotificationOutcome } from '@/lib/leads/contract';
 
@@ -21,6 +27,20 @@ const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 /** Rate-limit rows are disposable; expiresAt lets a Firestore TTL policy reap them. */
 const RATE_LIMIT_RETENTION_MS = 48 * 60 * 60 * 1000;
 const RATE_LIMIT_MAX_PER_WINDOW = 5;
+/** Counters are namespaced per route; capture uses its own, so email captures never spend this allowance. */
+const RATE_LIMIT_PURPOSE = 'meetgreet';
+
+// Dependency budgets inside the 20 s route limit (maxDuration). The Firestore
+// calls before the notification step share PRE_EMAIL_BUDGET_MS (each call is
+// also capped); the two sends run concurrently under EMAIL_TIMEOUT_MS; the
+// notification-status write gets its own short cap. 8 s + 8 s + 2 s leaves
+// headroom for the response. The post-response conversion write must finish by
+// CONVERSION_DEADLINE_MS from request start or it is skipped (best effort).
+const RATE_LIMIT_CALL_MS = 1_500;
+const PRE_EMAIL_BUDGET_MS = 8_000;
+const FIRESTORE_CALL_MS = 3_000;
+const NOTIFICATION_PERSIST_MS = 2_000;
+const CONVERSION_DEADLINE_MS = 19_000;
 
 // The idempotency guard only needs to cover a client retrying after a
 // timeout, not a genuine second inquiry weeks later — so the hash includes a
@@ -82,23 +102,31 @@ function clientIp(req: Request): string {
  * errors could bypass the limit; that is judged less bad than blocking real
  * customers during a Firestore incident.
  *
+ * The counter row is namespaced by purpose so the capture route's higher-volume
+ * traffic cannot spend a visitor's final-submission allowance.
+ *
  * Operational note: each `leadRateLimits/*` doc carries `expiresAt` (a Date,
  * now + 48h) so a Firestore TTL policy on that field can reap them; the policy
  * itself is configured in Firebase, not here.
  */
-async function checkRateLimit(ip: string): Promise<boolean> {
+async function checkRateLimit(ip: string): Promise<{ allowed: boolean; retryAfterSeconds: number }> {
+  const now = Date.now();
+  const windowStart = Math.floor(now / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
+  const retryAfterSeconds = Math.max(1, Math.ceil((windowStart + RATE_LIMIT_WINDOW_MS - now) / 1000));
   try {
-    const windowStart = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
     const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 24);
-    const path = `leadRateLimits/${ipHash}_${windowStart}`;
-    const count = await fsIncrementField(path, 'count', 1, {
-      windowStart,
-      expiresAt: new Date(Date.now() + RATE_LIMIT_RETENTION_MS),
-    });
-    return count <= RATE_LIMIT_MAX_PER_WINDOW;
+    const path = `leadRateLimits/${RATE_LIMIT_PURPOSE}_${ipHash}_${windowStart}`;
+    const count = await fsIncrementField(
+      path,
+      'count',
+      1,
+      { windowStart, expiresAt: new Date(now + RATE_LIMIT_RETENTION_MS) },
+      { timeoutMs: RATE_LIMIT_CALL_MS },
+    );
+    return { allowed: count <= RATE_LIMIT_MAX_PER_WINDOW, retryAfterSeconds };
   } catch (err) {
     console.error('[lead:meetgreet] rate limit check failed', err instanceof Error ? err.message : 'unknown');
-    return true;
+    return { allowed: true, retryAfterSeconds };
   }
 }
 
@@ -227,17 +255,15 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
 }
 
 /** Best-effort read of the capture row's self-reported booking hint for this address. */
-async function readCaptureBookedHint(email: string): Promise<boolean> {
+async function readCaptureBookedHint(email: string, deadlineAt: number): Promise<boolean> {
   try {
-    const capture = await fsGetDoc(`leads/${captureIdForEmail(email)}`);
+    const capture = await fsGetDoc(`leads/${captureIdForEmail(email)}`, {
+      timeoutMs: callTimeout(deadlineAt, FIRESTORE_CALL_MS),
+    });
     return capture.exists && capture.data?.bookedSelfReported === true;
   } catch {
     return false;
   }
-}
-
-function captureIdForEmail(email: string): string {
-  return `capture_${createHash('sha256').update(email.trim().toLowerCase()).digest('hex').slice(0, 32)}`;
 }
 
 /** Runs after the response when possible (serverless may freeze a floating promise); awaits inline otherwise. */
@@ -249,34 +275,50 @@ async function runAfterResponse(task: () => Promise<void>): Promise<void> {
   }
 }
 
-/** Flips the email-keyed capture row (app/api/leads/capture) to converted. */
-async function markCaptureConverted(email: string, leadId: string, at: string): Promise<void> {
+/**
+ * Marks the email-keyed capture row converted (creating a converted marker if no
+ * capture has arrived yet), then carries a booking hint the capture row held at
+ * that moment onto the full lead. Together with the capture route's own
+ * carry-over this covers both arrival orders. See lib/server/leadTransitions.ts.
+ */
+async function markCaptureConverted(
+  email: string,
+  leadId: string,
+  source: string,
+  at: string,
+  leadAlreadyBooked: boolean,
+  deadlineAt: number,
+): Promise<void> {
+  const budget = { deadlineAt, perCallMs: FIRESTORE_CALL_MS };
   try {
-    const captureId = captureIdForEmail(email);
-    const existing = await fsGetDoc(`leads/${captureId}`);
-    if (!existing.exists || !existing.data) return;
-    // Merge only the conversion fields so a capture written concurrently is not clobbered.
-    await fsMergeDoc(`leads/${captureId}`, {
-      status: 'converted',
-      convertedLeadId: leadId,
-      convertedAt: at,
-    });
+    const outcome = await recordConversion({ email, leadId, source, atIso: at }, budget);
+    if (outcome.bookedSelfReported && !leadAlreadyBooked) await carryBookedHintToLead(leadId, budget);
   } catch (err) {
     console.error('[lead:meetgreet] capture conversion failed', err instanceof Error ? err.message : 'unknown');
   }
 }
 
 export async function POST(req: Request) {
+  const requestStart = Date.now();
+  const preEmailDeadline = requestStart + PRE_EMAIL_BUDGET_MS;
   const declaredLength = req.headers.get('content-length');
   if (declaredLength && Number(declaredLength) > MAX_BODY_BYTES) {
     return errorResponse(413, 'Request body too large');
   }
 
   const bodyResult = await readCappedBody(req, MAX_BODY_BYTES);
-  if (!bodyResult.ok) return errorResponse(413, 'Request body too large');
+  if (!bodyResult.ok) {
+    return bodyResult.reason === 'too_large'
+      ? errorResponse(413, 'Request body too large')
+      : errorResponse(400, 'Invalid request body');
+  }
 
-  const allowed = await checkRateLimit(clientIp(req));
-  if (!allowed) return errorResponse(429, 'Too many requests. Please try again later.');
+  const limit = await checkRateLimit(clientIp(req));
+  if (!limit.allowed) {
+    const res = errorResponse(429, 'Too many requests. Please try again later.');
+    res.headers.set('Retry-After', String(limit.retryAfterSeconds));
+    return res;
+  }
 
   let parsed: unknown;
   try {
@@ -296,7 +338,8 @@ export async function POST(req: Request) {
   const lead = buildLeadRecord(id, submittedAt, validation.data);
   // Carry the capture's self-reported booking hint onto the lead itself, since
   // the admin table hides the converted capture row.
-  if (await readCaptureBookedHint(validation.data.email)) {
+  const leadCarriesBookedHint = await readCaptureBookedHint(validation.data.email, preEmailDeadline);
+  if (leadCarriesBookedHint) {
     (lead as unknown as Record<string, unknown>).bookedSelfReported = true;
   }
 
@@ -314,7 +357,9 @@ export async function POST(req: Request) {
   // id first — if that document exists, this is the same submission.
   const previousWindowId = computeSubmissionKey(validation.data, dedupeWindowStart - SUBMISSION_DEDUPE_WINDOW_MS);
   try {
-    const previous = await fsGetDoc(`leads/${previousWindowId}`);
+    const previous = await fsGetDoc(`leads/${previousWindowId}`, {
+      timeoutMs: callTimeout(preEmailDeadline, FIRESTORE_CALL_MS),
+    });
     if (previous.exists && previous.data) {
       const existingNotifications = (previous.data.notifications as LeadNotifications | undefined)
         ?? { founder: 'skipped', customer: 'skipped' };
@@ -327,7 +372,9 @@ export async function POST(req: Request) {
 
   let created: boolean;
   try {
-    const result = await fsCreateDoc(`leads/${id}`, lead as unknown as Record<string, unknown>);
+    const result = await fsCreateDoc(`leads/${id}`, lead as unknown as Record<string, unknown>, {
+      timeoutMs: callTimeout(preEmailDeadline, FIRESTORE_CALL_MS),
+    });
     created = result.created;
   } catch (err) {
     console.error('[lead:meetgreet] firestore create failed', err instanceof Error ? err.message : 'unknown');
@@ -337,7 +384,16 @@ export async function POST(req: Request) {
   // Best effort: the partial capture for this address is no longer
   // outstanding, so it stops showing as a lead waiting on answers. A failure
   // here must never fail the submission the customer is waiting on.
-  await runAfterResponse(() => markCaptureConverted(validation.data.email, id, submittedAt));
+  await runAfterResponse(() =>
+    markCaptureConverted(
+      validation.data.email,
+      id,
+      validation.data.source,
+      submittedAt,
+      leadCarriesBookedHint,
+      requestStart + CONVERSION_DEADLINE_MS,
+    ),
+  );
 
   if (!created) {
     // Same content hashed to an id that already exists — a retry of a request
@@ -345,7 +401,9 @@ export async function POST(req: Request) {
     // without sending another round of notifications.
     let existingNotifications: LeadNotifications = { founder: 'skipped', customer: 'skipped' };
     try {
-      const existing = await fsGetDoc(`leads/${id}`);
+      const existing = await fsGetDoc(`leads/${id}`, {
+        timeoutMs: callTimeout(preEmailDeadline, FIRESTORE_CALL_MS, 500),
+      });
       if (existing.exists && existing.data && existing.data.notifications) {
         existingNotifications = existing.data.notifications as LeadNotifications;
       }
@@ -360,7 +418,7 @@ export async function POST(req: Request) {
 
   try {
     // Merge only notifications: a booked flag merged onto this lead meanwhile must survive.
-    await fsMergeDoc(`leads/${id}`, { notifications });
+    await fsMergeDoc(`leads/${id}`, { notifications }, { timeoutMs: NOTIFICATION_PERSIST_MS });
   } catch (err) {
     // The lead itself is already saved; only the notification-status write failed.
     console.error('[lead:meetgreet] notification status persist failed', err instanceof Error ? err.message : 'unknown');

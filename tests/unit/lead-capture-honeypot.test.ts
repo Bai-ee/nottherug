@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const fsIncrementField = vi.fn(async () => 1);
-const fsGetDoc = vi.fn(async () => ({ exists: false }));
-const fsMergeDoc = vi.fn(async () => {});
+import { fsFake } from './lead-firestore-fake';
+import { captureIdForEmail } from '@/lib/server/leadTransitions';
 
-vi.mock('@/lib/server/firestoreRest', () => ({ fsIncrementField, fsGetDoc, fsMergeDoc }));
+vi.mock('@/lib/server/firestoreRest', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/server/firestoreRest')>('@/lib/server/firestoreRest');
+  const { fsFake } = await import('./lead-firestore-fake');
+  fsFake.PreconditionError = actual.FirestorePreconditionError;
+  return { ...actual, ...fsFake.api };
+});
 
 async function post(body: unknown) {
   const { POST } = await import('@/app/api/leads/capture/route');
@@ -18,31 +22,34 @@ async function post(body: unknown) {
 }
 
 describe('POST /api/leads/capture honeypot', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    fsFake.reset();
+  });
 
   it('answers success-shaped and stores nothing when the honeypot is filled', async () => {
     const res = await post({ email: 'bot@example.test', source: 'home', website: 'http://spam.test' });
     expect(res.status).toBe(200);
     expect((await res.json()).ok).toBe(true);
-    expect(fsMergeDoc).not.toHaveBeenCalled();
+    expect(fsFake.callsTo('fsMergeDoc')).toHaveLength(0);
   });
 
   it('stores a normal capture via merge, not replace', async () => {
     const res = await post({ email: 'real@example.test', source: 'home' });
     expect(res.status).toBe(200);
-    expect(fsMergeDoc).toHaveBeenCalledTimes(1);
+    expect(fsFake.callsTo('fsMergeDoc')).toHaveLength(1);
   });
 
   it('writes expiresAt on the rate-limit row', async () => {
     await post({ email: 'real@example.test', source: 'home' });
-    const seed = (fsIncrementField.mock.calls[0] as unknown[])[3] as { expiresAt: Date };
+    const seed = [...fsFake.counterSeeds.values()][0] as { expiresAt: Date };
     expect(seed.expiresAt).toBeInstanceOf(Date);
     expect(seed.expiresAt.getTime()).toBeGreaterThan(Date.now() + 47 * 3600 * 1000);
   });
 
   it('merges booked:true onto the converted lead for an already-converted email', async () => {
-    fsGetDoc.mockResolvedValueOnce({ exists: true, data: { status: 'converted', convertedLeadId: 'lead_1' } } as never);
+    fsFake.write(`leads/${captureIdForEmail('real@example.test')}`, { status: 'converted', convertedLeadId: 'lead_1' });
     await post({ email: 'real@example.test', source: 'home', booked: true });
-    expect(fsMergeDoc).toHaveBeenCalledWith('leads/lead_1', { bookedSelfReported: true });
+    expect(fsFake.data('leads/lead_1')).toMatchObject({ bookedSelfReported: true });
   });
 });
