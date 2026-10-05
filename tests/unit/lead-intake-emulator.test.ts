@@ -9,8 +9,8 @@
  *   firebase emulators:exec --only firestore --project demo-not-the-rug "npx vitest run tests/unit/lead-intake-emulator.test.ts"
  */
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
+import { FIRESTORE_EMULATOR_HOST as EMULATOR, firestoreEmulatorReachable } from '../support/emulatorGate';
 
-const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const PROJECT = 'demo-lead-intake-emulator';
 const SKIP_REASON =
   `Firestore emulator not reachable at ${EMULATOR}. Start it with \`npm run emulators\` ` +
@@ -54,12 +54,7 @@ vi.mock('@/lib/server/firestoreRest', async () => {
 
 let reachable = false;
 beforeAll(async () => {
-  try {
-    await fetch(`http://${EMULATOR}/`, { signal: AbortSignal.timeout(750) });
-    reachable = true;
-  } catch {
-    reachable = false;
-  }
+  reachable = await firestoreEmulatorReachable();
 });
 beforeEach(async () => {
   vi.clearAllMocks();

@@ -17,8 +17,8 @@
  * `npm run emulators`, then rerun. A skip here is not a pass.
  */
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
+import { FIRESTORE_EMULATOR_HOST as EMULATOR, firestoreEmulatorReachable } from '../support/emulatorGate';
 
-const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const PROJECT = 'demo-analytics-roundtrip';
 
 process.env.FIRESTORE_EMULATOR_HOST = EMULATOR;
@@ -30,14 +30,7 @@ const SKIP_REASON =
 
 let reachable = false;
 
-async function emulatorUp() {
-  try {
-    await fetch(`http://${EMULATOR}/`, { signal: AbortSignal.timeout(750) });
-    return true;
-  } catch {
-    return false;
-  }
-}
+const emulatorUp = firestoreEmulatorReachable;
 
 async function clearFirestore() {
   await fetch(`http://${EMULATOR}/emulator/v1/projects/${PROJECT}/databases/(default)/documents`, { method: 'DELETE' });

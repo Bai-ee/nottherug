@@ -35,6 +35,8 @@ through.
 | `npm run typecheck` | `tsc --noEmit`. |
 | `npm run test` | Vitest unit/integration tests (`tests/unit/**`). |
 | `npm run test:e2e` | Playwright browser tests (`tests/e2e/**`) against a real build — see that directory's specs for what each covers and how they start a server. |
+| `npm run test:emulators` | The whole unit suite with `REQUIRE_EMULATORS=1`: emulator-backed suites fail instead of skipping, then `tests/support/check-required-emulator-run.mjs` fails on any skip. Run it under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm run test:emulators"` (needs Java 21); this is what the CI `emulators` job runs. Plain `npm test` still skips those suites, with a reason, when no emulator is up. |
+| `npm run test:e2e:analytics` | The analytics specs, which need a build made with `NEXT_PUBLIC_ANALYTICS_ENABLED=true NEXT_PUBLIC_ANALYTICS_TEST_MODE=true` and `E2E_ANALYTICS_ENABLED=1`; run it under the Firestore emulator as the CI `e2e-analytics` job does. In CI (`CI` set), an unreachable server fails the booking and walk-with-us specs instead of skipping them. The 14 remaining E2E skips are deliberate device exclusions (desktop-only vs mobile-only specs). |
 | `npm run check` | `lint` + `typecheck` + `test`, in that order. Run this (plus `test:e2e` separately) before opening a PR. |
 | `npm run copy:extract` / `npm run copy:apply` | The founder copy-review round trip — see `docs/copy/README.md`. |
 

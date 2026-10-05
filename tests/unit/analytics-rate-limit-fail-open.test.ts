@@ -14,8 +14,8 @@
  * Skips (with a reason, not silently) when the emulator is unreachable.
  */
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
+import { FIRESTORE_EMULATOR_HOST as EMULATOR, firestoreEmulatorReachable } from '../support/emulatorGate';
 
-const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const PROJECT = 'demo-analytics-failopen';
 
 process.env.FIRESTORE_EMULATOR_HOST = EMULATOR;
@@ -40,14 +40,7 @@ vi.mock('@/lib/server/firestoreRest', async (importOriginal) => {
 
 let reachable = false;
 
-async function emulatorUp() {
-  try {
-    await fetch(`http://${EMULATOR}/`, { signal: AbortSignal.timeout(750) });
-    return true;
-  } catch {
-    return false;
-  }
-}
+const emulatorUp = firestoreEmulatorReachable;
 
 async function clearFirestore() {
   await fetch(`http://${EMULATOR}/emulator/v1/projects/${PROJECT}/databases/(default)/documents`, { method: 'DELETE' });

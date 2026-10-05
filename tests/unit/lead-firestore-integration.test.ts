@@ -18,8 +18,8 @@
  * `npm run emulators`, then `npm test`.
  */
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
+import { FIRESTORE_EMULATOR_HOST as EMULATOR, firestoreEmulatorReachable } from '../support/emulatorGate';
 
-const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const SKIP_REASON =
   `Firestore emulator not reachable at ${EMULATOR}. Start it with \`npm run emulators\` ` +
   `(needs a Java runtime). This suite is unverified until it runs — a skip is not a pass.`;
@@ -36,14 +36,7 @@ vi.mock('@/lib/email/resend', () => ({
 
 let reachable = false;
 
-async function emulatorUp() {
-  try {
-    await fetch(`http://${EMULATOR}/`, { signal: AbortSignal.timeout(750) });
-    return true;
-  } catch {
-    return false;
-  }
-}
+const emulatorUp = firestoreEmulatorReachable;
 
 /** Wipe the emulator project between tests so ids from one case cannot leak into another. */
 async function clearFirestore() {

@@ -14,8 +14,8 @@ import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vite
 import { NextRequest } from 'next/server';
 import { applicationPayload } from './bench-fixtures';
 import { DEFAULT_BENCH_SETTINGS } from '@/lib/bench/contract';
+import { FIRESTORE_EMULATOR_HOST as EMULATOR, firestoreEmulatorReachable } from '../support/emulatorGate';
 
-const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const PROJECT = 'demo-not-the-rug';
 process.env.FIRESTORE_EMULATOR_HOST = EMULATOR;
 process.env.FIREBASE_ADMIN_PROJECT_ID = PROJECT;
@@ -57,12 +57,7 @@ let ipCounter = 0;
 const PDF = Buffer.from('%PDF-1.7 synthetic resume');
 
 beforeAll(async () => {
-  try {
-    await realFetch(`http://${EMULATOR}/`, { signal: AbortSignal.timeout(750) });
-    reachable = true;
-  } catch {
-    reachable = false;
-  }
+  reachable = await firestoreEmulatorReachable();
 });
 
 beforeEach(async () => {

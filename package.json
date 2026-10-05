@@ -12,6 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:analytics": "playwright test --config playwright.analytics.config.ts",
+    "test:emulators": "REQUIRE_EMULATORS=1 vitest run --reporter=default --reporter=json --outputFile.json=test-results/vitest-emulators.json && node tests/support/check-required-emulator-run.mjs test-results/vitest-emulators.json",
     "check": "npm run lint && npm run typecheck && npm run test",
     "brief:not-the-rug": "node not-the-rug-brief/run.js --client not-the-rug",
     "brief:not-the-rug:fresh": "node not-the-rug-brief/run.js --client not-the-rug --fresh",

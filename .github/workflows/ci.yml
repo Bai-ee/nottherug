@@ -1,5 +1,9 @@
 name: CI
 
+# No implicit registry scans: installs never run an audit.
+env:
+  npm_config_audit: 'false'
+
 on:
   push:
     branches: [main]
@@ -16,7 +20,7 @@ jobs:
           node-version: 24
           cache: npm
 
-      - run: npm ci
+      - run: npm ci --no-audit
 
       - run: npm run lint
       - run: npm run lint:pipeline
@@ -49,6 +53,9 @@ jobs:
           PUBLIC_BASE_URL: https://example.test
 
       - run: npm run typecheck
+      # The emulator-backed suites skip here (no emulator in this job) and say
+      # so in the output. That is expected: the `emulators` job below is the
+      # gate for them and fails if any of them skips.
       - run: npm test
 
   e2e:
@@ -61,7 +68,7 @@ jobs:
           node-version: 24
           cache: npm
 
-      - run: npm ci
+      - run: npm ci --no-audit
       # The mobile project emulates an iPhone 13, which runs in WebKit.
       - run: npx playwright install --with-deps chromium webkit
 
@@ -94,6 +101,127 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: playwright-report-e2e
+          path: |
+            playwright-report/
+            test-results/
           retention-days: 7
+          if-no-files-found: warn
+
+  # Firestore + Storage emulators, required. Runs the whole unit suite so every
+  # emulator-backed file executes for real: rules (default deny), the
+  # booking/analytics/bench round trips, and the Firestore REST preconditions.
+  # REQUIRE_EMULATORS=1 turns "emulator unreachable" into a failure, and
+  # tests/support/check-required-emulator-run.mjs fails the job if any of those
+  # suites ran zero tests or anything was skipped.
+  emulators:
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOOLS_VERSION: 15.15.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - run: npm ci --no-audit
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}-${{ env.FIREBASE_TOOLS_VERSION }}
+
+      # `demo-` project: the emulators never contact a real Firebase project.
+      # emulators:exec exports FIRESTORE_EMULATOR_HOST and
+      # FIREBASE_STORAGE_EMULATOR_HOST to the command it runs.
+      - name: Unit suite with required emulators
+        run: >
+          npx --yes firebase-tools@${FIREBASE_TOOLS_VERSION} emulators:exec
+          --only firestore,storage --project demo-not-the-rug
+          "npm run test:emulators"
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: vitest-emulators
+          path: test-results/vitest-emulators.json
+          retention-days: 7
+          if-no-files-found: warn
+
+  # The analytics specs need a build with tracking on (NEXT_PUBLIC_* values are
+  # inlined at build time), so they get their own build rather than changing
+  # the production-like build the `e2e` job tests. Test mode tags every event
+  # mode:'test', keeping this traffic out of production numbers. The server
+  # runs under the Firestore emulator, so /api/track writes land there and
+  # nothing can reach a real project.
+  e2e-analytics:
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOOLS_VERSION: 15.15.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - run: npm ci --no-audit
+      - run: npx playwright install --with-deps chromium webkit
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}-${{ env.FIREBASE_TOOLS_VERSION }}
+
+      - name: Throwaway Firebase config for the build
+        run: |
+          {
+            echo "FIREBASE_ADMIN_PROJECT_ID=ci-build"
+            echo "FIREBASE_ADMIN_CLIENT_EMAIL=ci-build@ci-build.iam.gserviceaccount.com"
+            echo "FIREBASE_ADMIN_PRIVATE_KEY=$(openssl genrsa 2048 2>/dev/null | awk '{printf "%s\\n", $0}')"
+            echo "NEXT_PUBLIC_FIREBASE_API_KEY=ci-build-api-key"
+            echo "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=ci-build.firebaseapp.com"
+            echo "NEXT_PUBLIC_FIREBASE_PROJECT_ID=ci-build"
+            echo "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=ci-build.appspot.com"
+            echo "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=0"
+            echo "NEXT_PUBLIC_FIREBASE_APP_ID=1:0:web:0"
+          } >> "$GITHUB_ENV"
+
+      - run: npm run build
+        env:
+          PUBLIC_BASE_URL: https://example.test
+          NEXT_PUBLIC_ANALYTICS_ENABLED: 'true'
+          NEXT_PUBLIC_ANALYTICS_TEST_MODE: 'true'
+
+      # playwright.analytics.config.ts starts `npm run start` itself, inside the
+      # emulator wrapper so the server inherits FIRESTORE_EMULATOR_HOST.
+      - name: Analytics E2E
+        run: >
+          npx --yes firebase-tools@${FIREBASE_TOOLS_VERSION} emulators:exec
+          --only firestore --project demo-not-the-rug
+          "npm run test:e2e:analytics"
+        env:
+          E2E_ANALYTICS_ENABLED: '1'
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-analytics
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: warn
