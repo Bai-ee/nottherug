@@ -1,0 +1,9 @@
+
+ RUN  v5.0.0 /Users/bballi/Documents/Repos/NotTheRug
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  12:40:14
+   Duration  248ms (import 52%, transform 35%, tests 10%, worker 3%)
+

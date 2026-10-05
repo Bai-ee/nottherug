@@ -1,0 +1,1035 @@
+{
+  "timestamp": "2026-10-01T17:39:49.682Z",
+  "url": "https://nottherug-ten.vercel.app",
+  "conditions": "Chromium, cold contexts, no CPU/network throttling; analytics POSTs intercepted; no form submissions",
+  "pages": [
+    {
+      "width": 375,
+      "status": 200,
+      "errors": [],
+      "ctaReadyAt": 5182,
+      "title": "Not The Rug — Williamsburg Dog Walking Since 2011",
+      "h1": "YOUR PEACE OF MIND IS\nTHEIR FAVORITE PART OF THE DAY.",
+      "overflow": false,
+      "lcp": [
+        {
+          "t": 676,
+          "tag": "IMG",
+          "id": "home-intro-walker-silhouette",
+          "url": "https://nottherug-ten.vercel.app/img/3Top.png"
+        },
+        {
+          "t": 2572,
+          "tag": "DIV",
+          "id": "home-intro-overlay",
+          "url": "https://nottherug-ten.vercel.app/textures/paper-grain.png"
+        }
+      ],
+      "cls": 0,
+      "navigation": [
+        {
+          "ttfb": 204.7999999821186,
+          "domContentLoaded": 585.0999999940395,
+          "load": 3378
+        }
+      ],
+      "resources": [
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/1b99372b3eaef0c8-s.p.1ay-qk1u8nydy.woff2",
+          "type": "link",
+          "bytes": 32528,
+          "body": 32228,
+          "duration": 238.30000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/5f440d3eea613716-s.p.15zaksznb5cf5.woff2",
+          "type": "link",
+          "bytes": 11888,
+          "body": 11588,
+          "duration": 72.09999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/791bf8c4bb753ed6-s.p.0rg7ym60g9xsl.woff2",
+          "type": "link",
+          "bytes": 67688,
+          "body": 67388,
+          "duration": 53.900000005960464
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/8010b10db0d5feb2-s.p.0hamgza7cpt1x.woff2",
+          "type": "link",
+          "bytes": 82004,
+          "body": 81704,
+          "duration": 213
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/9a800f173b8d9e8f-s.p.17wwyr13fqy14.woff2",
+          "type": "link",
+          "bytes": 28756,
+          "body": 28456,
+          "duration": 58.70000001788139
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/87d3ffffac5dafea-s.p.1e8puyswpvmbr.woff2",
+          "type": "link",
+          "bytes": 11492,
+          "body": 11192,
+          "duration": 92.40000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/horiz_logo_off_white.png",
+          "type": "link",
+          "bytes": 52466,
+          "body": 52166,
+          "duration": 121.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/3Top.png",
+          "type": "link",
+          "bytes": 97185,
+          "body": 96885,
+          "duration": 160.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/fabcf92ba1ccea36-s.p.3jvga4rcv46fc.woff2",
+          "type": "link",
+          "bytes": 8896,
+          "body": 8596,
+          "duration": 204
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/paw-rail-left.webp",
+          "type": "link",
+          "bytes": 2446,
+          "body": 2146,
+          "duration": 121.89999997615814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/paw-rail-right.webp",
+          "type": "link",
+          "bytes": 2412,
+          "body": 2112,
+          "duration": 204
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/34zsoodyqroi4.css",
+          "type": "link",
+          "bytes": 22170,
+          "body": 21870,
+          "duration": 87
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/3wzvnw1hf5gtl.css",
+          "type": "link",
+          "bytes": 1944,
+          "body": 1644,
+          "duration": 160.90000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0q1b-v0zam2o7.js",
+          "type": "link",
+          "bytes": 2585,
+          "body": 2285,
+          "duration": 64.39999997615814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0ws7t_wz4dvp7.js",
+          "type": "script",
+          "bytes": 9010,
+          "body": 8710,
+          "duration": 64.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/2corl6wyj4669.js",
+          "type": "script",
+          "bytes": 4104,
+          "body": 3804,
+          "duration": 53.099999994039536
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0-ag9jwgf4la_.js",
+          "type": "script",
+          "bytes": 12170,
+          "body": 11870,
+          "duration": 63.599999994039536
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/turbopack-2zhrjmpmt5yhi.js",
+          "type": "script",
+          "bytes": 4798,
+          "body": 4498,
+          "duration": 64.09999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0d53lwnwnoaev.js",
+          "type": "script",
+          "bytes": 10589,
+          "body": 10289,
+          "duration": 87.2999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/05_7sgamnuvj4.js",
+          "type": "script",
+          "bytes": 75116,
+          "body": 74816,
+          "duration": 114.69999998807907
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/1a_tw_78peqi4.js",
+          "type": "script",
+          "bytes": 6865,
+          "body": 6565,
+          "duration": 202.40000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/1oyj1n72-7lba.js",
+          "type": "script",
+          "bytes": 43592,
+          "body": 43292,
+          "duration": 230.2999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/14ashwyxmwrgo.js",
+          "type": "script",
+          "bytes": 1350,
+          "body": 1050,
+          "duration": 63.80000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/10j1yyad1ebd7.js",
+          "type": "script",
+          "bytes": 12981,
+          "body": 12681,
+          "duration": 64.40000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0re9juckryz8c.js",
+          "type": "script",
+          "bytes": 25479,
+          "body": 25179,
+          "duration": 87.69999998807907
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/2wp50s9wdxc7_.js",
+          "type": "script",
+          "bytes": 9095,
+          "body": 8795,
+          "duration": 161.09999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/3phyv9y0m1-ib.js",
+          "type": "script",
+          "bytes": 13470,
+          "body": 13170,
+          "duration": 196.30000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/video/hero-mccarren-poster.webp",
+          "type": "video",
+          "bytes": 32294,
+          "body": 31994,
+          "duration": 159.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/textures/paper-grain.png",
+          "type": "css",
+          "bytes": 34585,
+          "body": 34285,
+          "duration": 1182.699999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/tape/tape-service.webp",
+          "type": "css",
+          "bytes": 1476,
+          "body": 1176,
+          "duration": 1443.4000000059605
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/hero-walker-strip.webp",
+          "type": "css",
+          "bytes": 199872,
+          "body": 199572,
+          "duration": 1475.199999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-graphic-1.webp",
+          "type": "img",
+          "bytes": 292320,
+          "body": 292020,
+          "duration": 2321
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-1-cover.webp",
+          "type": "css",
+          "bytes": 136354,
+          "body": 136054,
+          "duration": 1963.5999999940395
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/luis.jpg",
+          "type": "css",
+          "bytes": 225985,
+          "body": 225685,
+          "duration": 2319.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/marcus.jpg",
+          "type": "css",
+          "bytes": 249073,
+          "body": 248773,
+          "duration": 2246.399999976158
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/lincoln.jpg",
+          "type": "css",
+          "bytes": 243523,
+          "body": 243223,
+          "duration": 2417.199999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/shawn.jpg",
+          "type": "css",
+          "bytes": 242228,
+          "body": 241928,
+          "duration": 2227.2999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/christian.jpg",
+          "type": "css",
+          "bytes": 113993,
+          "body": 113693,
+          "duration": 2244
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/yenny.jpg",
+          "type": "css",
+          "bytes": 336341,
+          "body": 336041,
+          "duration": 2402.0999999940395
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/tape/tape-review.webp",
+          "type": "css",
+          "bytes": 1562,
+          "body": 1262,
+          "duration": 957.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-graphic-2.webp",
+          "type": "css",
+          "bytes": 139120,
+          "body": 138820,
+          "duration": 1681.800000011921
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-2-cover.webp",
+          "type": "css",
+          "bytes": 114502,
+          "body": 114202,
+          "duration": 1397.199999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/pawl.png",
+          "type": "img",
+          "bytes": 264869,
+          "body": 264569,
+          "duration": 2220.4000000059605
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/pawr.png",
+          "type": "img",
+          "bytes": 265021,
+          "body": 264721,
+          "duration": 2134.0999999940395
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/api/track",
+          "type": "beacon",
+          "bytes": 311,
+          "body": 11,
+          "duration": 26.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0c57cqi9-burh.js",
+          "type": "script",
+          "bytes": 1060,
+          "body": 760,
+          "duration": 1465.2999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/1x-x20xxf06sd.js",
+          "type": "script",
+          "bytes": 29410,
+          "body": 29110,
+          "duration": 1324.699999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0hkhg26z8p7fr.js",
+          "type": "script",
+          "bytes": 18572,
+          "body": 18272,
+          "duration": 1295.2000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=5CB68i4pnAekjehf",
+          "type": "fetch",
+          "bytes": 712,
+          "body": 412,
+          "duration": 1739.3999999761581
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/book?_rsc=5CB68i4pnAekjehf",
+          "type": "fetch",
+          "bytes": 441,
+          "body": 141,
+          "duration": 1710.7999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/?_rsc=tXyZJ52UQVBCVsD3",
+          "type": "fetch",
+          "bytes": 1211,
+          "body": 911,
+          "duration": 1743.2999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/book?_rsc=tXyZJ52UQVBCVsD3",
+          "type": "fetch",
+          "bytes": 1186,
+          "body": 886,
+          "duration": 1003.4000000059605
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=yIp22O3xgPPxC28X",
+          "type": "fetch",
+          "bytes": 3221,
+          "body": 2921,
+          "duration": 1002.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=-ifekjItyoC3r9jU",
+          "type": "fetch",
+          "bytes": 3226,
+          "body": 2926,
+          "duration": 1002.8000000119209
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=mJ277bx9bi71Q-1k",
+          "type": "fetch",
+          "bytes": 3481,
+          "body": 3181,
+          "duration": 1002.2000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/177a2vvt8rrb7.js",
+          "type": "script",
+          "bytes": 9302,
+          "body": 9002,
+          "duration": 248
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0ue0ir4o4wc0q.js",
+          "type": "script",
+          "bytes": 6236,
+          "body": 5936,
+          "duration": 25.099999994039536
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/2ib1jctgdf9m3.js",
+          "type": "script",
+          "bytes": 10442,
+          "body": 10142,
+          "duration": 25.099999994039536
+        }
+      ],
+      "videos": [
+        {
+          "src": "https://nottherug-ten.vercel.app/video/hero-mccarren-1080.webm",
+          "paused": false,
+          "readyState": 4
+        }
+      ],
+      "brokenImages": []
+    },
+    {
+      "width": 1440,
+      "status": 200,
+      "errors": [],
+      "ctaReadyAt": 5439.0999999940395,
+      "title": "Not The Rug — Williamsburg Dog Walking Since 2011",
+      "h1": "YOUR PEACE\nOF MIND IS\nTHEIR FAVORITE\nPART OF THE DAY.",
+      "overflow": false,
+      "lcp": [
+        {
+          "t": 560,
+          "tag": "IMG",
+          "id": "home-intro-walker-silhouette",
+          "url": "https://nottherug-ten.vercel.app/img/3Top.png"
+        },
+        {
+          "t": 2848,
+          "tag": "SECTION",
+          "id": "home-hero-section",
+          "url": "https://nottherug-ten.vercel.app/img/hero-walker-strip.webp"
+        }
+      ],
+      "cls": 0,
+      "navigation": [
+        {
+          "ttfb": 126.2000000178814,
+          "domContentLoaded": 460.2000000178814,
+          "load": 3170.2000000178814
+        }
+      ],
+      "resources": [
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/1b99372b3eaef0c8-s.p.1ay-qk1u8nydy.woff2",
+          "type": "link",
+          "bytes": 32528,
+          "body": 32228,
+          "duration": 116.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/791bf8c4bb753ed6-s.p.0rg7ym60g9xsl.woff2",
+          "type": "link",
+          "bytes": 67688,
+          "body": 67388,
+          "duration": 207.90000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/5f440d3eea613716-s.p.15zaksznb5cf5.woff2",
+          "type": "link",
+          "bytes": 11888,
+          "body": 11588,
+          "duration": 318.09999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/8010b10db0d5feb2-s.p.0hamgza7cpt1x.woff2",
+          "type": "link",
+          "bytes": 82004,
+          "body": 81704,
+          "duration": 307.69999998807907
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/87d3ffffac5dafea-s.p.1e8puyswpvmbr.woff2",
+          "type": "link",
+          "bytes": 11492,
+          "body": 11192,
+          "duration": 95.40000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/fabcf92ba1ccea36-s.p.3jvga4rcv46fc.woff2",
+          "type": "link",
+          "bytes": 8896,
+          "body": 8596,
+          "duration": 97.59999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/media/9a800f173b8d9e8f-s.p.17wwyr13fqy14.woff2",
+          "type": "link",
+          "bytes": 28756,
+          "body": 28456,
+          "duration": 96.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/3Top.png",
+          "type": "link",
+          "bytes": 97185,
+          "body": 96885,
+          "duration": 228.80000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/horiz_logo_off_white.png",
+          "type": "link",
+          "bytes": 52466,
+          "body": 52166,
+          "duration": 317.59999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/paw-rail-right.webp",
+          "type": "link",
+          "bytes": 2412,
+          "body": 2112,
+          "duration": 229.10000002384186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/paw-rail-left.webp",
+          "type": "link",
+          "bytes": 2446,
+          "body": 2146,
+          "duration": 244.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/3wzvnw1hf5gtl.css",
+          "type": "link",
+          "bytes": 1944,
+          "body": 1644,
+          "duration": 96.39999997615814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0q1b-v0zam2o7.js",
+          "type": "link",
+          "bytes": 2585,
+          "body": 2285,
+          "duration": 109.89999997615814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0ws7t_wz4dvp7.js",
+          "type": "script",
+          "bytes": 9010,
+          "body": 8710,
+          "duration": 114.2999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/34zsoodyqroi4.css",
+          "type": "link",
+          "bytes": 22170,
+          "body": 21870,
+          "duration": 159.19999998807907
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/1a_tw_78peqi4.js",
+          "type": "script",
+          "bytes": 6865,
+          "body": 6565,
+          "duration": 110.7999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/2corl6wyj4669.js",
+          "type": "script",
+          "bytes": 4104,
+          "body": 3804,
+          "duration": 156.7999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/turbopack-2zhrjmpmt5yhi.js",
+          "type": "script",
+          "bytes": 4798,
+          "body": 4498,
+          "duration": 160.19999998807907
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/05_7sgamnuvj4.js",
+          "type": "script",
+          "bytes": 75116,
+          "body": 74816,
+          "duration": 178.90000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/1oyj1n72-7lba.js",
+          "type": "script",
+          "bytes": 43592,
+          "body": 43292,
+          "duration": 325.2999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/14ashwyxmwrgo.js",
+          "type": "script",
+          "bytes": 1350,
+          "body": 1050,
+          "duration": 115.19999998807907
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0d53lwnwnoaev.js",
+          "type": "script",
+          "bytes": 10589,
+          "body": 10289,
+          "duration": 115.59999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0re9juckryz8c.js",
+          "type": "script",
+          "bytes": 25479,
+          "body": 25179,
+          "duration": 134.90000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/2wp50s9wdxc7_.js",
+          "type": "script",
+          "bytes": 9095,
+          "body": 8795,
+          "duration": 135.90000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/10j1yyad1ebd7.js",
+          "type": "script",
+          "bytes": 12981,
+          "body": 12681,
+          "duration": 136.09999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0-ag9jwgf4la_.js",
+          "type": "script",
+          "bytes": 12170,
+          "body": 11870,
+          "duration": 137.90000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/3phyv9y0m1-ib.js",
+          "type": "script",
+          "bytes": 13470,
+          "body": 13170,
+          "duration": 155.30000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/video/hero-mccarren-poster.webp",
+          "type": "video",
+          "bytes": 32294,
+          "body": 31994,
+          "duration": 242.30000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/textures/paper-grain.png",
+          "type": "css",
+          "bytes": 34585,
+          "body": 34285,
+          "duration": 1290
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/tape/tape-service.webp",
+          "type": "css",
+          "bytes": 1476,
+          "body": 1176,
+          "duration": 1061
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/3Top-flipped.png",
+          "type": "css",
+          "bytes": 95506,
+          "body": 95206,
+          "duration": 1569
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/hero-walker-strip.webp",
+          "type": "css",
+          "bytes": 199872,
+          "body": 199572,
+          "duration": 1763.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/tape/tape-review.webp",
+          "type": "css",
+          "bytes": 1562,
+          "body": 1262,
+          "duration": 1288.699999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-graphic-1.webp",
+          "type": "img",
+          "bytes": 292320,
+          "body": 292020,
+          "duration": 1755.7999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-1-cover.webp",
+          "type": "css",
+          "bytes": 136354,
+          "body": 136054,
+          "duration": 1668.7999999821186
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/luis.jpg",
+          "type": "css",
+          "bytes": 225985,
+          "body": 225685,
+          "duration": 2033.9000000059605
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/christian.jpg",
+          "type": "css",
+          "bytes": 113993,
+          "body": 113693,
+          "duration": 1281.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/marcus.jpg",
+          "type": "css",
+          "bytes": 249073,
+          "body": 248773,
+          "duration": 1700.199999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/lincoln.jpg",
+          "type": "css",
+          "bytes": 243523,
+          "body": 243223,
+          "duration": 1761.699999988079
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/shawn.jpg",
+          "type": "css",
+          "bytes": 242228,
+          "body": 241928,
+          "duration": 1876.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/team/yenny.jpg",
+          "type": "css",
+          "bytes": 336341,
+          "body": 336041,
+          "duration": 2033.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-graphic-2.webp",
+          "type": "css",
+          "bytes": 139120,
+          "body": 138820,
+          "duration": 1353.8999999761581
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/bg-section-2-cover.webp",
+          "type": "css",
+          "bytes": 114502,
+          "body": 114202,
+          "duration": 1374.5999999940395
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/pawl.png",
+          "type": "img",
+          "bytes": 264869,
+          "body": 264569,
+          "duration": 1976.8999999761581
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/img/pawr.png",
+          "type": "img",
+          "bytes": 265021,
+          "body": 264721,
+          "duration": 1944.9000000059605
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/image?url=%2Fimg%2Finstagram%2Fplaceholder-03.jpg&w=384&q=75&dpl=dpl_3VkTLf7F6PenqisfW3ayW1AcXRR1",
+          "type": "img",
+          "bytes": 21636,
+          "body": 21336,
+          "duration": 1371.6000000238419
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/image?url=%2Flogos%2FnotRugGreen.png&w=384&q=75&dpl=dpl_3VkTLf7F6PenqisfW3ayW1AcXRR1",
+          "type": "img",
+          "bytes": 12552,
+          "body": 12252,
+          "duration": 1460.6000000238419
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/image?url=%2Fimg%2Finstagram%2Fplaceholder-01.jpg&w=384&q=75&dpl=dpl_3VkTLf7F6PenqisfW3ayW1AcXRR1",
+          "type": "img",
+          "bytes": 16338,
+          "body": 16038,
+          "duration": 1590.300000011921
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/image?url=%2Fimg%2Finstagram%2Fplaceholder-04.jpg&w=384&q=75&dpl=dpl_3VkTLf7F6PenqisfW3ayW1AcXRR1",
+          "type": "img",
+          "bytes": 16804,
+          "body": 16504,
+          "duration": 1590.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/image?url=%2Fimg%2Finstagram%2Fplaceholder-05.jpg&w=384&q=75&dpl=dpl_3VkTLf7F6PenqisfW3ayW1AcXRR1",
+          "type": "img",
+          "bytes": 17208,
+          "body": 16908,
+          "duration": 1597.1000000238419
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/image?url=%2Fimg%2Finstagram%2Fplaceholder-02.jpg&w=384&q=75&dpl=dpl_3VkTLf7F6PenqisfW3ayW1AcXRR1",
+          "type": "img",
+          "bytes": 14984,
+          "body": 14684,
+          "duration": 1620.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/api/track",
+          "type": "beacon",
+          "bytes": 311,
+          "body": 11,
+          "duration": 27.30000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0c57cqi9-burh.js",
+          "type": "script",
+          "bytes": 1060,
+          "body": 760,
+          "duration": 1660
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/1x-x20xxf06sd.js",
+          "type": "script",
+          "bytes": 29410,
+          "body": 29110,
+          "duration": 1761.300000011921
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0hkhg26z8p7fr.js",
+          "type": "script",
+          "bytes": 18572,
+          "body": 18272,
+          "duration": 1761.4000000059605
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/walk-with-us?_rsc=5CB68i4pnAekjehf",
+          "type": "fetch",
+          "bytes": 449,
+          "body": 149,
+          "duration": 1678.0999999940395
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/book?_rsc=5CB68i4pnAekjehf",
+          "type": "fetch",
+          "bytes": 441,
+          "body": 141,
+          "duration": 1678.300000011921
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/?_rsc=tXyZJ52UQVBCVsD3",
+          "type": "fetch",
+          "bytes": 1210,
+          "body": 910,
+          "duration": 1733.5
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=5CB68i4pnAekjehf",
+          "type": "fetch",
+          "bytes": 712,
+          "body": 412,
+          "duration": 1764.6000000238419
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/walk-with-us?_rsc=tXyZJ52UQVBCVsD3",
+          "type": "fetch",
+          "bytes": 1226,
+          "body": 926,
+          "duration": 488.19999998807907
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/book?_rsc=tXyZJ52UQVBCVsD3",
+          "type": "fetch",
+          "bytes": 1183,
+          "body": 883,
+          "duration": 486.80000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=yIp22O3xgPPxC28X",
+          "type": "fetch",
+          "bytes": 3221,
+          "body": 2921,
+          "duration": 87.59999999403954
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=-ifekjItyoC3r9jU",
+          "type": "fetch",
+          "bytes": 3226,
+          "body": 2926,
+          "duration": 87.40000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/contact?_rsc=mJ277bx9bi71Q-1k",
+          "type": "fetch",
+          "bytes": 3481,
+          "body": 3181,
+          "duration": 86.40000000596046
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/177a2vvt8rrb7.js",
+          "type": "script",
+          "bytes": 9302,
+          "body": 9002,
+          "duration": 95.80000001192093
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/0ue0ir4o4wc0q.js",
+          "type": "script",
+          "bytes": 6236,
+          "body": 5936,
+          "duration": 95.7000000178814
+        },
+        {
+          "url": "https://nottherug-ten.vercel.app/_next/static/immutable/chunks/2ib1jctgdf9m3.js",
+          "type": "script",
+          "bytes": 10442,
+          "body": 10142,
+          "duration": 101.80000001192093
+        }
+      ],
+      "videos": [
+        {
+          "src": "https://nottherug-ten.vercel.app/video/hero-mccarren-1080.webm",
+          "paused": false,
+          "readyState": 4
+        }
+      ],
+      "brokenImages": []
+    }
+  ],
+  "probes": [
+    {
+      "path": "/book",
+      "status": 200,
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/contact",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/walk-with-us",
+      "status": 200,
+      "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "body": "User-Agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin/\nDisallow: /playground\nDisallow: /playground/\nDisallow: /api\nDisallow: /api/\n\nSitemap: https://nottherug-ten.vercel.app//sitemap.xml\n"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n<url>\n<loc>https://nottherug-ten.vercel.app//</loc>\n<changefreq>weekly</changefreq>\n<priority>1</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//services</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//how-it-works</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//about</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//safety</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//neighborhoods/williamsburg</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//reviews</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//book</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n<url>\n<loc>https://nottherug-ten.vercel.app//signup</loc>\n<changefreq>monthly</changefreq>\n<priority>0.7</priority>\n</url>\n</urlset>\n"
+    },
+    {
+      "path": "/services",
+      "status": 307,
+      "location": "/#home-personalized-care-section",
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/how-it-works",
+      "status": 307,
+      "location": "/#home-how-it-works-block",
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/admin/leads",
+      "status": 401,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/api/admin/analytics",
+      "status": 401,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/api/admin/photos/list",
+      "status": 401,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/api/admin/bench/people",
+      "status": 401,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/admin/not-the-rug/latest-brief",
+      "status": 401,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/playground/service-cards",
+      "status": 404,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    }
+  ]
+}

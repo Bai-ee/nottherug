@@ -1,0 +1,22 @@
+/** Audit reproduction: synthetic applicant and mocked private storage only. */
+import { expect, it, vi } from 'vitest';
+import { createHash } from 'node:crypto';
+const state=vi.hoisted(()=>({person:{} as Record<string,unknown>,uploads:0,release:()=>{}}));
+vi.mock('@/lib/server/bench',()=>({
+ getBenchPerson:vi.fn(async()=>({...state.person})),
+ isBenchPersonId:()=>true,
+ saveBenchPerson:vi.fn(async(person:Record<string,unknown>)=>{state.person=person;}),
+}));
+vi.mock('@/lib/server/benchIntake',()=>({checkBenchRateLimit:async()=>true,clientIp:()=> '192.0.2.1',hashResumeToken:(token:string)=>createHash('sha256').update(token).digest('hex')}));
+vi.mock('@/lib/server/firebaseStorage',()=>({storageUploadPrivate:vi.fn(async()=>{
+ state.uploads++;
+ state.person.notes='New note from concurrent admin edit';
+ if(state.uploads===1)await new Promise<void>(r=>{state.release=r;});else state.release();
+})}));
+import { POST } from '@/app/api/bench/apply/resume/route';
+it('CONFIRMED: a single resume token authorizes two concurrent writes and stale save overwrites notes',async()=>{
+ const token='synthetic-token';state.person={id:'bench_test',notes:'Original note',resumeUploadTokenHash:createHash('sha256').update(token).digest('hex'),resumeUploadExpiresAt:new Date(Date.now()+300000).toISOString()};
+ function request(){const f=new FormData();f.set('personId','bench_test');f.set('token',token);f.set('file',new Blob(['%PDF-1.4 synthetic audit file'],{type:'application/pdf'}),'audit.pdf');return new Request('https://example.test/api/bench/apply/resume',{method:'POST',body:f});}
+ const responses=await Promise.all([POST(request()),POST(request())]);
+ expect(responses.map(r=>r.status)).toEqual([200,200]);expect(state.uploads).toBe(2);expect(state.person.notes).toBe('Original note');
+});

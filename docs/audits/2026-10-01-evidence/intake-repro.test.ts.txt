@@ -1,0 +1,33 @@
+/** Temporary audit reproductions; mocked providers, no network or real records. */
+import { expect, it, vi, beforeEach, afterEach } from 'vitest';
+const state=vi.hoisted(()=>({ docs:new Map<string,Record<string,unknown>>(), counters:new Map<string,number>(), race:false }));
+vi.mock('@/lib/server/firestoreRest',()=>({
+ fsIncrementField:vi.fn(async(path:string,_field:string,amount:number)=>{const n=(state.counters.get(path)||0)+amount;state.counters.set(path,n);return n;}),
+ fsGetDoc:vi.fn(async(path:string)=>{const data=state.docs.get(path);return data?{exists:true,data:{...data}}:{exists:false};}),
+ fsMergeDoc:vi.fn(async(path:string,data:Record<string,unknown>)=>{
+  if(state.race&&path.startsWith('leads/capture_')){state.docs.set(path,{...state.docs.get(path),status:'converted',convertedLeadId:'full-lead'});state.race=false;}
+  state.docs.set(path,{...state.docs.get(path),...data});
+ }),
+ fsCreateDoc:vi.fn(async(path:string,data:Record<string,unknown>)=>{if(state.docs.has(path))return {created:false};state.docs.set(path,data);return {created:true};}),
+}));
+vi.mock('@/lib/email/resend',()=>({getResend:()=>({emails:{send:vi.fn(async()=>({data:{id:'fake'},error:null}))}}),getFromAddress:()=> 'test@resend.dev',getFounderEmail:()=> 'founder@example.test'}));
+import {POST as capture,captureIdForEmail} from '@/app/api/leads/capture/route';
+import {POST as meetgreet} from '@/app/api/leads/meetgreet/route';
+const req=(path:string,body:unknown)=>new Request(`https://example.test${path}`,{method:'POST',headers:{'content-type':'application/json','x-forwarded-for':'192.0.2.1'},body:JSON.stringify(body)});
+beforeEach(()=>{state.docs.clear();state.counters.clear();state.race=false;vi.spyOn(Date,'now').mockReturnValue(Date.parse('2026-10-01T01:00:00Z'));});
+afterEach(()=>vi.restoreAllMocks());
+it('CONFIRMED: five successful captures exhaust final submission budget',async()=>{
+ for(let i=0;i<5;i++)expect((await capture(req('/api/leads/capture',{email:'owner@example.test',source:'home'}))).status).toBe(200);
+ const res=await meetgreet(req('/api/leads/meetgreet',{ownerName:'Test Owner',phone:'(347) 555-0100',email:'owner@example.test',neighborhood:'North Williamsburg',dogName:'Biscuit',breedAge:'Golden, 3 years',serviceInterest:'Daily Group Walks',vaccinations:'Yes — fully vaccinated',walkFrequency:'Daily (Mon–Fri)',notes:'',source:'book-page',reactivity:'None',allergies:'None',phoneConsult:true}));
+ expect(res.status).toBe(429);expect(state.counters.size).toBe(1);
+});
+it('CONFIRMED: capture overwrites a concurrent converted status with partial',async()=>{
+ const id=captureIdForEmail('owner@example.test');state.docs.set(`leads/${id}`,{status:'partial',submittedAt:'2026-10-01T00:00:00Z'});state.race=true;
+ expect((await capture(req('/api/leads/capture',{email:'owner@example.test',source:'home'}))).status).toBe(200);
+ expect(state.docs.get(`leads/${id}`)).toMatchObject({status:'partial',convertedLeadId:'full-lead'});
+});
+it('CONFIRMED: capture accepts over 4000 UTF-8 bytes without content-length',async()=>{
+ const body={email:'owner@example.test',source:'home',unused:'€'.repeat(2000)};
+ expect(Buffer.byteLength(JSON.stringify(body),'utf8')).toBeGreaterThan(6000);
+ expect((await capture(req('/api/leads/capture',body))).status).toBe(200);
+});
