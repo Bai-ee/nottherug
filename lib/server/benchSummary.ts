@@ -8,7 +8,7 @@ import {
   optionLabel,
   type BenchPerson,
 } from '@/lib/bench/contract';
-import { getBenchPerson, saveBenchPerson } from '@/lib/server/bench';
+import { getBenchPerson, mergeBenchPerson } from '@/lib/server/bench';
 
 /**
  * Optional AI summary of an application (plan §4.1, NYC Local Law 144).
@@ -126,7 +126,10 @@ export async function summarizeApplication(personId: string, blockLabels: Record
     if (!person) return;
     const summary = await requestSummary(buildApplicationPrompt(person, blockLabels));
     if (!summary) return;
-    await saveBenchPerson({ ...person, aiSummary: summary, updatedAt: new Date().toISOString() });
+    // Only aiSummary (plus the modified stamp) is written, and only while the
+    // person still exists: the model call can take a while, and an admin may
+    // have changed the stage or notes since the read above.
+    await mergeBenchPerson(personId, { aiSummary: summary, updatedAt: new Date().toISOString() }, { precondition: { exists: true } });
   } catch (err) {
     console.error('[bench:ai-summary] failed', err instanceof Error ? err.message : 'unknown');
   }

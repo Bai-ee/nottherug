@@ -15,19 +15,15 @@ const fsCreateDoc = vi.fn(async (path: string, data: Record<string, unknown>) =>
   docs.set(path, data);
   return { created: true };
 });
-const fsGetDoc = vi.fn(async (path: string) => {
-  const data = docs.get(path);
-  return data ? { exists: true, data } : { exists: false };
-});
 const fsSetDoc = vi.fn(async (path: string, data: Record<string, unknown>) => {
   docs.set(path, data);
 });
 const fsQueryCollection = vi.fn(async () => [...docs.entries()].filter(([p]) => p.startsWith('benchPeople/')).map(([, d]) => d));
 const fsIncrementField = vi.fn(async () => ++rateCount);
 
-vi.mock('@/lib/server/firestoreRest', () => ({
+vi.mock('@/lib/server/firestoreRest', async () => ({
+  ...(await import('./bench-fs-fake')).firestoreContractFake(() => docs),
   fsCreateDoc,
-  fsGetDoc,
   fsSetDoc,
   fsQueryCollection,
   fsIncrementField,
@@ -42,7 +38,8 @@ vi.mock('@/lib/email/resend', () => ({
 }));
 
 const storageUploadPrivate = vi.fn(async () => {});
-vi.mock('@/lib/server/firebaseStorage', () => ({ storageUploadPrivate }));
+const storageDelete = vi.fn(async () => {});
+vi.mock('@/lib/server/firebaseStorage', () => ({ storageUploadPrivate, storageDelete }));
 
 function post(body: unknown) {
   return new Request('http://localhost/api/bench/apply', {
@@ -208,7 +205,7 @@ describe('POST /api/bench/apply/resume', () => {
     const res = await POST(upload(id, resumeToken, Buffer.from('%PDF-1.7 test')));
 
     expect(res.status).toBe(200);
-    expect(storageUploadPrivate).toHaveBeenCalledWith(`private/bench-resumes/${id}.pdf`, expect.any(Buffer), 'application/pdf');
+    expect(storageUploadPrivate).toHaveBeenCalledWith(`private/bench-resumes/${id}.pdf`, expect.any(Buffer), 'application/pdf', expect.objectContaining({ timeoutMs: expect.any(Number) }));
     const person = stored(id);
     expect(person.resumePath).toBe(`private/bench-resumes/${id}.pdf`);
     expect(person.resumeUploadTokenHash).toBeNull();
@@ -240,6 +237,6 @@ describe('POST /api/bench/apply/resume', () => {
   it('400s a malformed person id before touching Firestore', async () => {
     const { POST } = await import('@/app/api/bench/apply/resume/route');
     expect((await POST(upload('../leads/x', 'token', Buffer.from('%PDF-1.7')))).status).toBe(400);
-    expect(fsGetDoc).not.toHaveBeenCalled();
+    expect(storageUploadPrivate).not.toHaveBeenCalled();
   });
 });
