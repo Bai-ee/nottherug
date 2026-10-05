@@ -301,11 +301,7 @@ async function markCaptureConverted(
 export async function POST(req: Request) {
   const requestStart = Date.now();
   const preEmailDeadline = requestStart + PRE_EMAIL_BUDGET_MS;
-  const declaredLength = req.headers.get('content-length');
-  if (declaredLength && Number(declaredLength) > MAX_BODY_BYTES) {
-    return errorResponse(413, 'Request body too large');
-  }
-
+  // readBoundedBody (via readCappedBody) also rejects an over-cap declared Content-Length up front.
   const bodyResult = await readCappedBody(req, MAX_BODY_BYTES);
   if (!bodyResult.ok) {
     return bodyResult.reason === 'too_large'
@@ -344,6 +340,10 @@ export async function POST(req: Request) {
   }
 
   // Bucket-boundary lookback: an identical retry that straddles the current
+  // bucket's start hashes to a different id than the original, so a plain
+  // fsCreateDoc race on `id` alone would miss it. Check the previous bucket's
+  // id first — if that document exists, this is the same submission.
+  //
   // Known limitation, deliberately not fixed with a transaction: this closes the
   // boundary for a *sequential* retry, which is the real-world case (client times
   // out, person taps submit again). Two genuinely simultaneous requests landing on
@@ -351,10 +351,6 @@ export async function POST(req: Request) {
   // the other's create commits, and both would be saved. That needs
   // millisecond-scale double submission at the exact top of an hour; the cost of a
   // read-write transaction on every booking is not worth closing it.
-
-  // bucket's start hashes to a different id than the original, so a plain
-  // fsCreateDoc race on `id` alone would miss it. Check the previous bucket's
-  // id first — if that document exists, this is the same submission.
   const previousWindowId = computeSubmissionKey(validation.data, dedupeWindowStart - SUBMISSION_DEDUPE_WINDOW_MS);
   try {
     const previous = await fsGetDoc(`leads/${previousWindowId}`, {
