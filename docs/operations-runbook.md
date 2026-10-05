@@ -284,12 +284,14 @@ Not needed to operate. Useful for understanding how production reached its curre
 
 The owner chose `https://nottherug.com` as the site's main address. As of 2026-10-05 the domain is **not** attached to the Vercel project (only `nottherug-ten.vercel.app` is), its DNS is at GoDaddy (`ns77/ns78.domaincontrol.com`), and it currently serves a different site behind a Sucuri firewall. Order matters, because canonical URLs, the sitemap, robots and email links follow `PUBLIC_BASE_URL`:
 
-1. Keep production `PUBLIC_BASE_URL` on the address that serves the site today (`https://nottherug-ten.vercel.app`) until step 4.
-2. In Vercel, add `nottherug.com` (and `www.nottherug.com`, redirecting to the apex) to project `nottherug`. Vercel shows the DNS records it needs.
-3. At GoDaddy, change the records Vercel asks for (this takes the current site at that address offline — plan the switch, and keep that site's content/backup if it is still needed). Wait until Vercel reports the domain as valid and `https://nottherug.com` serves this app with a certificate.
-4. Set production `PUBLIC_BASE_URL=https://nottherug.com` and redeploy (it is read at build time). Check `https://nottherug.com/robots.txt`, `/sitemap.xml`, a page's canonical link and an email link.
-5. Optionally make `nottherug-ten.vercel.app` redirect to `nottherug.com` in Vercel's domain settings.
-6. Update Google Search Console / Google Business profile links if they point at the old site.
+1. Keep production `PUBLIC_BASE_URL` on the address that serves the site today (`https://nottherug-ten.vercel.app`) until step 6.
+2. Before touching anything, record every current GoDaddy DNS record for `nottherug.com` (export or screenshot): A/CNAME, **MX, TXT (SPF, DKIM, DMARC, verification records)**. Email and verification records must survive the change.
+3. In Vercel, add `nottherug.com` (and `www.nottherug.com`, redirecting to the apex) to project `nottherug`. Vercel shows the DNS records it needs.
+4. At GoDaddy, change **only** the web records Vercel asks for (A for the apex, CNAME for `www`); leave MX/TXT untouched. This takes the current site at that address offline — plan the switch, and keep that site's content/backup if it is still needed. Wait until Vercel reports the domain as valid and `https://nottherug.com` serves this app with a certificate.
+5. Before switching the app to the new host: add `nottherug.com` (and `www.nottherug.com`) to Firebase Authentication → Settings → **Authorized domains**, or admin Google sign-in fails there; check any other allow-listed origins (e.g. Calendly embed settings); if the Resend sender should become `@nottherug.com`, verify that domain in Resend and only then change `RESEND_FROM_EMAIL`.
+6. Set production `PUBLIC_BASE_URL=https://nottherug.com` and redeploy (it is read at build time). Check `https://nottherug.com/robots.txt`, `/sitemap.xml`, a page's canonical link and an email link.
+7. Optionally make `nottherug-ten.vercel.app` redirect to `nottherug.com` in Vercel's domain settings.
+8. Update Google Search Console / Google Business profile links if they point at the old site.
 
-Rollback: set `PUBLIC_BASE_URL` back to the vercel.app address and redeploy; revert the GoDaddy records to their previous values (record them before step 3).
+Rollback: set `PUBLIC_BASE_URL` back to the vercel.app address and redeploy; revert the GoDaddy web records to the values recorded in step 2.
 
