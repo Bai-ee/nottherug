@@ -15,9 +15,9 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 | --- | --- | --- | --- | --- |
 | P0 | **Approved** | `3461c672b3298e87e180d2955d795eb82b6910d4` | [013-P0-report.md](013-P0-report.md), [Codex review](013-P0-codex-review.md) | `APPROVED P0 3461c672b3298e87e180d2955d795eb82b6910d4` |
 | P1 | **Approved** | `7833d996f002925ef87a3dd58fb956a1161bb5e7` | [013-P1-report.md](013-P1-report.md), [round 1](013-P1-codex-review-1.md) | `APPROVED P1 7833d99` (relayed by operator) |
-| P2 | Resubmitted after Codex round 1 | resubmission commit | [013-P2-report.md](013-P2-report.md), [CI addendum](013-P2-ci-addendum.md) | Round 1 (`35bb336`): CI verified, 1 change requested; resubmission PENDING |
-| P3 | Not started | — | — | — |
-| P4 | Not started | — | — | — |
+| P2 | **Approved** | `6e5b76440c56a9ff86c04a738ff5c0285b54a711` | [013-P2-report.md](013-P2-report.md), [CI addendum](013-P2-ci-addendum.md) | `APPROVED P2 6e5b764` (CI run 37340047637) |
+| P3 | In progress (run back-to-back with P4 per operator) | — | — | — |
+| P4 | In progress (combined P3+P4 report) | — | — | — |
 | P5 | Not started | — | — | — |
 
 ## Findings
@@ -28,17 +28,17 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 | F02 | P1 | Reproduced (mocked ordering) | B | Fixed; approved in P1 |
 | F03 | P1 | Reproduced | C | Fixed; approved in P1 |
 | F04 | P1 | Reproduced | A + B | Fixed; approved in P1 |
-| F05 | P2 | Confirmed: CI skips 61 emulator tests and 6 analytics E2E | F | Fixed in P2 candidate; awaiting Codex |
+| F05 | P2 | Confirmed: CI skips 61 emulator tests and 6 analytics E2E | F | Fixed; approved in P2 |
 | F06 | P3 | Not re-measured in P0 | — | Open |
 | F07 | P3 | Not re-measured in P0 | — | Open |
 | F08 | P3 | Confirmed: build marks `/` as dynamic (ƒ) | — | Open |
 | F09 | P4 | Not re-probed in P0 | — | Open |
 | F10 | P4 | Source unchanged since audit | — | Open |
 | F11 | P1 | Source unchanged since audit | A + B + C | Fixed; approved in P1 |
-| H01 | P2 | Email/password sign-in **enabled** alongside Google | E | Fixed in P2 candidate; awaiting Codex |
-| H02 | P2 | Not tested in P0 | E | Fixed in P2 candidate; awaiting Codex |
+| H01 | P2 | Email/password sign-in **enabled** alongside Google | E | Fixed; approved in P2 |
+| H02 | P2 | Not tested in P0 | E | Fixed; approved in P2 |
 | H03 | P4/P5 | Rules match; TTL 2 of 4; no backups/PITR | — | Open |
-| H04 | P2 | Detailed scan blocked on approval; see P0 report | coordinator | Fixed in P2 candidate; awaiting Codex |
+| H04 | P2 | Detailed scan blocked on approval; see P0 report | coordinator | Fixed; approved in P2 |
 
 ## P1 worker split (dispatched 2026-10-05; briefs in [013-P1-dispatch.md](013-P1-dispatch.md))
 
@@ -55,7 +55,7 @@ Shared files have a single owner. Workers use `npm ci --no-audit` with `npm_conf
 
 | Gate | Status |
 | --- | --- |
-| npm registry advisory scan (H04) | Not approved. `npm ci` default audit already transmitted metadata once in P0; disclosed in report. |
+| npm registry advisory scan (H04) | Approved and run once (2026-10-05). Three residual advisories risk-accepted by owner (2026-10-05). |
 | Production deploy / rules / TTL / secrets | Not authorized |
 | Real email, paid brief generation | Not authorized |
 
@@ -69,3 +69,4 @@ Shared files have a single owner. Workers use `npm ci --no-audit` with `npm_conf
 - 2026-10-05 — Codex `APPROVED P1 7833d99` (relayed). Carry into P2: optional fold-in of "finding 1" — interpreted as Worker D's fixup note (a): in the all-stalled case the apply-route auto-invite email can be sent while the stage move to `shadow_invited` and the outcome record are skipped (person stays in `review`). Operator to confirm interpretation. P2 started.
 - 2026-10-05 — P2: E `79f1828`, F `5a28aac`, C `a70530a` merged (`ed9db24`, `26d9741`, `2f2a49d`); approved npm scan run; deps + vercel.json `0e2bcc5`; review fix `69a2beb`. Worker D APPROVE-FOR-SUBMISSION. Local CI replication green on `69a2beb`. Owner sign-in (a) passed on local server against production Auth; b–d skipped by operator. Push by operator pending; GitHub CI pending.
 - 2026-10-05 — Codex P2 round 1 on `35bb336`: CI verified (run 37328742633); fix auto-invite lost-ack case; owner accepted all three H04 risks. Fix `a2eac7a` + test fix `05ba349` (Worker D found first test vacuous; mutation-checked). Resubmission awaiting operator push to PR #1 for CI.
+- 2026-10-05 — Codex `APPROVED P2 6e5b764` (CI 37340047637). Owner accepted all three H04 risks. Operator: run P3 and P4 back to back, independent review per phase, separate commit per phase, fold in stale apply-route comment, park owner decisions, one combined report; no P5, no push to main, no deploys, no Firebase/Vercel changes.
