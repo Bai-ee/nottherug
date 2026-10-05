@@ -48,3 +48,8 @@
 - First conversion wins: a second final submission from the same email (different content) does not move convertedLeadId; its own lead still gets the hint at creation/conversion.
 - Capture returns 500 if five conflict retries or the 7 s budget are exhausted; the client is fire-and-forget.
 - The meetgreet bucket-boundary double-submit limitation (documented in the route) is unchanged.
+
+## Review fixes
+- `recordCapture` no longer overwrites `email`/`source` on a converted row (only `lastSeenAt` and the true-only hint); asserted in the emulator suite (convert-then-capture keeps source 'book-page') and in the fake-backed regression suite.
+- Removed capture's duplicate Content-Length precheck; `readBoundedBody` performs the identical check (same 413). Covered by a new over-cap declared Content-Length test.
+- Full suite under emulators: 71 files, 655 passed, 0 skipped; lint 0 errors (1 pre-existing warning); typecheck clean.

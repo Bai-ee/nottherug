@@ -145,7 +145,7 @@ describe('capture and conversion ordering (emulator)', () => {
     const firstSeen = marker?.submittedAt;
 
     expect((await capture(email, { booked: true })).status).toBe(200);
-    expect(await captureRow(email)).toMatchObject({ status: 'converted', convertedLeadId: leadId, submittedAt: firstSeen, bookedSelfReported: true });
+    expect(await captureRow(email)).toMatchObject({ status: 'converted', convertedLeadId: leadId, submittedAt: firstSeen, bookedSelfReported: true, source: 'book-page' });
     // The booking signal that arrived after conversion lands on the full lead.
     expect((await readLead(`leads/${leadId}`))?.bookedSelfReported).toBe(true);
     expect((await allLeadRows()).filter((r) => r.type === 'capture' && r.status === 'partial')).toHaveLength(0);
