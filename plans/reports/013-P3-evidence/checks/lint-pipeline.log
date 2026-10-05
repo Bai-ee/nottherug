@@ -1,0 +1,9 @@
+
+> nextapp@0.1.0 lint:pipeline
+> eslint --no-config-lookup --config eslint.pipeline.mjs not-the-rug-brief scripts
+
+
+/Users/bballi/Documents/Repos/NotTheRug-013/scripts/audit-public-assets.mjs
+  25:37  warning  'stat' is defined but never used. Allowed unused vars must match /^_/u  no-unused-vars
+
+✖ 1 problem (0 errors, 1 warning)

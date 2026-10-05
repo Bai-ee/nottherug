@@ -16,7 +16,7 @@
  */
 
 /** Hero must never hang waiting on an overlay that failed to release. */
-const INTRO_SAFETY_MS = 4000;
+const INTRO_SAFETY_MS = 1000;
 
 let released = false;
 let resolveGate: (() => void) | undefined;

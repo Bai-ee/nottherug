@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { resolveLegacyRedirect } from '@/lib/routing/legacyRedirects';
 
 // Paths that stay reachable while LAUNCH_MODE gates the rest of the site.
 const ALLOWED_PREFIXES = ['/contact', '/book', '/admin', '/api', '/_next', '/favicon', '/dogs', '/logos', '/photos', '/media', '/fonts', '/images', '/img'];
@@ -18,8 +19,27 @@ function applyIndexingPolicy(res: NextResponse): NextResponse {
   return res;
 }
 
+/**
+ * Old `/?page=` / `/?hood=` links redirect here, not in the homepage render, so
+ * `/` can stay static. Same 307 `redirect()` produced when this lived in the page.
+ * Returns null for any request that is not a legacy link.
+ */
+function legacyRedirect(req: NextRequest): NextResponse | null {
+  if (req.nextUrl.pathname !== '/' || !req.nextUrl.search) return null;
+  const target = resolveLegacyRedirect(req.nextUrl.searchParams);
+  if (!target) return null;
+  const url = req.nextUrl.clone();
+  const [path, hash] = target.split('#');
+  url.pathname = path;
+  url.hash = hash ? `#${hash}` : '';
+  url.search = '';
+  return NextResponse.redirect(url, 307);
+}
+
 export function proxy(req: NextRequest) {
-  if (process.env.LAUNCH_MODE !== 'true') return applyIndexingPolicy(NextResponse.next());
+  if (process.env.LAUNCH_MODE !== 'true') {
+    return applyIndexingPolicy(legacyRedirect(req) ?? NextResponse.next());
+  }
 
   const { pathname } = req.nextUrl;
 

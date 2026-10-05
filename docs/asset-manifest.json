@@ -12,7 +12,7 @@
       "intrinsic": { "width": 1080, "height": 1080 },
       "format": "mp4",
       "bytes": 4468914,
-      "loading": "preload=metadata,autoplay-when-visible",
+      "loading": "preload=none; attached after first paint/idle; plays when visible",
       "exception": "Video is exempt from still-image 2x DPR rule per spec (motion, not stills). Cropped 1:1 from the 1920x1080 master at native height (no upscale)."
     },
     {
@@ -23,8 +23,30 @@
       "intrinsic": { "width": 1080, "height": 1080 },
       "format": "webm",
       "bytes": 4773718,
-      "loading": "preload=metadata,autoplay-when-visible",
+      "loading": "preload=none; attached after first paint/idle; plays when visible",
       "exception": "Same crop as the MP4 sibling; VP9 fallback source."
+    },
+    {
+      "source": "/video/hero-mccarren-540.mp4",
+      "consumers": ["/ #hero-bg-video (viewport <= 768px)"],
+      "maxCssBox": { "width": 380, "height": 380 },
+      "targetDpr": 1.5,
+      "intrinsic": { "width": 540, "height": 540 },
+      "format": "mp4",
+      "bytes": 1711801,
+      "loading": "injected after first paint/idle; skipped for reduced motion and data-saving",
+      "exception": "Mobile derivative of hero-mccarren-1080.mp4 (ffmpeg libx264 main, crf 29, 540x540, 24fps, no audio). Video is exempt from the still-image DPR rule."
+    },
+    {
+      "source": "/video/hero-mccarren-540.webm",
+      "consumers": ["/ #hero-bg-video (viewport <= 768px)"],
+      "maxCssBox": { "width": 380, "height": 380 },
+      "targetDpr": 1.5,
+      "intrinsic": { "width": 540, "height": 540 },
+      "format": "webm",
+      "bytes": 1917181,
+      "loading": "injected after first paint/idle; skipped for reduced motion and data-saving",
+      "exception": "Mobile derivative of hero-mccarren-1080.mp4 (ffmpeg libvpx-vp9, crf 38, 540x540, 24fps, no audio)."
     },
     {
       "source": "/video/hero-mccarren-poster.webp",
@@ -143,7 +165,33 @@
       "loading": "native <img>, eager",
       "exception": "Low priority: both consumers are dev-only/disabled experiments, not the shipped homepage graph.",
       "pendingPatch": null, "replaced": "/img/card_bg.png (patch 02 applied; master kept in assets-src/img/)"
-    }
+    },
+    {"source":"/img/paw-walk-left.webp","consumers":["/ #home-paw-walk-layer .home-paw-step"],"maxCssBox":{"width":52,"height":56},"targetDpr":2,"intrinsic":{"width":104,"height":111},"format":"webp","bytes":7754,"loading":"img loading=lazy (alpha stays transparent)","exception":null,"replaced":"/img/pawl.png (444x475, 264569 bytes; file retained in public/ for rollback, no longer referenced; master copy in assets-src/img/)"},
+    {"source":"/img/paw-walk-right.webp","consumers":["/ #home-paw-walk-layer .home-paw-step"],"maxCssBox":{"width":52,"height":56},"targetDpr":2,"intrinsic":{"width":104,"height":111},"format":"webp","bytes":7660,"loading":"img loading=lazy (alpha stays transparent)","exception":null,"replaced":"/img/pawr.png (444x475, 264721 bytes; file retained in public/ for rollback, no longer referenced; master copy in assets-src/img/)"},
+    {"source":"/img/team/luis-w225.webp","consumers":["/ #home-team-chip-photo-luis"],"maxCssBox":{"width":222,"height":296},"targetDpr":1,"intrinsic":{"width":225,"height":300},"format":"webp","bytes":18148,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/luis.jpg (675x900, 225685 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/luis-w225.avif","consumers":["/ #home-team-chip-photo-luis"],"maxCssBox":{"width":222,"height":296},"targetDpr":1,"intrinsic":{"width":225,"height":300},"format":"avif","bytes":12422,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/luis.jpg (675x900, 225685 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/luis-w675.webp","consumers":["/ #home-team-chip-photo-luis"],"maxCssBox":{"width":389,"height":518},"targetDpr":2,"intrinsic":{"width":675,"height":900},"format":"webp","bytes":120144,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w225 file.","replaced":"/img/team/luis.jpg (675x900, 225685 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/luis-w675.avif","consumers":["/ #home-team-chip-photo-luis"],"maxCssBox":{"width":389,"height":518},"targetDpr":2,"intrinsic":{"width":675,"height":900},"format":"avif","bytes":81044,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w225 file.","replaced":"/img/team/luis.jpg (675x900, 225685 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/lincoln-w413.webp","consumers":["/ #home-team-chip-photo-lincoln"],"maxCssBox":{"width":407,"height":724},"targetDpr":1,"intrinsic":{"width":413,"height":735},"format":"webp","bytes":104758,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/lincoln.jpg (506x900, 243223 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/lincoln-w413.avif","consumers":["/ #home-team-chip-photo-lincoln"],"maxCssBox":{"width":407,"height":724},"targetDpr":1,"intrinsic":{"width":413,"height":735},"format":"avif","bytes":65028,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/lincoln.jpg (506x900, 243223 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/lincoln-w506.webp","consumers":["/ #home-team-chip-photo-lincoln"],"maxCssBox":{"width":712,"height":1267},"targetDpr":2,"intrinsic":{"width":506,"height":900},"format":"webp","bytes":150548,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w413 file.","replaced":"/img/team/lincoln.jpg (506x900, 243223 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/lincoln-w506.avif","consumers":["/ #home-team-chip-photo-lincoln"],"maxCssBox":{"width":712,"height":1267},"targetDpr":2,"intrinsic":{"width":506,"height":900},"format":"avif","bytes":93725,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w413 file.","replaced":"/img/team/lincoln.jpg (506x900, 243223 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/marcus-w413.webp","consumers":["/ #home-team-chip-photo-marcus"],"maxCssBox":{"width":407,"height":543},"targetDpr":1,"intrinsic":{"width":413,"height":551},"format":"webp","bytes":50728,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/marcus.jpg (675x900, 248773 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/marcus-w413.avif","consumers":["/ #home-team-chip-photo-marcus"],"maxCssBox":{"width":407,"height":543},"targetDpr":1,"intrinsic":{"width":413,"height":551},"format":"avif","bytes":34985,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/marcus.jpg (675x900, 248773 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/marcus-w675.webp","consumers":["/ #home-team-chip-photo-marcus"],"maxCssBox":{"width":712,"height":950},"targetDpr":2,"intrinsic":{"width":675,"height":900},"format":"webp","bytes":135464,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w413 file.","replaced":"/img/team/marcus.jpg (675x900, 248773 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/marcus-w675.avif","consumers":["/ #home-team-chip-photo-marcus"],"maxCssBox":{"width":712,"height":950},"targetDpr":2,"intrinsic":{"width":675,"height":900},"format":"avif","bytes":95613,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w413 file.","replaced":"/img/team/marcus.jpg (675x900, 248773 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/christian-w255.webp","consumers":["/ #home-team-chip-photo-christian"],"maxCssBox":{"width":252,"height":448},"targetDpr":1,"intrinsic":{"width":255,"height":454},"format":"webp","bytes":18114,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/christian.jpg (506x900, 113693 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/christian-w255.avif","consumers":["/ #home-team-chip-photo-christian"],"maxCssBox":{"width":252,"height":448},"targetDpr":1,"intrinsic":{"width":255,"height":454},"format":"avif","bytes":12516,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/christian.jpg (506x900, 113693 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/christian-w506.webp","consumers":["/ #home-team-chip-photo-christian"],"maxCssBox":{"width":440,"height":783},"targetDpr":2,"intrinsic":{"width":506,"height":900},"format":"webp","bytes":50194,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w255 file.","replaced":"/img/team/christian.jpg (506x900, 113693 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/christian-w506.avif","consumers":["/ #home-team-chip-photo-christian"],"maxCssBox":{"width":440,"height":783},"targetDpr":2,"intrinsic":{"width":506,"height":900},"format":"avif","bytes":37344,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w255 file.","replaced":"/img/team/christian.jpg (506x900, 113693 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/shawn-w435.webp","consumers":["/ #home-team-chip-photo-shawn"],"maxCssBox":{"width":429,"height":572},"targetDpr":1,"intrinsic":{"width":435,"height":580},"format":"webp","bytes":59852,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/shawn.jpg (675x900, 241928 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/shawn-w435.avif","consumers":["/ #home-team-chip-photo-shawn"],"maxCssBox":{"width":429,"height":572},"targetDpr":1,"intrinsic":{"width":435,"height":580},"format":"avif","bytes":39966,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/shawn.jpg (675x900, 241928 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/shawn-w675.webp","consumers":["/ #home-team-chip-photo-shawn"],"maxCssBox":{"width":751,"height":1001},"targetDpr":2,"intrinsic":{"width":675,"height":900},"format":"webp","bytes":128102,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w435 file.","replaced":"/img/team/shawn.jpg (675x900, 241928 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/shawn-w675.avif","consumers":["/ #home-team-chip-photo-shawn"],"maxCssBox":{"width":751,"height":1001},"targetDpr":2,"intrinsic":{"width":675,"height":900},"format":"avif","bytes":89270,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w435 file.","replaced":"/img/team/shawn.jpg (675x900, 241928 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/yenny-w398.webp","consumers":["/ #home-team-chip-photo-yenny"],"maxCssBox":{"width":392,"height":523},"targetDpr":1,"intrinsic":{"width":398,"height":531},"format":"webp","bytes":61910,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/yenny.jpg (750x1000, 336041 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/yenny-w398.avif","consumers":["/ #home-team-chip-photo-yenny"],"maxCssBox":{"width":392,"height":523},"targetDpr":1,"intrinsic":{"width":398,"height":531},"format":"avif","bytes":40171,"loading":"picture srcset, img loading=lazy","exception":null,"replaced":"/img/team/yenny.jpg (750x1000, 336041 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/yenny-w750.webp","consumers":["/ #home-team-chip-photo-yenny"],"maxCssBox":{"width":686,"height":915},"targetDpr":2,"intrinsic":{"width":750,"height":1000},"format":"webp","bytes":200300,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w398 file.","replaced":"/img/team/yenny.jpg (750x1000, 336041 bytes; retained for /about grid, hover preview and <img> fallback)"},
+    {"source":"/img/team/yenny-w750.avif","consumers":["/ #home-team-chip-photo-yenny"],"maxCssBox":{"width":686,"height":915},"targetDpr":2,"intrinsic":{"width":750,"height":1000},"format":"avif","bytes":131629,"loading":"picture srcset, img loading=lazy","exception":"Source-capped: the 2x/mobile need (photoSize x chip window x DPR) exceeds the master width; served at the master width with no upscale. Smaller 1x variant is the sibling -w398 file.","replaced":"/img/team/yenny.jpg (750x1000, 336041 bytes; retained for /about grid, hover preview and <img> fallback)"}
   ],
   "publicFileClassification": {
     "note": "Full per-file list is scripts/audit-public-assets.mjs output (evidence/assets/public-file-classification.json, gitignored/regenerable). Summary of non-'referenced' classes below.",

@@ -1,0 +1,2743 @@
+{
+ "meta": {
+  "label": "before",
+  "base": "http://127.0.0.1:3610",
+  "path": "/",
+  "cutoffMs": 15000,
+  "profiles": {
+   "mobile": {
+    "viewport": {
+     "width": 375,
+     "height": 812
+    },
+    "deviceScaleFactor": 3,
+    "isMobile": true,
+    "hasTouch": true,
+    "cpuRate": 4,
+    "net": {
+     "latency": 150,
+     "downloadThroughput": 200000,
+     "uploadThroughput": 93750
+    }
+   },
+   "desktop": {
+    "viewport": {
+     "width": 1440,
+     "height": 900
+    },
+    "deviceScaleFactor": 1,
+    "isMobile": false,
+    "hasTouch": false,
+    "cpuRate": 1,
+    "net": {
+     "latency": 40,
+     "downloadThroughput": 1250000,
+     "uploadThroughput": 1250000
+    }
+   }
+  },
+  "date": "2026-10-05T17:18:07.766Z"
+ },
+ "summary": {
+  "mobile": {
+   "runs": 5,
+   "medianKB": {
+    "image": 2045.2314453125,
+    "font": 238.8779296875,
+    "script": 223.2685546875,
+    "css": 21.609375,
+    "other": 35.4970703125,
+    "nonVideoTotal": 2564.484375,
+    "video": 294.951171875
+   },
+   "medianCtaReadyMs": 8099.0999999940395,
+   "medianHeadlineMs": 8099.799999982119,
+   "medianLcpMs": 8168,
+   "medianCls": 0,
+   "lcpElements": [
+    "#hero-polaroid-frame (/textures/paper-grain.png)"
+   ],
+   "spread": {
+    "ctaReadyMs": [
+     8078.399999976158,
+     8204.699999988079
+    ],
+    "lcpMs": [
+     8116,
+     8252
+    ],
+    "nonVideoKB": [
+     2542.2490234375,
+     2576.203125
+    ]
+   },
+   "consoleErrors": 0
+  },
+  "desktop": {
+   "runs": 5,
+   "medianKB": {
+    "image": 3086.541015625,
+    "font": 238.8779296875,
+    "script": 294.7978515625,
+    "css": 21.609375,
+    "other": 50.0068359375,
+    "nonVideoTotal": 3691.8330078125,
+    "video": 4662.38671875
+   },
+   "medianCtaReadyMs": 6767.800000011921,
+   "medianHeadlineMs": 4751.5999999940395,
+   "medianLcpMs": 4320,
+   "medianCls": 0,
+   "lcpElements": [
+    "#home-hero-section (/img/hero-walker-strip.webp)"
+   ],
+   "spread": {
+    "ctaReadyMs": [
+     6000.4000000059605,
+     6951.699999988079
+    ],
+    "lcpMs": [
+     3544,
+     4516
+    ],
+    "nonVideoKB": [
+     3691.83203125,
+     3693.4970703125
+    ]
+   },
+   "consoleErrors": 0
+  }
+ },
+ "runs": [
+  {
+   "profile": "mobile",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 2094317,
+    "font": 244611,
+    "script": 228627,
+    "css": 22128,
+    "document": 36349,
+    "other": 0,
+    "video": 302030,
+    "videoInflight": 302030,
+    "nonVideoTotal": 2626032,
+    "total": 2928062,
+    "requests": 52
+   },
+   "lcp": {
+    "t": 8116,
+    "size": 78721,
+    "url": "http://127.0.0.1:3610/textures/paper-grain.png",
+    "el": "#hero-polaroid-frame"
+   },
+   "cls": 0,
+   "ctaReadyMs": 8081.9000000059605,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 8081.9000000059605,
+   "nav": {
+    "dcl": 1079.4000000059605,
+    "load": 0,
+    "ttfb": 94
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 0
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 159585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 155085,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 29085,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 24585,
+     "inflight": true
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    }
+   ],
+   "run": 1
+  },
+  {
+   "profile": "mobile",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 2101817,
+    "font": 244611,
+    "script": 228627,
+    "css": 22128,
+    "document": 36349,
+    "other": 0,
+    "video": 300530,
+    "videoInflight": 300530,
+    "nonVideoTotal": 2633532,
+    "total": 2934062,
+    "requests": 52
+   },
+   "lcp": {
+    "t": 8120,
+    "size": 78721,
+    "url": "http://127.0.0.1:3610/textures/paper-grain.png",
+    "el": "#hero-polaroid-frame"
+   },
+   "cls": 0,
+   "ctaReadyMs": 8078.399999976158,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 8078.399999976158,
+   "nav": {
+    "dcl": 1086.3999999761581,
+    "load": 0,
+    "ttfb": 29.899999976158142
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 0
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 161085,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 159585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 35085,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 20085,
+     "inflight": true
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    }
+   ],
+   "run": 2
+  },
+  {
+   "profile": "mobile",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 2106317,
+    "font": 244611,
+    "script": 228627,
+    "css": 22128,
+    "document": 36349,
+    "other": 0,
+    "video": 303530,
+    "videoInflight": 303530,
+    "nonVideoTotal": 2638032,
+    "total": 2941562,
+    "requests": 52
+   },
+   "lcp": {
+    "t": 8168,
+    "size": 78721,
+    "url": "http://127.0.0.1:3610/textures/paper-grain.png",
+    "el": "#hero-polaroid-frame"
+   },
+   "cls": 0,
+   "ctaReadyMs": 8099.0999999940395,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 8099.799999982119,
+   "nav": {
+    "dcl": 1065,
+    "load": 0,
+    "ttfb": 151
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 0
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 156585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 158085,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 36585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 29085,
+     "inflight": true
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    }
+   ],
+   "run": 3
+  },
+  {
+   "profile": "mobile",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 2071548,
+    "font": 244611,
+    "script": 228627,
+    "css": 22128,
+    "document": 36349,
+    "other": 0,
+    "video": 299030,
+    "videoInflight": 299030,
+    "nonVideoTotal": 2603263,
+    "total": 2902293,
+    "requests": 52
+   },
+   "lcp": {
+    "t": 8252,
+    "size": 78721,
+    "url": "http://127.0.0.1:3610/textures/paper-grain.png",
+    "el": "#hero-polaroid-frame"
+   },
+   "cls": 0,
+   "ctaReadyMs": 8204.699999988079,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 8204.799999982119,
+   "nav": {
+    "dcl": 1207.5,
+    "load": 0,
+    "ttfb": 312.89999997615814
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 0
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 152085,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 150585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 24585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 20085,
+     "inflight": true
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    }
+   ],
+   "run": 4
+  },
+  {
+   "profile": "mobile",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 2088317,
+    "font": 244611,
+    "script": 228627,
+    "css": 22128,
+    "document": 36349,
+    "other": 0,
+    "video": 309530,
+    "videoInflight": 309530,
+    "nonVideoTotal": 2620032,
+    "total": 2929562,
+    "requests": 52
+   },
+   "lcp": {
+    "t": 8240,
+    "size": 78721,
+    "url": "http://127.0.0.1:3610/textures/paper-grain.png",
+    "el": "#hero-polaroid-frame"
+   },
+   "cls": 0,
+   "ctaReadyMs": 8129.800000011921,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 8130.5999999940395,
+   "nav": {
+    "dcl": 1121.800000011921,
+    "load": 0,
+    "ttfb": 30.30000001192093
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 0
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 0
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 156585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 153585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 33585,
+     "inflight": true
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 18585,
+     "inflight": true
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 0,
+     "inflight": true
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    }
+   ],
+   "run": 5
+  },
+  {
+   "profile": "desktop",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 3160618,
+    "font": 244611,
+    "script": 301873,
+    "css": 22128,
+    "document": 36349,
+    "other": 14858,
+    "video": 4774284,
+    "videoInflight": 0,
+    "nonVideoTotal": 3780437,
+    "total": 8554721,
+    "requests": 63
+   },
+   "lcp": {
+    "t": 4320,
+    "size": 986400,
+    "url": "http://127.0.0.1:3610/img/hero-walker-strip.webp",
+    "el": "#home-hero-section"
+   },
+   "cls": 0,
+   "ctaReadyMs": 6767.800000011921,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 4751.5999999940395,
+   "nav": {
+    "dcl": 203.59999999403954,
+    "load": 3952.0999999940395,
+    "ttfb": 15.300000011920929
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 1301
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 28118
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 18032
+    },
+    {
+     "url": "/_next/static/chunks/13gblmg0a9k2r.js",
+     "bytes": 9221
+    },
+    {
+     "url": "/_next/static/chunks/37g1n_la1_aap.js",
+     "bytes": 6254
+    },
+    {
+     "url": "/_next/static/chunks/06cyatooq-ena.js",
+     "bytes": 10320
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/3Top-flipped.png",
+     "bytes": 95715,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 243734,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 249284,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 242439,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 336552,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 139331,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 114713,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    },
+    {
+     "url": "/_next/image?url=%2Flogos%2FnotRugGreen.png&w=384&q=75",
+     "bytes": 12873,
+     "inflight": false
+    }
+   ],
+   "run": 1
+  },
+  {
+   "profile": "desktop",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 3160618,
+    "font": 244611,
+    "script": 301873,
+    "css": 22128,
+    "document": 36349,
+    "other": 16562,
+    "video": 4774284,
+    "videoInflight": 0,
+    "nonVideoTotal": 3782141,
+    "total": 8556425,
+    "requests": 63
+   },
+   "lcp": {
+    "t": 4360,
+    "size": 986400,
+    "url": "http://127.0.0.1:3610/img/hero-walker-strip.webp",
+    "el": "#home-hero-section"
+   },
+   "cls": 0,
+   "ctaReadyMs": 6817.0999999940395,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 4801.0999999940395,
+   "nav": {
+    "dcl": 202,
+    "load": 4005.2000000178814,
+    "ttfb": 10.099999994039536
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 1301
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 28118
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 18032
+    },
+    {
+     "url": "/_next/static/chunks/13gblmg0a9k2r.js",
+     "bytes": 9221
+    },
+    {
+     "url": "/_next/static/chunks/37g1n_la1_aap.js",
+     "bytes": 6254
+    },
+    {
+     "url": "/_next/static/chunks/06cyatooq-ena.js",
+     "bytes": 10320
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/3Top-flipped.png",
+     "bytes": 95715,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 243734,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 249284,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 242439,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 336552,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 139331,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 114713,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    },
+    {
+     "url": "/_next/image?url=%2Flogos%2FnotRugGreen.png&w=384&q=75",
+     "bytes": 12873,
+     "inflight": false
+    }
+   ],
+   "run": 2
+  },
+  {
+   "profile": "desktop",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 3160618,
+    "font": 244611,
+    "script": 301873,
+    "css": 22128,
+    "document": 36349,
+    "other": 14858,
+    "video": 4774284,
+    "videoInflight": 0,
+    "nonVideoTotal": 3780437,
+    "total": 8554721,
+    "requests": 63
+   },
+   "lcp": {
+    "t": 3544,
+    "size": 986400,
+    "url": "http://127.0.0.1:3610/img/hero-walker-strip.webp",
+    "el": "#home-hero-section"
+   },
+   "cls": 0,
+   "ctaReadyMs": 6000.4000000059605,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 4056.5,
+   "nav": {
+    "dcl": 268.59999999403954,
+    "load": 4053.9000000059605,
+    "ttfb": 21
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 1301
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 28118
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 18032
+    },
+    {
+     "url": "/_next/static/chunks/13gblmg0a9k2r.js",
+     "bytes": 9221
+    },
+    {
+     "url": "/_next/static/chunks/37g1n_la1_aap.js",
+     "bytes": 6254
+    },
+    {
+     "url": "/_next/static/chunks/06cyatooq-ena.js",
+     "bytes": 10320
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/3Top-flipped.png",
+     "bytes": 95715,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 243734,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 249284,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 242439,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 336552,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 139331,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 114713,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    },
+    {
+     "url": "/_next/image?url=%2Flogos%2FnotRugGreen.png&w=384&q=75",
+     "bytes": 12873,
+     "inflight": false
+    }
+   ],
+   "run": 3
+  },
+  {
+   "profile": "desktop",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 3160618,
+    "font": 244611,
+    "script": 301873,
+    "css": 22128,
+    "document": 36349,
+    "other": 14859,
+    "video": 4774284,
+    "videoInflight": 0,
+    "nonVideoTotal": 3780438,
+    "total": 8554722,
+    "requests": 63
+   },
+   "lcp": {
+    "t": 4516,
+    "size": 986400,
+    "url": "http://127.0.0.1:3610/img/hero-walker-strip.webp",
+    "el": "#home-hero-section"
+   },
+   "cls": 0,
+   "ctaReadyMs": 6951.699999988079,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 4934.299999982119,
+   "nav": {
+    "dcl": 204,
+    "load": 4142.299999982119,
+    "ttfb": 15.599999994039536
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 1301
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 28118
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 18032
+    },
+    {
+     "url": "/_next/static/chunks/13gblmg0a9k2r.js",
+     "bytes": 9221
+    },
+    {
+     "url": "/_next/static/chunks/37g1n_la1_aap.js",
+     "bytes": 6254
+    },
+    {
+     "url": "/_next/static/chunks/06cyatooq-ena.js",
+     "bytes": 10320
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/3Top-flipped.png",
+     "bytes": 95715,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 243734,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 249284,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 242439,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 336552,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 139331,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 114713,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    },
+    {
+     "url": "/_next/image?url=%2Flogos%2FnotRugGreen.png&w=384&q=75",
+     "bytes": 12873,
+     "inflight": false
+    }
+   ],
+   "run": 4
+  },
+  {
+   "profile": "desktop",
+   "cutoffMs": 15000,
+   "bytes": {
+    "image": 3160618,
+    "font": 244611,
+    "script": 301873,
+    "css": 22128,
+    "document": 36349,
+    "other": 14857,
+    "video": 4774284,
+    "videoInflight": 0,
+    "nonVideoTotal": 3780436,
+    "total": 8554720,
+    "requests": 63
+   },
+   "lcp": {
+    "t": 4296,
+    "size": 986400,
+    "url": "http://127.0.0.1:3610/img/hero-walker-strip.webp",
+    "el": "#home-hero-section"
+   },
+   "cls": 0,
+   "ctaReadyMs": 6749.9000000059605,
+   "ctaOffscreen": false,
+   "headlineVisibleMs": 4734,
+   "nav": {
+    "dcl": 200.7000000178814,
+    "load": 3943.800000011921,
+    "ttfb": 13.300000011920929
+   },
+   "errors": [],
+   "fontFiles": [
+    {
+     "url": "/_next/static/media/1b99372b3eaef0c8-s.p.1gsd1jahc5dg_.woff2",
+     "bytes": 32722
+    },
+    {
+     "url": "/_next/static/media/5f440d3eea613716-s.p.1xmps1tcyqv34.woff2",
+     "bytes": 12082
+    },
+    {
+     "url": "/_next/static/media/791bf8c4bb753ed6-s.p.0ggqn9ig56u4s.woff2",
+     "bytes": 67883
+    },
+    {
+     "url": "/_next/static/media/8010b10db0d5feb2-s.p.1q-jjomgjvbjf.woff2",
+     "bytes": 82199
+    },
+    {
+     "url": "/_next/static/media/87d3ffffac5dafea-s.p.3a10o7es2neby.woff2",
+     "bytes": 11686
+    },
+    {
+     "url": "/_next/static/media/9a800f173b8d9e8f-s.p.3nglv5iys3s0a.woff2",
+     "bytes": 28950
+    },
+    {
+     "url": "/_next/static/media/fabcf92ba1ccea36-s.p.1w_qz2ahumqmz.woff2",
+     "bytes": 9089
+    }
+   ],
+   "fontsLoaded": [
+    "Fraunces 100 900 normal",
+    "Fraunces Fallback normal normal",
+    "Outfit 100 900 normal",
+    "Outfit Fallback normal normal",
+    "Oswald 200 700 normal",
+    "Oswald Fallback normal normal",
+    "Bebas Neue 400 normal",
+    "Bebas Neue Fallback normal normal",
+    "Courier Prime 400 normal"
+   ],
+   "scripts": [
+    {
+     "url": "/_next/static/chunks/3832zsef-e_ji.js",
+     "bytes": 2758
+    },
+    {
+     "url": "/_next/static/chunks/2i51e627rllld.js",
+     "bytes": 8938
+    },
+    {
+     "url": "/_next/static/chunks/35lzrzzuthkpm.js",
+     "bytes": 73879
+    },
+    {
+     "url": "/_next/static/chunks/34bug6qw18-k6.js",
+     "bytes": 43392
+    },
+    {
+     "url": "/_next/static/chunks/turbopack-2_v4q6it0cbgn.js",
+     "bytes": 4899
+    },
+    {
+     "url": "/_next/static/chunks/3fntmmi971322.js",
+     "bytes": 4255
+    },
+    {
+     "url": "/_next/static/chunks/06_xokngt39zx.js",
+     "bytes": 6930
+    },
+    {
+     "url": "/_next/static/chunks/1lvbas7r4teis.js",
+     "bytes": 11929
+    },
+    {
+     "url": "/_next/static/chunks/0nwbn_6ylajwz.js",
+     "bytes": 10482
+    },
+    {
+     "url": "/_next/static/chunks/0l7-q732bxmvs.js",
+     "bytes": 24706
+    },
+    {
+     "url": "/_next/static/chunks/1gq3by6x2y-sn.js",
+     "bytes": 13155
+    },
+    {
+     "url": "/_next/static/chunks/05elwcebu0goo.js",
+     "bytes": 12715
+    },
+    {
+     "url": "/_next/static/chunks/3ylt1vf7-742s.js",
+     "bytes": 1589
+    },
+    {
+     "url": "/_next/static/chunks/3jyvles9jlbns.js",
+     "bytes": 9000
+    },
+    {
+     "url": "/_next/static/chunks/0rbgb--dsg-d8.js",
+     "bytes": 1301
+    },
+    {
+     "url": "/_next/static/chunks/1elfxn6vo43kj.js",
+     "bytes": 28118
+    },
+    {
+     "url": "/_next/static/chunks/2p2jd75im6m_h.js",
+     "bytes": 18032
+    },
+    {
+     "url": "/_next/static/chunks/13gblmg0a9k2r.js",
+     "bytes": 9221
+    },
+    {
+     "url": "/_next/static/chunks/37g1n_la1_aap.js",
+     "bytes": 6254
+    },
+    {
+     "url": "/_next/static/chunks/06cyatooq-ena.js",
+     "bytes": 10320
+    }
+   ],
+   "images": [
+    {
+     "url": "/img/3Top.png",
+     "bytes": 97394,
+     "inflight": false
+    },
+    {
+     "url": "/img/horiz_logo_off_white.png",
+     "bytes": 52674,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-left.webp",
+     "bytes": 2653,
+     "inflight": false
+    },
+    {
+     "url": "/img/paw-rail-right.webp",
+     "bytes": 2619,
+     "inflight": false
+    },
+    {
+     "url": "/video/hero-mccarren-poster.webp",
+     "bytes": 32503,
+     "inflight": false
+    },
+    {
+     "url": "/textures/paper-grain.png",
+     "bytes": 34793,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-service.webp",
+     "bytes": 1683,
+     "inflight": false
+    },
+    {
+     "url": "/img/3Top-flipped.png",
+     "bytes": 95715,
+     "inflight": false
+    },
+    {
+     "url": "/img/hero-walker-strip.webp",
+     "bytes": 200083,
+     "inflight": false
+    },
+    {
+     "url": "/img/tape/tape-review.webp",
+     "bytes": 1769,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-1.webp",
+     "bytes": 292531,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-1-cover.webp",
+     "bytes": 136565,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/luis.jpg",
+     "bytes": 226196,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/lincoln.jpg",
+     "bytes": 243734,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/marcus.jpg",
+     "bytes": 249284,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/christian.jpg",
+     "bytes": 114204,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/shawn.jpg",
+     "bytes": 242439,
+     "inflight": false
+    },
+    {
+     "url": "/img/team/yenny.jpg",
+     "bytes": 336552,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-graphic-2.webp",
+     "bytes": 139331,
+     "inflight": false
+    },
+    {
+     "url": "/img/bg-section-2-cover.webp",
+     "bytes": 114713,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawl.png",
+     "bytes": 265079,
+     "inflight": false
+    },
+    {
+     "url": "/img/pawr.png",
+     "bytes": 265231,
+     "inflight": false
+    },
+    {
+     "url": "/_next/image?url=%2Flogos%2FnotRugGreen.png&w=384&q=75",
+     "bytes": 12873,
+     "inflight": false
+    }
+   ],
+   "run": 5
+  }
+ ]
+}

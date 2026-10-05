@@ -8,6 +8,8 @@ node_modules/
 # Keep only the web-delivery hero clip derivatives and their source masters.
 !public/video/hero-mccarren-1080.mp4
 !public/video/hero-mccarren-1080.webm
+!public/video/hero-mccarren-540.mp4
+!public/video/hero-mccarren-540.webm
 !assets-src/video/hero-mccarren-master.mp4
 !assets-src/video/hero-mccarren-master.webm
 .vercel

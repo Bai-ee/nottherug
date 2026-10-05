@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
 import { useHomeIntroSequence } from './hooks/useHomeIntroSequence';
 
 /** The walker-and-three-dogs illustration, flattened to a silhouette in CSS. */
@@ -14,41 +13,39 @@ const WALKER_ART = '/img/3Top.png';
  *
  * It does three things and nothing else:
  *  - reduced motion: leaves the attribute unset, so no loading screen at all
- *  - otherwise marks <html data-home-intro="loading">, which globals.css uses
- *    to hide everything but the overlay
+ *  - otherwise marks <html data-home-intro="loading">, which starts the
+ *    CSS-only loading screen in globals.css (it never hides the page)
  *  - arms a last-ditch failsafe: if the React sequence never runs at all, the
- *    page shows anyway. It sits behind useHomeIntroSequence's own watchdog on
- *    purpose — that one also unparks the nav, so it must get there first.
+ *    intro state is cleared anyway (the CSS keyframes have long finished).
  */
 const INTRO_BOOTSTRAP = `(function(){try{
 var d=document.documentElement;
 if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
 d.dataset.homeIntro='loading';
-window.setTimeout(function(){if(d.dataset.homeIntro==='loading'){d.dataset.homeIntro='done';}},7000);
+window.setTimeout(function(){if(d.dataset.homeIntro==='loading'){d.dataset.homeIntro='done';}},2500);
 }catch(e){}})();`;
 
 /**
- * Home loading screen: the walker silhouette centred on the paper background,
- * alone on screen until the hero's assets are ready. See useHomeIntroSequence
- * for the handoff into the nav drop and the hero entrance.
+ * Home loading screen: a brief, fixed-length decorative intro — the walker
+ * silhouette on the paper background walks off, the paper lifts and the nav
+ * drops in. It never waits on assets and never blocks the page underneath.
+ * See useHomeIntroSequence for the timers and the hero-entrance handoff.
  */
 export default function HomeIntroOverlay() {
-  const overlayRef = useRef<HTMLDivElement | null>(null);
-  const walkerRef = useRef<HTMLDivElement | null>(null);
-  const mounted = useHomeIntroSequence(overlayRef, walkerRef);
+  const mounted = useHomeIntroSequence();
 
   return (
     <>
       <script id="home-intro-bootstrap" dangerouslySetInnerHTML={{ __html: INTRO_BOOTSTRAP }} />
       {mounted && (
-        <div id="home-intro-overlay" ref={overlayRef} aria-hidden="true">
-          {/* Shell moves, image bobs — see #home-intro-walker-shell in globals.css. */}
-          <div id="home-intro-walker-shell" ref={walkerRef}>
+        <div id="home-intro-overlay" aria-hidden="true">
+          {/* Shell exits, image bobs — see #home-intro-walker-shell in globals.css. */}
+          <div id="home-intro-walker-shell">
             {/* First-paint-blocking loading screen (see the module comment on
                 INTRO_BOOTSTRAP above): this element also carries its own
                 running CSS keyframe animation (#home-intro-walker-silhouette
                 in globals.css bobs it on a 2.4s loop, independent of the
-                shell's own GSAP exit transform on walkerRef). Given how timing-
+                shell's own exit keyframe). Given how timing-
                 sensitive this first paint is, converting it to next/image
                 belongs with the rest of the hero/loading-media pass in P3
                 (plans/010-production-final-mile-optimization.md), where it can

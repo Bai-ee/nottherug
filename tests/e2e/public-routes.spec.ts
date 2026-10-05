@@ -63,10 +63,11 @@ async function expectH1(page: Page, expected: RegExp) {
     .toMatch(expected);
 }
 
-// The home route opens behind a full-screen loading wipe: HomeIntroOverlay
-// sets `data-home-intro` on <html> before first paint and globals.css hides
-// #main-nav and #page-home until it is 'done'. Nothing on home can be clicked
-// or focused before that, so every home navigation here waits the wipe out.
+// The home route plays a brief decorative loading wipe: HomeIntroOverlay
+// sets `data-home-intro` on <html> before first paint and globals.css runs the
+// keyframes off it until it is 'done' (~1.3 s). The page underneath is never
+// hidden or inert, but these tests wait the wipe out so nav and hero are at
+// rest before they measure or interact.
 // Other routes never set the attribute and fall straight through.
 async function gotoSettled(page: Page, path: string) {
   const response = await page.goto(path);
@@ -347,4 +348,33 @@ test.describe('prefers-reduced-motion', () => {
     await expect(page.locator('.hero-actions')).toBeVisible();
     await expect(page.locator('.hero-stats')).toBeVisible();
   });
+});
+
+// F08: legacy links redirect in proxy.ts so `/` can render statically. Raw
+// request-level checks (no redirect following) pin status, target and
+// passthrough against the production server.
+test.describe('legacy link redirects (proxy)', () => {
+  const raw = (request: import('@playwright/test').APIRequestContext, url: string) =>
+    request.get(url, { maxRedirects: 0 });
+
+  for (const [from, to] of [
+    ['/?page=services', '/#home-personalized-care-section'],
+    ['/?page=how-it-works', '/#home-how-it-works-block'],
+    ['/?page=about&utm_source=mail', '/about'],
+    ['/?hood=williamsburg&page=about', '/neighborhoods/williamsburg'],
+    ['/?page=about&page=safety', '/about'],
+  ]) {
+    test(`${from} -> 307 ${to}`, async ({ request }) => {
+      const res = await raw(request, from);
+      expect(res.status()).toBe(307);
+      expect(new URL(res.headers().location, 'http://x').pathname + new URL(res.headers().location, 'http://x').hash).toBe(to);
+    });
+  }
+
+  for (const url of ['/', '/?welcome=1', '/?utm_source=a&utm_campaign=b', '/?page=home', '/?page=nope']) {
+    test(`${url} is served without a redirect`, async ({ request }) => {
+      const res = await raw(request, url);
+      expect(res.status()).toBe(200);
+    });
+  }
 });

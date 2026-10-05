@@ -1,0 +1,584 @@
+i  emulators: Starting emulators: firestore, storage
+i  emulators: Detected demo project ID "demo-not-the-rug", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: npm run test:emulators
+
+> nextapp@0.1.0 test:emulators
+> REQUIRE_EMULATORS=1 vitest run --reporter=default --reporter=json --outputFile.json=test-results/vitest-emulators.json && node tests/support/check-required-emulator-run.mjs test-results/vitest-emulators.json
+
+
+ RUN  v5.0.0 /Users/bballi/Documents/Repos/NotTheRug-013
+
+ ✓ tests/unit/upstream-deadlines.test.ts (11 tests) 292ms
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — artifact upload failure > surfaces the failure and does not publish a broken "latest" pointer
+[brief] private HTML artifact upload failed: Private storage upload failed (500)
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — database save failure > surfaces a failed "latest" state write instead of swallowing it
+[brief] failed to persist latest state — a run whose state fails to persist is not a clean success: Firestore SET failed
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — database save failure > surfaces a failed run-history write instead of swallowing it
+[brief] failed to persist run history record: Firestore run-history write failed
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — concurrent runs > a second concurrent run loses the lease and never invokes the pipeline
+[brief] failed to persist run history record: Firestore run-history write failed
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — concurrent runs > a second concurrent run loses the lease and never invokes the pipeline
+[brief] failed to persist run history record: Firestore run-history write failed
+
+ ✓ tests/unit/brief-run.test.ts (7 tests) 180ms
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/leads maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/generator/list maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/generator/render maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/list maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/assets maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/upload maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/delete maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/render maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/history maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/latest-brief maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/latest-brief/html maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/run-brief maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/founder-brief/run-and-send maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+ ✓ tests/unit/admin-route-hardening.test.ts (50 tests) 115ms
+stderr | tests/unit/generator-render.test.ts > POST /api/admin/generator/render — validation > accepts a valid finite placement and renders
+[generator] logo public asset fetch failed for "notRugGreen", falling back to local file: fetch failed
+
+ ✓ tests/unit/generator-render.test.ts (6 tests) 96ms
+ ✓ tests/unit/bench-resume-race.test.ts (2 tests) 89ms
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > invite_shadow with every call at its deadline and a stalled email: 17 s, outcome save skipped
+[bench:invite] email error invite email timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > invite_shadow with every call at its deadline and a stalled email: 17 s, outcome save skipped
+[bench:admin] notification persist failed route time budget exhausted
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > a stalled stage write fails within budget and sends no email
+[Error] firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > a no-email action with a slow read and a stalled write fails within budget
+[Error] firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > a stalled outcome write after the email still answers 200 within budget
+[bench:admin] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a stage write that timed out but committed is confirmed by a re-read: invite sent once, no confirmation
+[bench:apply] auto-invite stage write failed, confirming firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a stage write that timed out but committed is confirmed by a re-read: invite sent once, no confirmation
+[bench:apply] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a timed-out write that did not commit sends the confirmation, not the invite
+[bench:apply] auto-invite stage write failed, confirming firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a timed-out write that did not commit sends the confirmation, not the invite
+[bench:apply] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a committed write whose confirm read also stalls sends the confirmation, inside the budget
+[bench:apply] auto-invite stage write failed, confirming firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a committed write whose confirm read also stalls sends the confirmation, inside the budget
+[bench:apply] notification persist failed firestore get timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a stalled stage write sends no invite, keeps the application in review, and sends the confirmation instead
+[bench:apply] auto-invite stage write failed, confirming firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a stalled stage write sends no invite, keeps the application in review, and sends the confirmation instead
+[bench:apply] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply] rate limit check failed firestore incr timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply] auto-invite stage write failed, confirming route time budget exhausted
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply-received] email error apply-received email timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply] notification persist failed route time budget exhausted
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > a stalled outcome write is logged and the application still succeeds within budget
+[bench:apply] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > a stalled create fails the request within its slice
+[bench:apply] firestore create failed firestore create timed out
+
+ ✓ tests/unit/bench-route-budget.test.ts (11 tests) 72ms
+stderr | tests/unit/lead-intake-regression.test.ts > F01 — rate-limit counters are namespaced by purpose > fails open when the limiter errors or stalls (documented policy)
+[lead:capture] rate limit check failed firestore unavailable
+
+stderr | tests/unit/lead-intake-regression.test.ts > F01 — rate-limit counters are namespaced by purpose > fails open when the limiter errors or stalls (documented policy)
+[lead:meetgreet] rate limit check failed firestore increment timed out after 1500ms
+
+stderr | tests/unit/lead-intake-regression.test.ts > F11 — dependency budgets and timeouts > a stalled Firestore read in capture is a clean 500, not a hang or leak
+[lead:capture] firestore write failed firestore get timed out after 2500ms
+
+stderr | tests/unit/lead-intake-regression.test.ts > F11 — dependency budgets and timeouts > a stalled Firestore create in meetgreet is a clean 500 and sends no email
+[lead:meetgreet] firestore create failed firestore create timed out after 3000ms
+
+stderr | tests/unit/lead-intake-regression.test.ts > notifications never undo or duplicate a saved lead > keeps the lead when the email provider fails, and does not retry the send
+[lead:meetgreet] founder email failed send failed
+
+stderr | tests/unit/lead-intake-regression.test.ts > notifications never undo or duplicate a saved lead > keeps the lead when the email provider throws
+[lead:meetgreet] founder email error provider down
+
+ ✓ tests/unit/lead-intake-regression.test.ts (21 tests) 80ms
+ ✓ tests/unit/photos-validate.test.ts (5 tests) 59ms
+ ✓ tests/unit/sharp-render.test.ts (11 tests) 57ms
+ ✓ tests/unit/analytics-report.test.ts (17 tests) 60ms
+stderr | tests/unit/booking-step-funnel.test.ts > createStepFunnelTracker > does not throw when track() throws synchronously (analytics failure isolation)
+[booking] analytics call failed Error: simulated analytics failure
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-step-funnel.test.ts:158:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at reach (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:129:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-step-funnel.test.ts:163:18
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+
+ ✓ tests/unit/booking-step-funnel.test.ts (13 tests) 57ms
+stderr | tests/unit/booking-analytics-failure-isolation.test.ts > booking survives analytics failure (T4 item 6) > 4. tracking offline (network error on /api/track): booking still succeeds
+[analytics] delivery failed TypeError: Failed to fetch
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:121:15
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:55:14
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at deliver (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:140:10)
+    at sendEvent (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:179:5)
+    at track (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:213:3)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at submitMeetGreetLead (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:98:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:126:20
+
+stderr | tests/unit/booking-analytics-failure-isolation.test.ts > booking survives analytics failure (T4 item 6) > 5. track() throwing synchronously: booking still succeeds (regression — see safeTrack in BookingForm.tsx)
+[booking] analytics call failed Error: simulated analytics failure
+    at track (/Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:136:15)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at submitMeetGreetLead (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:98:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:150:20
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:20
+
+ ✓ tests/unit/booking-analytics-failure-isolation.test.ts (5 tests) 42ms
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled claim read fails fast with 503 and spends no more than its cap
+[bench:resume] claim failed firestore get timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled upload plus a stalled cleanup finishes inside the budget
+[bench:resume] upload failed upload timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > stalled finalize read, confirm read and cleanup together finish inside the budget
+[bench:resume] finalize failed firestore get timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled claim MERGE returns 503 within its cap and never uploads
+[bench:resume] claim failed firestore merge timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled finalize MERGE, then a stalled cleanup, finishes inside the budget
+[bench:resume] finalize failed firestore merge timed out
+
+ ✓ tests/unit/bench-resume-budget.test.ts (5 tests) 42ms
+stderr | tests/unit/bench-apply-route.test.ts > POST /api/bench/apply > still saves the application when the email provider fails
+[bench:apply-received] email failed Invalid `to`: [redacted-email]
+
+ ✓ tests/unit/bench-apply-route.test.ts (17 tests) 36ms
+stderr | tests/unit/booking-form-analytics.test.ts > submitMeetGreetLead > still reports a successful save when track() throws synchronously
+[booking] analytics call failed Error: simulated analytics failure
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-form-analytics.test.ts:145:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at submitMeetGreetLead (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:98:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-form-analytics.test.ts:150:20
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:20
+
+ ✓ tests/unit/booking-form-analytics.test.ts (7 tests) 35ms
+stderr | tests/unit/analytics-track-route.test.ts > rate limiting > fails open (still processes the request) if the rate-limit check itself errors
+[track] rate limit check failed firestore unavailable
+
+ ✓ tests/unit/analytics-track-route.test.ts (21 tests) 31ms
+ ✓ tests/unit/site-footer-cta.test.ts (6 tests) 31ms
+stderr | tests/unit/lead-intake.test.ts > rate limiting > fails open (allows the request) if the rate-limit check itself errors
+[lead:meetgreet] rate limit check failed firestore unavailable
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > a genuine Firestore failure returns 500 and never a false success
+[lead:meetgreet] firestore create failed firestore down
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > saves the lead and records status even when the founder email fails
+[lead:meetgreet] founder email failed send failed
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > saves the lead and records status even when the customer email fails
+[lead:meetgreet] customer email failed customer bounce
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > a client retry after a failed send does not duplicate the lead or resend
+[lead:meetgreet] founder email failed send failed
+
+ ✓ tests/unit/lead-intake.test.ts (20 tests) 33ms
+ ✓ tests/unit/firestore-merge-doc.test.ts (4 tests) 408ms
+   ✓ fsMergeDoc (3)
+     ✓ leaves fields it was not given untouched 362ms
+ ✓ tests/unit/lead-stats.test.ts (5 tests) 23ms
+stderr | tests/unit/photos-storage.test.ts > storageUpload / storageUploadPrivate logging and privacy (R09) > storageUploadPrivate throws if clearing the token fails, rather than silently leaving it public
+[storage] failed to clear public token, status: 500 path: private/report.html
+
+stderr | tests/unit/photos-storage.test.ts > storageUpload / storageUploadPrivate logging and privacy (R09) > storageUploadPrivate throws if clearing the token fails, rather than silently leaving it public
+[storage] cleanup delete also failed, path: private/report.html Storage delete failed for private/report.html (403)
+
+ ✓ tests/unit/photos-storage.test.ts (4 tests) 23ms
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > cleans up the uploaded object(s) when the metadata write fails, and reports cleanup ok
+Firestore write failed: Firestore SET failed
+
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > reports truthfully when cleanup itself fails after a metadata write failure
+Firestore write failed: Firestore SET failed
+
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > reports truthfully when cleanup itself fails after a metadata write failure
+Cleanup after failed metadata write did not fully succeed for photos/originals/9aac5333-ea55-4486-8486-01004d59d443.jpg
+
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > records a failed thumbnail truthfully instead of pretending it succeeded
+Thumbnail generation/upload failed: thumbnail upload failed (500)
+
+ ✓ tests/unit/photos-upload.test.ts (8 tests) 23ms
+ ✓ tests/unit/bench-admin-routes.test.ts (23 tests) 20ms
+ ✓ tests/unit/photos-render-route.test.ts (5 tests) 19ms
+ ✓ tests/unit/contact-info-card-cta.test.ts (1 test) 15ms
+ ✓ tests/unit/neighborhood-detail-cta.test.ts (1 test) 15ms
+ ✓ tests/unit/admin-analytics-funnel-panel.test.ts (1 test) 14ms
+stderr | tests/unit/admin-analytics-route.test.ts > GET /api/admin/analytics > returns 500 (not 401) with a sanitized message when the admin whitelist lookup itself fails
+[Error] admin whitelist lookup failed: 503 unavailable at project my-secret-project
+
+stderr | tests/unit/admin-analytics-route.test.ts > GET /api/admin/analytics > returns a sanitized 500 (not the raw error) when the report itself throws
+[UnhandledError] Error: Firestore RANGE analytics_events: 503 backend unavailable at project my-secret-project
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/admin-analytics-route.test.ts:70:42
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:1628:35
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:26
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3319:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3314:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3299:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3257:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3876:64
+
+ ✓ tests/unit/admin-analytics-route.test.ts (8 tests) 14ms
+stderr | tests/unit/analytics-track.test.ts > track — delivery transport > does not throw, and does not produce an unhandled rejection, when the fetch fallback rejects
+[analytics] delivery failed TypeError: Failed to fetch
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/analytics-track.test.ts:199:50
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at deliver (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:140:10)
+    at sendEvent (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:179:5)
+    at Module.track (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:213:3)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/analytics-track.test.ts:203:18
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+
+ ✓ tests/unit/analytics-track.test.ts (21 tests) 14ms
+stderr | tests/unit/cta-tracked-link.test.ts > TrackedCtaLink > still calls the caller onClick (and never throws) when the tracker itself throws
+[analytics] cta_click failed Error: tracking backend unreachable
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/cta-tracked-link.test.ts:65:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at Object.onClick (/Users/bballi/Documents/Repos/NotTheRug-013/components/marketing/TrackedCtaLink.tsx:32:11)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/cta-tracked-link.test.ts:76:32
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1934:14)
+
+ ✓ tests/unit/cta-tracked-link.test.ts (4 tests) 13ms
+ ✓ tests/unit/bench-summary.test.ts (4 tests) 13ms
+ ✓ tests/unit/brief-send-guard.test.ts (4 tests) 12ms
+stderr | tests/unit/admin-analytics-cleanup-route.test.ts > POST /api/admin/analytics/cleanup > returns 500 (not 401) with a sanitized message when the admin whitelist lookup itself fails
+[Error] admin whitelist lookup failed: 503 unavailable at project my-secret-project
+
+stderr | tests/unit/admin-analytics-cleanup-route.test.ts > POST /api/admin/analytics/cleanup > returns a sanitized 500 (not the raw error) when cleanup itself throws
+[UnhandledError] Error: Firestore RANGE analytics_events: 503 backend unavailable at project my-secret-project
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/admin-analytics-cleanup-route.test.ts:79:7
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:1628:35
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:26
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3319:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3314:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3299:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3257:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3876:64
+
+ ✓ tests/unit/admin-analytics-cleanup-route.test.ts (7 tests) 12ms
+ ✓ tests/unit/admin-request-helper.test.ts (8 tests) 12ms
+ ✓ tests/unit/read-bounded-body.test.ts (10 tests) 11ms
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (Auth backend internal error) as a service error (500, never 401)
+[Error] token verification backend failure: auth/internal-error
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (network error) as a service error (500, never 401)
+[Error] token verification backend failure: app/network-error
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (credential error) as a service error (500, never 401)
+[Error] token verification backend failure: app/invalid-credential
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (non-Firebase error) as a service error (500, never 401)
+[Error] token verification backend failure: socket hang up
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a whitelist lookup failure as a service error (500, not 401)
+[Error] admin whitelist lookup failed: Firestore GET admins/admin@example.test: 503 unavailable
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > never echoes internal error detail in the client-facing errorResponse body
+[Error] admin whitelist lookup failed: service account key rejected by project my-secret-project-123
+
+ ✓ tests/unit/auth-verifyAdmin.test.ts (20 tests) 11ms
+stdout | tests/unit/brief-reporter-links.test.ts > generateReport HTML output > rejects javascript: and data: source URLs while https: URLs pass through as links
+◇ injected env (0) from .env.local // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+
+stdout | tests/unit/brief-reporter-links.test.ts > generateReport HTML output > rejects javascript: and data: source URLs while https: URLs pass through as links
+[REPORTER] Brief saved: brief-oct-05-2026-12:51pm.md, NotTheRug-sep-01-2026-7:05am.html
+
+stdout | tests/unit/brief-reporter-links.test.ts > generateReport HTML output > rejects protocol-relative URLs, uppercase schemes, embedded whitespace, and non-ASCII scheme characters
+[REPORTER] Brief saved: brief-oct-05-2026-12:51pm.md, NotTheRug-sep-01-2026-7:06am.html
+
+ ✓ tests/unit/brief-reporter-links.test.ts (2 tests) 11ms
+stderr | tests/unit/lead-firestore-integration.test.ts > a booking inquiry against real Firestore > still saves the lead, and says so, when the founder notification fails
+[lead:meetgreet] founder email failed provider down
+
+ ✓ tests/unit/lead-firestore-integration.test.ts (14 tests) 510ms
+ ✓ tests/unit/leads-digest-template.test.ts (2 tests) 12ms
+ ✓ tests/unit/analytics-emulator-roundtrip.test.ts (18 tests) 598ms
+stderr | tests/unit/lead-intake-emulator.test.ts > final submission against the real counters and store (emulator) > a notification failure keeps the lead and sends nothing twice
+[lead:meetgreet] founder email failed provider rejected
+[lead:meetgreet] customer email failed provider rejected
+
+ ✓ tests/unit/lead-intake-emulator.test.ts (12 tests) 453ms
+stderr | tests/unit/scheduling-dialog-appointment.test.ts > createAppointmentCompletionHandler > does not throw when track() throws synchronously, and still dedupes correctly
+[booking] analytics call failed Error: simulated analytics failure
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/scheduling-dialog-appointment.test.ts:137:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/SchedulingDialog.tsx:42:5)
+    at handleCalendlyMessage (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/SchedulingDialog.tsx:68:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/scheduling-dialog-appointment.test.ts:144:18
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+
+ ✓ tests/unit/scheduling-dialog-appointment.test.ts (12 tests) 11ms
+ ✓ tests/unit/firestore-preconditions.test.ts (7 tests) 151ms
+stderr | tests/unit/analytics-rate-limit-fail-open.test.ts > rate limiter fails open on a Firestore error > a thrown error from the rate-limit counter write does not block the request — traffic is still accepted and stored
+[track] rate limit check failed simulated Firestore outage on the rate-limit counter
+
+ ✓ tests/unit/analytics-rate-limit-fail-open.test.ts (2 tests) 50ms
+ ✓ tests/unit/bench-logic.test.ts (17 tests) 8ms
+stderr | tests/unit/admin-leads-route.test.ts > GET /admin/leads > returns 500 (not 401) when the admin whitelist lookup itself fails
+[Error] admin whitelist lookup failed: 503 unavailable
+
+stderr | tests/unit/admin-leads-route.test.ts > GET /admin/leads > returns 500 and a safe message (not the raw Firestore error) when the lead query itself fails
+[Error] Firestore GET leads: 503 backend unavailable at project my-secret-project
+
+ ✓ tests/unit/admin-leads-route.test.ts (7 tests) 9ms
+stderr | tests/unit/photos-delete.test.ts > DELETE /api/admin/photos/delete > keeps the metadata record and reports pending_cleanup when object deletion fails
+Storage delete failed during photo cleanup: Storage delete failed for photos/originals (500)
+
+stderr | tests/unit/photos-delete.test.ts > DELETE /api/admin/photos/delete > surfaces a metadata delete failure after storage cleanup succeeded, rather than silently losing it
+Metadata delete failed after successful storage cleanup: Firestore DELETE failed
+
+ ✓ tests/unit/photos-delete.test.ts (7 tests) 7ms
+ ✓ tests/unit/analytics-session.test.ts (16 tests) 7ms
+stderr | tests/unit/tracked-cta-anchor.test.ts > TrackedCtaAnchor > still calls the caller onClick (and never throws) when the tracker itself throws
+[analytics] cta_click failed Error: tracking backend unreachable
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/tracked-cta-anchor.test.ts:80:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at Object.onClick (/Users/bballi/Documents/Repos/NotTheRug-013/components/marketing/TrackedCtaAnchor.tsx:25:11)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/tracked-cta-anchor.test.ts:91:32
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1934:14)
+
+ ✓ tests/unit/tracked-cta-anchor.test.ts (5 tests) 6ms
+ ✓ tests/unit/lead-capture-honeypot.test.ts (4 tests) 6ms
+ ✓ tests/unit/analytics-retention.test.ts (12 tests) 6ms
+ ✓ tests/unit/legacy-redirects-proxy.test.ts (28 tests) 6ms
+ ✓ tests/unit/bench-validation.test.ts (36 tests) 5ms
+ ✓ tests/unit/admin-cache-headers.test.ts (3 tests) 4ms
+ ✓ tests/unit/section-nav-registry.test.ts (5 tests) 4ms
+ ✓ tests/unit/home-intro-timing.test.ts (7 tests) 4ms
+stderr | tests/unit/bench-resume-emulator.test.ts > resume upload token (emulator) > on a storage failure keeps the application, leaves the token consumed, and cleans only its own object
+[bench:resume] upload failed Private storage upload failed (503)
+
+stderr | tests/unit/bench-resume-emulator.test.ts > resume upload token (emulator) > on a finalization failure keeps the application and deletes the object it uploaded
+[bench:resume] finalize failed Firestore MERGE benchPeople/bench_b2bfa4c94d77de96e5730913d9b30737: 503 unavailable
+
+stderr | tests/unit/bench-resume-emulator.test.ts > resume upload token (emulator) > does not finalize, or delete anything, when another attempt owns the record
+[bench:resume] finalize failed
+
+stderr | tests/unit/bench-resume-emulator.test.ts > other bench writers stay field-scoped (emulator) > confirms an auto-invite stage write whose acknowledgement was lost, then sends the invite once
+[bench:apply] auto-invite stage write failed, confirming socket hang up
+
+stderr | tests/unit/bench-resume-emulator.test.ts > other bench writers stay field-scoped (emulator) > an AI summary for a deleted person does not recreate the record
+[bench:ai-summary] failed Firestore MERGE benchPeople/bench_b2bfa4c94d77de96e5730913d9b30737: precondition failed (404)
+
+ ✓ tests/unit/bench-resume-emulator.test.ts (19 tests) 328ms
+ ✓ tests/unit/admin-dashboard-request-lifecycle.test.ts (9 tests) 3ms
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies any client write to admins/** — no self-enrollment
+[2026-10-05T17:51:34.388Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c041 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L24, false for 'create' @ L113, false for 'update' @ L24, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies every unauthenticated write to protected collections
+[2026-10-05T17:51:34.507Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c04b error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L30, false for 'create' @ L113, false for 'update' @ L30, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies an unlisted collection, so the catch-all is proven and not just assumed
+[2026-10-05T17:51:34.521Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c04d error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L113, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies an unlisted collection, so the catch-all is proven and not just assumed
+[2026-10-05T17:51:34.529Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c04e error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L113, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a subcollection nested under a denied document
+[2026-10-05T17:51:34.543Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c050 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L113, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies public reads and writes of every bench collection
+[2026-10-05T17:51:34.557Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c052 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L76, false for 'create' @ L113, false for 'update' @ L76, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies public reads and writes of every bench collection
+[2026-10-05T17:51:34.563Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c053 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L80, false for 'create' @ L113, false for 'update' @ L80, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies public reads and writes of every bench collection
+[2026-10-05T17:51:34.568Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c054 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L86, false for 'create' @ L113, false for 'update' @ L86, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies public reads and writes of every bench collection
+[2026-10-05T17:51:34.573Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c055 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L96, false for 'create' @ L113, false for 'update' @ L96, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies public reads and writes of every bench collection
+[2026-10-05T17:51:34.578Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c056 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L100, false for 'create' @ L113, false for 'update' @ L100, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies public reads and writes of every bench collection
+[2026-10-05T17:51:34.583Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c057 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L104, false for 'create' @ L113, false for 'update' @ L104, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies public reads and writes of every bench collection
+[2026-10-05T17:51:34.588Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c058 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L109, false for 'create' @ L113, false for 'update' @ L109, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a signed-in admin direct client access to bench collections
+[2026-10-05T17:51:34.607Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c05b error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L76, false for 'create' @ L113, false for 'update' @ L76, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a signed-in admin direct client access to bench collections
+[2026-10-05T17:51:34.612Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c05c error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L80, false for 'create' @ L113, false for 'update' @ L80, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a signed-in admin direct client access to bench collections
+[2026-10-05T17:51:34.617Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c05d error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L86, false for 'create' @ L113, false for 'update' @ L86, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a signed-in admin direct client access to bench collections
+[2026-10-05T17:51:34.621Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c05e error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L96, false for 'create' @ L113, false for 'update' @ L96, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a signed-in admin direct client access to bench collections
+[2026-10-05T17:51:34.626Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c05f error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L100, false for 'create' @ L113, false for 'update' @ L100, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a signed-in admin direct client access to bench collections
+[2026-10-05T17:51:34.630Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c060 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L104, false for 'create' @ L113, false for 'update' @ L104, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies a signed-in admin direct client access to bench collections
+[2026-10-05T17:51:34.636Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c061 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L109, false for 'create' @ L113, false for 'update' @ L109, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies client claims and offers on a callout, so nobody can take a shift from the browser
+[2026-10-05T17:51:34.645Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c062 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L96, false for 'create' @ L113, false for 'update' @ L96, false for 'update' @ L113
+
+stderr | tests/unit/rules-firestore.test.ts > firestore.rules > denies client claims and offers on a callout, so nobody can take a shift from the browser
+[2026-10-05T17:51:34.652Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x4c54c064 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L89, false for 'create' @ L113, false for 'update' @ L89, false for 'update' @ L113
+
+ ✓ tests/unit/rules-firestore.test.ts (15 tests) 448ms
+ ✓ tests/unit/report-boundary-error.test.ts (6 tests) 4ms
+ ✓ tests/unit/onboarding-handoff.test.ts (9 tests) 3ms
+ ✓ tests/unit/rules-storage.test.ts (5 tests) 154ms
+stderr | tests/unit/rules-analytics.test.ts > firestore.rules — analytics collections > denies a public write of analytics_events, including one shaped exactly like the server writes
+[2026-10-05T17:51:35.228Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x673e3c66 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L61, false for 'create' @ L113, false for 'update' @ L61, false for 'update' @ L113
+
+stderr | tests/unit/rules-analytics.test.ts > firestore.rules — analytics collections > denies a public read or write of analyticsRateLimits counters
+[2026-10-05T17:51:35.256Z]  @firebase/firestore: Firestore (12.19.0): GrpcConnection RPC 'Write' stream 0x673e3c69 error. Code: 7 Message: 7 PERMISSION_DENIED:
+false for 'create' @ L67, false for 'create' @ L113, false for 'update' @ L67, false for 'update' @ L113
+
+ ✓ tests/unit/rules-analytics.test.ts (4 tests) 116ms
+ ✓ tests/unit/welcome-modal.test.ts (5 tests) 3ms
+ ✓ tests/unit/bench-application-fields.test.ts (3 tests) 3ms
+ ✓ tests/unit/analytics-greeting.test.ts (8 tests) 3ms
+ ✓ tests/unit/lead-validation.test.ts (18 tests) 2ms
+ ✓ tests/unit/bench-emulator-roundtrip.test.ts (2 tests) 75ms
+ ✓ tests/unit/admin-analytics-cta-labels.test.ts (5 tests) 2ms
+ ✓ tests/unit/calendly-embed-url.test.ts (6 tests) 2ms
+ ✓ tests/unit/booking-prefill.test.ts (10 tests) 2ms
+ ✓ tests/unit/lead-completeness.test.ts (7 tests) 2ms
+ ✓ tests/unit/site-nav-links.test.ts (3 tests) 2ms
+ ✓ tests/unit/team-chip-photo.test.ts (4 tests) 2ms
+ ✓ tests/unit/lead-csv.test.ts (9 tests) 2ms
+ ✓ tests/unit/admin-leads-csv-export.test.ts (3 tests) 2ms
+ ✓ tests/unit/lead-contact-links.test.ts (8 tests) 2ms
+ ✓ tests/unit/hero-video-policy.test.ts (3 tests) 2ms
+ ✓ tests/unit/paw-walk-steps.test.ts (6 tests) 2ms
+ ✓ tests/unit/admin-lead-record-booked.test.ts (2 tests) 1ms
+
+ Test Files  80 passed (80)
+      Tests  758 passed (758)
+   Start at  12:51:26
+   Duration  10.34s (tests 79%, import 14%, transform 5%, worker 2%)
+
+    Isolate  80 workers spawned · ~46ms startup each (spawn + environment, per file)
+             at least ~3.60s faster with isolate: false — reuses workers across files instead of one per file
+
+JSON report written to /Users/bballi/Documents/Repos/NotTheRug-013/test-results/vitest-emulators.json
+Required emulator run OK: 102 emulator-backed tests passed across 11 suites; 758 total passed, 0 skipped.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  storage: Stopping Storage Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

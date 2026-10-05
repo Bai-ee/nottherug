@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState } from 'react';
-import { TEAM } from '@/lib/content/team';
+import { useEffect, useRef, useState } from 'react';
+import { TEAM, teamChipPhoto, type TeamMember } from '@/lib/content/team';
 
 /** Same alternation the Instagram tiles use (InstagramGrid). */
 const TILT_CLASSES = ['polaroid-tilt-left', 'polaroid-tilt-right'];
@@ -31,10 +31,63 @@ const TILT_CLASSES = ['polaroid-tilt-left', 'polaroid-tilt-right'];
  * the hover/focus/tap triggers, so the two read as one behaviour rather than
  * two. The chips are cropped squares; the preview is the whole frame.
  */
+/** How far below the viewport the band may sit before its portraits start
+    loading. Native `loading="lazy"` was tried first, but Chromium's own
+    threshold is 1250-2500px and the band sits ~2400px down the page, so the
+    browser fetched all six on load — an explicit observer keeps them back. */
+const PORTRAIT_LOAD_MARGIN = '300px 0px';
+
+/**
+ * One chip portrait: an <img> (not a CSS background) so it can be withheld
+ * until the band nears the viewport. teamChipPhoto() places it so the crop is
+ * the old background-size/background-position, pixel for pixel. Until `load`
+ * flips, the window shows its paper fill, as the background did while loading.
+ */
+function TeamChipImage({ member, load }: { member: TeamMember; load: boolean }) {
+  if (!load) return null;
+  const photo = teamChipPhoto(member);
+  return (
+    <picture>
+      <source type="image/avif" srcSet={photo.avifSrcSet} sizes={photo.sizes} />
+      <source type="image/webp" srcSet={photo.webpSrcSet} sizes={photo.sizes} />
+      <img
+        src={member.photo}
+        alt=""
+        width={member.photoWidth}
+        height={member.photoHeight}
+        decoding="async"
+        style={photo.style}
+      />
+    </picture>
+  );
+}
+
 export default function TeamScroller() {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [activeName, setActiveName] = useState<string | null>(null);
+  // Portraits start loading once the band is within PORTRAIT_LOAD_MARGIN of
+  // the viewport; without IntersectionObserver they load immediately.
+  const [nearViewport, setNearViewport] = useState(false);
   const active = TEAM.find((member) => member.name === activeName) ?? null;
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setNearViewport(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setNearViewport(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: PORTRAIT_LOAD_MARGIN },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div id="home-team-scroller" ref={trackRef}>
@@ -58,13 +111,11 @@ export default function TeamScroller() {
               <div className="polaroid-window">
                 <div
                   className="home-team-chip-photo"
+                  id={`home-team-chip-photo-${member.name.toLowerCase()}`}
                   aria-hidden="true"
-                  style={{
-                    backgroundImage: `url('${member.photo}')`,
-                    backgroundSize: member.photoSize,
-                    backgroundPosition: member.photoPosition,
-                  }}
-                />
+                >
+                  <TeamChipImage member={member} load={nearViewport} />
+                </div>
               </div>
             </button>
             <div className="polaroid-caption" id={`home-team-chip-caption-${member.name.toLowerCase()}`}>

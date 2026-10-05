@@ -5,16 +5,23 @@ import { REDDIT_RECOMMENDATIONS_URL, REDDIT_UPVOTES, REVIEW_RATINGS } from '@/li
 import UpvoteIcon from './UpvoteIcon';
 import Image from 'next/image';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
+import { pickHeroVideo } from './hooks/heroVideoPolicy';
 import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import TrackedCtaAnchor from './TrackedCtaAnchor';
 import TrackedCtaLink from './TrackedCtaLink';
 
 /**
- * Pauses/resumes the muted decorative hero clip based on viewport visibility
- * and `prefers-reduced-motion`. The clip only ever plays once it is at least
- * partially on screen and motion is allowed; otherwise it sits on its poster
- * frame. Scoped to this component only — see patches/03-hero-video-markup for
- * why this can't live in the shared `useHomeHeroMotion` hook.
+ * Hero clip lifecycle. The markup ships a poster only (no <source>), so the
+ * clip costs nothing until this runs:
+ *  - reduced motion, data-saver or a 2g connection: stays on the poster, no
+ *    video request at all (pickHeroVideo)
+ *  - otherwise, after first paint and once the browser is idle, the viewport-
+ *    appropriate WebM/MP4 pair is attached and loaded — never before, so it
+ *    cannot compete with the headline or the booking CTA
+ *  - plays only while at least partly on screen; a failed load leaves the
+ *    poster in place.
+ * Scoped to this component only — see patches/03-hero-video-markup for why
+ * this can't live in the shared `useHomeHeroMotion` hook.
  */
 function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null>) {
   useEffect(() => {
@@ -22,22 +29,62 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
     if (!video) return;
 
     const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const connection = (navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    }).connection;
+    const sources = pickHeroVideo({
+      reducedMotion: reduceMotionQuery.matches,
+      saveData: connection?.saveData,
+      effectiveType: connection?.effectiveType,
+      isMobile: window.matchMedia('(max-width: 768px)').matches,
+    });
+    if (!sources) return;
+
     let isIntersecting = false;
+    let loaded = false;
+    let cancelled = false;
 
     const syncPlayback = () => {
-      if (reduceMotionQuery.matches) {
+      if (!loaded) return;
+      if (reduceMotionQuery.matches || !isIntersecting) {
         video.pause();
         return;
       }
-      if (isIntersecting) {
-        video.play().catch(() => {
-          // Autoplay can be rejected before user interaction on some
-          // browsers; the poster frame stays visible until it succeeds.
-        });
-      } else {
-        video.pause();
-      }
+      video.play().catch(() => {
+        // Autoplay can be rejected before user interaction on some
+        // browsers; the poster frame stays visible until it succeeds.
+      });
     };
+
+    const attachSources = () => {
+      if (cancelled || loaded) return;
+      loaded = true;
+      for (const [src, type] of [
+        [sources.webm, 'video/webm'],
+        [sources.mp4, 'video/mp4'],
+      ]) {
+        const source = document.createElement('source');
+        source.src = src;
+        source.type = type;
+        video.appendChild(source);
+      }
+      video.load();
+      syncPlayback();
+    };
+
+    // First paint has happened after two animation frames; then wait for idle
+    // (bounded, since Safari has no requestIdleCallback).
+    let idleHandle: number | undefined;
+    let timeoutHandle: number | undefined;
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (typeof window.requestIdleCallback === 'function') {
+          idleHandle = window.requestIdleCallback(attachSources, { timeout: 2000 });
+        } else {
+          timeoutHandle = window.setTimeout(attachSources, 300);
+        }
+      });
+    });
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -51,6 +98,10 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
     reduceMotionQuery.addEventListener('change', syncPlayback);
 
     return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      if (idleHandle !== undefined) window.cancelIdleCallback(idleHandle);
+      if (timeoutHandle !== undefined) window.clearTimeout(timeoutHandle);
       observer.disconnect();
       reduceMotionQuery.removeEventListener('change', syncPlayback);
     };
@@ -90,15 +141,15 @@ export default function HomeHero() {
             <video
               id="hero-bg-video"
               ref={videoRef}
-              autoPlay
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
               poster="/video/hero-mccarren-poster.webp"
             >
-              <source src="/video/hero-mccarren-1080.webm" type="video/webm" />
-              <source src="/video/hero-mccarren-1080.mp4" type="video/mp4" />
+              {/* Sources are attached after first paint and idle by
+                  useHeroVideoLifecycle (poster only for reduced motion and
+                  data-saving). */}
             </video>
           </div>
           <figcaption className="polaroid-caption" id="hero-polaroid-caption"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Williamsburg, Brooklyn</figcaption>

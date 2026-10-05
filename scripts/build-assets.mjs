@@ -54,6 +54,29 @@ const JOBS = [
 // worker-b instruction restricts removal to files "proven unreferenced AND
 // recoverable," and this one still has a live (non-deployed) doc reference.
 
+// Plan 013 P3 (F07): RESIZED derivatives for consumers that were shipping a
+// full-size PNG/JPEG into a tiny box. Unlike JOBS above these DO resize, to
+// the measured maximum rendered size x2 DPR (capped at the source — no
+// upscale). Masters are copied to assets-src/ exactly like JOBS; the original
+// public/ files stay in place (previous URLs are retained through the release
+// for rollback, and /about + the team preview still use the JPEGs).
+//   paw-walk-{left,right}: HomePawWalk prints render at clamp(34px,4vw,52px)
+//     => 52 CSS px max => 104px wide at 2x. WebP only (alpha, near-lossless),
+//     the same convention as SectionRail's paw-rail-*.webp.
+//   team/<name>-w<px>: home team chips (TeamScroller) as <picture>
+//     avif + webp. -w<small> serves a 1x desktop chip (~150px box x photoSize),
+//     -w<full> is the source width (2x/mobile needs exceed the source).
+const PAW_JOBS = [
+  { master: 'public/img/pawl.png', out: 'public/img/paw-walk-left.webp', width: 104 },
+  { master: 'public/img/pawr.png', out: 'public/img/paw-walk-right.webp', width: 104 },
+];
+// [name, source width, photoSize % from lib/content/team.ts]
+const TEAM_PORTRAITS = [
+  ['luis', 675, 150], ['lincoln', 506, 275], ['marcus', 675, 275],
+  ['christian', 506, 170], ['shawn', 675, 290], ['yenny', 750, 265],
+];
+const TEAM_DESKTOP_BOX = 150; // CSS px of a 1x desktop chip window (148 at 1440)
+
 async function ensureMaster(job) {
   const rel = job.master.replace(/^public\//, '');
   const srcMasterPath = path.join(ROOT, 'assets-src', rel);
@@ -92,6 +115,29 @@ async function run() {
       .toFile(path.join(ROOT, avifOut));
 
     console.log(`${job.master} (${meta.width}x${meta.height}) -> ${webpOut}, ${avifOut}`);
+  }
+
+  for (const job of PAW_JOBS) {
+    const masterPath = await ensureMaster(job);
+    await sharp(masterPath)
+      .rotate()
+      .resize({ width: job.width })
+      .webp({ quality: 90, alphaQuality: 100, effort: 6 })
+      .toFile(path.join(ROOT, job.out));
+    console.log(`${job.master} -> ${job.out} (${job.width}px wide)`);
+  }
+
+  for (const [name, srcWidth, sizePct] of TEAM_PORTRAITS) {
+    const job = { master: `public/img/team/${name}.jpg` };
+    const masterPath = await ensureMaster(job);
+    const small = Math.min(srcWidth, Math.round((sizePct / 100) * TEAM_DESKTOP_BOX));
+    for (const width of [small, srcWidth]) {
+      const base = path.join(ROOT, `public/img/team/${name}-w${width}.`);
+      const pipeline = sharp(masterPath).rotate().resize({ width, withoutEnlargement: true });
+      await pipeline.clone().webp({ quality: 84, effort: 6 }).toFile(base + 'webp');
+      await pipeline.clone().avif({ quality: 62, effort: 6 }).toFile(base + 'avif');
+      console.log(`${job.master} -> team/${name}-w${width}.{webp,avif}`);
+    }
   }
 }
 

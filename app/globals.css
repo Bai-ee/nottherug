@@ -2868,6 +2868,19 @@ footer {
   /* The window is a background-image div, not an <img>, so it needs the
      print treatment .polaroid-window applies to its own media children. */
   filter: contrast(0.96) saturate(0.9);
+  /* Frame for the lazy <img> portrait (TeamScroller → TeamChipImage), which
+     is sized and offset inline to reproduce the old background crop. */
+  position: relative;
+  overflow: hidden;
+}
+/* The window's own filter above already prints the portrait; the generic
+   `.polaroid-window img` filter must not stack a second pass on it. */
+#home-team-scroller .home-team-chip-photo img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  height: auto;
+  filter: none;
 }
 .home-team-chip-name {
   font-family: var(--font-display);
@@ -3775,11 +3788,14 @@ footer {
 
 /* =============================================
    HOME LOADING SCREEN (intro)
-   Gated entirely by data-home-intro on <html>, set before first paint by the
-   inline script in components/marketing/HomeIntroOverlay.tsx. No attribute
-   (reduced motion, JS off, client-side nav back to home) means no loading
-   screen and a normally visible page — the hidden states below only ever
-   apply while the overlay is on screen to replace them.
+   A brief, fixed-length decorative intro driven entirely by CSS keyframes off
+   data-home-intro on <html>, set before first paint by the inline script in
+   components/marketing/HomeIntroOverlay.tsx. It never hides or disables the
+   page: the headline and Book a Meet & Greet are in the DOM, visible and
+   operable the whole time (the overlay is pointer-transparent, aria-hidden).
+   No attribute (reduced motion, JS off, client-side nav back to home) means no
+   intro at all. Timings mirror components/marketing/hooks/homeIntroTiming.ts:
+   paper lifts at 0.4s, everything is over by 1.3s.
    ============================================= */
 #home-intro-overlay {
   position: fixed;
@@ -3788,26 +3804,54 @@ footer {
   display: none;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
   /* Same paper as the page underneath, so the wipe reads as the sheet being
      lifted rather than a different surface sliding away. */
   background: var(--cream) url('/textures/paper-grain.png');
   background-size: 300px 300px;
   will-change: transform;
 }
-html[data-home-intro='loading'] #home-intro-overlay,
-html[data-home-intro='revealing'] #home-intro-overlay { display: flex; }
+html[data-home-intro='loading'] #home-intro-overlay {
+  display: flex;
+  /* `both` + the final visibility:hidden keep the sheet gone even if the
+     script that clears data-home-intro never runs. */
+  animation: home-intro-paper-lift 0.75s cubic-bezier(0.65, 0, 0.35, 1) 0.4s both;
+}
+@keyframes home-intro-paper-lift {
+  from { transform: translateY(0); visibility: visible; }
+  99% { visibility: visible; }
+  to { transform: translateY(-100%); visibility: hidden; }
+}
 
-/* Nothing but the overlay while it loads. `visibility` rather than `display`
-   deliberately: the hero and the section-reveal ScrollTriggers still measure
-   their real layout underneath, so nothing re-measures at the reveal. */
-html[data-home-intro='loading'] #main-nav,
-html[data-home-intro='loading'] #page-home { visibility: hidden; }
-html[data-home-intro='loading'] body { overflow: hidden; }
+/* Nav band and paper wordmark drop in behind the lifting sheet. The
+   individual `translate` property composes with the logo's own CSS transform
+   (rotation, centring) instead of replacing it. */
+html[data-home-intro='loading'] #main-nav {
+  animation: home-intro-nav-drop 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.52s both;
+}
+html[data-home-intro='loading'] #main-nav .nav-logo {
+  animation: home-intro-logo-drop 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.5s both;
+}
+@keyframes home-intro-nav-drop {
+  from { translate: 0 -100%; }
+  to { translate: 0 0; }
+}
+@keyframes home-intro-logo-drop {
+  from { translate: 0 -180%; }
+  to { translate: 0 0; }
+}
 
-/* The shell is what gsap moves on exit; the bob below stays on the image
-   inside it. A running CSS animation on transform outranks an inline one, so
-   the two must not share an element. */
+/* The shell exits; the bob below stays on the image inside it. A running CSS
+   animation on transform outranks any other transform on the same element,
+   so the two must not share one. */
 #home-intro-walker-shell { display: block; }
+html[data-home-intro='loading'] #home-intro-walker-shell {
+  animation: home-intro-walker-exit 0.55s cubic-bezier(0.55, 0.06, 0.68, 0.19) 0.15s both;
+}
+@keyframes home-intro-walker-exit {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(42%); opacity: 0; }
+}
 #home-intro-walker-silhouette {
   /* Overrides the global img rule (width/height 100%, object-fit: cover). */
   width: min(58vw, 440px);
@@ -3817,7 +3861,7 @@ html[data-home-intro='loading'] body { overflow: hidden; }
   filter: brightness(0);
   opacity: 0.3;
   /* Not mirrored: the source art walks to the right, the same way the walker
-     leaves (useHomeIntroSequence slides the shell off the right edge), so the
+     leaves (the exit keyframe slides the shell off the right edge), so the
      dogs lead and the walker moves forward. */
   animation: home-intro-walker-bob 2.4s ease-in-out infinite;
 }

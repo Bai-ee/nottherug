@@ -1,0 +1,27 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-not-the-rug", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: npm run test:e2e:analytics
+
+> nextapp@0.1.0 test:e2e:analytics
+> playwright test --config playwright.analytics.config.ts
+
+
+Running 6 tests using 6 workers
+
+  ✓  5 [desktop] › tests/e2e/analytics-journey.spec.ts:99:7 › analytics journey (real browser -> /api/track) › no personal data reaches the tracking endpoint (434ms)
+  ✓  6 [mobile] › tests/e2e/analytics-journey.spec.ts:99:7 › analytics journey (real browser -> /api/track) › no personal data reaches the tracking endpoint (772ms)
+  ✓  1 [mobile] › tests/e2e/analytics-pageview.spec.ts:33:7 › analytics pageview (real browser -> /api/track) › a homepage visit fires a page_view POST to /api/track (796ms)
+  ✓  3 [desktop] › tests/e2e/analytics-pageview.spec.ts:33:7 › analytics pageview (real browser -> /api/track) › a homepage visit fires a page_view POST to /api/track (1.3s)
+  ✓  2 [desktop] › tests/e2e/analytics-journey.spec.ts:47:7 › analytics journey (real browser -> /api/track) › a visit, a footer CTA and a form keystroke each report exactly once (1.5s)
+  ✓  4 [mobile] › tests/e2e/analytics-journey.spec.ts:47:7 › analytics journey (real browser -> /api/track) › a visit, a footer CTA and a form keystroke each report exactly once (1.5s)
+::notice title=🎭 Playwright Run Summary::  6 passed (2.4s)
+
+  6 passed (2.4s)
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

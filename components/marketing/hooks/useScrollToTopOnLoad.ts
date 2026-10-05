@@ -11,10 +11,15 @@ import { useEffect } from 'react';
  * under them. Scroll restoration is switched to `manual` here and the window
  * is forced back to 0.
  *
- * A URL hash wins: a deep link to a section still lands on that section.
+ * A fresh navigation is left alone (nothing to undo). A URL hash wins: a deep link to a section still lands on that section.
  */
+/** Only the first mount in a document can follow a browser scroll restoration. */
+let firstMountOfDocument = true;
+
 export function useScrollToTopOnLoad() {
   useEffect(() => {
+    const isFirstMount = firstMountOfDocument;
+    firstMountOfDocument = false;
     const previousRestoration = window.history.scrollRestoration;
     window.history.scrollRestoration = 'manual';
 
@@ -32,7 +37,10 @@ export function useScrollToTopOnLoad() {
       window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
     }
 
-    toTop();
+    // A fresh navigation (link, typed URL) has nothing restored to undo, and
+    // forcing the top here would also yank away a scroll the visitor made
+    // before hydration finished. Reload and back/forward still pin to the top.
+    if (!(isFirstMount && navEntry?.type === 'navigate')) toTop();
 
     // Safari/Firefox restore a bfcache entry's offset at `pageshow`, after
     // mount — the effect above has already run by then, so re-pin there too.

@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 import HomePageContent from '@/components/marketing/HomePageContent';
-import { resolveLegacyMarketingPath } from '@/lib/content/legacy-routes';
 import { buildPageMetadata, OG_IMAGES } from '@/lib/content/site';
 
 const PAGE_PATH = '/';
@@ -17,18 +15,8 @@ export const metadata: Metadata = buildPageMetadata({
   absoluteTitle: true,
 });
 
-// Legacy `?page=`/`?hood=` deep links (see lib/content/legacy-routes.ts)
-// still resolve here and redirect server-side before anything renders.
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string | string[]; hood?: string | string[] }>;
-}) {
-  const params = await searchParams;
-  const target = resolveLegacyMarketingPath(params);
-  if (target && target !== PAGE_PATH) {
-    redirect(target);
-  }
-
+// Legacy `?page=`/`?hood=` deep links redirect in proxy.ts (lib/routing/legacyRedirects.ts),
+// so this page reads no request data and renders statically.
+export default function HomePage() {
   return <HomePageContent />;
 }

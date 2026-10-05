@@ -39,7 +39,10 @@ const INITIAL_STEP_ESTIMATE = 168;
 const SAFETY_BUFFER_STEPS = 16;
 const ABSOLUTE_MAX_STEPS = 320;
 
-const PAW_SRC = { left: '/img/pawl.png', right: '/img/pawr.png' } as const;
+/** 104px-wide transparent WebP cut from pawl/pawr.png (scripts/build-assets.mjs):
+    prints render at most 52 CSS px, so 104px is the 2x ceiling. The 444px PNGs
+    stay in public/ for rollback but nothing loads them. */
+const PAW_SRC = { left: '/img/paw-walk-left.webp', right: '/img/paw-walk-right.webp' } as const;
 
 /** Dev-only panel, kept out of the production bundle by the ssr:false import
     plus the flag check below. */
@@ -125,8 +128,8 @@ export default function HomePawWalk() {
             className="home-paw-step"
             src={i % 2 === 0 ? PAW_SRC.left : PAW_SRC.right}
             alt=""
-            width={444}
-            height={475}
+            width={104}
+            height={111}
             loading="lazy"
             decoding="async"
           />
