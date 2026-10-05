@@ -18,7 +18,7 @@ stderr | tests/unit/zz-p1-intake-repro.test.ts > CONFIRMED: five successful capt
 If you need to partially mock a module, you can use "importOriginal" helper inside:
 
 
- ❯ tests/unit/zz-p1-intake-repro.test.ts (3 tests | 3 failed) 7ms
+ ❯ tests/unit/zz-p1-intake-repro.test.ts (3 tests | 3 failed) 8ms
    × CONFIRMED: five successful captures exhaust final submission budget 6ms
    × CONFIRMED: capture overwrites a concurrent converted status with partial 0ms
    × CONFIRMED: capture accepts over 4000 UTF-8 bytes without content-length 1ms
@@ -91,5 +91,5 @@ AssertionError: expected [ 503, 503 ] to deeply equal [ 200, 200 ]
 
  Test Files  2 failed (2)
       Tests  4 failed (4)
-   Start at  20:10:27
-   Duration  223ms (transform 44%, import 40%, tests 14%, worker 2%)
+   Start at  20:59:07
+   Duration  231ms (transform 43%, import 41%, tests 13%, worker 2%)

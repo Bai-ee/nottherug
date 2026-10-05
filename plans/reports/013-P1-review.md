@@ -58,3 +58,21 @@ Code-read of `git diff 9ea4684..469fb9a`. No tests run (suite in use by coordina
 
 ### Updated verdict: APPROVE-FOR-SUBMISSION
 No remaining defects; only the LOW test-strength note above.
+
+## Re-review of Codex fixup (66eebda)
+
+Code-read of `git diff d2f73b2..66eebda` (and `-w`). No tests run.
+
+1. Admin and apply budgets: RESOLVED, math verified against code.
+   - Admin (maxDuration 20, budget 17 s, cap 3 s, 500 ms floor): email actions (`invite_shadow`, `reject`, `conditional_offer`, matching `notifyFor`) reserve the fixed 8 s email while the settings read, person read and merge are sliced, so those end by 9 s and the send by 17 s; the outcome save then finds no budget, throws and is caught (logged, stage already saved, email never retried). Non-email actions: read plus merge, every retry re-slices. `verifyAdmin` is unsliced but its elapsed time is counted, so a slow auth only starves later required steps into a clean error before any email.
+   - Apply (maxDuration 30, budget 27 s): rate limit 8 + settings 3 + create 4 + coverage 3 + email 8 = 26 s, outcome save gets about 1 s (read only, merge skipped). Fits. Unsliceable and unchanged: the rate limiter's 8 s default and benchEmail's fixed 8 s, both reserved for. Request-body read time is unbounded but counted in elapsed.
+   - LOW note: in the all-stalled case the auto-invite email may have gone out while the stage move to `shadow_invited` and the outcome record were skipped (person stays in `review`). Worst case only; best-effort persistence was already stated as such.
+   - LOW note: `getBenchSettingsOrDefault` is given `slice(...) || 500`, so a starved budget still makes a 500 ms read and falls back to defaults on timeout (pre-existing fail-open).
+2. `carryBookedHintToLead`: RESOLVED. Uses `exists:true`, swallows `FirestorePreconditionError` (missing lead, no stub created); other errors still propagate to the callers' existing try/catch. Emulator test covers missing (nothing created) and existing (true set, other fields kept). LOW side effect of item 3: an ABORTED contention on this best-effort carry is also treated as "no lead" and silently dropped, with no retry.
+3. ABORTED: RESOLVED. Mapped only inside `isPreconditionFailure`, which is consulted only when a precondition was sent (conditional `:commit`); unconditional PATCH path unchanged. ALREADY_EXISTS mapping unchanged; other 409s stay plain errors. Three new tests cover retry-to-success, other-409 and unconditional ABORTED. Real-Firestore ABORTED behavior remains unproven locally (not emulator-observed), as the code comment says.
+4. Housekeeping: RESOLVED. `firestoreRest.ts` and `firebaseStorage.ts` re-indent is whitespace-only apart from the ABORTED mapping and comment (`git diff -w` shows nothing else; the firebaseStorage `-w` diff is empty). meetgreet duplicate Content-Length check removed, now covered by an over-cap 413 test that asserts zero Firestore calls (readBoundedBody performs the identical check). The spliced comment above `previousWindowId` is repaired and reads correctly. `bench.ts` read helpers only gained an optional `opts` argument; no behavior change when omitted.
+
+No weakened tests; the new tests (`bench-route-budget`, extra resume budget cases, ABORTED, carry, meetgreet cap) are additive.
+
+### Updated verdict: APPROVE-FOR-SUBMISSION
+No blocking issues. Remaining items are the LOW notes above.

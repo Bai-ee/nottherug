@@ -8,13 +8,13 @@ i  Running script: npx vitest run
  RUN  v5.0.0 /Users/bballi/Documents/Repos/NotTheRug-013
 
 
- Test Files  74 passed (74)
-      Tests  678 passed (678)
-   Start at  20:10:15
-   Duration  10.23s (tests 79%, import 14%, transform 5%, worker 2%)
+ Test Files  75 passed (75)
+      Tests  692 passed (692)
+   Start at  20:58:55
+   Duration  10.01s (tests 79%, import 14%, transform 5%, worker 2%)
 
-    Isolate  74 workers spawned · ~47ms startup each (spawn + environment, per file)
-             at least ~3.46s faster with isolate: false — reuses workers across files instead of one per file
+    Isolate  75 workers spawned · ~46ms startup each (spawn + environment, per file)
+             at least ~3.41s faster with isolate: false — reuses workers across files instead of one per file
 
 ✔  Script exited successfully (code 0)
 i  emulators: Shutting down emulators.
