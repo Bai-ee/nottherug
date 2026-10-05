@@ -1,6 +1,7 @@
 import { NextResponse, after } from 'next/server';
 import { createHash } from 'node:crypto';
 import { fsCreateDoc, fsGetDoc, fsIncrementField, fsMergeDoc } from '@/lib/server/firestoreRest';
+import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
 import { parseLeadSubmission } from '@/lib/leads/validation';
@@ -42,28 +43,19 @@ function errorResponse(status: number, error: string, details?: unknown) {
   return NextResponse.json(body, { status });
 }
 
-async function readCappedBody(req: Request, maxBytes: number): Promise<{ ok: true; text: string } | { ok: false }> {
-  if (!req.body) {
-    const text = await req.text();
-    return Buffer.byteLength(text, 'utf8') > maxBytes ? { ok: false } : { ok: true, text };
-  }
-
-  const reader = req.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    if (value) {
-      total += value.byteLength;
-      if (total > maxBytes) {
-        await reader.cancel();
-        return { ok: false };
-      }
-      chunks.push(value);
-    }
-  }
-  return { ok: true, text: Buffer.concat(chunks.map((c) => Buffer.from(c))).toString('utf8') };
+/**
+ * Adapter over the shared bounded reader: an absent body reads as empty text
+ * (the validators below already reject it), and a stream that dies mid-read is
+ * treated like an unreadable body rather than an oversized one.
+ */
+async function readCappedBody(
+  req: Request,
+  maxBytes: number
+): Promise<{ ok: true; text: string } | { ok: false; reason: 'too_large' | 'aborted' }> {
+  const result = await readBoundedBody(req, maxBytes);
+  if (result.ok) return result;
+  if (result.reason === 'missing') return { ok: true, text: '' };
+  return { ok: false, reason: result.reason };
 }
 
 /**
