@@ -49,7 +49,7 @@ describe('firestore.rules', () => {
 
   it('denies any client write to admins/** — no self-enrollment', async (ctx) => {
     if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
-    const attacker = testEnv.authenticatedContext('attacker-uid', { email: 'attacker@example.test' });
+    const attacker = testEnv.authenticatedContext('attacker-uid', { email: 'attacker@example.test', email_verified: true });
     await assertFails(
       attacker.firestore().collection('admins').doc('attacker@example.test').set({ selfEnrolled: true }),
     );
@@ -60,8 +60,27 @@ describe('firestore.rules', () => {
     await testEnv.withSecurityRulesDisabled(async (ctxAdmin) => {
       await ctxAdmin.firestore().collection('admins').doc('admin@example.test').set({ addedAt: 'now' });
     });
-    const admin = testEnv.authenticatedContext('admin-uid', { email: 'admin@example.test' });
+    const admin = testEnv.authenticatedContext('admin-uid', { email: 'admin@example.test', email_verified: true });
     await assertSucceeds(admin.firestore().collection('admins').doc('admin@example.test').get());
+  });
+
+  it('denies a signed-in user with an UNVERIFIED email reading their own admins/{email} doc', async (ctx) => {
+    if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
+    await testEnv.withSecurityRulesDisabled(async (ctxAdmin) => {
+      await ctxAdmin.firestore().collection('admins').doc('unverified@example.test').set({ addedAt: 'now' });
+    });
+    const db = (claims: Record<string, unknown>) =>
+      testEnv!.authenticatedContext('unverified-uid', claims).firestore().collection('admins').doc('unverified@example.test');
+    await assertFails(db({ email: 'unverified@example.test', email_verified: false }).get());
+    await assertFails(db({ email: 'unverified@example.test' }).get());
+  });
+
+  it('denies an anonymous read of admins/{email}', async (ctx) => {
+    if (!testEnv) return ctx.skip(EMULATOR_SKIP_REASON);
+    await testEnv.withSecurityRulesDisabled(async (ctxAdmin) => {
+      await ctxAdmin.firestore().collection('admins').doc('admin@example.test').set({ addedAt: 'now' });
+    });
+    await assertFails(testEnv.unauthenticatedContext().firestore().collection('admins').doc('admin@example.test').get());
   });
 
   it('denies reading a different admin\'s admins/{email} doc', async (ctx) => {
@@ -69,7 +88,7 @@ describe('firestore.rules', () => {
     await testEnv.withSecurityRulesDisabled(async (ctxAdmin) => {
       await ctxAdmin.firestore().collection('admins').doc('other@example.test').set({ addedAt: 'now' });
     });
-    const admin = testEnv.authenticatedContext('admin-uid-2', { email: 'admin2@example.test' });
+    const admin = testEnv.authenticatedContext('admin-uid-2', { email: 'admin2@example.test', email_verified: true });
     await assertFails(admin.firestore().collection('admins').doc('other@example.test').get());
   });
 

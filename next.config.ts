@@ -153,6 +153,19 @@ const BRIEF_TRACE_EXCLUDES = [
   ...SHARP_TRACE_EXCLUDES,
 ];
 
+// Admin data and documents (JSON, CSV, resumes, brief HTML) and their error
+// responses must never be stored by a browser or shared cache. Every route that
+// calls verifyAdmin is listed here; tests/unit/admin-cache-headers.test.ts
+// fails if a verifyAdmin route is added without a matching source.
+export const PRIVATE_CACHE_HEADERS = [{ key: 'Cache-Control', value: 'private, no-store' }];
+export const PRIVATE_ROUTE_SOURCES = [
+  '/api/admin/:path*',
+  '/admin/leads',
+  '/admin/founder-brief/:path*',
+  '/admin/preview/:path*',
+  '/admin/not-the-rug/:path*',
+];
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
@@ -177,6 +190,7 @@ const nextConfig: NextConfig = {
   // intentionally NOT here and why.
   async headers() {
     return [
+      ...PRIVATE_ROUTE_SOURCES.map((source) => ({ source, headers: PRIVATE_CACHE_HEADERS })),
       {
         source: '/:path*',
         headers: [
