@@ -71,6 +71,40 @@ describe('Firestore request deadlines', () => {
   });
 });
 
+describe('contended commit (ABORTED)', () => {
+  const realFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+  const aborted = () =>
+    new Response(JSON.stringify({ error: { code: 409, status: 'ABORTED', message: 'too much contention' } }), { status: 409 });
+
+  it('maps ABORTED on a conditional commit to a precondition error that withOptimisticRetry retries', async () => {
+    let calls = 0;
+    globalThis.fetch = vi.fn(async (url: unknown) => {
+      expect(String(url)).toContain(':commit');
+      return ++calls < 3 ? aborted() : new Response(JSON.stringify({ writeResults: [{ updateTime: 'T3' }] }), { status: 200 });
+    }) as unknown as typeof fetch;
+    const r = await withOptimisticRetry(() => fsMergeDoc('docs/a', { n: 1 }, { precondition: { updateTime: 'T0' } }));
+    expect(r).toEqual({ updateTime: 'T3' });
+    expect(calls).toBe(3);
+  });
+
+  it('still reports ALREADY_EXISTS by error.status, and other 409s stay plain errors', async () => {
+    globalThis.fetch = vi.fn(async () => new Response(JSON.stringify({ error: { status: 'SOMETHING_ELSE' } }), { status: 409 })) as unknown as typeof fetch;
+    const err = await fsMergeDoc('docs/a', { n: 1 }, { precondition: { exists: false } }).catch((e) => e);
+    expect(err).not.toBeInstanceOf(FirestorePreconditionError);
+  });
+
+  it('leaves ABORTED on an unconditional write as a plain error', async () => {
+    globalThis.fetch = vi.fn(async () => aborted()) as unknown as typeof fetch;
+    const err = await fsMergeDoc('docs/a', { n: 1 }).catch((e) => e);
+    expect(err).toBeInstanceOf(Error);
+    expect(err).not.toBeInstanceOf(FirestorePreconditionError);
+    expect(err.message).toContain('409');
+  });
+});
+
 describe('withOptimisticRetry', () => {
   it('retries only on FirestorePreconditionError and returns the eventual result', async () => {
     let n = 0;
