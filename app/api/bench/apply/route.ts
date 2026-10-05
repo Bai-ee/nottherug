@@ -51,6 +51,8 @@ const RESUME_TOKEN_TTL_MS = 30 * 60 * 1000;
 // benchEmail) are not sliceable, so later steps reserve room for them.
 // Worst case with every call stalling: rate 8 + settings 3 + create 4 + coverage 3
 // + email 8 = 26 s, leaving ~1 s for the (best-effort, skipped when starved) outcome save.
+// The auto-invite stage write (read 3 + write 3, reserving the email) comes first and
+// gates the invite email; without budget the invite is not sent (confirmation is).
 const ROUTE_BUDGET_MS = 27_000;
 const EMAIL_WORST_MS = 8_000;
 const MIN_STEP_MS = 500;
@@ -79,18 +81,41 @@ async function qualifiesForAutoInvite(person: BenchPerson, settings: BenchSettin
 }
 
 /**
- * Records the email outcome, and the auto-invite stage move, without replacing
- * the record: an admin may already be working on this person. Only
- * `notifications` (and, for an auto-invite that is still at the stage it was
- * created in, `stage` + `stageHistory`) is written, conditional on the version
- * just read. The email is never re-sent on a retry; only this write is.
+ * Auto-invite step 1, BEFORE the invite email: move review -> shadow_invited,
+ * conditional on the version just read (same order as the admin route: stage
+ * stored first, email second). Returns false when an admin already moved the
+ * person out of review (admin state wins, no invite). Throws when the write
+ * fails or there is no budget left; the caller then sends no invite.
  */
-async function persistNotifications(
-  id: string,
-  notifications: Record<string, NotificationOutcome>,
-  autoInvite: { at: string; by: string } | null,
-  slice: Slice,
-): Promise<void> {
+async function claimAutoInviteStage(id: string, at: string, slice: Slice): Promise<boolean> {
+  const need = () => {
+    const ms = slice(3_000, EMAIL_WORST_MS);
+    if (!ms) throw new Error('route time budget exhausted');
+    return ms;
+  };
+  return withOptimisticRetry(async () => {
+    const { person, updateTime } = await getBenchPersonWithMeta(id, { timeoutMs: need() });
+    if (!person || !updateTime) throw new Error('Person vanished before auto-invite');
+    if (person.stage !== 'review') return false;
+    await mergeBenchPerson(
+      id,
+      {
+        stage: 'shadow_invited',
+        stageHistory: [...person.stageHistory, { stage: 'shadow_invited', at, by: 'auto-invite' }],
+        updatedAt: new Date().toISOString(),
+      },
+      { precondition: { updateTime }, timeoutMs: need() },
+    );
+    return true;
+  });
+}
+
+/**
+ * Records the email outcome without replacing the record: an admin may already
+ * be working on this person. Only `notifications` is written, conditional on the
+ * version just read. The email is never re-sent on a retry; only this write is.
+ */
+async function persistNotifications(id: string, notifications: Record<string, NotificationOutcome>, slice: Slice): Promise<void> {
   const need = () => {
     const ms = slice(3_000);
     if (!ms) throw new Error('route time budget exhausted');
@@ -103,10 +128,6 @@ async function persistNotifications(
       notifications: { ...(person.notifications ?? {}), ...notifications },
       updatedAt: new Date().toISOString(),
     };
-    if (autoInvite && person.stage === 'review') {
-      fields.stage = 'shadow_invited';
-      fields.stageHistory = [...person.stageHistory, { stage: 'shadow_invited', at: autoInvite.at, by: autoInvite.by }];
-    }
     await mergeBenchPerson(id, fields, { precondition: { updateTime }, timeoutMs: need() });
   });
 }
@@ -195,25 +216,38 @@ export async function POST(req: Request) {
   if (!created) return NextResponse.json({ ok: true, id, duplicate: true });
 
   const notifications: Record<string, NotificationOutcome> = {};
-  let autoInvite = false;
   if (knockout) {
     notifications.closed = await sendApplicantEmail(person.email, applicationClosedEmail(person), 'apply-closed');
-  } else if (await qualifiesForAutoInvite(person, settings, slice)) {
-    autoInvite = true;
-    notifications.shadowInvite = await sendApplicantEmail(
-      person.email,
-      shadowInviteEmail(person, settings.shadowBookingUrl),
-      'apply-auto-invite',
-    );
   } else {
-    notifications.received = await sendApplicantEmail(person.email, applicationReceivedEmail(person), 'apply-received');
+    // Auto-invite: stage first, email second, and only if the stage write landed.
+    let invite: 'sent-eligible' | 'admin-moved' | 'none' = 'none';
+    if (await qualifiesForAutoInvite(person, settings, slice)) {
+      try {
+        invite = (await claimAutoInviteStage(id, now, slice)) ? 'sent-eligible' : 'admin-moved';
+      } catch (err) {
+        // Stage not stored (failure or no budget): no invite. The application is saved and stays in review.
+        console.error('[bench:apply] auto-invite stage write failed, invite not sent', err instanceof Error ? err.message : 'unknown');
+      }
+    }
+    if (invite === 'sent-eligible') {
+      notifications.shadowInvite = await sendApplicantEmail(
+        person.email,
+        shadowInviteEmail(person, settings.shadowBookingUrl),
+        'apply-auto-invite',
+      );
+    } else if (invite === 'none') {
+      notifications.received = await sendApplicantEmail(person.email, applicationReceivedEmail(person), 'apply-received');
+    }
+    // 'admin-moved': an admin already acted on this person; admin state wins and nothing is sent.
   }
 
-  try {
-    await persistNotifications(id, notifications, autoInvite ? { at: now, by: 'auto-invite' } : null, slice);
-  } catch (err) {
-    // The application itself is saved; only the email outcome did not persist.
-    console.error('[bench:apply] notification persist failed', err instanceof Error ? err.message : 'unknown');
+  if (Object.keys(notifications).length) {
+    try {
+      await persistNotifications(id, notifications, slice);
+    } catch (err) {
+      // The application itself is saved; only the email outcome did not persist.
+      console.error('[bench:apply] notification persist failed', err instanceof Error ? err.message : 'unknown');
+    }
   }
 
   if (!knockout && isAiSummaryEnabled()) {

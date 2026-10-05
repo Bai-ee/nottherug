@@ -295,18 +295,50 @@ describe('other bench writers stay field-scoped (emulator)', () => {
     expect(p.notifications).toEqual({ received: 'sent' });
   });
 
-  it('does not apply the auto-invite stage move over an admin who already moved the person', async (ctx) => {
+  it('auto-invite stores the stage before the invite email, and sends it exactly once', async (ctx) => {
     if (!reachable) return ctx.skip(SKIP_REASON);
     const { fsSetDoc } = await import('@/lib/server/firestoreRest');
     await fsSetDoc('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
+    const { benchPersonIdForEmail } = await import('@/lib/server/benchIntake');
+    const expectedId = benchPersonIdForEmail('sam@example.test');
+    let stageAtSend: unknown;
     duringEmail = async () => {
-      const { id } = (await (await import('@/lib/server/bench')).listBenchPeople())[0];
-      expect((await adminAct(id, { action: 'reject' })).status).toBe(200);
+      stageAtSend = (await person(expectedId)).stage;
     };
     const { id } = await apply({ hasResume: false });
+    expect(stageAtSend).toBe('shadow_invited');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(sendEmail.mock.calls[0]).toEqual([expect.objectContaining({ text: expect.stringContaining('https://calendly.test/shadow') })]);
+    const p = await person(id);
+    expect(p.stage).toBe('shadow_invited');
+    expect(p.notifications).toEqual({ shadowInvite: 'sent' });
+    expect((p.stageHistory as Array<{ by: string }>).at(-1)?.by).toBe('auto-invite');
+  });
+
+  it('sends no invite when an admin moved the person out of review first (admin state wins)', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+    const { fsSetDoc } = await import('@/lib/server/firestoreRest');
+    await fsSetDoc('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
+    const { benchPersonIdForEmail } = await import('@/lib/server/benchIntake');
+    const expectedId = benchPersonIdForEmail('sam@example.test');
+    // The admin acts between the application being created and the auto-invite stage write:
+    // intercept the coverage query that precedes it.
+    let acted = false;
+    vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) => {
+      if (!acted && String(url).includes(':runQuery')) {
+        acted = true;
+        expect((await adminAct(expectedId, { action: 'reject' })).status).toBe(200);
+      }
+      return realFetch(url, init);
+    });
+    const { id } = await apply({ hasResume: false });
+    vi.unstubAllGlobals();
+    expect(acted).toBe(true);
     const p = await person(id);
     expect(p.stage).toBe('rejected');
-    expect(p.notifications).toMatchObject({ shadowInvite: 'sent' });
+    for (const call of sendEmail.mock.calls as unknown as Array<[{ text: string }]>) {
+      expect(call[0].text).not.toContain('calendly.test');
+    }
   });
 
   it('an AI summary finishing after an admin edit adds only aiSummary', async (ctx) => {
