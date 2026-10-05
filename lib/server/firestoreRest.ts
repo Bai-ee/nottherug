@@ -260,7 +260,10 @@ export async function fsMergeDoc(
  * Observed on the emulator (see plans/reports/013-P1-worker-A.md) and matching
  * Firestore's documented codes: stale updateTime -> 400 FAILED_PRECONDITION;
  * `exists:true` on a missing doc -> 404 NOT_FOUND; `exists:false` on an
- * existing doc -> 409 ALREADY_EXISTS. Only consulted when a precondition was sent.
+ * existing doc -> 409 ALREADY_EXISTS. Real Firestore also returns 409 ABORTED on a
+ * contended commit; that is mapped here too (not emulator-observed). Only consulted
+ * when a precondition was sent, i.e. on the conditional :commit path, never for
+ * unconditional writes.
  */
 function isPreconditionFailure(status: number, body: string): boolean {
   let code: string | undefined;
@@ -272,7 +275,9 @@ function isPreconditionFailure(status: number, body: string): boolean {
   return (
     (status === 400 && code === 'FAILED_PRECONDITION') ||
     (status === 404 && code === 'NOT_FOUND') ||
-    (status === 409 && code === 'ALREADY_EXISTS')
+    (status === 409 && code === 'ALREADY_EXISTS') ||
+    // Contended commit: nothing was written, and the caller's retry re-reads and re-decides.
+    (status === 409 && code === 'ABORTED')
   );
 }
 
@@ -354,22 +359,22 @@ export async function fsIncrementField(
   opts?: FsRequestOptions
 ): Promise<number> {
   return fsDeadline(`INCREMENT ${path}.${field}`, opts, async (signal) => {
-  const token = await getToken();
-  const name = `projects/${encodeURIComponent(PROJECT)}/databases/(default)/documents/${path}`;
+    const token = await getToken();
+    const name = `projects/${encodeURIComponent(PROJECT)}/databases/(default)/documents/${path}`;
 
-  const res = await fetch(`${FS_BASE}:commit`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      writes: [
-        {
-          update: { name, fields: toFields(seed) },
-          updateMask: { fieldPaths: Object.keys(seed) },
-          updateTransforms: [{ fieldPath: field, increment: { integerValue: String(amount) } }],
-        },
-      ],
-    }),
-    signal,
+    const res = await fetch(`${FS_BASE}:commit`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        writes: [
+          {
+            update: { name, fields: toFields(seed) },
+            updateMask: { fieldPaths: Object.keys(seed) },
+            updateTransforms: [{ fieldPath: field, increment: { integerValue: String(amount) } }],
+          },
+        ],
+      }),
+      signal,
   });
 
   if (!res.ok) throw new Error(`Firestore INCREMENT ${path}.${field}: ${res.status} ${await res.text()}`);
@@ -402,18 +407,18 @@ export async function fsQueryCollection(
   opts?: FsRequestOptions
 ): Promise<Record<string, unknown>[]> {
   return fsDeadline(`QUERY ${collectionId}`, opts, async (signal) => {
-  const token = await getToken();
-  const res = await fetch(`${FS_BASE}:runQuery`, {
-    signal,
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      structuredQuery: {
-        from: [{ collectionId }],
-        orderBy: [{ field: { fieldPath: orderByField }, direction }],
-        limit,
-      },
-    }),
+    const token = await getToken();
+    const res = await fetch(`${FS_BASE}:runQuery`, {
+      signal,
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId }],
+          orderBy: [{ field: { fieldPath: orderByField }, direction }],
+          limit,
+        },
+      }),
   });
   if (!res.ok) throw new Error(`Firestore QUERY ${collectionId}: ${res.status} ${await res.text()}`);
   const results = (await res.json()) as Array<{
@@ -487,27 +492,27 @@ async function runRangeQuery(
   opts?: FsRequestOptions
 ): Promise<Array<{ id: string; data: Record<string, unknown> }>> {
   return fsDeadline(`RANGE ${collectionId}`, opts, async (signal) => {
-  const token = await getToken();
-  const res = await fetch(`${FS_BASE}:runQuery`, {
-    signal,
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      structuredQuery: {
-        from: [{ collectionId }],
-        where: {
-          compositeFilter: {
-            op: 'AND',
-            filters: [
-              { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: toValue(start) } },
-              { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: toValue(end) } },
-            ],
+    const token = await getToken();
+    const res = await fetch(`${FS_BASE}:runQuery`, {
+      signal,
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId }],
+          where: {
+            compositeFilter: {
+              op: 'AND',
+              filters: [
+                { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: toValue(start) } },
+                { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: toValue(end) } },
+              ],
+            },
           },
+          orderBy: [{ field: { fieldPath: field }, direction }],
+          limit,
         },
-        orderBy: [{ field: { fieldPath: field }, direction }],
-        limit,
-      },
-    }),
+      }),
   });
   if (!res.ok) throw new Error(`Firestore RANGE ${collectionId}: ${res.status} ${await res.text()}`);
   const results = (await res.json()) as Array<{ document?: { name?: string; fields?: Record<string, FsValue> } }>;
@@ -550,25 +555,25 @@ export async function fsQueryRangeCount(
   opts?: FsRequestOptions,
 ): Promise<number> {
   return fsDeadline(`COUNT ${collectionId}`, opts, async (signal) => {
-  const token = await getToken();
-  const filters: Array<Record<string, unknown>> = [
-    { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: start } } },
-    { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: { stringValue: end } } },
-  ];
+    const token = await getToken();
+    const filters: Array<Record<string, unknown>> = [
+      { fieldFilter: { field: { fieldPath: field }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: start } } },
+      { fieldFilter: { field: { fieldPath: field }, op: 'LESS_THAN', value: { stringValue: end } } },
+    ];
 
-  const res = await fetch(`${FS_BASE}:runAggregationQuery`, {
-    signal,
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      structuredAggregationQuery: {
-        structuredQuery: {
-          from: [{ collectionId }],
-          where: { compositeFilter: { op: 'AND', filters } },
+    const res = await fetch(`${FS_BASE}:runAggregationQuery`, {
+      signal,
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structuredAggregationQuery: {
+          structuredQuery: {
+            from: [{ collectionId }],
+            where: { compositeFilter: { op: 'AND', filters } },
+          },
+          aggregations: [{ alias: 'total', count: {} }],
         },
-        aggregations: [{ alias: 'total', count: {} }],
-      },
-    }),
+      }),
   });
   if (!res.ok) throw new Error(`Firestore COUNT ${collectionId}: ${res.status} ${await res.text()}`);
   const results = (await res.json()) as Array<{ result?: { aggregateFields?: Record<string, FsValue> } }>;

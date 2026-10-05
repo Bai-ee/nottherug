@@ -47,3 +47,12 @@ Commands (from the worktree):
 - Real-Firestore `ABORTED` (409) under heavy write contention on a conditional commit is not mapped to `FirestorePreconditionError` (not observed on the emulator, so left out per "map exactly what was observed"). Treat as a dependency failure for now; revisit if seen in production.
 - Wrapped helper bodies in firestoreRest/firebaseStorage were not re-indented to keep the diff reviewable; formatting-only cleanup can follow.
 - Storage default (15 s) exceeds the capture/track route limits; those routes never touch Storage today.
+
+## Codex review fixup
+- `ABORTED` (409, `error.status: "ABORTED"`) now maps to `FirestorePreconditionError` on the preconditioned `:commit` path only (not emulator-observed; Firestore's documented contended-commit status). Mapping is by `error.status` plus HTTP 409, so `ALREADY_EXISTS` is unchanged and unknown 409s stay plain errors. Unconditional PATCH writes never map. Mocked-fetch tests in `upstream-deadlines.test.ts`: conditional ABORTED retried by `withOptimisticRetry`; unconditional ABORTED stays a plain error; unknown 409 stays plain.
+- Re-indented the deadline-wrapped helper bodies (`fsIncrementField`, `fsQueryCollection`, `runRangeQuery`, `fsQueryRangeCount`, `storageUpload`, `storageUploadPrivate`, `storageList`). Whitespace only; `git diff -w` shows just the ABORTED change.
+- Storage callers now inherit the 15 s default (previously no deadline):
+  - `lib/not-the-rug-brief/run.ts`: two parallel `storageUploadPrivate` of the generated brief HTML (sample briefs in the repo are ~18-31 KB). Routes allow `maxDuration = 60`. 15 s is ample for tens of KB; each call is one budget across upload and token-clear.
+  - `lib/not-the-rug-brief/read.ts`: `storageDownload` of the same HTML (small). Ample.
+  - `app/api/bench/apply/resume/route.ts` (resume upload, <= 4 MB, route `maxDuration = 30`) and `app/api/admin/bench/people/[id]/resume/route.ts` (download, <= 4 MB): 15 s is ample on a normal link; Worker C/B may pass a larger `timeoutMs` if desired.
+  - `app/api/admin/photos/{upload,render,assets,delete}` and `lib/generator/server.ts`: admin image upload/download/render (photo sizes bounded by the upload route's image validation, typically a few MB; JPEG renders similar). 15 s is adequate but is the least roomy case: a very large image on a slow connection could time out where it previously waited. Not measured; flagged as the main behavioral risk of the new default.

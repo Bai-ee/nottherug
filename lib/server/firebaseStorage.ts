@@ -52,25 +52,25 @@ export async function storageUpload(
   opts?: FsRequestOptions,
 ): Promise<string> {
   return storageDeadline(`UPLOAD ${storagePath}`, opts, async (signal) => {
-  let accessToken: string;
-  try {
-    accessToken = await getAccessToken();
-  } catch (err) {
-    console.error('[storage] failed to get access token for upload, path:', storagePath);
-    throw err;
-  }
+    let accessToken: string;
+    try {
+      accessToken = await getAccessToken();
+    } catch (err) {
+      console.error('[storage] failed to get access token for upload, path:', storagePath);
+      throw err;
+    }
 
-  const nameParam = encodeURIComponent(storagePath);
-  const uploadURL = `${FS_BASE}?name=${nameParam}&uploadType=media`;
+    const nameParam = encodeURIComponent(storagePath);
+    const uploadURL = `${FS_BASE}?name=${nameParam}&uploadType=media`;
 
-  const uploadRes = await fetch(uploadURL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': contentType,
-    },
-    body: new Uint8Array(buffer),
-    signal,
+    const uploadRes = await fetch(uploadURL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': contentType,
+      },
+      body: new Uint8Array(buffer),
+      signal,
   });
 
   if (!uploadRes.ok) {
@@ -103,25 +103,25 @@ export async function storageUploadPrivate(
   opts?: FsRequestOptions,
 ): Promise<void> {
   return storageDeadline(`UPLOAD_PRIVATE ${storagePath}`, opts, async (signal) => {
-  let accessToken: string;
-  try {
-    accessToken = await getAccessToken();
-  } catch (err) {
-    console.error('[storage] failed to get access token for private upload, path:', storagePath);
-    throw err;
-  }
+    let accessToken: string;
+    try {
+      accessToken = await getAccessToken();
+    } catch (err) {
+      console.error('[storage] failed to get access token for private upload, path:', storagePath);
+      throw err;
+    }
 
-  const nameParam = encodeURIComponent(storagePath);
-  const uploadURL = `${FS_BASE}?name=${nameParam}&uploadType=media`;
+    const nameParam = encodeURIComponent(storagePath);
+    const uploadURL = `${FS_BASE}?name=${nameParam}&uploadType=media`;
 
-  const uploadRes = await fetch(uploadURL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': contentType,
-    },
-    body: new Uint8Array(buffer),
-    signal,
+    const uploadRes = await fetch(uploadURL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': contentType,
+      },
+      body: new Uint8Array(buffer),
+      signal,
   });
 
   if (!uploadRes.ok) {
@@ -211,11 +211,11 @@ export interface StorageFileInfo {
  */
 export async function storageList(prefix: string, opts?: FsRequestOptions): Promise<StorageFileInfo[]> {
   return storageDeadline(`LIST ${prefix}`, opts, async (signal) => {
-  const accessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
 
-  const res = await fetch(`${FS_BASE}?prefix=${encodeURIComponent(prefix)}`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    signal,
+    const res = await fetch(`${FS_BASE}?prefix=${encodeURIComponent(prefix)}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      signal,
   });
 
   if (!res.ok) {
