@@ -22,7 +22,7 @@
  * classification.json (every public/ file marked referenced/unreferenced).
  */
 import { chromium } from '@playwright/test';
-import { mkdir, writeFile, readdir, stat } from 'node:fs/promises';
+import { mkdir, writeFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

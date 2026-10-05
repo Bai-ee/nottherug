@@ -1,5 +1,7 @@
 # Claude handoff: production cleanup
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Paste the prompt below into Claude Code with this repository available. Use Sonnet workers. The repository files contain the detailed findings, task definitions, and acceptance criteria; do not send only this file to an agent without repository access.
 
 ---

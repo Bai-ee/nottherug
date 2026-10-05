@@ -1,5 +1,7 @@
 # Production readiness and code cleanup
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Reviewed September 14, 2026. Base commit: `114dd85` plus the current working tree.
 
 **Recommendation: hold production launch until the release gates below pass.** Fix the booking flow first, then simplify the application in small, reviewable changes. Keep Next.js, Firebase, Resend, and the existing visual design. This is a cleanup of one small business application, not a platform rewrite.

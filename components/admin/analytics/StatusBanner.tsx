@@ -8,6 +8,11 @@ const DEGRADED_LABEL: Record<'leads' | 'events', string> = {
   events: 'visit and traffic data',
 };
 
+const UNAVAILABLE_LABEL: Record<'live' | 'trackingStart', string> = {
+  live: 'last 60 minutes',
+  trackingStart: 'tracking start date',
+};
+
 /**
  * Tracking-off banner. Decision text (plans/003-admin-dashboard-and-tracking.md
  * A5 honesty rules): "Tracking is off unless NEXT_PUBLIC_ANALYTICS_ENABLED is
@@ -80,7 +85,7 @@ export function ReportMetaBanner({ meta }: { meta: AnalyticsReportMeta }) {
         <div id="admin-analytics-partial-failure-callout" className="card card-pad">
           <span className="badge badge-gold">Partial Data</span>
           <p className="text-gold">
-            Some data could not be loaded this time ({meta.degraded.map((d) => DEGRADED_LABEL[d]).join(', ')}). Figures
+            Some data could not be loaded this time ({[...meta.degraded.map((d) => DEGRADED_LABEL[d]), ...(meta.unavailable ?? []).map((u) => UNAVAILABLE_LABEL[u])].join(', ')}). Figures
             shown for the rest are real, not fabricated to fill the gap.
           </p>
         </div>

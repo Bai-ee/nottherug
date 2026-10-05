@@ -1,5 +1,7 @@
 # Homepage UI session — state document
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 **Timestamp:** 2026-09-18 01:25 CDT
 **Repo:** `/Users/bballi/Documents/Repos/NotTheRug-welcome-modal` (the checkout serving `localhost:3000`)
 **Branch:** `feat/welcome-modal` · HEAD `41bdf95 Record the one intended schedule and the unverified duration gate`

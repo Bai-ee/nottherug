@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { absoluteUrl, resolvePublicBaseUrl } from '@/lib/content/site';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
 import { errorResponse, timingSafeEquals } from '@/lib/server/errors';
 import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/read';
@@ -8,11 +9,11 @@ import { briefHtmlHeaders } from '@/lib/not-the-rug-brief/security';
 export const runtime = 'nodejs';
 
 function buildUrls(req: NextRequest) {
-  const base = process.env.PUBLIC_BASE_URL || `${req.nextUrl.protocol}//${req.nextUrl.host}`;
+  const base = resolvePublicBaseUrl(process.env.PUBLIC_BASE_URL, req.nextUrl.origin);
   return {
-    dashboardUrl: `${base}/admin/dashboard`,
-    briefUrl: `${base}/admin/dashboard`,
-    leadsUrl: `${base}/admin/dashboard/leads`,
+    dashboardUrl: absoluteUrl('/admin/dashboard', base),
+    briefUrl: absoluteUrl('/admin/dashboard', base),
+    leadsUrl: absoluteUrl('/admin/dashboard/leads', base),
   };
 }
 

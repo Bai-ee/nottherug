@@ -142,7 +142,7 @@ export interface LiveTile {
  * 'ok' — normal, has activity.
  * 'zero_activity' — tracking has recorded events before, but none in this window.
  * 'no_data_yet' — no event has ever been recorded (trackingStartDate is null); do not imply history.
- * 'partial_failure' — at least one dependency (leads or events) failed; some fields are degraded, not fabricated.
+ * 'partial_failure' — at least one dependency (leads, events, live or first-event lookup) failed; some fields are degraded, not fabricated.
  */
 export type ReportStatus = 'ok' | 'zero_activity' | 'no_data_yet' | 'partial_failure';
 
@@ -156,6 +156,14 @@ export interface AnalyticsReportMeta {
   testMode: boolean;
   /** Which dependency(ies) failed and were substituted with safe defaults rather than fabricated data. */
   degraded: Array<'leads' | 'events'>;
+  /**
+   * Independent dependencies that failed and have no honest value: 'live' (the
+   * rolling 60-minute tile; its numbers are zero-filled placeholders, not
+   * measurements) and 'trackingStart' (trackingStartDate is null because the
+   * lookup failed, NOT because no event exists). Additive to `degraded`; any
+   * entry also makes status 'partial_failure'. Empty on a healthy report.
+   */
+  unavailable: Array<'live' | 'trackingStart'>;
   /**
    * True if the bounded event query for this range hit its row ceiling, meaning
    * more matching events exist than were read. Every events-derived number in
@@ -691,6 +699,10 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
     throw new ServiceError(`analytics report: both leads and events queries failed (${leadsReason}; ${eventsReason})`);
   }
 
+  const unavailable: Array<'live' | 'trackingStart'> = [];
+  if (liveResult.status === 'rejected') unavailable.push('live');
+  if (earliestResult.status === 'rejected') unavailable.push('trackingStart');
+
   const live = liveResult.status === 'fulfilled' ? liveResult.value : { windowMinutes: 60 as const, startIso: '', endIso: '', pageviews: 0, sessions: 0 };
   const trackingStartDate = earliestResult.status === 'fulfilled' ? earliestResult.value : null;
 
@@ -725,7 +737,7 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
   // which used to render "no events have ever been recorded" above non-zero
   // tiles. Events in range now always mean 'ok'.
   let status: ReportStatus;
-  if (degraded.length > 0) status = 'partial_failure';
+  if (degraded.length > 0 || unavailable.length > 0) status = 'partial_failure';
   else if (events.length > 0) status = 'ok';
   else if (trackingStartDate === null) status = 'no_data_yet';
   else status = 'zero_activity';
@@ -737,6 +749,7 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
       trackingStartDate,
       testMode: includeTest,
       degraded,
+      unavailable,
       eventsTruncated,
     },
     range: window,

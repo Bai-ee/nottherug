@@ -29,6 +29,7 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
       trackingStartDate: null,
       testMode: false,
       degraded: [],
+      unavailable: [],
       eventsTruncated: false,
     },
     range: {

@@ -1,5 +1,7 @@
 # Frontend tracking coverage plan
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Status: **SUPERSEDED by [009-full-tracking-dashboard-integration.md](009-full-tracking-dashboard-integration.md)** (September 18, 2026). The instrumentation described here was written against the pre-redesign site; plan 009 P2 re-derived the route and CTA inventory from the rendered booking-first site and is the current contract. Kept for the reasoning behind which controls are worth measuring.
 
 ## Goal

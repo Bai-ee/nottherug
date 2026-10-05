@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { SITE_URL } from '@/lib/content/site';
+import { absoluteUrl } from '@/lib/content/site';
 
 // Crawling policy only — indexing in non-production is already handled by
 // proxy.ts, which sends `X-Robots-Tag: noindex, nofollow` on every response
@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin', '/admin/', '/playground', '/playground/', '/api', '/api/'],
     },
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    sitemap: absoluteUrl('/sitemap.xml'),
   };
 }

@@ -3,7 +3,8 @@
 Prepared during the production cleanup. **No production deployment is authorized by
 this document.** P5B runs only after an explicit go-live instruction.
 
-Status of every gate lives in [the tracker](../plans/002-production-tracker.md).
+Historical status of the original launch gates is in [the 002 tracker](../plans/002-production-tracker.md);
+current hardening status is in [the Plan 013 tracker](../plans/reports/013-tracker.md).
 
 ## Before requesting authorization
 
@@ -11,14 +12,21 @@ Run all of these on **one** candidate commit, from a clean checkout:
 
 ```bash
 rm -rf node_modules .next
-npm ci                 # not `npm install` — see the note on optional bindings below
+npm ci --no-audit      # not `npm install` — see the note on optional bindings below
 npm run lint           # application
 npm run lint:pipeline  # CommonJS brief pipeline + copy scripts
 npm run build          # generates fresh Next route types
 npm run typecheck
-npm test               # vitest, all dependencies mocked
+npm test               # vitest; emulator suites skip without an emulator, so also run:
+#   firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm run test:emulators"
 npm run test:e2e       # playwright; starts its own production server
+# analytics specs: npm run test:e2e:analytics (see README)
+npm run verify:assets
 ```
+
+CI runs the same gates as four jobs (`check`, `e2e`, `emulators`, `e2e-analytics`). The
+owner-side steps (rules deploy, TTL, backups, branch protection, rollback ids) are in
+[the operations runbook](operations-runbook.md).
 
 `npm uninstall` silently drops optional native bindings (npm's optional-dependency
 bug) and breaks vitest's rolldown binary. To change a dependency, edit `package.json`
@@ -29,7 +37,7 @@ and reinstall.
 | Item | Required value | Checked |
 | --- | --- | --- |
 | Node version in the build log | 24.x (driven by `engines.node`, which overrides the project setting) | ☐ |
-| `PUBLIC_BASE_URL` | The host that actually serves the site. Today it defaults to `https://nottherug.com`, which is **not** attached to this project — see the tracker's open domain decision | ☐ |
+| `PUBLIC_BASE_URL` | The host that actually serves the site. Production currently sets it to the `nottherug-ten.vercel.app` host. If unset or invalid the code falls back to `https://nottherug.com`, which is **not** attached to this project — see the open domain decision. Read at build time; changing it needs a redeploy | ☐ |
 | `NEXT_PUBLIC_CALENDLY_URL` | The live scheduling link, or deliberately empty | ☐ |
 | `RESEND_FROM_EMAIL` | A verified sending domain. A `@resend.dev` sender only delivers to the account's own verified address and skips the customer confirmation | ☐ |
 | `FOUNDER_EMAIL` | The address that should receive new-inquiry notifications | ☐ |
@@ -47,6 +55,8 @@ and reinstall.
 - [ ] Private brief artifacts are not reachable by an unauthenticated URL.
 
 ### Preview acceptance
+
+> Preview deployments are currently **disabled** (`vercel.json` `git.deploymentEnabled`) because Preview shares production credentials. This section applies once Previews are isolated and re-enabled — see owner checklist item 8 in [operations-runbook.md](operations-runbook.md). Until then, run these checks on a local production build with test credentials.
 
 On the preview deployment, with test credentials and an approved test recipient:
 

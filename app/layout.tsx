@@ -7,6 +7,7 @@ import {
   Courier_Prime,
 } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/lib/content/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -42,7 +43,6 @@ const courierPrime = Courier_Prime({
 // `--font-mono-data` before moving this back), so loading it here charged
 // every public page for a font only the admin dashboard is meant to use.
 
-const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
 const OG_IMAGE = '/img/og_meta_mainpage.png';
 const OG_IMAGE_SIZE = { width: 548, height: 315 };
 

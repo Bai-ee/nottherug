@@ -1,5 +1,7 @@
 # Master prompt: finish analytics safely
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Paste the following into the next agent with this repository open.
 
 ---

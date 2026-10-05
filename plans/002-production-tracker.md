@@ -1,5 +1,7 @@
 # Production cleanup tracker
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Source: [review and execution plan](002-production-readiness.md).
 
 Last updated: September 15, 2026. Implementation is complete on `main` and locally verified. **Nothing has been deployed anywhere** — no preview, no production — and no production data, rules, or credentials have been touched.

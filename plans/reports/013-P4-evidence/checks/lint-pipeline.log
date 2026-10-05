@@ -1,0 +1,3 @@
+
+> nextapp@0.1.0 lint:pipeline
+> eslint --no-config-lookup --config eslint.pipeline.mjs not-the-rug-brief scripts

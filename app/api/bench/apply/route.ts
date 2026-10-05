@@ -251,9 +251,10 @@ export async function POST(req: Request) {
       try {
         invite = (await claimAutoInviteStage(id, now, slice)) ? 'sent-eligible' : 'admin-moved';
       } catch (err) {
-        // Stage not stored (failure or no budget): no invite. The application is saved and stays in review.
+        // Stage claim failed or had no budget; the application itself is already saved.
         console.error('[bench:apply] auto-invite stage write failed, confirming', err instanceof Error ? err.message : 'unknown');
-        // The write may still have committed (timeout): decide from a fresh read, never retry the write.
+        // The write may still have committed (timeout). Never retry it: a fresh read decides
+        // between the invite email (stage landed) and the plain "received" email (it did not).
         if (await autoInviteStageLanded(id, now, slice)) invite = 'sent-eligible';
       }
     }

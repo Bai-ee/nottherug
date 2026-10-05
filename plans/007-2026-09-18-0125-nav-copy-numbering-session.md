@@ -1,5 +1,7 @@
 # Session state — nav/footer coverage, principles redesign, section copy + numbering
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Generated: **2026-09-18 01:25 CDT**
 Tree: `/Users/bballi/Documents/Repos/NotTheRug-welcome-modal` (branch `feat/welcome-modal`, HEAD `41bdf95`)
 All work below is **uncommitted** in that worktree.

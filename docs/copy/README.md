@@ -3,6 +3,10 @@
 A closed loop for updating website copy without a CMS and without hand-editing JSX
 from an email thread.
 
+> **Not live until deployed.** `apply-copy.mjs` edits source files in the repository. A copy
+> change reaches the live site only after it is committed and pushed to `main` (Vercel then
+> deploys it). "Without a CMS" means no content system, not no deploy.
+
 ```
   source files  ──[ extract-copy.mjs ]──▶  COPY-REVIEW-TOOL.md  ──▶  founder + his agent
        ▲                                                                    │

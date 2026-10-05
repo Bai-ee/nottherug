@@ -1,5 +1,7 @@
 # 007 · Homepage Instagram section
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 **Written:** 2026-09-18 01:25 CDT
 **Checkout:** `/Users/bballi/Documents/Repos/NotTheRug-welcome-modal` (branch `feat/welcome-modal`)
 **Status:** built, running on localhost:3000, uncommitted

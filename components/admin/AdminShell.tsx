@@ -23,6 +23,7 @@ export function AdminShell({
   actions,
   lastRefreshed,
   trackingStartedAt,
+  trackingStartUnavailable,
   syncing = false,
   layout = 'flow',
   children,
@@ -39,6 +40,7 @@ export function AdminShell({
   lastRefreshed?: Date | null;
   /** Passed straight to the footer; only the analytics dashboard has one. */
   trackingStartedAt?: string | null;
+  trackingStartUnavailable?: boolean;
   /** Shows a small "Syncing live data" signal under the title while the
    *  page's data request is in flight; the page renders its zero state meanwhile. */
   syncing?: boolean;
@@ -73,7 +75,7 @@ export function AdminShell({
         </div>
       </main>
 
-      <AdminFooter lastRefreshed={lastRefreshed} trackingStartedAt={trackingStartedAt} />
+      <AdminFooter lastRefreshed={lastRefreshed} trackingStartedAt={trackingStartedAt} trackingStartUnavailable={trackingStartUnavailable} />
     </div>
   );
 }

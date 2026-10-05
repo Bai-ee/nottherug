@@ -4,7 +4,52 @@
 
 import type { Metadata } from 'next';
 
-export const SITE_URL = process.env.PUBLIC_BASE_URL || 'https://nottherug.com';
+/** Host used when PUBLIC_BASE_URL is unset or unusable. Do not change without a domain decision. */
+export const DEFAULT_SITE_URL = 'https://nottherug.com';
+
+/**
+ * The ONE place the configured public base URL is cleaned up. Trims
+ * whitespace, requires an http(s) URL, and reduces it to its origin, so a
+ * trailing slash, a path, a query or credentials can never leak into a built
+ * URL. Throws a clear error for anything else; callers that must not fail
+ * (SITE_URL, email links) catch it and fall back, see resolvePublicBaseUrl.
+ */
+export function normalizePublicBaseUrl(raw: string): string {
+  const value = raw.trim();
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error(`PUBLIC_BASE_URL is not a valid URL: ${JSON.stringify(raw)}`);
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    throw new Error(`PUBLIC_BASE_URL must start with http:// or https://, got ${JSON.stringify(raw)}`);
+  }
+  return url.origin;
+}
+
+/**
+ * Safe-fallback wrapper: an unset/blank value uses `fallback` silently (the
+ * pre-existing behavior); a set-but-invalid value also uses `fallback` and logs
+ * the reason once, rather than taking the whole site down over a bad env var.
+ */
+export function resolvePublicBaseUrl(raw: string | undefined, fallback: string = DEFAULT_SITE_URL): string {
+  if (!raw || !raw.trim()) return fallback;
+  try {
+    return normalizePublicBaseUrl(raw);
+  } catch (err) {
+    console.warn(`${(err as Error).message}; using ${fallback}`);
+    return fallback;
+  }
+}
+
+/** Origin only (no trailing slash). Every absolute URL is built from this. */
+export const SITE_URL = resolvePublicBaseUrl(process.env.PUBLIC_BASE_URL);
+
+/** Absolute URL for a site path, using URL semantics (never string concatenation). */
+export function absoluteUrl(path: string, base: string = SITE_URL): string {
+  return new URL(path, `${base}/`).href;
+}
 export const SITE_NAME = 'Not The Rug';
 // Link-preview images, one per page type. Relative paths: Next resolves them
 // against `metadataBase`, so a trailing slash on PUBLIC_BASE_URL can't produce
@@ -64,15 +109,21 @@ export const INSTAGRAM_HANDLE = '@nottherug';
 // Not a real destination — flagged in the P2A report, fix belongs to P4/R18.
 export const INSTAGRAM_PLACEHOLDER_URL = 'https://instagram.com/placeholder';
 
-// Single source of truth for app/sitemap.ts and the route coverage in
-// tests/e2e/public-routes.spec.ts. /contact is deliberately absent: it sets
-// `noIndex: true` below (unchanged from the pre-P2A route), and a noindexed
-// page has no business in the sitemap. /admin and /playground are never
-// public routes and must never appear here — see app/robots.ts.
+// Single source of truth for app/sitemap.ts. Every entry must be a real route
+// that answers 200 and is indexable. Deliberately absent:
+// - /services and /how-it-works: they redirect to home anchors (next.config.ts).
+// - /contact: it sets `noIndex: true` below (unchanged from the pre-P2A route),
+//   and a noindexed page has no business in the sitemap.
+// - /walk-with-us: the walker application. It is linked from the nav
+//   (components/SiteNav.tsx) and the team grid, and it is NOT noindexed and not
+//   blocked in robots.ts, so crawlers can reach and index it via those links;
+//   it is simply not listed here. Whether to list it is an owner decision
+//   (plans/reports/013-P34-worker-K.md): add '/walk-with-us' to list it, or
+//   pass `noIndex: true` in its buildPageMetadata call to keep it out of search.
+// /admin and /playground are never public routes and must never appear here —
+// see app/robots.ts.
 export const PUBLIC_ROUTES: string[] = [
   '/',
-  '/services',
-  '/how-it-works',
   '/about',
   '/safety',
   '/neighborhoods/williamsburg',
@@ -111,7 +162,7 @@ export function buildPageMetadata({
    */
   absoluteTitle?: boolean;
 }): Metadata {
-  const url = `${SITE_URL}${path}`;
+  const url = absoluteUrl(path);
   return {
     metadataBase: new URL(SITE_URL),
     title: absoluteTitle ? { absolute: title } : title,

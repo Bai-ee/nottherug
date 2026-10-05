@@ -273,6 +273,16 @@ at the top of the page:
    and don't see it, make sure `?testMode=1` **is** on — real and test data
    are always two separate views and never blended together.
 
+### "Unavailable" on one tile or the footer
+
+If the dashboard loads but the "last 60 minutes" tile shows **Unavailable**, or
+the footer reads **Tracking started · Unavailable**, one of the two smaller
+queries failed on this request while the rest of the report loaded. The API
+reports this as `status: 'partial_failure'` with `meta.unavailable` listing
+`live` and/or `trackingStart`, and the banner names the missing part. It is
+not "zero visitors" and not "no history". Reload; if it persists, check the
+server logs. A real zero still shows as 0.
+
 ## If the numbers look wrong
 
 Check in this order:

@@ -1,5 +1,7 @@
 # Project plans
 
+**Current work:** [013 — client handoff hardening](013-client-handoff-hardening.md) (phase reports in [`reports/`](reports/)). For running and operating the site, use the [README](../README.md) and the [operations runbook](../docs/operations-runbook.md). Plans 001–010 below are historical records, each carrying a banner saying so.
+
 | # | Title | Severity | Status |
 | --- | --- | --- | --- |
 | [001](001-reversible-section-reveals.md) | Make section reveal animations reverse on scroll-up (play in, play out) | MEDIUM | DONE |
@@ -13,6 +15,7 @@
 | [010](010-production-final-mile-optimization.md) | Production final-mile code quality and performance optimization | HIGH | IMPLEMENTED 2026-09-19 — see its "Release evidence" section |
 | [011](011-backup-walker-bench.md) | Backup walker bench: recruit, stack and dispatch backup walkers | FEATURE | PHASES 0–2 BUILT 2026-09-29 (Join Our Team + Team Applications) |
 | [012](012-tracking-integrity.md) | Tracking integrity: analytics, Calendly, email, lead capture | HIGH | PLANNED |
+| [013](013-client-handoff-hardening.md) | Client handoff hardening (security, reliability, operations) | HIGH | IN PROGRESS — see `reports/013-tracker.md` |
 
 ## Execution order
 

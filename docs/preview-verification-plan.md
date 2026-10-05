@@ -1,5 +1,7 @@
 # Preview verification plan
 
+> **Historical** — written for the September 2026 release candidate; for current release steps use [release-checklist.md](release-checklist.md) and [operations-runbook.md](operations-runbook.md).
+
 Everything that cannot be proven on a laptop, and exactly what is needed to prove it.
 
 Release candidate: `1737c48` on `main`. **44 commits are unpushed**, so no preview can

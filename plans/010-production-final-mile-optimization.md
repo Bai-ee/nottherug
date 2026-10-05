@@ -1,5 +1,7 @@
 # Production final-mile optimization
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Prepared September 19, 2026.
 
 Target implementation ref: `codex/full-analytics-dashboard-integration` at

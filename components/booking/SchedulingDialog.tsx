@@ -256,6 +256,10 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
         >
           {/* The mark alone: the band already says where you are, and a
               heading repeating the button you just pressed is noise. */}
+          {/* Plain <img> on purpose: this 498x88 PNG is already the delivered size, and
+              next/image cannot be imported here because the booking unit tests render this
+              module in a node environment where next/image touches `document` at load. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             id="calendly-modal-logo"
             src="/img/horiz_logo_off_white.png"

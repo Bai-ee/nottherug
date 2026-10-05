@@ -8,7 +8,8 @@ import { readSource, readUtm } from '@/lib/bench/validation';
 // admin panel; a cached copy would offer walkers stale choices.
 export const dynamic = 'force-dynamic';
 
-// Linked from Indeed posts, not the site nav or the sitemap (plans/011 §12 #4).
+// Linked from Indeed posts, the site nav and the team grid; not in the sitemap, but
+// indexable and not blocked in robots (owner decision parked, see PUBLIC_ROUTES).
 export const metadata: Metadata = buildPageMetadata({
   path: '/walk-with-us',
   ogImage: OG_IMAGES.join,

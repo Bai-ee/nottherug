@@ -563,6 +563,8 @@
 /* "Not measured" is a sentence, not a figure — it takes the step below the
    numbers so a reader never scans it as one. */
 #admin-shell-main .admin-stat-col .admin-stat-words { font-size: 22px; line-height: 1.2; }
+/* Live tile: "Unavailable" in place of a number (analytics F10) uses the same word sizing. */
+#admin-analytics-live-stats-row .admin-stat-words { font-size: 22px; line-height: 1.2; }
 #admin-shell-main .admin-stat-pair + .admin-analytics-mini-trend { margin-top: 20px; }
 #admin-shell-main .admin-analytics-mini-trend + a { margin-top: 20px; display: inline-block; }
 
@@ -596,6 +598,7 @@
   #admin-shell-main .admin-stat-col .stamp-label { font-size: 10px; padding: 5px 8px; margin-bottom: 10px; }
   #admin-shell-main .admin-stat-col .hero-stat-num { font-size: 34px; }
   #admin-shell-main .admin-stat-col .admin-stat-words { font-size: 16px; }
+  #admin-analytics-live-stats-row .admin-stat-words { font-size: 16px; }
   #admin-shell-main .admin-stat-col .hero-stat-label { font-size: 11px; }
   #admin-shell-main .admin-card-note { max-width: none; }
 }

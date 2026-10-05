@@ -1,5 +1,7 @@
 # Asset optimization specification
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Companion to [010 — Production final-mile optimization](010-production-final-mile-optimization.md).
 
 Prepared September 19, 2026 from a read-only audit of the integrated

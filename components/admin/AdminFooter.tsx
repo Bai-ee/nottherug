@@ -23,11 +23,14 @@ const REFRESH_TIME_FORMAT = new Intl.DateTimeFormat('en-US', {
 export function AdminFooter({
   lastRefreshed,
   trackingStartedAt,
+  trackingStartUnavailable = false,
 }: {
   lastRefreshed?: Date | null;
   /** First recorded event's timestamp, when the page has a report to read it
    *  from. Only the analytics dashboard passes one. */
   trackingStartedAt?: string | null;
+  /** The first-event lookup failed: say so instead of showing nothing. */
+  trackingStartUnavailable?: boolean;
 }) {
   const value = lastRefreshed ? `${REFRESH_TIME_FORMAT.format(lastRefreshed)} ET` : 'not refreshed yet';
   const started = trackingStartedAt ? new Date(trackingStartedAt) : null;
@@ -41,7 +44,11 @@ export function AdminFooter({
         <span id="admin-chrome-footer-value" className="stamp-label stamp-label-dark">
           Last data refresh · {value}
         </span>
-        {startedValue ? (
+        {trackingStartUnavailable ? (
+          <span id="admin-chrome-footer-tracking-started" className="stamp-label stamp-label-dark">
+            Tracking started · Unavailable
+          </span>
+        ) : startedValue ? (
           <span id="admin-chrome-footer-tracking-started" className="stamp-label stamp-label-dark">
             Tracking started · {startedValue}
           </span>

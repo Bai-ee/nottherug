@@ -1,5 +1,7 @@
 # 007 — Homepage layout session log
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Written **2026-09-18 01:26 CDT**. Covers the working session of **2026-09-17, ~18:45 → 23:26 CDT**.
 Companion to `006-homepage-ui-merge-handoff.md` — that doc describes the two-tree merge problem;
 this one records what changed in the worktree during this session and what the tree looks like now.

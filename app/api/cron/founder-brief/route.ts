@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { absoluteUrl, resolvePublicBaseUrl } from '@/lib/content/site';
 import { timingSafeEquals } from '@/lib/server/errors';
 import { getLatestNotTheRugBrief } from '@/lib/not-the-rug-brief/read';
 import { founderDailyBriefEmail } from '@/lib/email/founder-brief-template';
@@ -41,14 +42,14 @@ async function handle(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const base = process.env.PUBLIC_BASE_URL || `${req.nextUrl.protocol}//${req.nextUrl.host}`;
+    const base = resolvePublicBaseUrl(process.env.PUBLIC_BASE_URL, req.nextUrl.origin);
     const brief = await getLatestNotTheRugBrief();
     const mail = founderDailyBriefEmail({
       brief,
       generatedAt: new Date().toISOString(),
-      dashboardUrl: `${base}/admin/dashboard`,
-      briefUrl: `${base}/admin/dashboard`,
-      leadsUrl: `${base}/admin/dashboard/leads`,
+      dashboardUrl: absoluteUrl('/admin/dashboard', base),
+      briefUrl: absoluteUrl('/admin/dashboard', base),
+      leadsUrl: absoluteUrl('/admin/dashboard/leads', base),
     });
 
     const resend = getResend();

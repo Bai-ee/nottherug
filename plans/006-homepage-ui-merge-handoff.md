@@ -1,5 +1,7 @@
 # 006 — Homepage UI merge handoff
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Status: **NOT MERGED. Work is uncommitted in a separate worktree.**
 Written 2026-09-17 for a reviewing agent. Read this before touching either tree.
 

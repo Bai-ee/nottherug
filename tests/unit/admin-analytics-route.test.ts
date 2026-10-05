@@ -21,7 +21,7 @@ function analyticsRequest(url: string, headers: Record<string, string> = {}): Ne
 }
 
 const FAKE_REPORT = {
-  meta: { status: 'ok', generatedAt: 'x', trackingStartDate: null, testMode: false, degraded: [], eventsTruncated: false },
+  meta: { status: 'ok', generatedAt: 'x', trackingStartDate: null, testMode: false, degraded: [], unavailable: [], eventsTruncated: false },
 };
 
 describe('GET /api/admin/analytics', () => {

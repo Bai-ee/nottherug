@@ -1,5 +1,7 @@
 # 001 — Make section reveal animations reverse on scroll-up (play in, play out)
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 - **Status**: DONE
 - **Commit**: 2561785
 - **Severity**: MEDIUM

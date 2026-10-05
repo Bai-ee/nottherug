@@ -119,6 +119,8 @@ function AdminAnalyticsDashboardContent({
   const syncedReport = report !== null && report.meta.testMode === testMode ? report : null;
   const view = syncedReport ?? buildEmptyReport(range);
   const synced = syncedReport !== null;
+  const liveUnavailable = !!syncedReport?.meta.unavailable?.includes('live');
+  const trackingStartUnavailable = !!syncedReport?.meta.unavailable?.includes('trackingStart');
   const degradedLeads = !!syncedReport?.meta.degraded.includes('leads');
 
   return (
@@ -131,6 +133,7 @@ function AdminAnalyticsDashboardContent({
       onSignOut={signOut}
       lastRefreshed={lastRefreshed}
       trackingStartedAt={view.meta.trackingStartDate}
+      trackingStartUnavailable={trackingStartUnavailable}
       syncing={loading}
     >
       {/* Restyled onto the marketing design system (see app/admin/admin.css)
@@ -170,7 +173,7 @@ function AdminAnalyticsDashboardContent({
           <RangeSelector value={range} onChange={setRange} loading={loading} />
         </div>
 
-        <LiveTile live={view.live} dailyTrend={view.dailyTrend} />
+        <LiveTile live={view.live} dailyTrend={view.dailyTrend} unavailable={liveUnavailable} />
 
         <TrendSparkline points={view.dailyTrend} />
 

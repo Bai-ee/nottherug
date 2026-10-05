@@ -527,4 +527,135 @@ describe('getAnalyticsReport', () => {
 
     expect(report.meta.eventsTruncated).toBe(true);
   });
+
+  describe('independent dependency availability', () => {
+    const NOW = new Date('2026-01-15T18:00:00.000Z');
+    const fixtures: RawDoc[] = [
+      ev({ id: 'e0', sid: 'sess-0', event: 'page_view', receivedAt: '2026-01-01T12:00:00.000Z' }),
+      ev({ id: 'e1', sid: 'sess-a', event: 'page_view', receivedAt: '2026-01-15T12:00:00.000Z' }),
+      ev({ id: 'e2', sid: 'sess-live', event: 'page_view', receivedAt: '2026-01-15T17:30:00.000Z' }),
+    ];
+    type Leg = 'leads' | 'range' | 'live' | 'earliest';
+    // Classifies each fsQueryRange call by its (collection, start, limit) shape.
+    function failing(leg: Leg | null, empty = false) {
+      const base = rangeQueryMock(empty ? [] : fixtures, leadDocs(2));
+      return async (collectionId: string, field: string, start: string, end: string, limit = 5000, direction: 'ASCENDING' | 'DESCENDING' = 'ASCENDING') => {
+        const which: Leg =
+          collectionId === 'leads' ? 'leads' : start.startsWith('1970') ? 'earliest' : limit === 1000 ? 'live' : 'range';
+        if (which === leg) throw new Error(`Firestore RANGE ${which}: 503 unavailable`);
+        return base(collectionId, field, start, end, limit, direction);
+      };
+    }
+
+    it('healthy report has no unavailable sections', async () => {
+      fsQueryRange.mockImplementation(failing(null));
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.status).toBe('ok');
+      expect(report.meta.unavailable).toEqual([]);
+      expect(report.meta.degraded).toEqual([]);
+    });
+
+    it('live failure marks only live unavailable and keeps everything else', async () => {
+      fsQueryRange.mockImplementation(failing('live'));
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.unavailable).toEqual(['live']);
+      expect(report.meta.degraded).toEqual([]);
+      expect(report.meta.status).toBe('partial_failure');
+      expect(report.meta.trackingStartDate).toBe('2026-01-01T12:00:00.000Z');
+      expect(report.pageviews).toBe(2);
+      expect(report.inquiries).toBe(2);
+    });
+
+    it('first-event failure marks only trackingStart unavailable, not "no history"', async () => {
+      fsQueryRange.mockImplementation(failing('earliest'));
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.unavailable).toEqual(['trackingStart']);
+      expect(report.meta.trackingStartDate).toBeNull();
+      expect(report.meta.status).toBe('partial_failure');
+      expect(report.live.pageviews).toBe(1);
+      expect(report.pageviews).toBe(2);
+    });
+
+    it('first-event failure with an empty range is partial_failure, never no_data_yet', async () => {
+      fsQueryRange.mockImplementation(failing('earliest', true));
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.status).toBe('partial_failure');
+    });
+
+    it('events failure keeps live and trackingStart available', async () => {
+      fsQueryRange.mockImplementation(failing('range'));
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.degraded).toEqual(['events']);
+      expect(report.meta.unavailable).toEqual([]);
+      expect(report.live.pageviews).toBe(1);
+      expect(report.meta.trackingStartDate).toBe('2026-01-01T12:00:00.000Z');
+    });
+
+    it('leads failure keeps live and trackingStart available', async () => {
+      fsQueryRange.mockImplementation(failing('leads'));
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.degraded).toEqual(['leads']);
+      expect(report.meta.unavailable).toEqual([]);
+      expect(report.inquiries).toBeNull();
+    });
+
+    it('true zero traffic is zero / no history, not unavailable', async () => {
+      fsQueryRange.mockImplementation(failing(null, true));
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.status).toBe('no_data_yet');
+      expect(report.meta.unavailable).toEqual([]);
+      expect(report.meta.degraded).toEqual([]);
+      expect(report.meta.trackingStartDate).toBeNull();
+      expect(report.live.pageviews).toBe(0);
+    });
+
+    it('test mode: a live failure is still unavailable, and a healthy test report is not', async () => {
+      const testFixtures = [ev({ id: 't1', sid: 'st', event: 'page_view', mode: 'test', receivedAt: '2026-01-15T17:30:00.000Z' })];
+      const base = rangeQueryMock(testFixtures);
+      fsQueryRange.mockImplementation(async (c: string, f: string, s: string, e: string, limit = 5000, d: 'ASCENDING' | 'DESCENDING' = 'ASCENDING') => {
+        if (limit === 1000) throw new Error('live down');
+        return base(c, f, s, e, limit, d);
+      });
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const down = await getAnalyticsReport('today', { now: NOW, includeTest: true });
+      expect(down.meta.testMode).toBe(true);
+      expect(down.meta.unavailable).toEqual(['live']);
+      expect(down.inquiries).toBeNull();
+
+      fsQueryRange.mockImplementation(base);
+      const ok = await getAnalyticsReport('today', { now: NOW, includeTest: true });
+      expect(ok.meta.unavailable).toEqual([]);
+      expect(ok.meta.status).toBe('ok');
+    });
+
+    it('truncation flag is unaffected by a live failure', async () => {
+      fsQueryRange.mockImplementation(async (_c: string, _f: string, s: string, _e: string, limit = 5000) => {
+        if (limit === 1000) throw new Error('live down');
+        if (s.startsWith('1970')) return [];
+        return Array.from({ length: limit }, (_, i) => ev({ id: `t${i}`, sid: `s${i}`, receivedAt: '2026-01-15T12:00:00.000Z' }));
+      });
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      const report = await getAnalyticsReport('today', { now: NOW });
+      expect(report.meta.eventsTruncated).toBe(true);
+      expect(report.meta.unavailable).toEqual(['live']);
+    });
+
+    it('recovers on the next call once the dependency answers again', async () => {
+      const { getAnalyticsReport } = await import('@/lib/analytics/report');
+      fsQueryRange.mockImplementation(failing('live'));
+      expect((await getAnalyticsReport('today', { now: NOW })).meta.unavailable).toEqual(['live']);
+      fsQueryRange.mockImplementation(failing(null));
+      const recovered = await getAnalyticsReport('today', { now: NOW });
+      expect(recovered.meta.unavailable).toEqual([]);
+      expect(recovered.meta.status).toBe('ok');
+      expect(recovered.live.pageviews).toBe(1);
+    });
+  });
 });

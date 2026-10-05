@@ -1,5 +1,7 @@
 # 009 — Full tracking and custom dashboard integration
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Status: **APPROVED FOR IMPLEMENTATION — local integration and verification may proceed; preview and production activation still require explicit authorization.**
 
 Updated September 18, 2026 after reviewing the committed analytics foundation on `main`, the active `feat/welcome-modal` worktree, the booking-first work in both worktrees, the existing analytics plans, and the focused analytics test suite.

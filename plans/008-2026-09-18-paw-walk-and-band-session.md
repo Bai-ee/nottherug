@@ -1,5 +1,7 @@
 # 008 — Paw walk + band layout session
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Status: **UNCOMMITTED.** All of it sits in the working tree of
 `/Users/bballi/Documents/Repos/NotTheRug-welcome-modal` (branch `feat/welcome-modal`,
 HEAD `41bdf95`). Nothing here has been committed or deployed.

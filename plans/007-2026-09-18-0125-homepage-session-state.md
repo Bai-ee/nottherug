@@ -1,5 +1,7 @@
 # 007 — Homepage session state, 2026-09-18 01:25 CDT
 
+> **Historical** — superseded by the [README](../README.md) and [operations runbook](../docs/operations-runbook.md); kept for the record. Do not use it to drive current work.
+
 Status: **All work uncommitted in the worktree.** Written at the end of a single
 working session (2026-09-17 evening → 2026-09-18 01:25 CDT) so the next agent or
 the next session starts from fact instead of re-deriving it.

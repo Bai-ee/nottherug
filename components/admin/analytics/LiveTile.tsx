@@ -13,7 +13,7 @@ import { MiniTrend } from './MiniTrend';
  * hero-stat-item/hero-stat-num/hero-stat-divider row. The heading already
  * says "Last 60 minutes", so it carries no separate "live" marker.
  */
-export function LiveTile({ live, dailyTrend }: { live: LiveTileData; dailyTrend: DailyTrendPoint[] }) {
+export function LiveTile({ live, dailyTrend, unavailable = false }: { live: LiveTileData; dailyTrend: DailyTrendPoint[]; unavailable?: boolean }) {
   const asOf = live.endIso
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' }).format(new Date(live.endIso))
     : null;
@@ -25,12 +25,12 @@ export function LiveTile({ live, dailyTrend }: { live: LiveTileData; dailyTrend:
       </div>
       <div id="admin-analytics-live-stats-row" className="admin-analytics-hero-stats-row">
         <div className="hero-stat-item">
-          <div className="hero-stat-num">{live.sessions.toLocaleString('en-US')}</div>
+          <div id="admin-analytics-live-visits-value" className={unavailable ? 'hero-stat-num admin-stat-words' : 'hero-stat-num'}>{unavailable ? 'Unavailable' : live.sessions.toLocaleString('en-US')}</div>
           <div className="hero-stat-label">Visits</div>
         </div>
         <div className="hero-stat-divider" />
         <div className="hero-stat-item">
-          <div className="hero-stat-num">{live.pageviews.toLocaleString('en-US')}</div>
+          <div id="admin-analytics-live-pageviews-value" className={unavailable ? 'hero-stat-num admin-stat-words' : 'hero-stat-num'}>{unavailable ? 'Unavailable' : live.pageviews.toLocaleString('en-US')}</div>
           <div className="hero-stat-label">Page Views</div>
         </div>
       </div>
