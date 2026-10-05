@@ -167,6 +167,20 @@ describe('admin person route stays inside maxDuration (20 s)', () => {
   });
 });
 
+describe('apply route auto-invite ordering', () => {
+  it('a stalled stage write sends no invite, keeps the application in review, and sends the confirmation instead', async () => {
+    docs.set('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
+    mode.merge = 'stall';
+    const { res, elapsed } = await apply();
+    expect(res.status).toBe(200);
+    expect(elapsed).toBeLessThanOrEqual(29_000);
+    const saved = [...docs.entries()].find(([k]) => k.startsWith('benchPeople/bench_') && k !== `benchPeople/${ID}`)?.[1];
+    expect(saved?.stage).toBe('review');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(JSON.stringify(sendEmail.mock.calls[0])).not.toContain('calendly.test');
+  });
+});
+
 describe('apply route stays inside maxDuration (30 s)', () => {
   it('every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved', async () => {
     docs.set('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
