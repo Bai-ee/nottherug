@@ -14,7 +14,7 @@
 | [009](009-full-tracking-dashboard-integration.md) | Full tracking and custom dashboard integration | HIGH | IN PROGRESS |
 | [010](010-production-final-mile-optimization.md) | Production final-mile code quality and performance optimization | HIGH | IMPLEMENTED 2026-09-19 — see its "Release evidence" section |
 | [011](011-backup-walker-bench.md) | Backup walker bench: recruit, stack and dispatch backup walkers | FEATURE | PHASES 0–2 BUILT 2026-09-29 (Join Our Team + Team Applications) |
-| [012](012-tracking-integrity.md) | Tracking integrity: analytics, Calendly, email, lead capture | HIGH | PLANNED |
+| [012](012-tracking-integrity.md) | Tracking integrity: analytics, Calendly, email, lead capture | HIGH | PARTLY LANDED — 4 commits on `fix/tracking-integrity` are not on `main` (by patch id) and its lead-merge work is superseded by 013 P1; owner to decide whether to drop or re-port the rest (2026-10-05) |
 | [013](013-client-handoff-hardening.md) | Client handoff hardening (security, reliability, operations) | HIGH | IN PROGRESS — see `reports/013-tracker.md` |
 
 ## Execution order

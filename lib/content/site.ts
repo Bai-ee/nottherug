@@ -4,7 +4,7 @@
 
 import type { Metadata } from 'next';
 
-/** Host used when PUBLIC_BASE_URL is unset or unusable. Do not change without a domain decision. */
+/** Host used when PUBLIC_BASE_URL is unset or unusable. The owner chose nottherug.com as the canonical domain (2026-10-05). */
 export const DEFAULT_SITE_URL = 'https://nottherug.com';
 
 /**

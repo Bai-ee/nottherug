@@ -11,6 +11,8 @@ but do not block engineering.
 
 ### 1. What host will serve the site?
 
+> **Decided 2026-10-05: `nottherug.com`.** The cutover steps are in [operations-runbook.md](operations-runbook.md#domain-cutover-to-nottherugcom-owner-decision-2026-10-05). Until the cutover, production keeps `PUBLIC_BASE_URL` on the vercel.app host. The text below is the original question.
+
 `PUBLIC_BASE_URL` defaults to `https://nottherug.com`, but that domain is **not attached
 to this Vercel project**. The project serves `nottherug-ten.vercel.app` and
 `nottherug-baiees-projects.vercel.app`, and reports `live: false`.

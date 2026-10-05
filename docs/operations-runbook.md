@@ -38,7 +38,7 @@ credentials as Production** (see checklist item 8).
 
 | Name | Required? | Purpose |
 | --- | --- | --- |
-| `PUBLIC_BASE_URL` | Required | Public origin for canonical URLs, social images, sitemap/robots and email links. Must be the host that really serves the site. Read at **build** time for the static `robots.txt` and `sitemap.xml`, so a change needs a redeploy. Any path or trailing slash is stripped; if it is unset or not a valid http(s) URL the build falls back to `https://nottherug.com` (an invalid value also logs a warning), which is not attached to this project — so always set it. |
+| `PUBLIC_BASE_URL` | Required | Public origin for canonical URLs, social images, sitemap/robots and email links. Must be the host that really serves the site. Read at **build** time for the static `robots.txt` and `sitemap.xml`, so a change needs a redeploy. Any path or trailing slash is stripped; if it is unset or not a valid http(s) URL the build falls back to `https://nottherug.com` (an invalid value also logs a warning). That is the chosen canonical domain, but it is not attached to the Vercel project yet, so until the domain cutover production must keep `PUBLIC_BASE_URL` on the host that serves it today. |
 | `NEXT_PUBLIC_CALENDLY_URL` | Required for live scheduling | Scheduling link. If empty, inquiries still save and the visitor sees an honest next step. |
 | `NEXT_PUBLIC_FIREBASE_API_KEY`, `_AUTH_DOMAIN`, `_PROJECT_ID`, `_STORAGE_BUCKET`, `_MESSAGING_SENDER_ID`, `_APP_ID` | Required | Browser Firebase config (public by design; access is controlled by the rules files). |
 | `FIREBASE_ADMIN_PROJECT_ID`, `FIREBASE_ADMIN_CLIENT_EMAIL`, `FIREBASE_ADMIN_PRIVATE_KEY` | Required (secret) | Server service account. Without them nothing can be saved. |
@@ -279,3 +279,17 @@ Not needed to operate. Useful for understanding how production reached its curre
   builds with Node 24 because of `engines`. Documented, not changed.
 - The email/password provider being enabled is why admin access now requires a verified email
   (P2, finding H01).
+
+## Domain cutover to nottherug.com (owner decision 2026-10-05)
+
+The owner chose `https://nottherug.com` as the site's main address. As of 2026-10-05 the domain is **not** attached to the Vercel project (only `nottherug-ten.vercel.app` is), its DNS is at GoDaddy (`ns77/ns78.domaincontrol.com`), and it currently serves a different site behind a Sucuri firewall. Order matters, because canonical URLs, the sitemap, robots and email links follow `PUBLIC_BASE_URL`:
+
+1. Keep production `PUBLIC_BASE_URL` on the address that serves the site today (`https://nottherug-ten.vercel.app`) until step 4.
+2. In Vercel, add `nottherug.com` (and `www.nottherug.com`, redirecting to the apex) to project `nottherug`. Vercel shows the DNS records it needs.
+3. At GoDaddy, change the records Vercel asks for (this takes the current site at that address offline — plan the switch, and keep that site's content/backup if it is still needed). Wait until Vercel reports the domain as valid and `https://nottherug.com` serves this app with a certificate.
+4. Set production `PUBLIC_BASE_URL=https://nottherug.com` and redeploy (it is read at build time). Check `https://nottherug.com/robots.txt`, `/sitemap.xml`, a page's canonical link and an email link.
+5. Optionally make `nottherug-ten.vercel.app` redirect to `nottherug.com` in Vercel's domain settings.
+6. Update Google Search Console / Google Business profile links if they point at the old site.
+
+Rollback: set `PUBLIC_BASE_URL` back to the vercel.app address and redeploy; revert the GoDaddy records to their previous values (record them before step 3).
+
