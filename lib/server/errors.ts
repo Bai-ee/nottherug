@@ -75,3 +75,28 @@ export function timingSafeEquals(a: string, b: string): boolean {
   }
   return timingSafeEqual(left, right);
 }
+
+/**
+ * A Firestore/Storage request exceeded its deadline. Distinct from an HTTP
+ * failure (the upstream answered) and from a caller abort (the caller cancelled).
+ * The outcome of a timed-out write is unknown; callers must not blindly retry.
+ */
+export class UpstreamTimeoutError extends Error {
+  readonly service: 'firestore' | 'storage';
+  readonly operation: string;
+
+  constructor(service: 'firestore' | 'storage', operation: string, timeoutMs: number) {
+    super(`${service} ${operation} timed out after ${timeoutMs}ms`);
+    this.name = 'UpstreamTimeoutError';
+    this.service = service;
+    this.operation = operation;
+  }
+}
+
+/** A conditional Firestore write was rejected because its update-time / exists precondition failed. */
+export class FirestorePreconditionError extends Error {
+  constructor(message = 'Firestore precondition failed') {
+    super(message);
+    this.name = 'FirestorePreconditionError';
+  }
+}

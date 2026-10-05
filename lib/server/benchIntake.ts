@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { fsIncrementField } from '@/lib/server/firestoreRest';
+import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { BENCH_COLLECTIONS } from '@/lib/bench/contract';
 
 /**
@@ -41,28 +42,10 @@ export async function checkBenchRateLimit(
 }
 
 export async function readCappedText(req: Request, maxBytes: number): Promise<string | null> {
-  const declared = req.headers.get('content-length');
-  if (declared && Number(declared) > maxBytes) return null;
-  if (!req.body) {
-    const text = await req.text();
-    return Buffer.byteLength(text, 'utf8') > maxBytes ? null : text;
-  }
-  const reader = req.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    if (value) {
-      total += value.byteLength;
-      if (total > maxBytes) {
-        await reader.cancel();
-        return null;
-      }
-      chunks.push(value);
-    }
-  }
-  return Buffer.concat(chunks.map((c) => Buffer.from(c))).toString('utf8');
+  const result = await readBoundedBody(req, maxBytes);
+  if (result.ok) return result.text;
+  // An absent body reads as empty text, as before; oversize and broken streams are rejected.
+  return result.reason === 'missing' ? '' : null;
 }
 
 /** One row per address: re-applying finds the existing person instead of stacking a duplicate. */

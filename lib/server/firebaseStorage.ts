@@ -8,6 +8,20 @@
  */
 
 import { getStorageBucket } from '@/lib/server/env';
+import { withUpstreamDeadline, type FsRequestOptions } from '@/lib/server/firestoreRest';
+
+export type { FsRequestOptions };
+
+/**
+ * Default budget for one Storage helper call. Larger than the Firestore default
+ * because uploads move real payloads (resumes); callers on tight routes should
+ * pass `timeoutMs`. The budget covers the whole helper (token + every request in it).
+ */
+export const DEFAULT_STORAGE_TIMEOUT_MS = 15_000;
+
+function storageDeadline<T>(operation: string, opts: FsRequestOptions | undefined, fn: (signal: AbortSignal) => Promise<T>) {
+  return withUpstreamDeadline('storage', operation, opts, DEFAULT_STORAGE_TIMEOUT_MS, fn);
+}
 
 const BUCKET = getStorageBucket();
 const FS_BASE = `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(BUCKET)}/o`;
@@ -35,7 +49,9 @@ export async function storageUpload(
   storagePath: string,
   buffer: Buffer,
   contentType: string,
+  opts?: FsRequestOptions,
 ): Promise<string> {
+  return storageDeadline(`UPLOAD ${storagePath}`, opts, async (signal) => {
   let accessToken: string;
   try {
     accessToken = await getAccessToken();
@@ -54,6 +70,7 @@ export async function storageUpload(
       'Content-Type': contentType,
     },
     body: new Uint8Array(buffer),
+    signal,
   });
 
   if (!uploadRes.ok) {
@@ -70,6 +87,7 @@ export async function storageUpload(
   }
 
   return `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${nameParam}?alt=media&token=${downloadToken}`;
+  });
 }
 
 /**
@@ -82,7 +100,9 @@ export async function storageUploadPrivate(
   storagePath: string,
   buffer: Buffer,
   contentType: string,
+  opts?: FsRequestOptions,
 ): Promise<void> {
+  return storageDeadline(`UPLOAD_PRIVATE ${storagePath}`, opts, async (signal) => {
   let accessToken: string;
   try {
     accessToken = await getAccessToken();
@@ -101,6 +121,7 @@ export async function storageUploadPrivate(
       'Content-Type': contentType,
     },
     body: new Uint8Array(buffer),
+    signal,
   });
 
   if (!uploadRes.ok) {
@@ -112,6 +133,7 @@ export async function storageUploadPrivate(
     method: 'PATCH',
     headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ metadata: { firebaseStorageDownloadTokens: '' } }),
+    signal,
   });
 
   if (!clearRes.ok) {
@@ -133,41 +155,48 @@ export async function storageUploadPrivate(
       (cleanup === 'removed' ? '.' : ' — it may still be readable via its auto-issued token.'),
     );
   }
+  });
 }
 
 /**
  * Download a file from Firebase Storage into a Buffer.
  */
-export async function storageDownload(storagePath: string): Promise<Buffer> {
-  const accessToken = await getAccessToken();
-  const nameParam = encodeURIComponent(storagePath);
+export async function storageDownload(storagePath: string, opts?: FsRequestOptions): Promise<Buffer> {
+  return storageDeadline(`DOWNLOAD ${storagePath}`, opts, async (signal) => {
+    const accessToken = await getAccessToken();
+    const nameParam = encodeURIComponent(storagePath);
 
-  const res = await fetch(`${FS_BASE}/${nameParam}?alt=media`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
+    const res = await fetch(`${FS_BASE}/${nameParam}?alt=media`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      signal,
+    });
+
+    if (!res.ok) {
+      throw new Error(`Storage download failed for ${storagePath} (${res.status})`);
+    }
+
+    return Buffer.from(await res.arrayBuffer());
   });
-
-  if (!res.ok) {
-    throw new Error(`Storage download failed for ${storagePath} (${res.status})`);
-  }
-
-  return Buffer.from(await res.arrayBuffer());
 }
 
 /**
  * Delete a file from Firebase Storage.
  */
-export async function storageDelete(storagePath: string): Promise<void> {
-  const accessToken = await getAccessToken();
-  const nameParam = encodeURIComponent(storagePath);
+export async function storageDelete(storagePath: string, opts?: FsRequestOptions): Promise<void> {
+  return storageDeadline(`DELETE ${storagePath}`, opts, async (signal) => {
+    const accessToken = await getAccessToken();
+    const nameParam = encodeURIComponent(storagePath);
 
-  const res = await fetch(`${FS_BASE}/${nameParam}`, {
-    method: 'DELETE',
-    headers: { Authorization: `Bearer ${accessToken}` },
+    const res = await fetch(`${FS_BASE}/${nameParam}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${accessToken}` },
+      signal,
+    });
+
+    if (!res.ok && res.status !== 404) {
+      throw new Error(`Storage delete failed for ${storagePath} (${res.status})`);
+    }
   });
-
-  if (!res.ok && res.status !== 404) {
-    throw new Error(`Storage delete failed for ${storagePath} (${res.status})`);
-  }
 }
 
 export interface StorageFileInfo {
@@ -180,11 +209,13 @@ export interface StorageFileInfo {
 /**
  * List files under a storage prefix.
  */
-export async function storageList(prefix: string): Promise<StorageFileInfo[]> {
+export async function storageList(prefix: string, opts?: FsRequestOptions): Promise<StorageFileInfo[]> {
+  return storageDeadline(`LIST ${prefix}`, opts, async (signal) => {
   const accessToken = await getAccessToken();
 
   const res = await fetch(`${FS_BASE}?prefix=${encodeURIComponent(prefix)}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
+    signal,
   });
 
   if (!res.ok) {
@@ -205,5 +236,6 @@ export async function storageList(prefix: string): Promise<StorageFileInfo[]> {
       ? `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${nameParam}?alt=media&token=${token}`
       : `https://firebasestorage.googleapis.com/v0/b/${BUCKET}/o/${nameParam}?alt=media`;
     return { name: item.name, storagePath: item.name, contentType: item.contentType, downloadURL };
+  });
   });
 }
