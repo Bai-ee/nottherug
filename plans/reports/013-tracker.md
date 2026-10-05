@@ -14,8 +14,8 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 | Phase | Status | Candidate SHA | Report | Codex decision |
 | --- | --- | --- | --- | --- |
 | P0 | **Approved** | `3461c672b3298e87e180d2955d795eb82b6910d4` | [013-P0-report.md](013-P0-report.md), [Codex review](013-P0-codex-review.md) | `APPROVED P0 3461c672b3298e87e180d2955d795eb82b6910d4` |
-| P1 | Resubmitted after Codex round 1 fixup | report commit (code = `66eebda`) | [013-P1-report.md](013-P1-report.md), [round 1](013-P1-codex-review-1.md) | Round 1 (`d2f73b2`): approve with fixup; fixup candidate PENDING |
-| P2 | Not started | — | — | — |
+| P1 | **Approved** | `7833d996f002925ef87a3dd58fb956a1161bb5e7` | [013-P1-report.md](013-P1-report.md), [round 1](013-P1-codex-review-1.md) | `APPROVED P1 7833d99` (relayed by operator) |
+| P2 | In progress | — | — | — |
 | P3 | Not started | — | — | — |
 | P4 | Not started | — | — | — |
 | P5 | Not started | — | — | — |
@@ -24,17 +24,17 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 
 | ID | Phase | Baseline status (P0) | Owner | Status |
 | --- | --- | --- | --- | --- |
-| F01 | P1 | Reproduced | B | Fixed in P1 candidate; awaiting Codex |
-| F02 | P1 | Reproduced (mocked ordering) | B | Fixed in P1 candidate; awaiting Codex |
-| F03 | P1 | Reproduced | C | Fixed in P1 candidate; awaiting Codex |
-| F04 | P1 | Reproduced | A + B | Fixed in P1 candidate; awaiting Codex |
+| F01 | P1 | Reproduced | B | Fixed; approved in P1 |
+| F02 | P1 | Reproduced (mocked ordering) | B | Fixed; approved in P1 |
+| F03 | P1 | Reproduced | C | Fixed; approved in P1 |
+| F04 | P1 | Reproduced | A + B | Fixed; approved in P1 |
 | F05 | P2 | Confirmed: CI skips 61 emulator tests and 6 analytics E2E | — | Open |
 | F06 | P3 | Not re-measured in P0 | — | Open |
 | F07 | P3 | Not re-measured in P0 | — | Open |
 | F08 | P3 | Confirmed: build marks `/` as dynamic (ƒ) | — | Open |
 | F09 | P4 | Not re-probed in P0 | — | Open |
 | F10 | P4 | Source unchanged since audit | — | Open |
-| F11 | P1 | Source unchanged since audit | A + B + C | Fixed in P1 candidate; awaiting Codex |
+| F11 | P1 | Source unchanged since audit | A + B + C | Fixed; approved in P1 |
 | H01 | P2 | Email/password sign-in **enabled** alongside Google | — | Open |
 | H02 | P2 | Not tested in P0 | — | Open |
 | H03 | P4/P5 | Rules match; TTL 2 of 4; no backups/PITR | — | Open |
@@ -66,3 +66,4 @@ Shared files have a single owner. Workers use `npm ci --no-audit` with `npm_conf
 - 2026-10-05 — A merged (`c96d622`), C (`f1dd726`), B (`9ea4684`). Integration run found 73 failures caused by an unrelated process on port 8080 (left untouched); rerun on private emulator ports 8580/9599 green.
 - 2026-10-05 — Worker D review: APPROVE-FOR-SUBMISSION, 8 low findings. Fixes B `cceac4d`, C `a7e197e`; merged `63414c8`, `469fb9a`; D re-review APPROVE-FOR-SUBMISSION. Full verification on `469fb9a` green. P1 report saved; awaiting operator relay to Codex. P2 not started.
 - 2026-10-05 — Codex round 1 on `d2f73b2`: approve with 3 low fixes + cleanup. Fixups A `a0a0634`, B `4c0a0a6`, C `f3ab1d2`; merged `b1c1cc7`, `e3f76fa`, `66eebda`. Worker D re-review APPROVE-FOR-SUBMISSION. Full verification on `66eebda` green (692/692 emulator; 595 + 97 skipped no-emulator; E2E 156/20). Resubmitted; P2 not started.
+- 2026-10-05 — Codex `APPROVED P1 7833d99` (relayed). Carry into P2: optional fold-in of "finding 1" — interpreted as Worker D's fixup note (a): in the all-stalled case the apply-route auto-invite email can be sent while the stage move to `shadow_invited` and the outcome record are skipped (person stays in `review`). Operator to confirm interpretation. P2 started.
