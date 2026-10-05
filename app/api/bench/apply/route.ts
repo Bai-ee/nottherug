@@ -51,10 +51,13 @@ const RESUME_TOKEN_TTL_MS = 30 * 60 * 1000;
 // benchEmail) are not sliceable, so later steps reserve room for them.
 // Worst case with every call stalling: rate 8 + settings 3 + create 4 + coverage 3
 // + email 8 = 26 s, leaving ~1 s for the (best-effort, skipped when starved) outcome save.
-// The auto-invite stage write (read 3 + write 3, reserving the email) comes first and
-// gates the invite email; without budget the invite is not sent (confirmation is).
+// The auto-invite stage write (read 3 + write 3, reserving confirm 2 + email 8) comes first and
+// gates the invite email. An ambiguous failure is confirmed by one re-read (cap 2 s, reserving
+// the email); no budget or a failed read sends the confirmation instead. Worst case from the
+// claim on: 3 + 3 + 2 + 8 = 16 s, and the claim only starts if that fits in the 27 s budget.
 const ROUTE_BUDGET_MS = 27_000;
 const EMAIL_WORST_MS = 8_000;
+const CONFIRM_CAP_MS = 2_000;
 const MIN_STEP_MS = 500;
 type Slice = (cap: number, reserve?: number) => number;
 
@@ -89,7 +92,7 @@ async function qualifiesForAutoInvite(person: BenchPerson, settings: BenchSettin
  */
 async function claimAutoInviteStage(id: string, at: string, slice: Slice): Promise<boolean> {
   const need = () => {
-    const ms = slice(3_000, EMAIL_WORST_MS);
+    const ms = slice(3_000, EMAIL_WORST_MS + CONFIRM_CAP_MS);
     if (!ms) throw new Error('route time budget exhausted');
     return ms;
   };
@@ -108,6 +111,29 @@ async function claimAutoInviteStage(id: string, at: string, slice: Slice): Promi
     );
     return true;
   });
+}
+
+/**
+ * After a claim that threw (timeout, dependency error, budget): was the stage
+ * move stored anyway? A timed-out write may have committed, and invite_shadow
+ * is not available from shadow_invited, so the admin could never send the
+ * invite later. Only this request writes an auto-invite entry for this person
+ * (the create is idempotent per email), identified by `by` and this request's `at`.
+ * true: ours landed, send the invite. false/null (not ours, still review, read failed
+ * or no budget): send the confirmation instead.
+ */
+async function autoInviteStageLanded(id: string, at: string, slice: Slice): Promise<boolean> {
+  const timeoutMs = slice(CONFIRM_CAP_MS, EMAIL_WORST_MS);
+  if (!timeoutMs) return false;
+  try {
+    const { person } = await getBenchPersonWithMeta(id, { timeoutMs });
+    return (
+      person?.stage === 'shadow_invited' &&
+      (person.stageHistory ?? []).some((e) => e.stage === 'shadow_invited' && e.by === 'auto-invite' && e.at === at)
+    );
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -226,7 +252,9 @@ export async function POST(req: Request) {
         invite = (await claimAutoInviteStage(id, now, slice)) ? 'sent-eligible' : 'admin-moved';
       } catch (err) {
         // Stage not stored (failure or no budget): no invite. The application is saved and stays in review.
-        console.error('[bench:apply] auto-invite stage write failed, invite not sent', err instanceof Error ? err.message : 'unknown');
+        console.error('[bench:apply] auto-invite stage write failed, confirming', err instanceof Error ? err.message : 'unknown');
+        // The write may still have committed (timeout): decide from a fresh read, never retry the write.
+        if (await autoInviteStageLanded(id, now, slice)) invite = 'sent-eligible';
       }
     }
     if (invite === 'sent-eligible') {

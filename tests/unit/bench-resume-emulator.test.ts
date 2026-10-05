@@ -310,6 +310,27 @@ describe('other bench writers stay field-scoped (emulator)', () => {
     expect((p.stageHistory as Array<{ by: string }>).at(-1)?.by).toBe('auto-invite');
   });
 
+  it('confirms an auto-invite stage write whose acknowledgement was lost, then sends the invite once', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+    const { fsSetDoc } = await import('@/lib/server/firestoreRest');
+    await fsSetDoc('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
+    let lost = false;
+    vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) => {
+      const res = await realFetch(url, init);
+      if (!lost && String(url).includes(':commit')) {
+        lost = true; // the conditional write committed; the caller sees a network failure
+        throw new Error('socket hang up');
+      }
+      return res;
+    });
+    const { id } = await apply({ hasResume: false });
+    vi.unstubAllGlobals();
+    expect(lost).toBe(true);
+    expect((await person(id)).stage).toBe('shadow_invited');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(sendEmail.mock.calls[0]).toEqual([expect.objectContaining({ text: expect.stringContaining('https://calendly.test/shadow') })]);
+  });
+
   it('sends no invite when an admin moved the person out of review first (admin state wins)', async (ctx) => {
     if (!reachable) return ctx.skip(SKIP_REASON);
     const { fsSetDoc } = await import('@/lib/server/firestoreRest');
