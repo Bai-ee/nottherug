@@ -10,9 +10,10 @@ import { NextRequest } from 'next/server';
 import { applicationPayload } from './bench-fixtures';
 import { DEFAULT_BENCH_SETTINGS } from '@/lib/bench/contract';
 
-type Mode = 'ok' | 'slow' | 'stall';
+type Mode = 'ok' | 'slow' | 'stall' | 'lost-ack';
 let docs: Map<string, Record<string, unknown>>;
 const mode = { get: 'ok' as Mode, merge: 'ok' as Mode, create: 'ok' as Mode, query: 'ok' as Mode, incr: 'ok' as Mode, email: 'ok' as Mode };
+let afterLostAck: Mode | null = null; // flips `mode.get` once a lost-ack write has committed
 let mergesBeforeStall = 0; // merges that succeed immediately before `mode.merge` applies
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -22,6 +23,12 @@ vi.mock('@/lib/server/firestoreRest', async () => {
     const ms = opts?.timeoutMs ?? 8000;
     if (mode[kind] === 'slow') {
       await sleep(ms - 1);
+    } else if (mode[kind] === 'lost-ack') {
+      // The write commits, but the caller never hears back before its deadline.
+      await run();
+      if (afterLostAck) mode.get = afterLostAck;
+      await sleep(ms);
+      throw new fake.UpstreamTimeoutError('firestore', kind);
     } else if (mode[kind] === 'stall') {
       await sleep(ms);
       throw new fake.UpstreamTimeoutError('firestore', kind);
@@ -81,6 +88,7 @@ beforeEach(() => {
   vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
   vi.clearAllMocks();
   mergesBeforeStall = 0;
+  afterLostAck = null;
   Object.assign(mode, { get: 'ok', merge: 'ok', create: 'ok', query: 'ok', incr: 'ok', email: 'ok' });
   docs = new Map([[`benchPeople/${ID}`, stage()]]);
 });
@@ -168,6 +176,43 @@ describe('admin person route stays inside maxDuration (20 s)', () => {
 });
 
 describe('apply route auto-invite ordering', () => {
+  const autoInviteSettings = () =>
+    docs.set('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
+  const savedPerson = () => [...docs.entries()].find(([k]) => k.startsWith('benchPeople/bench_') && k !== `benchPeople/${ID}`)?.[1];
+  const emailTexts = () => (sendEmail.mock.calls as unknown as Array<[{ text: string }]>).map((c) => c[0].text);
+
+  it('a stage write that timed out but committed is confirmed by a re-read: invite sent once, no confirmation', async () => {
+    autoInviteSettings();
+    mode.merge = 'lost-ack';
+    const { res, elapsed } = await apply();
+    expect(res.status).toBe(200);
+    expect(elapsed).toBeLessThanOrEqual(29_000);
+    expect(savedPerson()?.stage).toBe('shadow_invited');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(emailTexts()[0]).toContain('calendly.test');
+  });
+
+  it('a timed-out write that did not commit sends the confirmation, not the invite', async () => {
+    autoInviteSettings();
+    mode.merge = 'stall';
+    const { res } = await apply();
+    expect(res.status).toBe(200);
+    expect(savedPerson()?.stage).toBe('review');
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(emailTexts()[0]).not.toContain('calendly.test');
+  });
+
+  it('a committed write whose confirm read also stalls sends the confirmation, inside the budget', async () => {
+    autoInviteSettings();
+    mode.merge = 'lost-ack';
+    afterLostAck = 'stall';
+    const { res, elapsed } = await apply();
+    expect(res.status).toBe(200);
+    expect(elapsed).toBeLessThanOrEqual(29_000);
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(emailTexts()[0]).not.toContain('calendly.test');
+  });
+
   it('a stalled stage write sends no invite, keeps the application in review, and sends the confirmation instead', async () => {
     docs.set('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
     mode.merge = 'stall';
