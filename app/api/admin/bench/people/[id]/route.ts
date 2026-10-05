@@ -27,6 +27,18 @@ import {
 export const runtime = 'nodejs';
 export const maxDuration = 20;
 
+// Overall budget from request start, 3 s under maxDuration, re-sliced from what
+// is left before every Firestore call. Actions that email reserve the email's
+// fixed 8 s (benchEmail) while the stage write is still being made, so the
+// write can never starve the send. Worst case, invite_shadow with every call
+// stalling: settings 3 + read 3 + write 3 + email 8 = 17 s, outcome save skipped
+// (logged). Actions without email: read 3 + write 3 (retries re-slice, never overrun).
+const ROUTE_BUDGET_MS = 17_000;
+const EMAIL_WORST_MS = 8_000;
+const STEP_CAP_MS = 3_000;
+const MIN_STEP_MS = 500;
+const EMAIL_ACTIONS: readonly BenchAction[] = ['invite_shadow', 'reject', 'conditional_offer'];
+
 class PersonMissingError extends Error {}
 class ActionNotAllowedError extends Error {
   constructor(readonly action: BenchAction) {
@@ -58,6 +70,12 @@ async function notifyFor(
 
 /** One stage action on one person (plan §7.3–7.4). */
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }): Promise<NextResponse> {
+  const startedAt = Date.now();
+  const need = (reserve = 0) => {
+    const ms = Math.min(STEP_CAP_MS, ROUTE_BUDGET_MS - (Date.now() - startedAt) - reserve);
+    if (ms < MIN_STEP_MS) throw new Error('route time budget exhausted');
+    return Math.floor(ms);
+  };
   let adminEmail: string;
   try {
     adminEmail = await verifyAdmin(req);
@@ -105,7 +123,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   let shadowBookingUrl = '';
   if (benchAction === 'invite_shadow') {
     try {
-      shadowBookingUrl = (await getBenchSettings()).shadowBookingUrl;
+      shadowBookingUrl = (await getBenchSettings({ timeoutMs: need(EMAIL_WORST_MS) })).shadowBookingUrl;
     } catch (err) {
       return errorResponse(new ServiceError(err instanceof Error ? err.message : 'Settings load failed'));
     }
@@ -114,10 +132,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   // Write only the fields this action changes, conditional on the version it was
   // decided against: an applicant's resume upload or an AI summary landing in
   // between is never overwritten, and a concurrent admin edit is re-read, not lost.
+  const reserve = EMAIL_ACTIONS.includes(benchAction) ? EMAIL_WORST_MS : 0;
   let next: BenchPerson;
   try {
     next = await withOptimisticRetry(async () => {
-      const { person, updateTime } = await getBenchPersonWithMeta(id);
+      const { person, updateTime } = await getBenchPersonWithMeta(id, { timeoutMs: need(reserve) });
       if (!person) throw new PersonMissingError();
       if (!updateTime) throw new Error('Person read returned no updateTime');
       if (!actionAllowed(benchAction, person.stage, person.onHold)) throw new ActionNotAllowedError(benchAction);
@@ -138,7 +157,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
         if (target === 'bench' && !person.tierPinned && !person.tier) fields.tier = 'B';
       }
 
-      await mergeBenchPerson(id, fields, { precondition: { updateTime } });
+      await mergeBenchPerson(id, fields, { precondition: { updateTime }, timeoutMs: need(reserve) });
       return { ...person, ...fields };
     });
   } catch (err) {
@@ -157,10 +176,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   if (Object.keys(sent).length) {
     try {
       next = await withOptimisticRetry(async () => {
-        const { person, updateTime } = await getBenchPersonWithMeta(id);
+        const { person, updateTime } = await getBenchPersonWithMeta(id, { timeoutMs: need() });
         if (!person || !updateTime) throw new Error('Person vanished before notifications were recorded');
         const fields: Partial<BenchPerson> = { notifications: { ...(person.notifications ?? {}), ...sent } };
-        await mergeBenchPerson(id, fields, { precondition: { updateTime } });
+        await mergeBenchPerson(id, fields, { precondition: { updateTime }, timeoutMs: need() });
         return { ...person, ...fields };
       });
     } catch (err) {

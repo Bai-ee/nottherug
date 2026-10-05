@@ -69,3 +69,15 @@ Accepted risks
 - Finalize timeout ambiguity: if the confirming read also fails or the finalize landed late, `resumePath` can point at an object that was deleted or never finalized. Narrow window; the email fallback covers it.
 - Admin POST stores the stage before sending the email and never retries; a crash between the two loses the email, with no duplicate-send path.
 - Apply-route auto shadow-invite email may already be sent when an admin moved the person out of `review` during the send; admin state wins and the stage move is skipped.
+
+## Codex review fixup (admin and apply route budgets)
+Same pattern as the resume route: an overall budget measured from request start, re-sliced from what remains before every Firestore call we control; a call is not started under 500 ms remaining (best-effort persistence is skipped and logged, required steps fail). `getBenchSettings`, `getBenchSettingsOrDefault` and `listBenchPeople` in `lib/server/bench.ts` gained an optional `FsRequestOptions` argument to carry the slice. Behavior unchanged: stage saved before the email, email never retried.
+
+Worst-case math (every call stalling to its deadline)
+- Admin person route (maxDuration 20): budget 17 s, per-call cap 3 s. Actions that email reserve the email's fixed 8 s (benchEmail timeout, not sliceable) while the stage write is made. invite_shadow: settings 3 + read 3 + write 3 + email 8 = 17 s; the outcome save is skipped and logged. Non-email actions: read 3 + write 3 (retries re-slice). Reject/offer: read 3 + write 3 + email 8 = 14 s, outcome save gets the remaining ~3 s. Time spent in `verifyAdmin` (not changed here) counts against the same budget.
+- Apply route (maxDuration 30): budget 27 s. Rate-limit call (benchIntake, default 8 s, fails open) is not sliceable and not changed. Then settings 3 + create 4 + coverage read 3 (each reserving the 8 s email) + email 8 = 8 + 3 + 4 + 3 + 8 = 26 s; the outcome save gets about 1 s (read only, write skipped, logged). The application is already saved, as before. The wait to read the request body from the client is not bounded.
+- Resume route: unchanged from the earlier fix (27 s budget).
+
+Tests (fake timers, no real waits)
+- `tests/unit/bench-route-budget.test.ts` (7): admin invite_shadow all-slow plus stalled email (<= 18 s); stalled stage write (no email sent); no-email action with slow read and stalled write; stalled outcome write after the email (200, stage saved); apply all-slow plus stalled limiter and email (<= 29 s, application saved); apply stalled outcome write (200); apply stalled create (500, no email).
+- `tests/unit/bench-resume-budget.test.ts` now 5 tests: added a stalled claim merge (503 <= 5 s) and a stalled finalize merge plus stalled cleanup (<= 28 s).

@@ -45,6 +45,17 @@ const MAX_BODY_BYTES = 20_000;
 const RATE_LIMIT_MAX = 5;
 const RESUME_TOKEN_TTL_MS = 30 * 60 * 1000;
 
+// maxDuration is 30 s. The overall budget is measured from request start and
+// re-sliced before every Firestore call we control; the per-IP rate-limit call
+// (benchIntake, default 8 s, fails open) and the applicant email (8 s, fixed in
+// benchEmail) are not sliceable, so later steps reserve room for them.
+// Worst case with every call stalling: rate 8 + settings 3 + create 4 + coverage 3
+// + email 8 = 26 s, leaving ~1 s for the (best-effort, skipped when starved) outcome save.
+const ROUTE_BUDGET_MS = 27_000;
+const EMAIL_WORST_MS = 8_000;
+const MIN_STEP_MS = 500;
+type Slice = (cap: number, reserve?: number) => number;
+
 function errorJson(status: number, error: string, details?: unknown) {
   return NextResponse.json(details ? { ok: false, error, details } : { ok: false, error }, { status });
 }
@@ -54,10 +65,12 @@ function errorJson(status: number, error: string, details?: unknown) {
  * on, a booking link exists, and the applicant fills an under-target slot.
  * A read failure falls back to a normal review, never to an invite.
  */
-async function qualifiesForAutoInvite(person: BenchPerson, settings: BenchSettings): Promise<boolean> {
+async function qualifiesForAutoInvite(person: BenchPerson, settings: BenchSettings, slice: Slice): Promise<boolean> {
   if (!settings.autoInviteOnGap || !settings.shadowBookingUrl) return false;
   try {
-    const coverage = computeCoverage(await listBenchPeople(), settings);
+    const timeoutMs = slice(3_000, EMAIL_WORST_MS);
+    if (!timeoutMs) throw new Error('route time budget exhausted');
+    const coverage = computeCoverage(await listBenchPeople({ timeoutMs }), settings);
     return gapSlotsFilled(person, coverage) > 0;
   } catch (err) {
     console.error('[bench:apply] coverage read failed', err instanceof Error ? err.message : 'unknown');
@@ -76,9 +89,15 @@ async function persistNotifications(
   id: string,
   notifications: Record<string, NotificationOutcome>,
   autoInvite: { at: string; by: string } | null,
+  slice: Slice,
 ): Promise<void> {
+  const need = () => {
+    const ms = slice(3_000);
+    if (!ms) throw new Error('route time budget exhausted');
+    return ms;
+  };
   await withOptimisticRetry(async () => {
-    const { person, updateTime } = await getBenchPersonWithMeta(id, { timeoutMs: 5_000 });
+    const { person, updateTime } = await getBenchPersonWithMeta(id, { timeoutMs: need() });
     if (!person || !updateTime) return;
     const fields: Partial<BenchPerson> = {
       notifications: { ...(person.notifications ?? {}), ...notifications },
@@ -88,11 +107,16 @@ async function persistNotifications(
       fields.stage = 'shadow_invited';
       fields.stageHistory = [...person.stageHistory, { stage: 'shadow_invited', at: autoInvite.at, by: autoInvite.by }];
     }
-    await mergeBenchPerson(id, fields, { precondition: { updateTime }, timeoutMs: 5_000 });
+    await mergeBenchPerson(id, fields, { precondition: { updateTime }, timeoutMs: need() });
   });
 }
 
 export async function POST(req: Request) {
+  const startedAt = Date.now();
+  const slice: Slice = (cap, reserve = 0) => {
+    const ms = Math.min(cap, ROUTE_BUDGET_MS - (Date.now() - startedAt) - reserve);
+    return ms >= MIN_STEP_MS ? Math.floor(ms) : 0;
+  };
   const text = await readCappedText(req, MAX_BODY_BYTES);
   if (text === null) return errorJson(413, 'Request body too large');
 
@@ -107,7 +131,7 @@ export async function POST(req: Request) {
     return errorJson(400, 'Invalid JSON');
   }
 
-  const settings = await getBenchSettingsOrDefault();
+  const settings = await getBenchSettingsOrDefault({ timeoutMs: slice(3_000, EMAIL_WORST_MS) || MIN_STEP_MS });
   const validation = parseApplication(parsed, settings);
   if (!validation.ok) {
     return errorJson(400, validation.errors[0]?.message ?? 'Invalid application', validation.errors);
@@ -158,7 +182,9 @@ export async function POST(req: Request) {
 
   let created: boolean;
   try {
-    created = (await fsCreateDoc(`${BENCH_COLLECTIONS.people}/${id}`, person as unknown as Record<string, unknown>)).created;
+    const timeoutMs = slice(4_000, EMAIL_WORST_MS);
+    if (!timeoutMs) throw new Error('route time budget exhausted');
+    created = (await fsCreateDoc(`${BENCH_COLLECTIONS.people}/${id}`, person as unknown as Record<string, unknown>, { timeoutMs })).created;
   } catch (err) {
     console.error('[bench:apply] firestore create failed', err instanceof Error ? err.message : 'unknown');
     return errorJson(500, 'Could not save your application. Please try again.');
@@ -172,7 +198,7 @@ export async function POST(req: Request) {
   let autoInvite = false;
   if (knockout) {
     notifications.closed = await sendApplicantEmail(person.email, applicationClosedEmail(person), 'apply-closed');
-  } else if (await qualifiesForAutoInvite(person, settings)) {
+  } else if (await qualifiesForAutoInvite(person, settings, slice)) {
     autoInvite = true;
     notifications.shadowInvite = await sendApplicantEmail(
       person.email,
@@ -184,7 +210,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await persistNotifications(id, notifications, autoInvite ? { at: now, by: 'auto-invite' } : null);
+    await persistNotifications(id, notifications, autoInvite ? { at: now, by: 'auto-invite' } : null, slice);
   } catch (err) {
     // The application itself is saved; only the email outcome did not persist.
     console.error('[bench:apply] notification persist failed', err instanceof Error ? err.message : 'unknown');
