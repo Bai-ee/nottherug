@@ -35,3 +35,13 @@ home-image-delivery.spec.ts: the 1500ms sleep before "no portrait requested" is 
 - Unit/emulator suite: 797 passed, 0 skipped (102 emulator-backed). `npm run lint` clean. `tsc --noEmit` clean.
 
 Not verified: behaviour on the actual GitHub runner (no push).
+
+## Review fixes (branch 013/p5-n2, test files only)
+
+1. Intro ceiling restored, clock-free. The in-page probe now stamps `performance.now()` (ms from navigation start, the origin `INTRO_CEILING_MS` uses) when `data-home-intro` is first "loading" and "done" (MutationObserver plus per-frame read). `expectIntroEndedWithinCeiling` asserts done <= `INTRO_CEILING_MS` (imported from homeIntroTiming.ts) + 1500ms margin, on the page's own clock; the margin only absorbs a timer firing late behind main-thread work, and an intro regressing to ~10s fails. Used in the first home test, the GSAP-blocked test (failsafe path) and the three overflow tests. The 15s remains only as hang guard.
+2. Commit-aware hydration wait. New `waitForHomeEffectsAndHeroDecision` (helpers/hydration.ts): React stamp, then `history.scrollRestoration === 'manual'` (set by `useScrollToTopOnLoad` in the same tree's passive effects, so effects have committed), then two rAFs and an idle callback with timeout 2500 >= the hero's 2000 (600ms timer fallback vs the hero's 300). Used by the reduced-motion, data-saving and portrait tests. No product attribute added.
+   Non-vacuity: temporarily removed the `reducedMotion` and `saveData` early returns in heroVideoPolicy.ts, rebuilt: the reduced-motion and data-saving tests failed 20 of 20 runs (`--repeat-each=5`, expected 0 sources/requests, received 2). Break reverted, not committed.
+3. First home test now asserts `#page-home` `toHaveCSS('opacity','1')`.
+4. The in-page blocked-marking `evaluate` in the route handler is try/catch'd; the test asserts the `markFailed` flag is false.
+
+Proof: home-entrance + home-image-delivery + booking, `--repeat-each=50 --workers=4 --retries=0`: mobile 750 passed / 50 skipped (desktop-only keyboard test), desktop 800 passed, 0 failed, 0 flaky. Full `CI=1` E2E: 201 passed, 21 skipped, 0 failed, 0 flaky. Lint and tsc clean. (One earlier full run showed spurious failures from ENOSPC, the host disk was full; it passed after clearing .next/cache and test-results.)

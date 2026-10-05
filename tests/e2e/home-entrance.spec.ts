@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { suppressWelcomeModal } from './helpers/welcomeModal';
-import { waitForHydration } from './helpers/hydration';
+import { waitForHomeEffectsAndHeroDecision } from './helpers/hydration';
+import { INTRO_CEILING_MS } from '@/components/marketing/hooks/homeIntroTiming';
 
 // Plan 013 P3 / audit F06 + F07 (video part): the homepage headline and the
 // primary booking CTA must be visible and operable without waiting for the
@@ -37,6 +38,11 @@ interface CtaProbe {
   inoperableFramesSinceBlocked: number;
   /** Media events the hero <video> fired (loadeddata, canplay, ...): bytes arrived. */
   videoDataEvents: string[];
+  /** performance.now() (ms from navigation start) when data-home-intro first read "loading" / "done". */
+  introLoadingAt: number | null;
+  introDoneAt: number | null;
+  /** True if the test's in-page marking threw (e.g. navigation mid-evaluate). */
+  blockMarkFailed: boolean;
 }
 
 /**
@@ -56,6 +62,9 @@ async function installCtaProbe(page: Page) {
       framesSinceBlocked: 0,
       inoperableFramesSinceBlocked: 0,
       videoDataEvents: [],
+      introLoadingAt: null,
+      introDoneAt: null,
+      blockMarkFailed: false,
     };
     (window as unknown as { __ctaProbe: CtaProbe }).__ctaProbe = probe;
     for (const type of ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'progress']) {
@@ -67,6 +76,17 @@ async function installCtaProbe(page: Page) {
         true,
       );
     }
+    // The intro attribute is set by an inline script during parse and cleared
+    // by a timer or the keyframes' end; stamp both moments on the page's own
+    // clock (performance.now() is relative to navigation start, the same
+    // origin INTRO_CEILING_MS is measured from).
+    const readIntro = () => {
+      const v = document.documentElement?.dataset.homeIntro;
+      if (v === 'loading' && probe.introLoadingAt === null) probe.introLoadingAt = performance.now();
+      if (v === 'done' && probe.introDoneAt === null) probe.introDoneAt = performance.now();
+    };
+    new MutationObserver(readIntro).observe(document, { attributes: true, subtree: true, attributeFilter: ['data-home-intro'] });
+    readIntro();
     const operable = (el: HTMLElement) => {
       let opacity = 1;
       for (let n: Element | null = el; n; n = n.parentElement) {
@@ -81,6 +101,7 @@ async function installCtaProbe(page: Page) {
       return !!hit && el.contains(hit);
     };
     const sample = () => {
+      readIntro();
       const el = document.getElementById('hero-cta-primary');
       if (el) {
         const ok = operable(el);
@@ -114,6 +135,24 @@ async function expectCtaOperable(page: Page) {
     .toBeGreaterThan(0);
 }
 
+// Margin over the product's ceiling, on the page's own clock: absorbs a timer
+// firing late behind main-thread work on a loaded runner (hydration, a GC),
+// while an intro that regresses to seconds past the ceiling still fails.
+const INTRO_CEILING_MARGIN_MS = 1500;
+
+/**
+ * The intro ended by its ceiling: measured in-page from navigation start, so
+ * the runner's speed to deliver this assertion does not matter. `done` is the
+ * ceiling timer or the keyframes' end, whichever fires first (the inline
+ * failsafe is the same 2500ms); the GSAP-blocked page ends the same way.
+ */
+async function expectIntroEndedWithinCeiling(page: Page) {
+  await expect.poll(async () => (await readProbe(page)).introDoneAt, { timeout: HANG_GUARD_MS }).not.toBeNull();
+  const probe = await readProbe(page);
+  expect(probe.introLoadingAt).not.toBeNull();
+  expect(probe.introDoneAt!).toBeLessThanOrEqual(INTRO_CEILING_MS + INTRO_CEILING_MARGIN_MS);
+}
+
 /**
  * The CTA was never withheld: from the first frame it existed, every frame had
  * it visible, opaque and uncovered. State, not speed.
@@ -122,28 +161,6 @@ async function expectCtaNeverWithheld(page: Page) {
   const probe = await readProbe(page);
   expect(probe.operableFrames).toBeGreaterThan(0);
   expect(probe.inoperableFrames).toBe(0);
-}
-
-/**
- * Resolves once the hero's own post-load decision about the video has run:
- * after hydration, the hero attaches sources two animation frames in, on
- * requestIdleCallback (timeout 2s) or a 300ms timer where unsupported
- * (Safari). A callback queued now fires after it, so what is read next is the
- * decision itself, not a guess at elapsed time.
- */
-async function waitForHeroVideoDecision(page: Page) {
-  await waitForHydration(page, VIDEO);
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => {
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => {
-            if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(() => resolve(), { timeout: 2500 });
-            else window.setTimeout(resolve, 600);
-          }),
-        );
-      }),
-  );
 }
 
 function videoSourceCount(page: Page) {
@@ -170,6 +187,9 @@ test('headline and primary CTA are visible and operable from the first frame, wi
   // observe a further stretch of frames: across all of it the CTA was never
   // transparent, hidden or covered.
   await expect(page.locator('html')).toHaveAttribute('data-home-intro', 'done', { timeout: HANG_GUARD_MS });
+  await expectIntroEndedWithinCeiling(page);
+  // The shared page fade-in (excluded from the per-frame CTA opacity) is not stuck.
+  await expect(page.locator('#page-home')).toHaveCSS('opacity', '1', { timeout: HANG_GUARD_MS });
   const framesAtDone = (await readProbe(page)).seenFrames;
   await expect.poll(async () => (await readProbe(page)).seenFrames, { timeout: HANG_GUARD_MS }).toBeGreaterThan(framesAtDone + FRAMES_TO_OBSERVE);
   await expectCtaNeverWithheld(page);
@@ -188,7 +208,7 @@ test('reduced motion: final state at once, no intro, no video request', async ({
   await expectCtaOperable(page);
   await expect(page.locator('#home-intro-overlay')).toHaveCount(0);
   await expect(page.locator(`${HEADLINE} .word-wrap`)).toHaveCount(0);
-  await waitForHeroVideoDecision(page);
+  await waitForHomeEffectsAndHeroDecision(page);
   expect(await videoSourceCount(page)).toBe(0);
   expect(videoRequests).toEqual([]);
   await expectCtaNeverWithheld(page);
@@ -205,7 +225,7 @@ test('data-saving signal: poster only, no video request', async ({ page }) => {
   });
   await page.goto('/', { waitUntil: 'load' });
   await expectCtaOperable(page);
-  await waitForHeroVideoDecision(page);
+  await waitForHomeEffectsAndHeroDecision(page);
   expect(await videoSourceCount(page)).toBe(0);
   expect(videoRequests).toEqual([]);
 });
@@ -242,6 +262,7 @@ test('GSAP chunk blocked: CTA and headline stay visible and the page has no entr
   await expect
     .poll(() => page.evaluate(() => document.documentElement.dataset.homeIntro ?? 'none'), { timeout: HANG_GUARD_MS })
     .not.toBe('loading');
+  await expectIntroEndedWithinCeiling(page);
   await expect(page.locator(`${HEADLINE} .word-wrap`)).toHaveCount(0);
   expect(blocked).toBeGreaterThan(0);
   await expectCtaNeverWithheld(page);
@@ -257,6 +278,7 @@ for (const mode of ['held and never fulfilled', 'aborted'] as const) {
     const blockedRequests: string[] = [];
     const finished: string[] = [];
     const failed: string[] = [];
+    let markFailed = false;
     page.on('requestfinished', (r) => {
       if (VIDEO_URL.test(r.url())) finished.push(r.url());
     });
@@ -266,9 +288,13 @@ for (const mode of ['held and never fulfilled', 'aborted'] as const) {
     await page.route(VIDEO_URL, async (route) => {
       blockedRequests.push(route.request().url());
       // The probe starts counting frames from the moment the request is blocked.
-      await page.evaluate(() => {
-        (window as unknown as { __ctaProbe: CtaProbe }).__ctaProbe.videoBlocked = true;
-      });
+      try {
+        await page.evaluate(() => {
+          (window as unknown as { __ctaProbe: CtaProbe }).__ctaProbe.videoBlocked = true;
+        });
+      } catch {
+        markFailed = true; // e.g. a navigation raced the evaluate; asserted below
+      }
       if (mode === 'aborted') await route.abort();
       // held: neither fulfilled nor continued, so no byte is ever delivered.
     });
@@ -282,6 +308,7 @@ for (const mode of ['held and never fulfilled', 'aborted'] as const) {
       .toBeGreaterThanOrEqual(FRAMES_TO_OBSERVE);
 
     const probe = await readProbe(page);
+    expect(markFailed).toBe(false);
     expect(probe.inoperableFramesSinceBlocked).toBe(0);
     await expectCtaOperable(page);
     await expectCtaNeverWithheld(page);
@@ -319,6 +346,7 @@ for (const width of [375, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/', { waitUntil: 'load' });
     await expect(page.locator('html')).toHaveAttribute('data-home-intro', 'done', { timeout: HANG_GUARD_MS });
+    await expectIntroEndedWithinCeiling(page);
     // Let the page settle after the intro: a stretch of rendered frames, not a sleep.
     await page.evaluate(
       (n) => new Promise<void>((resolve) => { let left = n; const tick = () => (--left <= 0 ? resolve() : requestAnimationFrame(tick)); tick(); }),
