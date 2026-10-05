@@ -41,8 +41,10 @@ interface CtaProbe {
   /** performance.now() (ms from navigation start) when data-home-intro first read "loading" / "done". */
   introLoadingAt: number | null;
   introDoneAt: number | null;
-  /** True if the test's in-page marking threw (e.g. navigation mid-evaluate). */
-  blockMarkFailed: boolean;
+  /** In-page video block (blockHeroVideoInPage): URLs the hero tried to attach, load() calls, error events dispatched. */
+  blockedSources: string[];
+  loadCalls: number;
+  sourceErrors: number;
 }
 
 /**
@@ -64,7 +66,9 @@ async function installCtaProbe(page: Page) {
       videoDataEvents: [],
       introLoadingAt: null,
       introDoneAt: null,
-      blockMarkFailed: false,
+      blockedSources: [],
+      loadCalls: 0,
+      sourceErrors: 0,
     };
     (window as unknown as { __ctaProbe: CtaProbe }).__ctaProbe = probe;
     for (const type of ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'progress']) {
@@ -268,57 +272,106 @@ test('GSAP chunk blocked: CTA and headline stay visible and the page has no entr
   await expectCtaNeverWithheld(page);
 });
 
-// The property: the CTA does not depend on the hero video. Proven by
-// blocking the video request so it can never complete (held forever, or
-// aborted), and showing that while it is provably blocked, and no video data
-// has arrived, the CTA is visible, opaque and hit-testable in every rendered
-// frame. If the CTA waited on the video this would hang to the guard and fail.
-for (const mode of ['held and never fulfilled', 'aborted'] as const) {
-  test(`video request ${mode}: CTA stays visible and operable`, async ({ page }) => {
-    const blockedRequests: string[] = [];
+/**
+ * Blocks the hero video IN THE PAGE, so "the video never loads" holds on every
+ * engine. Network interception is not enough: Linux WebKit's media loader
+ * (GStreamer) does not go through Playwright's `page.route`, so a routed video
+ * request can still complete there.
+ *
+ * HomeHero attaches `<source>` elements with `source.src = ...` and calls
+ * `video.load()`. A source that never receives its `src` gives the media
+ * element nothing to fetch, on any engine. The intended URL is recorded
+ * instead (the test reads it to prove the hero really tried), and in "aborted"
+ * mode a real `error` event is dispatched on the source, as a failed fetch
+ * would. `video.load()` is a counted no-op for the hero video.
+ */
+async function blockHeroVideoInPage(page: Page, mode: 'held' | 'aborted') {
+  await page.addInitScript((m) => {
+    const probe = (window as unknown as { __ctaProbe: CtaProbe }).__ctaProbe;
+    const heroVideoUrl = /\/video\/hero-mccarren-.*\.(webm|mp4)(\?|$)/;
+    const desc = Object.getOwnPropertyDescriptor(HTMLSourceElement.prototype, 'src')!;
+    Object.defineProperty(HTMLSourceElement.prototype, 'src', {
+      configurable: true,
+      enumerable: desc.enumerable,
+      get: desc.get,
+      set(value: string) {
+        if (!heroVideoUrl.test(String(value))) return desc.set!.call(this, value);
+        probe.blockedSources.push(String(value));
+        probe.videoBlocked = true; // the probe counts frames from here
+        if (m === 'aborted') {
+          const source = this as HTMLSourceElement;
+          setTimeout(() => {
+            probe.sourceErrors += 1;
+            source.dispatchEvent(new Event('error'));
+          }, 0);
+        }
+      },
+    });
+    const load = HTMLMediaElement.prototype.load;
+    HTMLMediaElement.prototype.load = function (this: HTMLMediaElement) {
+      if (this.id === 'hero-bg-video') {
+        probe.loadCalls += 1;
+        return;
+      }
+      return load.call(this);
+    };
+  }, mode);
+}
+
+// The property: the CTA does not depend on the hero video. Proven by making
+// the video unable to load (held: nothing is ever fetched; aborted: the
+// source reports a load error), and showing that once the hero has tried to
+// load it, and no video data has arrived, the CTA is visible, opaque and
+// hit-testable in every rendered frame. If the CTA waited on the video this
+// would hang to the guard and fail. page.route stays on as a second line of
+// defence where the engine honours it.
+for (const mode of ['held', 'aborted'] as const) {
+  test(`video ${mode} in the page: CTA stays visible and operable`, async ({ page, browserName }) => {
     const finished: string[] = [];
-    const failed: string[] = [];
-    let markFailed = false;
+    const requested: string[] = [];
+    page.on('request', (r) => {
+      if (VIDEO_URL.test(r.url())) requested.push(r.url());
+    });
     page.on('requestfinished', (r) => {
       if (VIDEO_URL.test(r.url())) finished.push(r.url());
     });
-    page.on('requestfailed', (r) => {
-      if (VIDEO_URL.test(r.url())) failed.push(r.url());
-    });
-    await page.route(VIDEO_URL, async (route) => {
-      blockedRequests.push(route.request().url());
-      // The probe starts counting frames from the moment the request is blocked.
-      try {
-        await page.evaluate(() => {
-          (window as unknown as { __ctaProbe: CtaProbe }).__ctaProbe.videoBlocked = true;
-        });
-      } catch {
-        markFailed = true; // e.g. a navigation raced the evaluate; asserted below
-      }
-      if (mode === 'aborted') await route.abort();
-      // held: neither fulfilled nor continued, so no byte is ever delivered.
-    });
+    await page.route(VIDEO_URL, (route) => (mode === 'aborted' ? route.abort() : undefined));
+    await blockHeroVideoInPage(page, mode);
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    // Hero video was really requested, and the route handler fired for it.
-    await expect.poll(() => blockedRequests.length, { timeout: HANG_GUARD_MS }).toBeGreaterThan(0);
+    // The hero really tried to load the video, and the block took effect in this engine.
+    await expect.poll(async () => (await readProbe(page)).blockedSources.length, { timeout: HANG_GUARD_MS }).toBeGreaterThan(0);
     // The CTA stayed operable across a stretch of frames rendered *after* the block.
     await expect
       .poll(async () => (await readProbe(page)).framesSinceBlocked, { timeout: HANG_GUARD_MS })
       .toBeGreaterThanOrEqual(FRAMES_TO_OBSERVE);
 
     const probe = await readProbe(page);
-    expect(markFailed).toBe(false);
     expect(probe.inoperableFramesSinceBlocked).toBe(0);
     await expectCtaOperable(page);
     await expectCtaNeverWithheld(page);
 
-    // And the video really was blocked throughout: nothing finished, no data.
-    expect(finished).toEqual([]);
+    // The video really never loaded: no data event, nothing buffered, no
+    // source ever received a URL, and the media element is not fetching.
     expect(probe.videoDataEvents).toEqual([]);
-    expect(await page.locator(VIDEO).evaluate((v: HTMLVideoElement) => v.readyState)).toBe(0);
-    if (mode === 'aborted') await expect.poll(() => failed.length, { timeout: HANG_GUARD_MS }).toBeGreaterThan(0);
-    else expect(failed).toEqual([]);
+    expect(probe.loadCalls).toBeGreaterThan(0);
+    const media = await page.locator(VIDEO).evaluate((v: HTMLVideoElement) => ({
+      readyState: v.readyState,
+      networkState: v.networkState,
+      buffered: v.buffered.length,
+      sourcesWithUrl: Array.from(v.querySelectorAll('source')).filter((el) => el.getAttribute('src')).length,
+    }));
+    expect(media.readyState).toBe(0);
+    expect(media.networkState).not.toBe(2); // NETWORK_LOADING
+    expect(media.buffered).toBe(0);
+    expect(media.sourcesWithUrl).toBe(0);
+    if (mode === 'aborted') expect(probe.sourceErrors).toBeGreaterThan(0);
+    // Where the engine honours interception (Chromium) the page-level block
+    // also means no request ever left the page.
+    if (browserName === 'chromium') {
+      expect(requested).toEqual([]);
+      expect(finished).toEqual([]);
+    }
     await expect(page.locator(VIDEO)).toHaveAttribute('poster', /hero-mccarren-poster\.webp/);
   });
 }
