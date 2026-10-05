@@ -1,0 +1,95 @@
+
+ RUN  v5.0.0 /Users/bballi/Documents/Repos/NotTheRug-013
+
+stderr | tests/unit/zz-p1-resume-repro.test.ts > CONFIRMED: a single resume token authorizes two concurrent writes and stale save overwrites notes
+[bench:resume] claim failed [vitest] No "getBenchPersonWithMeta" export is defined on the "@/lib/server/bench" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+
+stderr | tests/unit/zz-p1-resume-repro.test.ts > CONFIRMED: a single resume token authorizes two concurrent writes and stale save overwrites notes
+[bench:resume] claim failed [vitest] No "getBenchPersonWithMeta" export is defined on the "@/lib/server/bench" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+
+ ❯ tests/unit/zz-p1-resume-repro.test.ts (1 test | 1 failed) 9ms
+   × CONFIRMED: a single resume token authorizes two concurrent writes and stale save overwrites notes 9ms
+stderr | tests/unit/zz-p1-intake-repro.test.ts > CONFIRMED: five successful captures exhaust final submission budget
+[lead:capture] firestore write failed [vitest] No "withOptimisticRetry" export is defined on the "@/lib/server/firestoreRest" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+
+ ❯ tests/unit/zz-p1-intake-repro.test.ts (3 tests | 3 failed) 7ms
+   × CONFIRMED: five successful captures exhaust final submission budget 6ms
+   × CONFIRMED: capture overwrites a concurrent converted status with partial 0ms
+   × CONFIRMED: capture accepts over 4000 UTF-8 bytes without content-length 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/zz-p1-intake-repro.test.ts > CONFIRMED: five successful captures exhaust final submission budget
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ ❯ tests/unit/zz-p1-intake-repro.test.ts:20:123
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/zz-p1-intake-repro.test.ts > CONFIRMED: capture overwrites a concurrent converted status with partial
+TypeError: captureIdForEmail is not a function
+ ❯ tests/unit/zz-p1-intake-repro.test.ts:25:11
+     23| });
+     24| it('CONFIRMED: capture overwrites a concurrent converted status with p…
+     25|  const id=captureIdForEmail('owner@example.test');state.docs.set(`lead…
+       |           ^
+     26|  expect((await capture(req('/api/leads/capture',{email:'owner@example.…
+     27|  expect(state.docs.get(`leads/${id}`)).toMatchObject({status:'partial'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/zz-p1-intake-repro.test.ts > CONFIRMED: capture accepts over 4000 UTF-8 bytes without content-length
+AssertionError: expected 413 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 413
+
+ ❯ tests/unit/zz-p1-intake-repro.test.ts:32:65
+     30|  const body={email:'owner@example.test',source:'home',unused:'€'.repea…
+     31|  expect(Buffer.byteLength(JSON.stringify(body),'utf8')).toBeGreaterTha…
+     32|  expect((await capture(req('/api/leads/capture',body))).status).toBe(2…
+       |                                                                 ^
+     33| });
+     34|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/zz-p1-resume-repro.test.ts > CONFIRMED: a single resume token authorizes two concurrent writes and stale save overwrites notes
+AssertionError: expected [ 503, 503 ] to deeply equal [ 200, 200 ]
+
+- Expected
++ Received
+
+  [
+-   200,
+-   200,
++   503,
++   503,
+  ]
+
+ ❯ tests/unit/zz-p1-resume-repro.test.ts:21:37
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed (4)
+   Start at  20:10:27
+   Duration  223ms (transform 44%, import 40%, tests 14%, worker 2%)

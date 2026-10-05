@@ -14,7 +14,7 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 | Phase | Status | Candidate SHA | Report | Codex decision |
 | --- | --- | --- | --- | --- |
 | P0 | **Approved** | `3461c672b3298e87e180d2955d795eb82b6910d4` | [013-P0-report.md](013-P0-report.md), [Codex review](013-P0-codex-review.md) | `APPROVED P0 3461c672b3298e87e180d2955d795eb82b6910d4` |
-| P1 | In progress | — | — | — |
+| P1 | Ready for review | report commit (code = `469fb9a`) | [013-P1-report.md](013-P1-report.md) | PENDING |
 | P2 | Not started | — | — | — |
 | P3 | Not started | — | — | — |
 | P4 | Not started | — | — | — |
@@ -24,17 +24,17 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 
 | ID | Phase | Baseline status (P0) | Owner | Status |
 | --- | --- | --- | --- | --- |
-| F01 | P1 | Reproduced | — | Open |
-| F02 | P1 | Reproduced (mocked ordering) | — | Open |
-| F03 | P1 | Reproduced | — | Open |
-| F04 | P1 | Reproduced | — | Open |
+| F01 | P1 | Reproduced | B | Fixed in P1 candidate; awaiting Codex |
+| F02 | P1 | Reproduced (mocked ordering) | B | Fixed in P1 candidate; awaiting Codex |
+| F03 | P1 | Reproduced | C | Fixed in P1 candidate; awaiting Codex |
+| F04 | P1 | Reproduced | A + B | Fixed in P1 candidate; awaiting Codex |
 | F05 | P2 | Confirmed: CI skips 61 emulator tests and 6 analytics E2E | — | Open |
 | F06 | P3 | Not re-measured in P0 | — | Open |
 | F07 | P3 | Not re-measured in P0 | — | Open |
 | F08 | P3 | Confirmed: build marks `/` as dynamic (ƒ) | — | Open |
 | F09 | P4 | Not re-probed in P0 | — | Open |
 | F10 | P4 | Source unchanged since audit | — | Open |
-| F11 | P1 | Source unchanged since audit | — | Open |
+| F11 | P1 | Source unchanged since audit | A + B + C | Fixed in P1 candidate; awaiting Codex |
 | H01 | P2 | Email/password sign-in **enabled** alongside Google | — | Open |
 | H02 | P2 | Not tested in P0 | — | Open |
 | H03 | P4/P5 | Rules match; TTL 2 of 4; no backups/PITR | — | Open |
@@ -63,3 +63,5 @@ Shared files have a single owner. Workers use `npm ci --no-audit` with `npm_conf
 
 - 2026-10-05 — P0 executed in isolated worktree; report saved; awaiting operator relay to Codex.
 - 2026-10-05 — Codex `APPROVED P0 3461c67…` (relayed by operator). Carried instructions: `--no-audit` everywhere; demo emulators + mocked providers only; no pushes that create credential-sharing previews; A owns primitives, B/C prepare tests in parallel then integrate on A; fresh sanitized P1 evidence; normalize two evidence logs (done). P1 started.
+- 2026-10-05 — A merged (`c96d622`), C (`f1dd726`), B (`9ea4684`). Integration run found 73 failures caused by an unrelated process on port 8080 (left untouched); rerun on private emulator ports 8580/9599 green.
+- 2026-10-05 — Worker D review: APPROVE-FOR-SUBMISSION, 8 low findings. Fixes B `cceac4d`, C `a7e197e`; merged `63414c8`, `469fb9a`; D re-review APPROVE-FOR-SUBMISSION. Full verification on `469fb9a` green. P1 report saved; awaiting operator relay to Codex. P2 not started.

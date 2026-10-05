@@ -1,0 +1,11 @@
+
+ RUN  v5.0.0 /Users/bballi/Documents/Repos/NotTheRug-013
+
+
+ Test Files  74 passed (74)
+      Tests  582 passed | 96 skipped (678)
+   Start at  20:10:05
+   Duration  6.90s (tests 57%, import 28%, transform 11%, worker 4%)
+
+    Isolate  74 workers spawned · ~47ms startup each (spawn + environment, per file)
+             at least ~3.46s faster with isolate: false — reuses workers across files instead of one per file

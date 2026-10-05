@@ -1,0 +1,77 @@
+
+> nextapp@0.1.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 54ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1151ms
+  Running TypeScript ...
+  Finished TypeScript in 1196ms ...
+  Collecting page data using 13 workers ...
+  Generating static pages using 13 workers (0/49) ...
+  Generating static pages using 13 workers (12/49)
+  Generating static pages using 13 workers (24/49)
+  Generating static pages using 13 workers (36/49)
+✓ Generating static pages using 13 workers (49/49) in 323ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /admin
+├ ○ /admin/dashboard
+├ ○ /admin/dashboard/applications
+├ ○ /admin/dashboard/brief
+├ ○ /admin/dashboard/generator
+├ ○ /admin/dashboard/leads
+├ ○ /admin/dashboard/photos
+├ ○ /admin/dashboard/preview/founder-brief
+├ ƒ /admin/founder-brief/run-and-send
+├ ƒ /admin/leads
+├ ƒ /admin/not-the-rug/history
+├ ƒ /admin/not-the-rug/history/[id]/html
+├ ƒ /admin/not-the-rug/latest-brief
+├ ƒ /admin/not-the-rug/latest-brief/html
+├ ƒ /admin/not-the-rug/run-brief
+├ ƒ /admin/preview/founder-brief
+├ ƒ /api/admin/analytics
+├ ƒ /api/admin/analytics/cleanup
+├ ƒ /api/admin/bench/people
+├ ƒ /api/admin/bench/people/[id]
+├ ƒ /api/admin/bench/people/[id]/resume
+├ ƒ /api/admin/bench/settings
+├ ƒ /api/admin/generator/list
+├ ƒ /api/admin/generator/render
+├ ƒ /api/admin/photos/assets
+├ ƒ /api/admin/photos/delete
+├ ƒ /api/admin/photos/list
+├ ƒ /api/admin/photos/render
+├ ƒ /api/admin/photos/upload
+├ ƒ /api/bench/apply
+├ ƒ /api/bench/apply/resume
+├ ƒ /api/cron/founder-brief
+├ ƒ /api/cron/leads-digest
+├ ƒ /api/cron/not-the-rug-brief
+├ ƒ /api/dev/paw-walk-path
+├ ƒ /api/leads/capture
+├ ƒ /api/leads/meetgreet
+├ ƒ /api/track
+├ ƒ /book
+├ ○ /contact
+├ ○ /neighborhoods/williamsburg
+├ ○ /playground/service-cards
+├ ○ /reviews
+├ ○ /robots.txt
+├ ○ /safety
+├ ○ /signup
+├ ○ /sitemap.xml
+└ ƒ /walk-with-us
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
