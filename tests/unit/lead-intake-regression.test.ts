@@ -147,6 +147,13 @@ describe('F02 — capture cannot undo conversion or a booking hint', () => {
     expect(fsFake.data(`leads/${captureIdForEmail(OWNER)}`)?.bookedSelfReported).toBe(true);
   });
 
+  it('a capture after conversion leaves source and email as converted', async () => {
+    const id = captureIdForEmail(OWNER);
+    fsFake.write(`leads/${id}`, { status: 'converted', convertedLeadId: 'full-lead', source: 'book-page', email: OWNER, submittedAt: '2026-10-01T00:00:00Z' });
+    await capture(captureBody({ source: 'home' }));
+    expect(fsFake.data(`leads/${id}`)).toMatchObject({ status: 'converted', source: 'book-page', email: OWNER, convertedLeadId: 'full-lead' });
+  });
+
   it('keeps the original first-seen time on re-capture', async () => {
     const id = captureIdForEmail(OWNER);
     fsFake.write(`leads/${id}`, { status: 'partial', submittedAt: '2020-01-01T00:00:00.000Z' });
@@ -164,6 +171,19 @@ describe('F04 — capture enforces a real 4,000-byte cap', () => {
     expect(res.status).toBe(413);
     expect(fsFake.callsTo('fsGetDoc')).toHaveLength(0);
     expect(fsFake.callsTo('fsMergeDoc')).toHaveLength(0);
+  });
+
+  it('rejects an over-cap declared Content-Length with 413 before reading', async () => {
+    const { POST } = await import('@/app/api/leads/capture/route');
+    const res = await POST(
+      new Request('https://example.test/api/leads/capture', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'content-length': '4001' },
+        body: JSON.stringify(captureBody()),
+      }),
+    );
+    expect(res.status).toBe(413);
+    expect(fsFake.callsTo('fsGetDoc')).toHaveLength(0);
   });
 
   it('answers 400, not a crash, when the body stream dies mid-read', async () => {

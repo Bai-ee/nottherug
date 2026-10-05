@@ -85,9 +85,7 @@ async function checkRateLimit(ip: string): Promise<{ allowed: boolean; retryAfte
 }
 
 export async function POST(req: Request) {
-  const declared = req.headers.get('content-length');
-  if (declared && Number(declared) > MAX_BODY_BYTES) return errorResponse(413, 'Request body too large');
-
+  // readBoundedBody also rejects an over-cap declared Content-Length up front.
   const body = await readBoundedBody(req, MAX_BODY_BYTES);
   if (!body.ok) {
     return body.reason === 'too_large'

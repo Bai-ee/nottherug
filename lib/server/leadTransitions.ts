@@ -106,11 +106,13 @@ export async function recordCapture(input: CaptureInput, budget: TransitionBudge
     const data = existing.data;
     // Only fields this writer owns. `status` is left alone on an existing row so
     // a conversion can never be overwritten; it is set only if the row has none.
-    const patch: Record<string, unknown> = {
-      email: input.email,
-      source: input.source,
-      lastSeenAt: input.nowIso,
-    };
+    const isConverted = data.status === 'converted';
+    const patch: Record<string, unknown> = { lastSeenAt: input.nowIso };
+    // A converted row is history: keep the email and source it was converted under.
+    if (!isConverted) {
+      patch.email = input.email;
+      patch.source = input.source;
+    }
     if (typeof data.submittedAt !== 'string') patch.submittedAt = input.nowIso;
     if (typeof data.status !== 'string') patch.status = 'partial';
     if (input.booked && data.bookedSelfReported !== true) patch.bookedSelfReported = true;
