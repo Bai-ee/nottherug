@@ -1,7 +1,7 @@
 # Plan 013 — P2 review request
-Status: READY FOR REVIEW (GitHub Actions result pending the operator's push; see Evidence §3)
+Status: CHANGES REQUESTED ADDRESSED (Codex P2 round 1 on `35bb336`; resubmission)
 Base SHA: `7833d996f002925ef87a3dd58fb956a1161bb5e7` (approved P1), plus record commit `0068493`
-Candidate SHA: **the commit that adds this report** (code identical to `69a2beb`, where the local checks ran; the report commit adds only `plans/reports/` files). Exact SHA is given in the relay message.
+Candidate SHA: **the resubmission commit** (adds Codex round-1 fix `a2eac7a` via merge, this report revision and the CI addendum). Exact SHA, and its GitHub Actions run via draft PR #1, are given in the relay message. Previous candidate `35bb336` (CI run 37328742633, all green; see [013-P2-ci-addendum.md](013-P2-ci-addendum.md)).
 Branch: `codex/client-handoff-hardening`, worktree `/Users/bballi/Documents/Repos/NotTheRug-013`
 Findings addressed: F05, H01, H02, H04; folded in from P1: apply-route auto-invite ordering (Worker D note)
 
@@ -36,9 +36,9 @@ Scan: `npm audit --json` and `npm audit --omit=dev --json`, 2026-10-05, at `0068
 | --- | --- | --- | --- | --- |
 | GHSA-vcvr-r3jv-pc5j (critical): RCE in `next/og` `ImageResponse`, `>=16.2.0 <16.3.6` | `next` (direct) | Yes | No code imports `next/og`/`ImageResponse`; OG images are static PNGs | **Fixed**: 16.3.8 (patch) |
 | GHSA-m9gg-hp2v-232j, GHSA-f596-whhp-79r4 (high): grpc-js server `getAuthContext` / error messages | `@grpc/grpc-js` 1.14.4 via `firebase-admin` → `@google-cloud/firestore` → `google-gax` | Installed, server | App runs no gRPC server; app's Firestore access is REST; advisories concern grpc servers | **Fixed** in lockfile: 1.14.5 (within declared `^1.12.6`) |
-| Same two | `@grpc/grpc-js` 1.9.16 via `firebase` → `@firebase/firestore` (`~1.9.0`) | Installed | Browser bundle uses WebChannel, not grpc; the client SDK runs only in the browser and in rules tests; no gRPC server | **Owner risk acceptance proposed**: no compatible fix (npm's only offer is a major downgrade to `firebase@9.14.0`); revisit when `firebase` updates its range. Review date: next dependency pass or 2027-01-05 |
-| GHSA-vfj7-8cjw-p6xm (high) via `braces`/`micromatch`/`fast-glob`/`@next/eslint-plugin-next`/`eslint-config-next` | dev only (lint) | No | Lint tooling on developer-controlled patterns | **Owner risk acceptance proposed** (only offered fix is a major downgrade of `eslint-config-next`) |
-| `@firebase/rules-unit-testing` (high, via `firebase`) | dev only (tests) | No | Test-only emulator client | **Owner risk acceptance proposed** |
+| Same two | `@grpc/grpc-js` 1.9.16 via `firebase` → `@firebase/firestore` (`~1.9.0`) | Installed | Browser bundle uses WebChannel, not grpc; the client SDK runs only in the browser and in rules tests; no gRPC server | **Risk accepted by owner (2026-10-05)**: no compatible fix (npm's only offer is a major downgrade to `firebase@9.14.0`); revisit when `firebase` updates its range. Review date: next dependency pass or 2027-01-05 |
+| GHSA-vfj7-8cjw-p6xm (high) via `braces`/`micromatch`/`fast-glob`/`@next/eslint-plugin-next`/`eslint-config-next` | dev only (lint) | No | Lint tooling on developer-controlled patterns | **Risk accepted by owner (2026-10-05)** (only offered fix is a major downgrade of `eslint-config-next`) |
+| `@firebase/rules-unit-testing` (high, via `firebase`) | dev only (tests) | No | Test-only emulator client | **Risk accepted by owner (2026-10-05)** |
 
 Not run after the upgrade (would be a second registry transfer, not separately approved); post-upgrade status of the two fixed advisories is inferred from versions against the advisory ranges. `eslint-config-next` stays 16.3.5 (dev-only, harmless).
 
@@ -89,7 +89,7 @@ Candidate built and served locally (`next start`, port 3500) with production pub
 | # | Finding | Resolution |
 | --- | --- | --- |
 | 1 | `verifyAdmin` comment claimed a signing-key fetch failure surfaces as 500; firebase-admin maps it to `auth/argument-error` (401) | Comment corrected (`69a2beb`); behavior unchanged and documented above |
-| 2 | Auto-invite stage write that times out but commits → `shadow_invited` with the "received" email instead of the invite | Accepted risk, documented in `013-P2-worker-C.md` (admin sees the correct stage and can send the invite) |
+| 2 | Auto-invite stage write that times out but commits → `shadow_invited` with the "received" email instead of the invite | **Fixed after Codex round 1** (`a2eac7a`). The earlier "accepted risk" was wrong: `invite_shadow` is only allowed from `applied`/`review` (`lib/bench/stages.ts:9`), so an admin could not send the invite afterwards. Now any ambiguous claim failure triggers one budgeted re-read (`autoInviteStageLanded`, ≤2 s, email's 8 s reserved); if the stage is `shadow_invited` with this request's `auto-invite` stageHistory entry (`by: 'auto-invite'`, this request's `at`), the invite is sent, otherwise "received". Residual: if the write lands **and** the confirm read also fails, "received" is sent while the stage is `shadow_invited` (two consecutive failures; logged). |
 | 3 | `vercel.json` rule disables all non-main Git deployments | Intended; see Operations |
 | 4 | Cache-Control verified at config level and on local `next start`, not through Vercel | Recorded as unverified on Vercel |
 | 5 | `eslint-config-next` 16.3.5 vs `next` 16.3.8 | Harmless; left |
@@ -100,7 +100,7 @@ Candidate built and served locally (`next start`, port 3500) with production pub
 2. **Preview deployments are off once this merges.** `vercel.json` now has `"git": { "deploymentEnabled": { "**": false, "main": true } }`. Vercel reads this from each pushed commit, so after the merge to `main` **every non-main branch stops getting Preview deployments for the whole project** (production deploys from `main` continue). This exists because Preview currently shares production Firebase/Resend credentials. To turn Previews back on once they are isolated (separate Firebase project and Resend key/recipient scoped to the Preview environment): remove the `git.deploymentEnabled` block (or set specific branches to `true`) in a commit to `main`.
 3. **Mark CI checks required** in GitHub branch protection for `main`: `check`, `e2e`, `emulators`, `e2e-analytics` (job ids; confirm display names in the UI). `main` is currently unprotected (P0).
 4. **Consider disabling email/password sign-in** in Firebase Auth if no one uses it: admin login is Google-only, and the enabled provider is the reason H01's verified-email check matters.
-5. **Accept or reject the proposed advisory risk acceptances** in the H04 table.
+5. ~~Accept or reject the proposed advisory risk acceptances~~ — done: the owner accepted all three on 2026-10-05 (relayed with the Codex P2 round-1 decision).
 
 ## Risks and unresolved items
 
@@ -115,6 +115,10 @@ Candidate built and served locally (`next start`, port 3500) with production pub
 ## Rollback
 
 Revert P2 on the branch: `git revert -m 1 2f2a49d 26d9741 ed9db24` plus `git revert 69a2beb 0e2bcc5` (newest first), or reset to `7833d99`. Nothing is deployed; production remains `dpl_3VkTLf7F6PenqisfW3ayW1AcXRR1` at `905206d`, rules at the P0 rulesets. If later released: reverting `vercel.json` restores Preview deployments; reverting the rules requires redeploying the previous ruleset (`firebase deploy --only firestore:rules` from the prior SHA). `next` downgrade is a revert of the two manifest lines.
+
+## Codex round 1 (35bb336)
+
+Codex verified CI on `35bb336` and requested one change: finding 2 above was wrongly accepted. Fixed in `a2eac7a` (merged `10d5a5d`): tests `bench-route-budget.test.ts` (now 11; write timed out but committed → invite once, no "received"; timed out and not committed → "received", stage `review`; committed but confirm read stalls → "received" within 29 s) and an emulator test (the stage write's conditional commit reaches the emulator, then its response is dropped; re-read finds the entry; invite once). Worker D's re-review found the first version of that emulator test vacuous (its stub hit the rate-limit `:commit` first); fixed in `05ba349` to match only the conditional `benchPeople/` stage write, asserting exactly one dropped response and a stored `shadow_invited` stage. Mutation check: with `autoInviteStageLanded` forced to `false` the test fails on the invite assertion; restored, it passes. Worker D: production code correct; residual double-failure case as stated in finding 2. Worst case from the claim: read 3 + write 3 + confirm 2 + email 8 = 16 s; with rate limit 8 + settings 3 + create 4 + coverage 3 = 18 s already spent, the claim is skipped and only "received" is sent (26 s), inside the 27 s budget (`maxDuration` 30). Worker C local: 716/716 under emulators; `npm run test:emulators` guard 102 emulator-backed tests across 11 suites. H04 risk acceptances: accepted by the owner (all three).
 
 ## Review request
 

@@ -28,3 +28,22 @@ Code-read of `git diff 0068493..0e2bcc5`. No tests, builds or emulators run.
 
 ## Tests run
 None (code-read only, as instructed).
+
+## Re-review of Codex P2 fix (10d5a5d)
+
+Code-read of `git diff 35bb336..10d5a5d -- app tests`. No tests run.
+
+### Verdict: CHANGES NEEDED (one test defect; production code is correct)
+
+### Finding (MEDIUM, test quality)
+`tests/unit/bench-resume-emulator.test.ts` new test "confirms an auto-invite stage write whose acknowledgement was lost...": the stub sets `lost = true` and throws on the FIRST fetch whose URL contains `:commit`. The apply route's rate-limit increment (`checkBenchRateLimit` -> `fsIncrementField`, not mocked in this file) is also a `:commit` and runs first, so the stub fires on the limiter, which fails open (`benchIntake.ts` catch returns true). The conditional stage write then proceeds normally, the invite is sent through the ordinary path, and every assertion (`lost === true`, stage `shadow_invited`, one invite email) passes without ever exercising `autoInviteStageLanded`. Failure scenario: delete the confirm logic and this test still passes. Minimal fix: only drop the response for the stage write, e.g. match `:commit` AND request body containing `currentDocument` (or the `benchPeople/` document name together with `updateMask`), and assert that flag, so the lost acknowledgement hits the claim merge. The fake-based test below does not have this problem.
+
+### Verified in code
+1. Classification: a clean rejection is a normal return (`stage !== 'review'` -> false -> `admin-moved`, nothing sent, no confirm read). Only thrown errors (timeout, dependency error, vanished person, exhausted precondition retries, no budget) reach the confirm read; there a still-`review` person or a non-matching history entry yields "not landed" -> confirmation email. The two cases are not mixed up in either direction.
+2. Ownership: `benchPersonIdForEmail` is `sha256(email)`, and `fsCreateDoc` is create-if-absent; a duplicate submission gets `created === false` and returns `{duplicate:true}` before the claim code, so only the creating request ever writes an `auto-invite` history entry. The match also requires this request's `now` ISO string (the same value passed as `at`), `stage === 'shadow_invited'` and `by === 'auto-invite'`. An admin's own stage move has a different `by`, so a manually invited person is not mistaken for ours. Claim holds.
+3. Budgets: claim steps reserve 10 s (confirm 2 + email 8), so they finish by 17 s of the 27 s budget; confirm is `slice(2000, 8000)`, ending by 19 s; the email (8 s) ends by 27 s; the outcome persist then finds no budget and is skipped (logged). Worst case about 27 s against maxDuration 30. If earlier steps already used the budget, the claim is not started and the confirm read gets at most the remaining slice or is skipped. The two budget tests assert `<= 29 s` under fake timers with real stalls.
+4. Emails: exactly one send per branch (`sent-eligible` invite, `none` confirmation, `admin-moved` and knockout paths unchanged); the write is never retried after an ambiguous failure (only precondition conflicts retry, as before); the confirm is a read only. No double-email path found.
+5. `tests/unit/bench-route-budget.test.ts` (fake Firestore) genuinely simulates committed-then-timed-out: the `lost-ack` mode runs the write, then sleeps the full deadline and throws `UpstreamTimeoutError`; one test also stalls the confirm read after the commit, and one covers a timeout that did not commit. They assert stage, email count and email content (invite vs confirmation). These three tests are sound; only the emulator test above is vacuous.
+
+### Residual (unchanged, LOW)
+If the confirm read cannot decide (read fails or no budget) after a write that did commit, the person is in `shadow_invited` and receives the confirmation instead of the invite; the admin cannot resend an invite from that stage. This is the documented fallback, and now needs both a lost acknowledgement and a failing re-read.
