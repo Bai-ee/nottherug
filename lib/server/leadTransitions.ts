@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { fsGetDoc, fsMergeDoc, withOptimisticRetry } from '@/lib/server/firestoreRest';
+import { FirestorePreconditionError, fsGetDoc, fsMergeDoc, withOptimisticRetry } from '@/lib/server/firestoreRest';
 import { LEAD_SCHEMA_VERSION } from '@/lib/leads/contract';
 
 /**
@@ -130,8 +130,14 @@ export async function recordCapture(input: CaptureInput, budget: TransitionBudge
 
 /** Best-effort true-only booking hint onto the full lead (admin hides the converted capture row). */
 export async function carryBookedHintToLead(leadId: string, budget: TransitionBudget): Promise<void> {
-  // Merging `true` is idempotent and cannot conflict with another true, so no precondition.
-  await fsMergeDoc(`leads/${leadId}`, { bookedSelfReported: true }, opts(budget));
+  // Merging `true` is idempotent and cannot conflict with another true. The row
+  // must already exist: a lead deleted by hand must not be recreated as a stub.
+  try {
+    await fsMergeDoc(`leads/${leadId}`, { bookedSelfReported: true }, { ...opts(budget), precondition: { exists: true } });
+  } catch (err) {
+    if (err instanceof FirestorePreconditionError) return; // lead no longer exists: nothing to carry to
+    throw err;
+  }
 }
 
 export interface ConversionInput {

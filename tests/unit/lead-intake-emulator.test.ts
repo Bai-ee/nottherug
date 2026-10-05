@@ -248,6 +248,20 @@ describe('capture and conversion ordering (emulator)', () => {
   });
 });
 
+describe('booking-hint carry to a lead (emulator)', () => {
+  it('creates nothing for a missing lead, and still sets true on an existing one', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+    const { carryBookedHintToLead } = await import('@/lib/server/leadTransitions');
+    const { fsGetDoc, fsSetDoc } = await import('@/lib/server/firestoreRest');
+    const budget = { deadlineAt: Date.now() + 5000, perCallMs: 2000 };
+    await expect(carryBookedHintToLead('deleted-by-hand', budget)).resolves.toBeUndefined();
+    expect((await fsGetDoc('leads/deleted-by-hand')).exists).toBe(false);
+    await fsSetDoc('leads/real-lead', { id: 'real-lead', email: 'x@example.test' });
+    await carryBookedHintToLead('real-lead', budget);
+    expect(await readLead('leads/real-lead')).toMatchObject({ id: 'real-lead', bookedSelfReported: true });
+  });
+});
+
 describe('final submission against the real counters and store (emulator)', () => {
   it('five captures from one IP do not block the final submission', async (ctx) => {
     if (!reachable) return ctx.skip(SKIP_REASON);

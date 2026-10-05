@@ -53,3 +53,8 @@
 - `recordCapture` no longer overwrites `email`/`source` on a converted row (only `lastSeenAt` and the true-only hint); asserted in the emulator suite (convert-then-capture keeps source 'book-page') and in the fake-backed regression suite.
 - Removed capture's duplicate Content-Length precheck; `readBoundedBody` performs the identical check (same 413). Covered by a new over-cap declared Content-Length test.
 - Full suite under emulators: 71 files, 655 passed, 0 skipped; lint 0 errors (1 pre-existing warning); typecheck clean.
+
+## Codex review fixup
+- `carryBookedHintToLead` now merges with `precondition: { exists: true }`; a FirestorePreconditionError (lead missing) is a silent no-op, so no stub row is created. Emulator test covers missing lead (nothing created) and existing lead (set true).
+- Removed meetgreet's duplicate declared Content-Length precheck (readBoundedBody performs it, same 413); new test asserts 413 with zero Firestore calls.
+- Repaired the spliced bucket-boundary lookback comment in meetgreet (text only).

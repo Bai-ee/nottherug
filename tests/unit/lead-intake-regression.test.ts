@@ -242,6 +242,21 @@ describe('F11 — dependency budgets and timeouts', () => {
   });
 });
 
+describe('meetgreet body cap', () => {
+  it('rejects an over-cap declared Content-Length with 413 before any Firestore read', async () => {
+    const { POST } = await import('@/app/api/leads/meetgreet/route');
+    const res = await POST(
+      new Request('https://example.test/api/leads/meetgreet', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'content-length': '20001' },
+        body: JSON.stringify(finalBody()),
+      }),
+    );
+    expect(res.status).toBe(413);
+    expect(fsFake.calls).toHaveLength(0);
+  });
+});
+
 describe('notifications never undo or duplicate a saved lead', () => {
   it('keeps the lead when the email provider fails, and does not retry the send', async () => {
     sendEmail.mockResolvedValueOnce({ data: null, error: { message: 'send failed' } } as never);
