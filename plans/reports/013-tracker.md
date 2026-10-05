@@ -16,9 +16,9 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 | P0 | **Approved** | `3461c672b3298e87e180d2955d795eb82b6910d4` | [013-P0-report.md](013-P0-report.md), [Codex review](013-P0-codex-review.md) | `APPROVED P0 3461c672b3298e87e180d2955d795eb82b6910d4` |
 | P1 | **Approved** | `7833d996f002925ef87a3dd58fb956a1161bb5e7` | [013-P1-report.md](013-P1-report.md), [round 1](013-P1-codex-review-1.md) | `APPROVED P1 7833d99` (relayed by operator) |
 | P2 | **Approved** | `6e5b76440c56a9ff86c04a738ff5c0285b54a711` | [013-P2-report.md](013-P2-report.md), [CI addendum](013-P2-ci-addendum.md) | `APPROVED P2 6e5b764` (CI run 37340047637) |
-| P3 | Ready for review (combined) | `f7b235c` (phase commit) | [013-P3P4-report.md](013-P3P4-report.md) | PENDING |
-| P4 | Ready for review (combined) | `e415730` (phase commit) | [013-P3P4-report.md](013-P3P4-report.md) | PENDING |
-| P5 | Not started | — | — | — |
+| P3 | **Approved** | `f7b235c` (in candidate `f410241`) | [013-P3P4-report.md](013-P3P4-report.md) | `APPROVED P3+P4 f410241` (CI 37359972154) |
+| P4 | **Approved** | `e415730` (in candidate `f410241`) | [013-P3P4-report.md](013-P3P4-report.md) | `APPROVED P3+P4 f410241` |
+| P5 | In progress | — | — | — |
 
 ## Findings
 
@@ -29,11 +29,11 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 | F03 | P1 | Reproduced | C | Fixed; approved in P1 |
 | F04 | P1 | Reproduced | A + B | Fixed; approved in P1 |
 | F05 | P2 | Confirmed: CI skips 61 emulator tests and 6 analytics E2E | F | Fixed; approved in P2 |
-| F06 | P3 | Not re-measured in P0 | H | Fixed in P3/P4 candidate; awaiting Codex |
-| F07 | P3 | Not re-measured in P0 | H + I | Fixed in P3/P4 candidate; awaiting Codex |
-| F08 | P3 | Confirmed: build marks `/` as dynamic (ƒ) | J | Fixed in P3/P4 candidate; awaiting Codex |
-| F09 | P4 | Not re-probed in P0 | K | Fixed in P3/P4 candidate; awaiting Codex |
-| F10 | P4 | Source unchanged since audit | L | Fixed in P3/P4 candidate; awaiting Codex |
+| F06 | P3 | Not re-measured in P0 | H | Fixed; approved in P3/P4 |
+| F07 | P3 | Not re-measured in P0 | H + I | Fixed; approved in P3/P4 |
+| F08 | P3 | Confirmed: build marks `/` as dynamic (ƒ) | J | Fixed; approved in P3/P4 |
+| F09 | P4 | Not re-probed in P0 | K | Fixed; approved in P3/P4 |
+| F10 | P4 | Source unchanged since audit | L | Fixed; approved in P3/P4 |
 | F11 | P1 | Source unchanged since audit | A + B + C | Fixed; approved in P1 |
 | H01 | P2 | Email/password sign-in **enabled** alongside Google | E | Fixed; approved in P2 |
 | H02 | P2 | Not tested in P0 | E | Fixed; approved in P2 |
@@ -71,3 +71,4 @@ Shared files have a single owner. Workers use `npm ci --no-audit` with `npm_conf
 - 2026-10-05 — Codex P2 round 1 on `35bb336`: CI verified (run 37328742633); fix auto-invite lost-ack case; owner accepted all three H04 risks. Fix `a2eac7a` + test fix `05ba349` (Worker D found first test vacuous; mutation-checked). Resubmission awaiting operator push to PR #1 for CI.
 - 2026-10-05 — Codex `APPROVED P2 6e5b764` (CI 37340047637). Owner accepted all three H04 risks. Operator: run P3 and P4 back to back, independent review per phase, separate commit per phase, fold in stale apply-route comment, park owner decisions, one combined report; no P5, no push to main, no deploys, no Firebase/Vercel changes.
 - 2026-10-05 — P3 (G, H, I, J; integration fix for a hydration scroll race; review approve after fixes) committed as `f7b235c`; P4 (K, L, M; review minor fixes applied) committed as `e415730`. Final local checks green on `e415730`. Combined report `013-P3P4-report.md` with 12 parked owner items. Awaiting operator push for CI on PR #1.
+- 2026-10-05 — Codex `APPROVED P3+P4 f410241` (CI run 37359972154; 2 mobile WebKit flaky-on-retry tests disclosed). Parked decisions: 1 keep `/walk-with-us` as is; 4 skip italic-preload change; 5 accept JS-only team portraits; 6 delete `pawl.png`/`pawr.png` after release confirmed; 7 keep logged base-URL fallback; **8 canonical domain `nottherug.com`**; 2, 3, 9, 10, 12 into P5; 11 owner confirms separately. Owner reports email/password sign-in disabled. P5 started; first item: make `home-entrance.spec.ts:162` and `booking.spec.ts:37` reliable on mobile WebKit. Stop before `main`/production.
