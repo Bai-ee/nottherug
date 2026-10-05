@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { suppressWelcomeModal } from './helpers/welcomeModal';
-import { waitForHydration } from './helpers/hydration';
+import { waitForHomeEffectsAndHeroDecision } from './helpers/hydration';
 
 // Hang guard only: these assert what was or was not requested and what
 // painted, never how fast a shared runner got there.
@@ -31,21 +31,9 @@ test.describe('home image delivery', () => {
     });
 
     await page.goto('/', { waitUntil: 'load' });
-    // Hydrated and past the page's own post-load work (two frames, then idle),
-    // so "not requested yet" is read after the point eager loading would have
-    // happened, not after a guessed delay.
-    await waitForHydration(page, '#home-team-scroller');
-    await page.evaluate(
-      () =>
-        new Promise<void>((resolve) => {
-          requestAnimationFrame(() =>
-            requestAnimationFrame(() => {
-              if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(() => resolve(), { timeout: 2500 });
-              else window.setTimeout(resolve, 600);
-            }),
-          );
-        }),
-    );
+    // Committed and past the page's own post-load work, so "not requested yet"
+    // is read after the point eager loading would have happened.
+    await waitForHomeEffectsAndHeroDecision(page);
     expect(portraitRequests).toEqual([]);
 
     const scroller = page.locator('#home-team-scroller');
