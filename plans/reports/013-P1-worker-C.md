@@ -58,3 +58,14 @@ Tokens are issued only in the apply route at record creation (`resumePath` null)
 - Real-Firestore `ABORTED` under contention is not mapped to a precondition error (A's open risk); it surfaces as a dependency failure (503 / 409-less 500).
 - Admin POST: email now follows the stage write; a crash between the two leaves a stage change with no email.
 - A timed-out claim write is ambiguous; applicant falls back to email.
+
+## Review fixes / accepted risks
+Fixes
+- Claim catch comment corrected: a timed-out claim write is ambiguous (the token may be consumed); the applicant gets 503 plus the email fallback.
+- Budget: the route re-slices from the remaining overall budget (27 s, 3 s under maxDuration) before every call, reserving time for later steps; a call is not started when under 500 ms remains (claim/finalize fail, confirm/cleanup are skipped). Summed worst case with every call stalling to its deadline is about 27 s. `tests/unit/bench-resume-budget.test.ts` (3 tests, fake timers, no real waits) asserts a stalled claim ends within 5 s, and stalled upload+cleanup and stalled finalize+confirm+cleanup each end within 28 s.
+- `bench-apply-route.test.ts` malformed-id test again asserts `fsGetDoc` is not called (plus the storage assertion).
+
+Accepted risks
+- Finalize timeout ambiguity: if the confirming read also fails or the finalize landed late, `resumePath` can point at an object that was deleted or never finalized. Narrow window; the email fallback covers it.
+- Admin POST stores the stage before sending the email and never retries; a crash between the two loses the email, with no duplicate-send path.
+- Apply-route auto shadow-invite email may already be sent when an admin moved the person out of `review` during the send; admin state wins and the stage move is skipped.

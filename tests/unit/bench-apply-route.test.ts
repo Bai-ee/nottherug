@@ -15,6 +15,10 @@ const fsCreateDoc = vi.fn(async (path: string, data: Record<string, unknown>) =>
   docs.set(path, data);
   return { created: true };
 });
+const fsGetDoc = vi.fn(async (path: string) => {
+  const data = docs.get(path);
+  return data ? { exists: true, data, updateTime: JSON.stringify(data) } : { exists: false };
+});
 const fsSetDoc = vi.fn(async (path: string, data: Record<string, unknown>) => {
   docs.set(path, data);
 });
@@ -23,6 +27,7 @@ const fsIncrementField = vi.fn(async () => ++rateCount);
 
 vi.mock('@/lib/server/firestoreRest', async () => ({
   ...(await import('./bench-fs-fake')).firestoreContractFake(() => docs),
+  fsGetDoc,
   fsCreateDoc,
   fsSetDoc,
   fsQueryCollection,
@@ -237,6 +242,7 @@ describe('POST /api/bench/apply/resume', () => {
   it('400s a malformed person id before touching Firestore', async () => {
     const { POST } = await import('@/app/api/bench/apply/resume/route');
     expect((await POST(upload('../leads/x', 'token', Buffer.from('%PDF-1.7')))).status).toBe(400);
+    expect(fsGetDoc).not.toHaveBeenCalled();
     expect(storageUploadPrivate).not.toHaveBeenCalled();
   });
 });
