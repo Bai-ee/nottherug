@@ -314,18 +314,25 @@ describe('other bench writers stay field-scoped (emulator)', () => {
     if (!reachable) return ctx.skip(SKIP_REASON);
     const { fsSetDoc } = await import('@/lib/server/firestoreRest');
     await fsSetDoc('benchSettings/config', { ...DEFAULT_BENCH_SETTINGS, autoInviteOnGap: true, shadowBookingUrl: 'https://calendly.test/shadow' });
-    let lost = false;
+    let dropped = 0;
     vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) => {
       const res = await realFetch(url, init);
-      if (!lost && String(url).includes(':commit')) {
-        lost = true; // the conditional write committed; the caller sees a network failure
-        throw new Error('socket hang up');
+      // Only the conditional write of benchPeople stage (not the rate-limit increment, not the outcome save).
+      if (String(url).includes(':commit') && typeof init?.body === 'string') {
+        const body = JSON.parse(init.body) as { writes?: Array<{ update?: { name?: string }; updateMask?: { fieldPaths?: string[] }; currentDocument?: unknown }> };
+        const isStageWrite = body.writes?.some(
+          (w) => w.currentDocument && w.update?.name?.includes('/benchPeople/') && w.updateMask?.fieldPaths?.includes('stage'),
+        );
+        if (isStageWrite) {
+          dropped++; // the write reached the emulator and committed; the caller sees a network failure
+          throw new Error('socket hang up');
+        }
       }
       return res;
     });
     const { id } = await apply({ hasResume: false });
     vi.unstubAllGlobals();
-    expect(lost).toBe(true);
+    expect(dropped).toBe(1);
     expect((await person(id)).stage).toBe('shadow_invited');
     expect(sendEmail).toHaveBeenCalledTimes(1);
     expect(sendEmail.mock.calls[0]).toEqual([expect.objectContaining({ text: expect.stringContaining('https://calendly.test/shadow') })]);
