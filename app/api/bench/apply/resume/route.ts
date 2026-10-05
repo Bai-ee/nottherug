@@ -52,7 +52,8 @@ const UPLOAD_CAP_MS = 15_000;
 const UPLOAD_RESERVE_MS = 8_000; // finalize + cleanup
 const FINALIZE_RESERVE_MS = 3_000; // cleanup
 const STEP_CAP_MS = 5_000;
-const MIN_STEP_MS = 1_000;
+const MIN_STEP_MS = 500; // below this a call is not started; the step fails or is skipped
+const CONFIRM_CAP_MS = 2_000;
 
 const FAILED_SAVE = 'Could not save your resume. Your application is still on file.';
 const EXPIRED_LINK = 'This upload link has expired. Email your resume to us instead.';
@@ -64,8 +65,18 @@ class AttemptLostError extends Error {}
 
 export async function POST(req: Request) {
   const startedAt = Date.now();
-  const slice = (cap: number, reserve = 0) =>
-    Math.max(MIN_STEP_MS, Math.min(cap, ROUTE_BUDGET_MS - (Date.now() - startedAt) - reserve));
+  // Re-sliced from what is left of the overall budget before EVERY call, so the
+  // summed worst case (every call stalling to its deadline) stays inside
+  // ROUTE_BUDGET_MS, itself 3 s under maxDuration. 0 means "no time left for this step".
+  const slice = (cap: number, reserve = 0) => {
+    const ms = Math.min(cap, ROUTE_BUDGET_MS - (Date.now() - startedAt) - reserve);
+    return ms >= MIN_STEP_MS ? Math.floor(ms) : 0;
+  };
+  const need = (cap: number, reserve = 0) => {
+    const ms = slice(cap, reserve);
+    if (!ms) throw new Error('route time budget exhausted');
+    return ms;
+  };
 
   const declared = req.headers.get('content-length');
   if (declared && Number(declared) > MAX_REQUEST_BYTES) return errorJson(413, 'Resume must be 4MB or smaller.');
@@ -103,8 +114,7 @@ export async function POST(req: Request) {
   let priorResumePath: string | null | undefined;
   try {
     await withOptimisticRetry(async () => {
-      const stepMs = slice(STEP_CAP_MS, CLAIM_RESERVE_MS);
-      const { person, updateTime } = await getBenchPersonWithMeta(personId, { timeoutMs: stepMs });
+      const { person, updateTime } = await getBenchPersonWithMeta(personId, { timeoutMs: need(STEP_CAP_MS, CLAIM_RESERVE_MS) });
       const expiresAt = person?.resumeUploadExpiresAt ? Date.parse(person.resumeUploadExpiresAt) : 0;
       if (!person?.resumeUploadTokenHash || !(expiresAt >= Date.now()) || !tokensMatch(person.resumeUploadTokenHash, token)) {
         throw new TokenRejectedError();
@@ -118,19 +128,21 @@ export async function POST(req: Request) {
       await mergeBenchPerson(
         personId,
         { resumeUploadTokenHash: null, resumeUploadExpiresAt: null, resumeAttemptId: attemptId, resumeAttemptAt: nowIso },
-        { precondition: { updateTime }, timeoutMs: stepMs },
+        { precondition: { updateTime }, timeoutMs: need(STEP_CAP_MS, CLAIM_RESERVE_MS) },
       );
     });
   } catch (err) {
     if (err instanceof TokenRejectedError) return errorJson(403, EXPIRED_LINK);
-    // Includes a record that stayed busy past the retry limit: the token is untouched, so the link still works.
+    // Covers dependency failures, timeouts and a record that stayed busy past the retry limit. A timed-out
+    // claim write is ambiguous: it may have landed, consuming the token. Either way the applicant gets 503
+    // and the existing "email your resume" fallback; the application is untouched.
     console.error('[bench:resume] claim failed', errorLabel(err));
     return errorJson(503, 'Could not save your resume right now. Your application is still on file.');
   }
 
   // Step 3: only the claim winner reaches storage.
   try {
-    await storageUploadPrivate(path, buffer, RESUME_TYPES[kind], { timeoutMs: slice(UPLOAD_CAP_MS, UPLOAD_RESERVE_MS) });
+    await storageUploadPrivate(path, buffer, RESUME_TYPES[kind], { timeoutMs: need(UPLOAD_CAP_MS, UPLOAD_RESERVE_MS) });
   } catch (err) {
     console.error('[bench:resume] upload failed', errorLabel(err));
     await removeOwnObject(path, priorResumePath, slice(STEP_CAP_MS));
@@ -140,21 +152,20 @@ export async function POST(req: Request) {
   // Step 4: finalize resume-owned fields only, while the attempt is still ours.
   try {
     await withOptimisticRetry(async () => {
-      const stepMs = slice(STEP_CAP_MS, FINALIZE_RESERVE_MS);
-      const { person, updateTime } = await getBenchPersonWithMeta(personId, { timeoutMs: stepMs });
+      const { person, updateTime } = await getBenchPersonWithMeta(personId, { timeoutMs: need(STEP_CAP_MS, FINALIZE_RESERVE_MS) });
       if (!person || person.resumeAttemptId !== attemptId) throw new AttemptLostError();
       if (!updateTime) throw new Error('Person read returned no updateTime');
       await mergeBenchPerson(
         personId,
         { resumePath: path, resumeKind: kind, updatedAt: new Date().toISOString() },
-        { precondition: { updateTime }, timeoutMs: stepMs },
+        { precondition: { updateTime }, timeoutMs: need(STEP_CAP_MS, FINALIZE_RESERVE_MS) },
       );
     });
   } catch (err) {
     console.error('[bench:resume] finalize failed', errorLabel(err));
     // A timed-out write is ambiguous: it may have landed. Decide from a fresh read.
     if (!(err instanceof AttemptLostError)) {
-      const finalized = await finalizedByThisAttempt(personId, attemptId, path);
+      const finalized = await finalizedByThisAttempt(personId, attemptId, path, slice(CONFIRM_CAP_MS, FINALIZE_RESERVE_MS));
       if (finalized === true) return NextResponse.json({ ok: true });
       if (finalized === false) await removeOwnObject(path, priorResumePath, slice(STEP_CAP_MS));
     }
@@ -170,9 +181,10 @@ function errorLabel(err: unknown): string {
 }
 
 /** true: our finalize landed; false: it did not; null: could not tell. */
-async function finalizedByThisAttempt(personId: string, attemptId: string, path: string): Promise<boolean | null> {
+async function finalizedByThisAttempt(personId: string, attemptId: string, path: string, timeoutMs: number): Promise<boolean | null> {
+  if (!timeoutMs) return null;
   try {
-    const { person } = await getBenchPersonWithMeta(personId, { timeoutMs: MIN_STEP_MS * 2 });
+    const { person } = await getBenchPersonWithMeta(personId, { timeoutMs });
     if (!person) return null;
     return person.resumeAttemptId === attemptId && person.resumePath === path;
   } catch {
@@ -182,7 +194,7 @@ async function finalizedByThisAttempt(personId: string, attemptId: string, path:
 
 /** Best effort. Skipped when the same path already held a finalized resume, which this attempt must not delete. */
 async function removeOwnObject(path: string, priorResumePath: string | null | undefined, timeoutMs: number): Promise<void> {
-  if (priorResumePath === path) return;
+  if (priorResumePath === path || !timeoutMs) return;
   try {
     await storageDelete(path, { timeoutMs });
   } catch (err) {
