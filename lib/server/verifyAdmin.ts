@@ -9,9 +9,13 @@ const WHITELIST_TIMEOUT_MS = 5_000;
 /**
  * Firebase Admin error codes that mean "this credential is not acceptable":
  * malformed/invalid/expired token, a revoked session, a disabled or deleted
- * user. Everything else thrown by verifyIdToken (public-key fetch failure,
- * Auth backend outage, credential/network errors, non-Firebase errors) is a
+ * user. Everything else thrown by verifyIdToken (Auth backend outage during
+ * the revocation check, credential/network errors, non-Firebase errors) is a
  * backend failure and must surface as 500, never as "unauthorized".
+ *
+ * Known exception: firebase-admin reports a failure to fetch Google's signing
+ * keys as `auth/argument-error`, the same code as a malformed token, so that
+ * case is answered 401 (as it was before this check existed).
  */
 const REJECTED_CREDENTIAL_CODES = new Set([
   'auth/argument-error',

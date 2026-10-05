@@ -13,3 +13,7 @@ Change (`app/api/bench/apply/route.ts` only, plus tests)
 Tests
 - Emulator (`bench-resume-emulator.test.ts`): stage is `shadow_invited` at the moment the invite email is sent, exactly one email; admin rejects between create and the stage write: no invite email, stage stays `rejected` (replaces the old test whose scenario can no longer occur).
 - Fake timers (`bench-route-budget.test.ts`): stalled stage write: 200, application in `review`, one email, not the invite, within 29 s.
+
+## Accepted risk (independent review, P2)
+
+If the auto-invite stage write times out but actually commits, the person ends in `shadow_invited` while the route, treating the write as failed, sends the ordinary "received" email instead of the invite. Only a stalled write that still commits can cause this; the admin sees the correct stage and can send the invite from the dashboard. Accepted rather than adding a re-read inside the remaining budget.
