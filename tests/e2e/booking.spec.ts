@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { requireServer } from './helpers/serverGate';
 
 const PANE_ID = 'book-tab-meetgreet';
 
@@ -21,12 +22,7 @@ async function fillThroughWrapUpStep(page: Page) {
 test.describe('booking form', () => {
   test.beforeEach(async ({ page, baseURL }) => {
     const url = baseURL ?? 'http://127.0.0.1:3000';
-    try {
-      const res = await page.request.get(url, { timeout: 5000 });
-      if (!res.ok()) test.skip(true, `Server at ${url} responded ${res.status()} — skipping booking E2E`);
-    } catch {
-      test.skip(true, `No server reachable at ${url} — skipping booking E2E (run "npm run build && npm run start" first)`);
-    }
+    await requireServer(page, url, 'booking E2E');
 
     // The route the API contract owns; intercepted so no real lead is ever written.
     await page.route('**/api/leads/meetgreet', async (route) => {

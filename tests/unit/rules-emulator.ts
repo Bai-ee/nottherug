@@ -7,8 +7,11 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { initializeTestEnvironment, type RulesTestEnvironment } from '@firebase/rules-unit-testing';
 
-const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
-const STORAGE_EMULATOR_HOST = process.env.FIREBASE_STORAGE_EMULATOR_HOST ?? '127.0.0.1:9199';
+import {
+  FIRESTORE_EMULATOR_HOST,
+  STORAGE_EMULATOR_HOST,
+  firestoreAndStorageEmulatorsReachable,
+} from '../support/emulatorGate';
 
 export const EMULATOR_SKIP_REASON =
   'Firebase emulator unreachable. These suites need a running emulator, which needs a Java ' +
@@ -16,22 +19,9 @@ export const EMULATOR_SKIP_REASON =
   'the emulator with `npm run emulators`. A skip here is not a pass — the rules are unverified ' +
   'until these run.';
 
-async function isReachable(hostAndPort: string): Promise<boolean> {
-  const [host, port] = hostAndPort.split(':');
-  try {
-    await fetch(`http://${host}:${port}/`, { signal: AbortSignal.timeout(750) });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export async function emulatorsAvailable(): Promise<boolean> {
-  const [firestoreUp, storageUp] = await Promise.all([
-    isReachable(FIRESTORE_EMULATOR_HOST),
-    isReachable(STORAGE_EMULATOR_HOST),
-  ]);
-  return firestoreUp && storageUp;
+/** False in local skip mode; throws when REQUIRE_EMULATORS=1 (see tests/support/emulatorGate.ts). */
+export function emulatorsAvailable(): Promise<boolean> {
+  return firestoreAndStorageEmulatorsReachable();
 }
 
 function loadRules(fileName: string): string {

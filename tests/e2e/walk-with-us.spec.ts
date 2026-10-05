@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { requireServer } from './helpers/serverGate';
 
 // The on-call walker application (plans/011 §7.1), at the desktop and mobile
 // widths the config runs. The apply API is intercepted, so nothing is written
@@ -12,12 +13,7 @@ async function pick(page: Page, field: string, value: string) {
 test.describe('on-call walker application', () => {
   test.beforeEach(async ({ page, baseURL }) => {
     const url = baseURL ?? 'http://127.0.0.1:3000';
-    try {
-      const res = await page.request.get(`${url}/walk-with-us`, { timeout: 5000 });
-      if (!res.ok()) test.skip(true, `Server at ${url} responded ${res.status()} for /walk-with-us`);
-    } catch {
-      test.skip(true, `No server reachable at ${url} (run "npm run build && npm run start" first)`);
-    }
+    await requireServer(page, `${url}/walk-with-us`, 'walk-with-us E2E');
   });
 
   test('leads with the on-call terms', async ({ page }) => {

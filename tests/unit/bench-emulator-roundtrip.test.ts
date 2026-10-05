@@ -11,8 +11,8 @@ import { NextRequest } from 'next/server';
 import { applicationPayload } from './bench-fixtures';
 import { APPLICATION_FIELDS, buildApplicationsCsv } from '@/lib/bench/applicationFields';
 import { DEFAULT_BENCH_SETTINGS } from '@/lib/bench/contract';
+import { FIRESTORE_EMULATOR_HOST as EMULATOR, firestoreEmulatorReachable } from '../support/emulatorGate';
 
-const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const PROJECT = 'demo-bench-roundtrip';
 
 process.env.FIRESTORE_EMULATOR_HOST = EMULATOR;
@@ -32,12 +32,7 @@ const SKIP_REASON =
 let reachable = false;
 
 beforeAll(async () => {
-  try {
-    await fetch(`http://${EMULATOR}/`, { signal: AbortSignal.timeout(750) });
-    reachable = true;
-  } catch {
-    reachable = false;
-  }
+  reachable = await firestoreEmulatorReachable();
 });
 
 beforeEach(async () => {

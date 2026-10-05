@@ -4,8 +4,8 @@
  * re-capture (plan 012 F5). Skips, with a reason, when no emulator is reachable.
  */
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
+import { FIRESTORE_EMULATOR_HOST as EMULATOR, firestoreEmulatorReachable } from '../support/emulatorGate';
 
-const EMULATOR = process.env.FIRESTORE_EMULATOR_HOST ?? '127.0.0.1:8080';
 const PROJECT = 'demo-firestore-merge';
 
 process.env.FIRESTORE_EMULATOR_HOST = EMULATOR;
@@ -18,12 +18,7 @@ const SKIP_REASON =
 let reachable = false;
 
 beforeAll(async () => {
-  try {
-    await fetch(`http://${EMULATOR}/`, { signal: AbortSignal.timeout(750) });
-    reachable = true;
-  } catch {
-    reachable = false;
-  }
+  reachable = await firestoreEmulatorReachable();
 });
 
 beforeEach(async () => {

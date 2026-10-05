@@ -69,15 +69,18 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
     expect(pageview?.route).toBe('/');
     expect(pageview?.mode).toBe('test');
 
-    // A locked booking CTA in the footer. Clicking it navigates to /book.
+    // The footer booking CTA on home opens the welcome dialog in place (it no
+    // longer navigates), so the click is asserted at the wire and the form
+    // step below goes to /book directly.
     await page.locator('#footer-book-luis-cta').click();
-    await page.waitForURL('**/book');
 
     await expect
       .poll(() => collectEvents(trackRequests).filter((e) => e.cta === 'footer_book').length, {
         timeout: 8000,
       })
       .toBe(1);
+
+    await page.goto('/book');
 
     // First real keystroke in the questionnaire starts the funnel, once. Use the
     // named owner field, not the first input — the first one is the honeypot.

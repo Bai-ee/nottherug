@@ -1,0 +1,13 @@
+[
+  "tests/unit/analytics-emulator-roundtrip.test.ts",
+  "tests/unit/analytics-rate-limit-fail-open.test.ts",
+  "tests/unit/bench-emulator-roundtrip.test.ts",
+  "tests/unit/bench-resume-emulator.test.ts",
+  "tests/unit/firestore-merge-doc.test.ts",
+  "tests/unit/firestore-preconditions.test.ts",
+  "tests/unit/lead-firestore-integration.test.ts",
+  "tests/unit/lead-intake-emulator.test.ts",
+  "tests/unit/rules-analytics.test.ts",
+  "tests/unit/rules-firestore.test.ts",
+  "tests/unit/rules-storage.test.ts"
+]

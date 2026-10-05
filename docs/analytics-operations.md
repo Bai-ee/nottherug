@@ -355,7 +355,10 @@ See `tests/unit/analytics-emulator-roundtrip.test.ts`,
   rebuilding in place would have risked disrupting that live server. The
   test skips with an explicit reason rather than reporting a false pass; run
   it for real with `E2E_ANALYTICS_ENABLED=1` against a build made with
-  tracking enabled.
+  tracking enabled. CI now does this in its `e2e-analytics` job
+  (`npm run test:e2e:analytics`, analytics-enabled test-mode build, server
+  under the Firestore emulator), and the emulator suites run in the `emulators`
+  job with `REQUIRE_EMULATORS=1`, where a skip fails the build.
 
 **Not verified by this pass** (explicitly out of scope or requiring tools
 not available in this environment): the admin dashboard's authentication
