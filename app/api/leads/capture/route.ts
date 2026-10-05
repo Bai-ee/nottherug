@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createHash } from 'node:crypto';
-import { fsIncrementField, fsMergeDoc, fsGetDoc } from '@/lib/server/firestoreRest';
+import { fsIncrementField } from '@/lib/server/firestoreRest';
+import { readBoundedBody } from '@/lib/server/readBoundedBody';
+import { carryBookedHintToLead, deadlineIn, recordCapture } from '@/lib/server/leadTransitions';
 import { isValidEmail } from '@/lib/leads/validation';
-import { HONEYPOT_FIELD_NAME, LEAD_SCHEMA_VERSION } from '@/lib/leads/contract';
+import { HONEYPOT_FIELD_NAME } from '@/lib/leads/contract';
 
 /**
  * The first half of the booking-first journey: someone gives an email and
@@ -20,6 +22,10 @@ import { HONEYPOT_FIELD_NAME, LEAD_SCHEMA_VERSION } from '@/lib/leads/contract';
  * complete the questionnaire, the full submission marks this row converted
  * so it stops appearing as outstanding.
  *
+ * Writes go through lib/server/leadTransitions.ts, which keeps conversion and
+ * the self-reported booking hint monotonic when this races the final
+ * submission (app/api/leads/meetgreet).
+ *
  * Sends no email. A partial capture is not a conversation the founder asked
  * to start, and the customer has not finished asking for anything yet.
  */
@@ -31,6 +37,15 @@ const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_PER_WINDOW = 8;
 /** Rate-limit rows are disposable; expiresAt lets a Firestore TTL policy reap them. */
 const RATE_LIMIT_RETENTION_MS = 48 * 60 * 60 * 1000;
+/** Counters are namespaced per route; meetgreet uses its own, so one never spends the other's allowance. */
+const RATE_LIMIT_PURPOSE = 'capture';
+
+// Dependency budget inside the 10 s route limit (maxDuration): the rate-limit
+// check and every Firestore call get a capped timeout, and the whole write
+// path stops at WRITE_BUDGET_MS so the response still goes out.
+const RATE_LIMIT_CALL_MS = 1_500;
+const WRITE_BUDGET_MS = 7_000;
+const WRITE_CALL_MS = 2_500;
 
 /** Only the entry points that actually capture an email may write one. */
 const ALLOWED_SOURCES = new Set(['welcome-modal', 'services-preview', 'home', 'home-rates', 'contact', 'book']);
@@ -44,41 +59,47 @@ function clientIp(req: Request): string {
   return forwarded?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
 }
 
-async function readCappedBody(req: Request, limit: number): Promise<{ ok: true; text: string } | { ok: false }> {
-  const text = await req.text();
-  if (text.length > limit) return { ok: false };
-  return { ok: true, text };
-}
-
-async function checkRateLimit(ip: string): Promise<boolean> {
+/**
+ * Durable per-IP limit. Fails open on any limiter error or timeout: a limiter
+ * outage must not block a capture (deliberate tradeoff, same as meetgreet).
+ * `expiresAt` is a Date so a Firestore TTL policy on it reaps the rows.
+ */
+async function checkRateLimit(ip: string): Promise<{ allowed: boolean; retryAfterSeconds: number }> {
+  const now = Date.now();
+  const windowStart = Math.floor(now / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
+  const retryAfterSeconds = Math.max(1, Math.ceil((windowStart + RATE_LIMIT_WINDOW_MS - now) / 1000));
   try {
-    const windowStart = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS) * RATE_LIMIT_WINDOW_MS;
     const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 24);
-    const count = await fsIncrementField(`leadRateLimits/${ipHash}_${windowStart}`, 'count', 1, {
-      windowStart,
-      expiresAt: new Date(Date.now() + RATE_LIMIT_RETENTION_MS),
-    });
-    return count <= RATE_LIMIT_MAX_PER_WINDOW;
+    const count = await fsIncrementField(
+      `leadRateLimits/${RATE_LIMIT_PURPOSE}_${ipHash}_${windowStart}`,
+      'count',
+      1,
+      { windowStart, expiresAt: new Date(now + RATE_LIMIT_RETENTION_MS) },
+      { timeoutMs: RATE_LIMIT_CALL_MS },
+    );
+    return { allowed: count <= RATE_LIMIT_MAX_PER_WINDOW, retryAfterSeconds };
   } catch (err) {
     console.error('[lead:capture] rate limit check failed', err instanceof Error ? err.message : 'unknown');
-    return true; // fail open: a limiter outage must not block a capture
+    return { allowed: true, retryAfterSeconds };
   }
-}
-
-/** One row per address, so re-entering an email updates rather than stacks. */
-export function captureIdForEmail(email: string): string {
-  return `capture_${createHash('sha256').update(email.trim().toLowerCase()).digest('hex').slice(0, 32)}`;
 }
 
 export async function POST(req: Request) {
   const declared = req.headers.get('content-length');
   if (declared && Number(declared) > MAX_BODY_BYTES) return errorResponse(413, 'Request body too large');
 
-  const body = await readCappedBody(req, MAX_BODY_BYTES);
-  if (!body.ok) return errorResponse(413, 'Request body too large');
+  const body = await readBoundedBody(req, MAX_BODY_BYTES);
+  if (!body.ok) {
+    return body.reason === 'too_large'
+      ? errorResponse(413, 'Request body too large')
+      : errorResponse(400, 'Invalid request body');
+  }
 
-  if (!(await checkRateLimit(clientIp(req)))) {
-    return errorResponse(429, 'Too many requests. Please try again later.');
+  const limit = await checkRateLimit(clientIp(req));
+  if (!limit.allowed) {
+    const res = errorResponse(429, 'Too many requests. Please try again later.');
+    res.headers.set('Retry-After', String(limit.retryAfterSeconds));
+    return res;
   }
 
   let parsed: unknown;
@@ -107,41 +128,25 @@ export async function POST(req: Request) {
   if (!isValidEmail(email)) return errorResponse(400, 'A valid email is required.');
   if (!ALLOWED_SOURCES.has(source)) return errorResponse(400, 'Unrecognized source.');
 
-  const id = captureIdForEmail(email);
-  const now = new Date().toISOString();
-
+  const budget = { deadlineAt: deadlineIn(WRITE_BUDGET_MS), perCallMs: WRITE_CALL_MS };
+  let id: string;
   try {
-    // Keep the first sighting; a second capture only refreshes when it happened.
-    const existing = await fsGetDoc(`leads/${id}`);
-    const firstSeenAt = (existing.exists && (existing.data?.submittedAt as string)) || now;
-    const status = (existing.exists && existing.data?.status === 'converted') ? 'converted' : 'partial';
-    const alreadyBooked = existing.exists && existing.data?.bookedSelfReported === true;
-
-    // Merge, not replace: a re-capture must not wipe convertedLeadId /
-    // convertedAt, which the meetgreet route wrote onto this same document.
-    await fsMergeDoc(`leads/${id}`, {
-      id,
-      type: 'capture',
-      schemaVersion: LEAD_SCHEMA_VERSION,
-      status,
-      email,
-      source,
-      submittedAt: firstSeenAt,
-      lastSeenAt: now,
-      bookedSelfReported: booked || alreadyBooked,
-    });
+    // First-seen time, conversion and a true booking hint are never undone; see leadTransitions.
+    const outcome = await recordCapture({ email, source, booked, nowIso: new Date().toISOString() }, budget);
+    id = outcome.id;
 
     // Already converted: the admin table shows the full lead, not this row,
     // so a booked signal arriving now must land on that lead. Best effort.
-    const convertedLeadId = existing.exists ? existing.data?.convertedLeadId : undefined;
-    if (booked && typeof convertedLeadId === 'string' && convertedLeadId) {
+    if (booked && outcome.convertedLeadId) {
       try {
-        await fsMergeDoc(`leads/${convertedLeadId}`, { bookedSelfReported: true });
+        await carryBookedHintToLead(outcome.convertedLeadId, budget);
       } catch (err) {
         console.error('[lead:capture] booked carry-over failed', err instanceof Error ? err.message : 'unknown');
       }
     }
   } catch (err) {
+    // Includes upstream timeouts and exhausted conflict retries: nothing was lost
+    // that the client cannot resend, and the response must still go out in budget.
     console.error('[lead:capture] firestore write failed', err instanceof Error ? err.message : 'unknown');
     return errorResponse(500, 'Could not save. Please try again.');
   }

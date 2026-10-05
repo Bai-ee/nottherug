@@ -35,7 +35,9 @@ const fsDeleteDoc = vi.fn(async () => {});
 const fsQueryCollection = vi.fn(async () => [] as unknown[]);
 const fsIncrementField = vi.fn(async () => 1);
 
-vi.mock('@/lib/server/firestoreRest', () => ({
+vi.mock('@/lib/server/firestoreRest', async () => ({
+  // Real withOptimisticRetry / error classes; only the I/O helpers are faked.
+  ...(await vi.importActual<typeof import('@/lib/server/firestoreRest')>('@/lib/server/firestoreRest')),
   fsCreateDoc,
   fsGetDoc,
   fsSetDoc,
