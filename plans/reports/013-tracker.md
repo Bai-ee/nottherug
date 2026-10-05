@@ -13,8 +13,8 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 
 | Phase | Status | Candidate SHA | Report | Codex decision |
 | --- | --- | --- | --- | --- |
-| P0 | Ready for review | see report commit | [013-P0-report.md](013-P0-report.md) | PENDING |
-| P1 | Not started (gated on P0) | — | — | — |
+| P0 | **Approved** | `3461c672b3298e87e180d2955d795eb82b6910d4` | [013-P0-report.md](013-P0-report.md), [Codex review](013-P0-codex-review.md) | `APPROVED P0 3461c672b3298e87e180d2955d795eb82b6910d4` |
+| P1 | In progress | — | — | — |
 | P2 | Not started | — | — | — |
 | P3 | Not started | — | — | — |
 | P4 | Not started | — | — | — |
@@ -40,9 +40,9 @@ Durable state for the hardening run. Update on every phase transition, agent ass
 | H03 | P4/P5 | Rules match; TTL 2 of 4; no backups/PITR | — | Open |
 | H04 | P2 | Detailed scan blocked on approval; see P0 report | — | Open (blocked) |
 
-## Proposed P1 worker split (not yet dispatched)
+## P1 worker split (dispatched 2026-10-05; briefs in [013-P1-dispatch.md](013-P1-dispatch.md))
 
-Shared files have a single owner. Workers use `npm ci --no-audit`.
+Shared files have a single owner. Workers use `npm ci --no-audit` with `npm_config_audit=false`. Worktrees: `NotTheRug-013-A/B/C` on branches `013/p1-a`, `013/p1-b`, `013/p1-c` from `3461c67`. **No branch is pushed** (a pushed branch creates a Preview deploy that shares production credentials).
 
 | Worker | Findings | Owns | Depends on |
 | --- | --- | --- | --- |
@@ -62,3 +62,4 @@ Shared files have a single owner. Workers use `npm ci --no-audit`.
 ## Log
 
 - 2026-10-05 — P0 executed in isolated worktree; report saved; awaiting operator relay to Codex.
+- 2026-10-05 — Codex `APPROVED P0 3461c67…` (relayed by operator). Carried instructions: `--no-audit` everywhere; demo emulators + mocked providers only; no pushes that create credential-sharing previews; A owns primitives, B/C prepare tests in parallel then integrate on A; fresh sanitized P1 evidence; normalize two evidence logs (done). P1 started.
