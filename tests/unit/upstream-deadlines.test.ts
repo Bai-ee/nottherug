@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
-process.env.FIREBASE_ADMIN_PROJECT_ID = 'demo-deadlines';
-process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:1'; // token step is skipped; fetch is mocked below
+// firestoreRest reads these at import time and imports are hoisted above plain
+// statements, so set them in vi.hoisted. The emulator host makes the token step
+// a no-op; fetch is mocked below, so nothing is ever contacted.
+vi.hoisted(() => {
+  process.env.FIREBASE_ADMIN_PROJECT_ID = 'demo-deadlines';
+  process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:1';
+});
 
 import { DEFAULT_FS_TIMEOUT_MS, fsGetDoc, fsMergeDoc, UpstreamTimeoutError, withOptimisticRetry, FirestorePreconditionError } from '@/lib/server/firestoreRest';
 
