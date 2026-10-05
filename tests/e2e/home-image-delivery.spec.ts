@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { suppressWelcomeModal } from './helpers/welcomeModal';
+import { waitForHydration } from './helpers/hydration';
+
+// Hang guard only: these assert what was or was not requested and what
+// painted, never how fast a shared runner got there.
+const HANG_GUARD_MS = 15_000;
 
 // Plan 013 P3 (F07): the paw walk ships 104px WebP prints (not the 444px
 // PNGs) and the six team portraits are lazy, so none is fetched before the
@@ -26,19 +31,33 @@ test.describe('home image delivery', () => {
     });
 
     await page.goto('/', { waitUntil: 'load' });
-    await page.waitForTimeout(1500);
+    // Hydrated and past the page's own post-load work (two frames, then idle),
+    // so "not requested yet" is read after the point eager loading would have
+    // happened, not after a guessed delay.
+    await waitForHydration(page, '#home-team-scroller');
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(() => resolve(), { timeout: 2500 });
+              else window.setTimeout(resolve, 600);
+            }),
+          );
+        }),
+    );
     expect(portraitRequests).toEqual([]);
 
     const scroller = page.locator('#home-team-scroller');
     await scroller.scrollIntoViewIfNeeded();
     const luis = page.locator('#home-team-chip-photo-luis img');
-    await expect(luis).toBeVisible();
-    await expect.poll(() => luis.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-    await expect.poll(() => portraitRequests.length).toBeGreaterThan(0);
+    await expect(luis).toBeVisible({ timeout: HANG_GUARD_MS });
+    await expect.poll(() => luis.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0), { timeout: HANG_GUARD_MS }).toBe(true);
+    await expect.poll(() => portraitRequests.length, { timeout: HANG_GUARD_MS }).toBeGreaterThan(0);
     // Every chip's portrait paints once it is near.
     for (const name of ['luis', 'lincoln', 'marcus', 'christian', 'shawn', 'yenny']) {
       const img = page.locator(`#home-team-chip-photo-${name} img`);
-      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.currentSrc !== '' && el.complete && el.naturalWidth > 0)).toBe(true);
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.currentSrc !== '' && el.complete && el.naturalWidth > 0), { timeout: HANG_GUARD_MS }).toBe(true);
     }
 
     expect(pawPngRequests).toEqual([]);
@@ -52,7 +71,7 @@ test.describe('home image delivery', () => {
     });
     await page.goto('/', { waitUntil: 'load' });
     const layer = page.locator('#home-paw-walk-layer');
-    await expect(layer).toBeAttached();
+    await expect(layer).toBeAttached({ timeout: HANG_GUARD_MS });
     const srcs = await page.locator('.home-paw-step').evaluateAll((els) =>
       Array.from(new Set(els.map((el) => (el as HTMLImageElement).getAttribute('src')))),
     );
