@@ -1,0 +1,13 @@
+HEAD 69a2bebd70d6f3330cb08e7a4d1e596873b9c500  node v24.7.0  firebase-tools 15.15.0  java 21.0.12  started 2026-10-05T04:27:10Z
+check-lint exit 0
+check-lint-pipeline exit 0
+check-build exit 0
+check-typecheck exit 0
+check-unit (emulator hosts unreachable) exit 0
+check-verify-assets exit 0
+emulators-required exit 0
+emulators-required-absent exit 1 (non-zero expected)
+e2e-default (CI=1, E2E_PORT=3400) exit 0
+analytics-build exit 0
+e2e-analytics (CI=1, E2E_PORT=3400, emulator) exit 0
+finished 2026-10-05T04:28:48Z

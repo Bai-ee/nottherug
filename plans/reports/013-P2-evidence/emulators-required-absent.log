@@ -1,0 +1,719 @@
+
+> nextapp@0.1.0 test:emulators
+> REQUIRE_EMULATORS=1 vitest run --reporter=default --reporter=json --outputFile.json=test-results/vitest-emulators.json && node tests/support/check-required-emulator-run.mjs test-results/vitest-emulators.json
+
+
+ RUN  v5.0.0 /Users/bballi/Documents/Repos/NotTheRug-013
+
+ ❯ tests/unit/analytics-emulator-roundtrip.test.ts (18 tests | 18 skipped) 11ms
+   ↓ write/read contract against a real emulator (2)
+     ↓ a full session (pageview, cta_click, booking steps, appointment, engagement) round-trips into exact reported numbers
+     ↓ a lead_saved without ever opening the scheduling dialog is the phone-consult path, not abandonment
+   ↓ deduplication (2)
+     ↓ storing the same event id twice yields exactly one document and does not inflate pageviews
+     ↓ two concurrent posts of the same id race to exactly one stored document
+   ↓ durable per-IP rate limiting against real Firestore transforms (2)
+     ↓ allows traffic up to the threshold then returns 429 from the same IP inside one window
+     ↓ a different IP is unaffected by another IP's exhausted budget
+   ↓ test-mode isolation (1)
+     ↓ excludes mode:test events from the real report and includes them only when includeTest is requested
+   ↓ bot filtering (2)
+     ↓ a request with a bot-identifying User-Agent is accepted-but-discarded, writing nothing
+     ↓ a request with no User-Agent at all is also treated as a bot and discarded
+   ↓ kill switch (1)
+     ↓ ANALYTICS_TRACKING_DISABLED=true accepts and discards, writing nothing to Firestore
+   ↓ privacy: hostile payloads never reach storage (5)
+     ↓ drops unknown PII-shaped extra fields even on an otherwise-valid event
+     ↓ strips a full referrer URL with a query string down to nothing (never stores host+path+query)
+     ↓ rejects an un-allowlisted route down to null rather than storing the raw path
+     ↓ rejects an event carrying a non-allowlisted cta id outright (no partial storage)
+     ↓ drops an un-allowlisted free-text campaign slug rather than storing it verbatim
+   ↓ New York day-boundary correctness against real Firestore range queries (3)
+     ↓ an event exactly at NY midnight lands in the new day; the instant before lands in the previous day
+     ↓ the spring-forward DST transition does not shift or merge the day bucket
+     ↓ the fall-back DST transition does not shift or merge the day bucket
+ ❯ tests/unit/lead-intake-emulator.test.ts (12 tests | 12 skipped) 10ms
+   ↓ capture and conversion ordering (emulator) (8)
+     ↓ capture then convert: the row ends converted and the lead carries the booking hint
+     ↓ convert then capture: a converted marker exists first, so capture creates no outstanding row
+     ↓ a conversion committed between capture read and capture write is not reverted
+     ↓ booked hint landing mid-conversion still reaches the lead (capture write between conversion read and write)
+     ↓ booked capture racing a conversion that commits first still reaches the lead
+     ↓ concurrent true and false booking signals never leave the hint false
+     ↓ simultaneous first captures produce one row with one stable first-seen time
+     ↓ capture racing the final submission always ends converted, never partial with a lead id
+   ↓ booking-hint carry to a lead (emulator) (1)
+     ↓ creates nothing for a missing lead, and still sets true on an existing one
+   ↓ final submission against the real counters and store (emulator) (3)
+     ↓ five captures from one IP do not block the final submission
+     ↓ a duplicate final submission saves one lead and sends one founder email
+     ↓ a notification failure keeps the lead and sends nothing twice
+ ❯ tests/unit/rules-firestore.test.ts (15 tests | 15 skipped) 3ms
+   ❯ firestore.rules (15)
+     ↓ denies a public read of leads
+     ↓ denies a public read of photoUploads
+     ↓ denies a public read of photoRenders
+     ↓ denies a public read of brief run/state collections
+     ↓ denies any client write to admins/** — no self-enrollment
+     ↓ allows a signed-in user to read their own admins/{email} doc
+     ↓ denies a signed-in user with an UNVERIFIED email reading their own admins/{email} doc
+     ↓ denies an anonymous read of admins/{email}
+     ↓ denies reading a different admin's admins/{email} doc
+     ↓ denies every unauthenticated write to protected collections
+     ↓ denies an unlisted collection, so the catch-all is proven and not just assumed
+     ↓ denies a subcollection nested under a denied document
+     ↓ denies public reads and writes of every bench collection
+     ↓ denies a signed-in admin direct client access to bench collections
+     ↓ denies client claims and offers on a callout, so nobody can take a shift from the browser
+ ❯ tests/unit/firestore-merge-doc.test.ts (4 tests | 4 skipped) 10ms
+   ↓ fsMergeDoc (3)
+     ↓ leaves fields it was not given untouched
+     ↓ creates the document when it does not exist
+     ↓ fsSetDoc still replaces the whole document
+   ↓ fsMergeDoc with no fields (1)
+     ↓ writes nothing (an empty updateMask would replace the whole document)
+ ❯ tests/unit/lead-firestore-integration.test.ts (14 tests | 14 skipped) 10ms
+   ↓ a booking inquiry against real Firestore (3)
+     ↓ persists every field of the current form contract and can be read back
+     ↓ records what actually happened to each notification
+     ↓ still saves the lead, and says so, when the founder notification fails
+   ↓ idempotency against real Firestore 409 semantics (3)
+     ↓ creates exactly one lead for an identical resubmission
+     ↓ creates exactly one lead when two identical requests race
+     ↓ treats a genuinely different inquiry as a new lead
+   ↓ the durable rate limiter against real Firestore transforms (2)
+     ↓ upserts a counter that did not exist and increments it atomically
+     ↓ refuses a burst from one client with 429
+   ↓ a historical lead still reads through the display contract and CSV (2)
+     ↓ renders old survey fields and omits the ones it never had
+     ↓ neutralises a formula submitted through the real route
+   ↓ capture and conversion against real Firestore (4)
+     ↓ keeps convertedLeadId/convertedAt when the same email is captured again
+     ↓ carries a booked hint from the capture onto the lead at conversion
+     ↓ puts a later booked capture onto the already-converted lead
+     ↓ writes expiresAt on rate-limit rows
+ ❯ tests/unit/bench-resume-emulator.test.ts (18 tests | 18 skipped) 3ms
+   ↓ resume upload token (emulator) (11)
+     ↓ stores a resume, consumes the token and records the attempt
+     ↓ lets exactly one of several simultaneous requests with one token upload
+     ↓ 403s a replay of a used token without uploading again
+     ↓ keeps an admin note edited while the upload is in flight
+     ↓ 403s an expired token and leaves it untouched
+     ↓ refuses to claim when a resume is already stored, so it can never be overwritten
+     ↓ 403s a wrong token without consuming the real one
+     ↓ rejects a bad file before the token is spent
+     ↓ on a storage failure keeps the application, leaves the token consumed, and cleans only its own object
+     ↓ on a finalization failure keeps the application and deletes the object it uploaded
+     ↓ does not finalize, or delete anything, when another attempt owns the record
+   ↓ other bench writers stay field-scoped (emulator) (7)
+     ↓ an apply submitted twice is one person, one email and one token
+     ↓ records the notification outcome without overwriting an admin edit made during the send
+     ↓ auto-invite stores the stage before the invite email, and sends it exactly once
+     ↓ sends no invite when an admin moved the person out of review first (admin state wins)
+     ↓ an AI summary finishing after an admin edit adds only aiSummary
+     ↓ an AI summary for a deleted person does not recreate the record
+     ↓ an admin note saved after a resume lands leaves the resume fields alone
+ ✓ tests/unit/upstream-deadlines.test.ts (11 tests) 313ms
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — artifact upload failure > surfaces the failure and does not publish a broken "latest" pointer
+[brief] private HTML artifact upload failed: Private storage upload failed (500)
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — database save failure > surfaces a failed "latest" state write instead of swallowing it
+[brief] failed to persist latest state — a run whose state fails to persist is not a clean success: Firestore SET failed
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — database save failure > surfaces a failed run-history write instead of swallowing it
+[brief] failed to persist run history record: Firestore run-history write failed
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — concurrent runs > a second concurrent run loses the lease and never invokes the pipeline
+[brief] failed to persist run history record: Firestore run-history write failed
+
+stderr | tests/unit/brief-run.test.ts > runNotTheRugBrief — concurrent runs > a second concurrent run loses the lease and never invokes the pipeline
+[brief] failed to persist run history record: Firestore run-history write failed
+
+ ✓ tests/unit/brief-run.test.ts (7 tests) 178ms
+ ❯ tests/unit/rules-storage.test.ts (5 tests | 5 skipped) 3ms
+   ❯ storage.rules (5)
+     ↓ denies public read under the private artifact prefix
+     ↓ denies an authenticated admin read under the private artifact prefix (server-only by design)
+     ↓ denies a client write under photos/
+     ↓ denies a rule-evaluated (unauthenticated, tokenless) read under photos/ — sharing happens via token URLs, which bypass rules entirely
+     ↓ denies public read outside every declared prefix
+ ❯ tests/unit/firestore-preconditions.test.ts (7 tests | 7 skipped) 10ms
+   ↓ fsMergeDoc preconditions (4)
+     ↓ rejects a stale updateTime and accepts the current one
+     ↓ exists:false fails on an existing document and succeeds on a missing one
+     ↓ exists:true fails on a missing document and does not create it
+     ↓ does not map an unconditional write failure to a precondition error
+   ↓ fsMergeDoc deleteFields (2)
+     ↓ removes only the named fields, alongside a normal merge
+     ↓ allows empty data when deleteFields is given, and stays a no-op with neither
+   ↓ withOptimisticRetry on a real document (1)
+     ↓ applies two concurrent read-modify-write increments exactly once each
+ ❯ tests/unit/rules-analytics.test.ts (4 tests | 4 skipped) 3ms
+   ❯ firestore.rules — analytics collections (4)
+     ↓ denies a public read of analytics_events
+     ↓ denies a public write of analytics_events, including one shaped exactly like the server writes
+     ↓ denies a signed-in admin from reading analytics_events directly — server routes must be used, not the client SDK
+     ↓ denies a public read or write of analyticsRateLimits counters
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/leads maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/generator/list maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/generator/render maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/list maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/assets maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/upload maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/delete maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > api/admin/photos/render maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/history maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/latest-brief maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/latest-brief/html maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/not-the-rug/run-brief maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+stderr | tests/unit/admin-route-hardening.test.ts > every admin route classifies auth failures the same way > admin/founder-brief/run-and-send maps a dependency outage to 500 and hides the reason
+[Error] admin whitelist lookup failed: cluster-7 credentials rejected
+
+ ✓ tests/unit/admin-route-hardening.test.ts (50 tests) 117ms
+ ✓ tests/unit/photos-validate.test.ts (5 tests) 58ms
+stderr | tests/unit/generator-render.test.ts > POST /api/admin/generator/render — validation > accepts a valid finite placement and renders
+[generator] logo public asset fetch failed for "notRugGreen", falling back to local file: fetch failed
+
+ ✓ tests/unit/generator-render.test.ts (6 tests) 102ms
+ ✓ tests/unit/bench-resume-race.test.ts (2 tests) 86ms
+ ❯ tests/unit/bench-emulator-roundtrip.test.ts (2 tests | 2 skipped) 3ms
+   ↓ Join Our Team → Team Applications (emulator) (2)
+     ↓ shows a new submission, with every answer, to the admin page
+     ↓ lists the newest submission first, one row per person
+stderr | tests/unit/booking-step-funnel.test.ts > createStepFunnelTracker > does not throw when track() throws synchronously (analytics failure isolation)
+[booking] analytics call failed Error: simulated analytics failure
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-step-funnel.test.ts:158:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at reach (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:129:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-step-funnel.test.ts:163:18
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+
+ ✓ tests/unit/booking-step-funnel.test.ts (13 tests) 61ms
+ ✓ tests/unit/analytics-report.test.ts (17 tests) 64ms
+stderr | tests/unit/lead-intake-regression.test.ts > F01 — rate-limit counters are namespaced by purpose > fails open when the limiter errors or stalls (documented policy)
+[lead:capture] rate limit check failed firestore unavailable
+
+stderr | tests/unit/lead-intake-regression.test.ts > F01 — rate-limit counters are namespaced by purpose > fails open when the limiter errors or stalls (documented policy)
+[lead:meetgreet] rate limit check failed firestore increment timed out after 1500ms
+
+stderr | tests/unit/lead-intake-regression.test.ts > F11 — dependency budgets and timeouts > a stalled Firestore read in capture is a clean 500, not a hang or leak
+[lead:capture] firestore write failed firestore get timed out after 2500ms
+
+stderr | tests/unit/lead-intake-regression.test.ts > F11 — dependency budgets and timeouts > a stalled Firestore create in meetgreet is a clean 500 and sends no email
+[lead:meetgreet] firestore create failed firestore create timed out after 3000ms
+
+stderr | tests/unit/lead-intake-regression.test.ts > notifications never undo or duplicate a saved lead > keeps the lead when the email provider fails, and does not retry the send
+[lead:meetgreet] founder email failed send failed
+
+stderr | tests/unit/lead-intake-regression.test.ts > notifications never undo or duplicate a saved lead > keeps the lead when the email provider throws
+[lead:meetgreet] founder email error provider down
+
+ ✓ tests/unit/lead-intake-regression.test.ts (21 tests) 62ms
+ ✓ tests/unit/sharp-render.test.ts (11 tests) 58ms
+ ❯ tests/unit/analytics-rate-limit-fail-open.test.ts (2 tests | 2 skipped) 10ms
+   ↓ rate limiter fails open on a Firestore error (2)
+     ↓ a healthy rate-limit counter still allows and stores a normal event (sanity baseline)
+     ↓ a thrown error from the rate-limit counter write does not block the request — traffic is still accepted and stored
+stderr | tests/unit/bench-apply-route.test.ts > POST /api/bench/apply > still saves the application when the email provider fails
+[bench:apply-received] email failed Invalid `to`: [redacted-email]
+
+ ✓ tests/unit/bench-apply-route.test.ts (17 tests) 53ms
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > invite_shadow with every call at its deadline and a stalled email: 17 s, outcome save skipped
+[bench:invite] email error invite email timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > invite_shadow with every call at its deadline and a stalled email: 17 s, outcome save skipped
+[bench:admin] notification persist failed route time budget exhausted
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > a stalled stage write fails within budget and sends no email
+[Error] firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > a no-email action with a slow read and a stalled write fails within budget
+[Error] firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > admin person route stays inside maxDuration (20 s) > a stalled outcome write after the email still answers 200 within budget
+[bench:admin] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a stalled stage write sends no invite, keeps the application in review, and sends the confirmation instead
+[bench:apply] auto-invite stage write failed, invite not sent firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route auto-invite ordering > a stalled stage write sends no invite, keeps the application in review, and sends the confirmation instead
+[bench:apply] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply] rate limit check failed firestore incr timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply] auto-invite stage write failed, invite not sent route time budget exhausted
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply-received] email error apply-received email timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > every sliceable call at its deadline, stalled rate limiter and email: ~26 s, outcome save starved
+[bench:apply] notification persist failed route time budget exhausted
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > a stalled outcome write is logged and the application still succeeds within budget
+[bench:apply] notification persist failed firestore merge timed out
+
+stderr | tests/unit/bench-route-budget.test.ts > apply route stays inside maxDuration (30 s) > a stalled create fails the request within its slice
+[bench:apply] firestore create failed firestore create timed out
+
+ ✓ tests/unit/bench-route-budget.test.ts (8 tests) 44ms
+stderr | tests/unit/booking-analytics-failure-isolation.test.ts > booking survives analytics failure (T4 item 6) > 4. tracking offline (network error on /api/track): booking still succeeds
+[analytics] delivery failed TypeError: Failed to fetch
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:121:15
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:55:14
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at deliver (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:140:10)
+    at sendEvent (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:179:5)
+    at track (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:213:3)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at submitMeetGreetLead (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:98:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:126:20
+
+stderr | tests/unit/booking-analytics-failure-isolation.test.ts > booking survives analytics failure (T4 item 6) > 5. track() throwing synchronously: booking still succeeds (regression — see safeTrack in BookingForm.tsx)
+[booking] analytics call failed Error: simulated analytics failure
+    at track (/Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:136:15)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at submitMeetGreetLead (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:98:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-analytics-failure-isolation.test.ts:150:20
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:20
+
+ ✓ tests/unit/booking-analytics-failure-isolation.test.ts (5 tests) 43ms
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled claim read fails fast with 503 and spends no more than its cap
+[bench:resume] claim failed firestore get timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled upload plus a stalled cleanup finishes inside the budget
+[bench:resume] upload failed upload timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > stalled finalize read, confirm read and cleanup together finish inside the budget
+[bench:resume] finalize failed firestore get timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled claim MERGE returns 503 within its cap and never uploads
+[bench:resume] claim failed firestore merge timed out
+
+stderr | tests/unit/bench-resume-budget.test.ts > resume route time budget > a stalled finalize MERGE, then a stalled cleanup, finishes inside the budget
+[bench:resume] finalize failed firestore merge timed out
+
+ ✓ tests/unit/bench-resume-budget.test.ts (5 tests) 42ms
+stderr | tests/unit/booking-form-analytics.test.ts > submitMeetGreetLead > still reports a successful save when track() throws synchronously
+[booking] analytics call failed Error: simulated analytics failure
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-form-analytics.test.ts:145:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:64:5)
+    at submitMeetGreetLead (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/BookingForm.tsx:98:24)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/booking-form-analytics.test.ts:150:20
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:20
+
+ ✓ tests/unit/booking-form-analytics.test.ts (7 tests) 34ms
+ ✓ tests/unit/site-footer-cta.test.ts (6 tests) 33ms
+stderr | tests/unit/analytics-track-route.test.ts > rate limiting > fails open (still processes the request) if the rate-limit check itself errors
+[track] rate limit check failed firestore unavailable
+
+ ✓ tests/unit/analytics-track-route.test.ts (21 tests) 36ms
+stderr | tests/unit/lead-intake.test.ts > rate limiting > fails open (allows the request) if the rate-limit check itself errors
+[lead:meetgreet] rate limit check failed firestore unavailable
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > a genuine Firestore failure returns 500 and never a false success
+[lead:meetgreet] firestore create failed firestore down
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > saves the lead and records status even when the founder email fails
+[lead:meetgreet] founder email failed send failed
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > saves the lead and records status even when the customer email fails
+[lead:meetgreet] customer email failed customer bounce
+
+stderr | tests/unit/lead-intake.test.ts > R05 — idempotency and notification status > a client retry after a failed send does not duplicate the lead or resend
+[lead:meetgreet] founder email failed send failed
+
+ ✓ tests/unit/lead-intake.test.ts (20 tests) 36ms
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > cleans up the uploaded object(s) when the metadata write fails, and reports cleanup ok
+Firestore write failed: Firestore SET failed
+
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > reports truthfully when cleanup itself fails after a metadata write failure
+Firestore write failed: Firestore SET failed
+
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > reports truthfully when cleanup itself fails after a metadata write failure
+Cleanup after failed metadata write did not fully succeed for photos/originals/510ed6d5-814f-4cc6-bbe2-b7d10c1fed1e.jpg
+
+stderr | tests/unit/photos-upload.test.ts > POST /api/admin/photos/upload > records a failed thumbnail truthfully instead of pretending it succeeded
+Thumbnail generation/upload failed: thumbnail upload failed (500)
+
+ ✓ tests/unit/photos-upload.test.ts (8 tests) 25ms
+ ✓ tests/unit/lead-stats.test.ts (5 tests) 23ms
+stderr | tests/unit/photos-storage.test.ts > storageUpload / storageUploadPrivate logging and privacy (R09) > storageUploadPrivate throws if clearing the token fails, rather than silently leaving it public
+[storage] failed to clear public token, status: 500 path: private/report.html
+
+stderr | tests/unit/photos-storage.test.ts > storageUpload / storageUploadPrivate logging and privacy (R09) > storageUploadPrivate throws if clearing the token fails, rather than silently leaving it public
+[storage] cleanup delete also failed, path: private/report.html Storage delete failed for private/report.html (403)
+
+ ✓ tests/unit/photos-storage.test.ts (4 tests) 22ms
+ ✓ tests/unit/bench-admin-routes.test.ts (23 tests) 21ms
+ ✓ tests/unit/photos-render-route.test.ts (5 tests) 21ms
+ ✓ tests/unit/contact-info-card-cta.test.ts (1 test) 18ms
+ ✓ tests/unit/admin-analytics-funnel-panel.test.ts (1 test) 15ms
+stderr | tests/unit/analytics-track.test.ts > track — delivery transport > does not throw, and does not produce an unhandled rejection, when the fetch fallback rejects
+[analytics] delivery failed TypeError: Failed to fetch
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/analytics-track.test.ts:199:50
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at deliver (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:140:10)
+    at sendEvent (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:179:5)
+    at Module.track (/Users/bballi/Documents/Repos/NotTheRug-013/lib/analytics/track.ts:213:3)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/analytics-track.test.ts:203:18
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+
+ ✓ tests/unit/analytics-track.test.ts (21 tests) 15ms
+stderr | tests/unit/admin-analytics-route.test.ts > GET /api/admin/analytics > returns 500 (not 401) with a sanitized message when the admin whitelist lookup itself fails
+[Error] admin whitelist lookup failed: 503 unavailable at project my-secret-project
+
+stderr | tests/unit/admin-analytics-route.test.ts > GET /api/admin/analytics > returns a sanitized 500 (not the raw error) when the report itself throws
+[UnhandledError] Error: Firestore RANGE analytics_events: 503 backend unavailable at project my-secret-project
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/admin-analytics-route.test.ts:70:42
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:1628:35
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:26
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3319:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3314:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3299:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3257:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3876:64
+
+ ✓ tests/unit/admin-analytics-route.test.ts (8 tests) 15ms
+ ✓ tests/unit/neighborhood-detail-cta.test.ts (1 test) 15ms
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (Auth backend internal error) as a service error (500, never 401)
+[Error] token verification backend failure: auth/internal-error
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (network error) as a service error (500, never 401)
+[Error] token verification backend failure: app/network-error
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (credential error) as a service error (500, never 401)
+[Error] token verification backend failure: app/invalid-credential
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a revocation-check backend failure (non-Firebase error) as a service error (500, never 401)
+[Error] token verification backend failure: socket hang up
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > surfaces a whitelist lookup failure as a service error (500, not 401)
+[Error] admin whitelist lookup failed: Firestore GET admins/admin@example.test: 503 unavailable
+
+stderr | tests/unit/auth-verifyAdmin.test.ts > verifyAdmin > never echoes internal error detail in the client-facing errorResponse body
+[Error] admin whitelist lookup failed: service account key rejected by project my-secret-project-123
+
+ ✓ tests/unit/auth-verifyAdmin.test.ts (20 tests) 12ms
+ ✓ tests/unit/bench-summary.test.ts (4 tests) 13ms
+ ✓ tests/unit/brief-send-guard.test.ts (4 tests) 13ms
+stderr | tests/unit/admin-analytics-cleanup-route.test.ts > POST /api/admin/analytics/cleanup > returns 500 (not 401) with a sanitized message when the admin whitelist lookup itself fails
+[Error] admin whitelist lookup failed: 503 unavailable at project my-secret-project
+
+stderr | tests/unit/admin-analytics-cleanup-route.test.ts > POST /api/admin/analytics/cleanup > returns a sanitized 500 (not the raw error) when cleanup itself throws
+[UnhandledError] Error: Firestore RANGE analytics_events: 503 backend unavailable at project my-secret-project
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/admin-analytics-cleanup-route.test.ts:79:7
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:1628:35
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:2783:26
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3319:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3314:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3299:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3257:10)
+    at file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/run.CQOUYP-x.js:3876:64
+
+ ✓ tests/unit/admin-analytics-cleanup-route.test.ts (7 tests) 13ms
+stderr | tests/unit/cta-tracked-link.test.ts > TrackedCtaLink > still calls the caller onClick (and never throws) when the tracker itself throws
+[analytics] cta_click failed Error: tracking backend unreachable
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/cta-tracked-link.test.ts:65:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at Object.onClick (/Users/bballi/Documents/Repos/NotTheRug-013/components/marketing/TrackedCtaLink.tsx:32:11)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/cta-tracked-link.test.ts:76:32
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1934:14)
+
+ ✓ tests/unit/cta-tracked-link.test.ts (4 tests) 13ms
+ ✓ tests/unit/admin-request-helper.test.ts (8 tests) 12ms
+ ✓ tests/unit/read-bounded-body.test.ts (10 tests) 12ms
+ ✓ tests/unit/leads-digest-template.test.ts (2 tests) 11ms
+stdout | tests/unit/brief-reporter-links.test.ts > generateReport HTML output > rejects javascript: and data: source URLs while https: URLs pass through as links
+◇ injected env (0) from .env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+
+stdout | tests/unit/brief-reporter-links.test.ts > generateReport HTML output > rejects javascript: and data: source URLs while https: URLs pass through as links
+[REPORTER] Brief saved: brief-oct-04-2026-11:27pm.md, NotTheRug-sep-01-2026-7:05am.html
+
+stdout | tests/unit/brief-reporter-links.test.ts > generateReport HTML output > rejects protocol-relative URLs, uppercase schemes, embedded whitespace, and non-ASCII scheme characters
+[REPORTER] Brief saved: brief-oct-04-2026-11:27pm.md, NotTheRug-sep-01-2026-7:06am.html
+
+ ✓ tests/unit/brief-reporter-links.test.ts (2 tests) 11ms
+stderr | tests/unit/scheduling-dialog-appointment.test.ts > createAppointmentCompletionHandler > does not throw when track() throws synchronously, and still dedupes correctly
+[booking] analytics call failed Error: simulated analytics failure
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/scheduling-dialog-appointment.test.ts:137:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at safeTrack (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/SchedulingDialog.tsx:42:5)
+    at handleCalendlyMessage (/Users/bballi/Documents/Repos/NotTheRug-013/components/booking/SchedulingDialog.tsx:68:5)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/scheduling-dialog-appointment.test.ts:144:18
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+
+ ✓ tests/unit/scheduling-dialog-appointment.test.ts (12 tests) 11ms
+ ✓ tests/unit/bench-logic.test.ts (17 tests) 9ms
+stderr | tests/unit/admin-leads-route.test.ts > GET /admin/leads > returns 500 (not 401) when the admin whitelist lookup itself fails
+[Error] admin whitelist lookup failed: 503 unavailable
+
+stderr | tests/unit/admin-leads-route.test.ts > GET /admin/leads > returns 500 and a safe message (not the raw Firestore error) when the lead query itself fails
+[Error] Firestore GET leads: 503 backend unavailable at project my-secret-project
+
+ ✓ tests/unit/admin-leads-route.test.ts (7 tests) 9ms
+ ✓ tests/unit/analytics-session.test.ts (16 tests) 8ms
+stderr | tests/unit/photos-delete.test.ts > DELETE /api/admin/photos/delete > keeps the metadata record and reports pending_cleanup when object deletion fails
+Storage delete failed during photo cleanup: Storage delete failed for photos/originals (500)
+
+stderr | tests/unit/photos-delete.test.ts > DELETE /api/admin/photos/delete > surfaces a metadata delete failure after storage cleanup succeeded, rather than silently losing it
+Metadata delete failed after successful storage cleanup: Firestore DELETE failed
+
+ ✓ tests/unit/photos-delete.test.ts (7 tests) 8ms
+ ✓ tests/unit/analytics-greeting.test.ts (8 tests) 3ms
+stderr | tests/unit/tracked-cta-anchor.test.ts > TrackedCtaAnchor > still calls the caller onClick (and never throws) when the tracker itself throws
+[analytics] cta_click failed Error: tracking backend unreachable
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/tracked-cta-anchor.test.ts:80:13
+    at Mock (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/spy.DPLvp2J7.js:320:40)
+    at Object.onClick (/Users/bballi/Documents/Repos/NotTheRug-013/components/marketing/TrackedCtaAnchor.tsx:25:11)
+    at /Users/bballi/Documents/Repos/NotTheRug-013/tests/unit/tracked-cta-anchor.test.ts:91:32
+    at Proxy.assertThrows (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:2798:5)
+    at Proxy.methodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1700:25)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1980:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/chai/index.js:1750:33)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:2277:114)
+    at Proxy.<anonymous> (file:///Users/bballi/Documents/Repos/NotTheRug-013/node_modules/vitest/dist/chunks/index.OVGXnVRj.js:1934:14)
+
+ ✓ tests/unit/tracked-cta-anchor.test.ts (5 tests) 7ms
+ ✓ tests/unit/lead-capture-honeypot.test.ts (4 tests) 6ms
+ ✓ tests/unit/analytics-retention.test.ts (12 tests) 6ms
+ ✓ tests/unit/bench-validation.test.ts (36 tests) 5ms
+ ✓ tests/unit/section-nav-registry.test.ts (5 tests) 5ms
+ ✓ tests/unit/admin-cache-headers.test.ts (3 tests) 4ms
+ ✓ tests/unit/admin-dashboard-request-lifecycle.test.ts (9 tests) 4ms
+ ✓ tests/unit/report-boundary-error.test.ts (6 tests) 4ms
+ ✓ tests/unit/onboarding-handoff.test.ts (9 tests) 4ms
+ ✓ tests/unit/welcome-modal.test.ts (5 tests) 3ms
+ ✓ tests/unit/bench-application-fields.test.ts (3 tests) 3ms
+ ✓ tests/unit/lead-validation.test.ts (18 tests) 2ms
+ ✓ tests/unit/admin-analytics-cta-labels.test.ts (5 tests) 2ms
+ ✓ tests/unit/booking-prefill.test.ts (10 tests) 2ms
+ ✓ tests/unit/lead-csv.test.ts (9 tests) 2ms
+ ✓ tests/unit/site-nav-links.test.ts (3 tests) 2ms
+ ✓ tests/unit/lead-completeness.test.ts (7 tests) 2ms
+ ✓ tests/unit/calendly-embed-url.test.ts (6 tests) 2ms
+ ✓ tests/unit/lead-contact-links.test.ts (8 tests) 2ms
+ ✓ tests/unit/admin-leads-csv-export.test.ts (3 tests) 2ms
+ ✓ tests/unit/paw-walk-steps.test.ts (6 tests) 2ms
+ ✓ tests/unit/admin-lead-record-booked.test.ts (2 tests) 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 11 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/analytics-emulator-roundtrip.test.ts [ tests/unit/analytics-emulator-roundtrip.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/analytics-emulator-roundtrip.test.ts:72:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/unit/analytics-rate-limit-fail-open.test.ts [ tests/unit/analytics-rate-limit-fail-open.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/analytics-rate-limit-fail-open.test.ts:68:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/unit/bench-emulator-roundtrip.test.ts [ tests/unit/bench-emulator-roundtrip.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/bench-emulator-roundtrip.test.ts:35:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/unit/bench-resume-emulator.test.ts [ tests/unit/bench-resume-emulator.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/bench-resume-emulator.test.ts:60:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/unit/firestore-merge-doc.test.ts [ tests/unit/firestore-merge-doc.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/firestore-merge-doc.test.ts:21:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/unit/firestore-preconditions.test.ts [ tests/unit/firestore-preconditions.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/firestore-preconditions.test.ts:21:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/unit/lead-firestore-integration.test.ts [ tests/unit/lead-firestore-integration.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/lead-firestore-integration.test.ts:86:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/unit/lead-intake-emulator.test.ts [ tests/unit/lead-intake-emulator.test.ts ]
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ tests/unit/lead-intake-emulator.test.ts:57:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/unit/rules-analytics.test.ts > firestore.rules — analytics collections
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ firestoreAndStorageEmulatorsReachable tests/support/emulatorGate.ts:61:21
+ ❯ tests/unit/rules-analytics.test.ts:17:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  tests/unit/rules-firestore.test.ts > firestore.rules
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ firestoreAndStorageEmulatorsReachable tests/support/emulatorGate.ts:61:21
+ ❯ tests/unit/rules-firestore.test.ts:16:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  tests/unit/rules-storage.test.ts > storage.rules
+Error: REQUIRE_EMULATORS=1 but the Firestore emulator is unreachable at 127.0.0.1:1: nothing answered. Run the suite under `firebase emulators:exec --only firestore,storage --project demo-not-the-rug "npm test"`. A required emulator suite must run; it is never allowed to skip.
+ ❯ fail tests/support/emulatorGate.ts:40:9
+     38|
+     39| function fail(what: string, detail: string): never {
+     40|   throw new Error(
+       |         ^
+     41|     `REQUIRE_EMULATORS=1 but ${what}: ${detail}. Run the suite under `…
+     42|       '`firebase emulators:exec --only firestore,storage --project dem…
+ ❯ check tests/support/emulatorGate.ts:50:33
+ ❯ firestoreAndStorageEmulatorsReachable tests/support/emulatorGate.ts:61:21
+ ❯ tests/unit/rules-storage.test.ts:15:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  11 failed | 65 passed (76)
+      Tests  611 passed | 101 skipped (712)
+   Start at  23:27:48
+   Duration  7.18s (tests 57%, import 28%, transform 11%, worker 3%)
+
+    Isolate  76 workers spawned · ~48ms startup each (spawn + environment, per file)
+             at least ~3.59s faster with isolate: false — reuses workers across files instead of one per file
+
+JSON report written to /Users/bballi/Documents/Repos/NotTheRug-013/test-results/vitest-emulators.json
