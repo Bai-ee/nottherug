@@ -13,9 +13,14 @@ service cloud.firestore {
     }
 
     // No self-enrollment: admin membership is managed out-of-band (Console
-    // or a trusted server process), never by a client write.
+    // or a trusted server process), never by a client write. The read also
+    // requires a verified email, mirroring lib/server/verifyAdmin.ts: an
+    // email/password account registered with someone else's address must not
+    // be able to probe the whitelist.
     match /admins/{email} {
-      allow read: if isSignedIn() && request.auth.token.email == email;
+      allow read: if isSignedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == email;
       allow write: if false;
     }
 
