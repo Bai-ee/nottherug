@@ -37,7 +37,7 @@ and reinstall.
 | Item | Required value | Checked |
 | --- | --- | --- |
 | Node version in the build log | 24.x (driven by `engines.node`, which overrides the project setting) | ☐ |
-| `PUBLIC_BASE_URL` | The host that actually serves the site. Production currently sets it to the `nottherug-ten.vercel.app` host. If unset or invalid the code falls back to `https://nottherug.com`, which is **not** attached to this project — see the open domain decision. Read at build time; changing it needs a redeploy | ☐ |
+| `PUBLIC_BASE_URL` | The host that actually serves the site. Production currently sets it to the `nottherug-ten.vercel.app` host. If unset or invalid the code falls back to `https://nottherug.com`, the chosen canonical domain but **not yet attached** to this project — follow "Domain cutover" in the runbook before switching to it. Read at build time; changing it needs a redeploy | ☐ |
 | `NEXT_PUBLIC_CALENDLY_URL` | The live scheduling link, or deliberately empty | ☐ |
 | `RESEND_FROM_EMAIL` | A verified sending domain. A `@resend.dev` sender only delivers to the account's own verified address and skips the customer confirmation | ☐ |
 | `FOUNDER_EMAIL` | The address that should receive new-inquiry notifications | ☐ |
