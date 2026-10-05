@@ -20,16 +20,16 @@ export const BENCH_PEOPLE_CAP = 1000;
  * Stored settings merged over the defaults, so a missing document (a fresh
  * project) or a field added later still yields a complete settings object.
  */
-export async function getBenchSettings(): Promise<BenchSettings> {
-  const doc = await fsGetDoc(BENCH_SETTINGS_DOC);
+export async function getBenchSettings(opts?: FsRequestOptions): Promise<BenchSettings> {
+  const doc = await fsGetDoc(BENCH_SETTINGS_DOC, opts);
   if (!doc.exists || !doc.data) return DEFAULT_BENCH_SETTINGS;
   return { ...DEFAULT_BENCH_SETTINGS, ...(doc.data as Partial<BenchSettings>) };
 }
 
 /** For the public page: a Firestore outage must not take the application form down. */
-export async function getBenchSettingsOrDefault(): Promise<BenchSettings> {
+export async function getBenchSettingsOrDefault(opts?: FsRequestOptions): Promise<BenchSettings> {
   try {
-    return await getBenchSettings();
+    return await getBenchSettings(opts);
   } catch (err) {
     console.error('[bench] settings read failed, using defaults', err instanceof Error ? err.message : 'unknown');
     return DEFAULT_BENCH_SETTINGS;
@@ -42,8 +42,8 @@ export async function saveBenchSettings(settings: BenchSettings, by: string): Pr
   return stored;
 }
 
-export async function listBenchPeople(): Promise<BenchPerson[]> {
-  const rows = await fsQueryCollection(BENCH_COLLECTIONS.people, 'createdAt', 'DESCENDING', BENCH_PEOPLE_CAP);
+export async function listBenchPeople(opts?: FsRequestOptions): Promise<BenchPerson[]> {
+  const rows = await fsQueryCollection(BENCH_COLLECTIONS.people, 'createdAt', 'DESCENDING', BENCH_PEOPLE_CAP, opts);
   return rows as unknown as BenchPerson[];
 }
 

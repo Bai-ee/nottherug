@@ -7,7 +7,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createHash } from 'node:crypto';
 
 let docs: Map<string, Record<string, unknown>>;
-const state = { stallGets: false, stallUpload: false, stallDelete: false, calls: [] as number[] };
+const state = { stallGets: false, stallMerge: false, afterUpload: 'gets' as 'gets' | 'merge', stallUpload: false, stallDelete: false, calls: [] as number[] };
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 vi.mock('@/lib/server/firestoreRest', async () => {
@@ -21,6 +21,14 @@ vi.mock('@/lib/server/firestoreRest', async () => {
         throw new fake.UpstreamTimeoutError('firestore', 'get');
       }
       return fake.fsGetDoc(path);
+    },
+    fsMergeDoc: async (path: string, data: Record<string, unknown>, opts?: { timeoutMs?: number; precondition?: never }) => {
+      if (state.stallMerge) {
+        state.calls.push(opts?.timeoutMs ?? -1);
+        await sleep(opts?.timeoutMs ?? 8000);
+        throw new fake.UpstreamTimeoutError('firestore', 'merge');
+      }
+      return fake.fsMergeDoc(path, data, opts);
     },
   };
 });
@@ -36,7 +44,8 @@ vi.mock('@/lib/server/firebaseStorage', () => ({
       throw new Error('upload timed out');
     }
     // Upload succeeds, then every later Firestore read stalls.
-    state.stallGets = true;
+    if (state.afterUpload === 'merge') state.stallMerge = true;
+    else state.stallGets = true;
   },
   storageDelete: async (_p: string, opts?: { timeoutMs?: number }) => {
     if (state.stallDelete) await sleep(opts?.timeoutMs ?? 15000);
@@ -56,7 +65,7 @@ function request() {
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
-  Object.assign(state, { stallGets: false, stallUpload: false, stallDelete: true, calls: [] });
+  Object.assign(state, { stallGets: false, stallMerge: false, afterUpload: 'gets', stallUpload: false, stallDelete: true, calls: [] });
   docs = new Map([
     [
       `benchPeople/${ID}`,
@@ -109,5 +118,20 @@ describe('resume route time budget', () => {
     expect(elapsed).toBeLessThanOrEqual(28_000);
     // Each stalled call was handed a deadline no larger than what was left.
     expect(state.calls.every((ms) => ms > 0 && ms <= 5_000)).toBe(true);
+  });
+
+  it('a stalled claim MERGE returns 503 within its cap and never uploads', async () => {
+    state.stallMerge = true;
+    const { res, elapsed } = await run();
+    expect(res.status).toBe(503);
+    expect(elapsed).toBeLessThanOrEqual(5_000);
+  });
+
+  it('a stalled finalize MERGE, then a stalled cleanup, finishes inside the budget', async () => {
+    state.afterUpload = 'merge';
+    const { res, elapsed } = await run();
+    expect(res.status).toBe(500);
+    expect(elapsed).toBeLessThanOrEqual(28_000);
+    expect(state.calls.length).toBeGreaterThan(0);
   });
 });
