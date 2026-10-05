@@ -1,15 +1,23 @@
 import { test, expect, type Page } from '@playwright/test';
 import { requireServer } from './helpers/serverGate';
+import { waitForHydration } from './helpers/hydration';
 
 const PANE_ID = 'book-tab-meetgreet';
 
-async function fillThroughWrapUpStep(page: Page) {
+/** Opens /book and waits until the form is interactive (React hydrated). */
+async function openBookingForm(page: Page) {
   await page.goto('/book');
+  await waitForHydration(page, `#${PANE_ID}-owner-name`);
+}
+
+async function fillThroughWrapUpStep(page: Page) {
+  await openBookingForm(page);
 
   await page.fill(`#${PANE_ID}-owner-name`, 'E2E Test Owner');
   await page.fill(`#${PANE_ID}-phone`, '(347) 555-0100');
   await page.fill(`#${PANE_ID}-email`, 'e2e@example.test');
   await page.getByRole('button', { name: 'Next →' }).click();
+  await expect(page.getByText(/^Step 2 of/)).toBeVisible();
 
   await page.fill(`#${PANE_ID}-dog-name`, 'Biscuit');
   await page.fill(`#${PANE_ID}-breed-age`, 'Golden, 3 years');
@@ -17,6 +25,7 @@ async function fillThroughWrapUpStep(page: Page) {
 
   await page.getByRole('button', { name: 'Next →' }).click(); // care step — defaults are valid
   await page.getByRole('button', { name: 'Next →' }).click(); // quirks step — nothing required
+  await expect(page.getByText(/^Step 5 of/)).toBeVisible();
 }
 
 test.describe('booking form', () => {
@@ -45,7 +54,7 @@ test.describe('booking form', () => {
   });
 
   test('a progress dot cannot skip ahead of a step that has not validated', async ({ page }) => {
-    await page.goto('/book');
+    await openBookingForm(page);
 
     // Jump straight from step 1 to step 5 without filling anything required.
     await page.getByRole('button', { name: /Go to step 5/ }).click();
