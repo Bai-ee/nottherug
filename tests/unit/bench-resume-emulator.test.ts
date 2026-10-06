@@ -227,11 +227,12 @@ describe('resume upload token (emulator)', () => {
     expect(storageUploadPrivate).toHaveBeenCalledTimes(1);
   });
 
-  it('on a finalization failure keeps the application and deletes the object it uploaded', async (ctx) => {
+  it('on an ambiguous finalization failure keeps the application and the uploaded object', async (ctx) => {
     if (!reachable) return ctx.skip(SKIP_REASON);
     const { id, resumeToken } = await apply();
     storage.onUpload = async () => {
-      // From here every Firestore write fails, as if the database dropped after the upload.
+      // From here every Firestore write answers 503, as if the database dropped after the upload: the
+      // route cannot know whether its finalize landed, so it must not delete the object.
       vi.stubGlobal('fetch', (url: string | URL | Request, init?: RequestInit) =>
         (init?.method === 'PATCH' || String(url).includes(':commit')) && String(url).includes('/documents')
           ? Promise.resolve(new Response('unavailable', { status: 503 }))
@@ -242,11 +243,36 @@ describe('resume upload token (emulator)', () => {
     vi.unstubAllGlobals();
 
     expect(res.status).toBe(500);
-    expect(storageDelete).toHaveBeenCalledWith(resumePath(id), expect.anything());
-    expect(objects.has(resumePath(id))).toBe(false);
+    expect(storageDelete).not.toHaveBeenCalled();
+    expect(objects.has(resumePath(id))).toBe(true);
     const p = await person(id);
     expect(p).toMatchObject({ fullName: 'Sam Rivera', resumePath: null });
     expect(p.resumeAttemptId).toEqual(expect.any(String));
+  });
+
+  it('on a definite finalization rejection deletes the object it uploaded', async (ctx) => {
+    if (!reachable) return ctx.skip(SKIP_REASON);
+    const { id, resumeToken } = await apply();
+    storage.onUpload = async () => {
+      // Every conditional finalize commit is rejected by its precondition, so none of them can land.
+      vi.stubGlobal('fetch', (url: string | URL | Request, init?: RequestInit) =>
+        String(url).includes(':commit') && String(url).includes('/documents')
+          ? Promise.resolve(
+              new Response(JSON.stringify({ error: { code: 400, status: 'FAILED_PRECONDITION', message: 'stale' } }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+              }),
+            )
+          : realFetch(url, init),
+      );
+    };
+    const res = await upload(id, resumeToken!);
+    vi.unstubAllGlobals();
+
+    expect(res.status).toBe(500);
+    expect(storageDelete).toHaveBeenCalledWith(resumePath(id), expect.anything());
+    expect(objects.has(resumePath(id))).toBe(false);
+    expect((await person(id)).resumePath).toBeNull();
   });
 
   it('does not finalize, or delete anything, when another attempt owns the record', async (ctx) => {

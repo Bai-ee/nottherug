@@ -163,12 +163,21 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error('[bench:resume] finalize failed', errorLabel(err));
-    // A timed-out write is ambiguous: it may have landed. Decide from a fresh read.
-    if (!(err instanceof AttemptLostError)) {
-      const finalized = await finalizedByThisAttempt(personId, attemptId, path, slice(CONFIRM_CAP_MS, FINALIZE_RESERVE_MS));
-      if (finalized === true) return NextResponse.json({ ok: true });
-      if (finalized === false) await removeOwnObject(path, priorResumePath, slice(STEP_CAP_MS));
+    // Lost attempt: another attempt owns the record and uses the same per-person path, so the object
+    // may be theirs. Never delete.
+    if (err instanceof AttemptLostError) return errorJson(500, FAILED_SAVE);
+    // Definite rejection: withOptimisticRetry only loops on precondition failures, so every finalize
+    // write it made was rejected and none can still land. Only here is our object safe to delete.
+    if (err instanceof FirestorePreconditionError) {
+      await removeOwnObject(path, priorResumePath, slice(STEP_CAP_MS));
+      return errorJson(500, FAILED_SAVE);
     }
+    // Ambiguous (timeout, dependency error): the write may already have landed, or may still land after
+    // any read made now, so the object is kept. A fresh read can only confirm success. If the write never
+    // lands, an unreferenced private file stays at this person's resume path (see the operations runbook).
+    const finalized = await finalizedByThisAttempt(personId, attemptId, path, slice(CONFIRM_CAP_MS, FINALIZE_RESERVE_MS));
+    if (finalized === true) return NextResponse.json({ ok: true });
+    console.error('[bench:resume] finalize outcome unknown; uploaded object kept');
     return errorJson(500, FAILED_SAVE);
   }
 

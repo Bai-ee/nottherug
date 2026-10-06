@@ -197,7 +197,7 @@ or make any privacy-law compliance claim; take that advice from counsel.
 | --- | --- | --- |
 | Inquiries (name, phone, email, dog details) | Firestore `leads` | Kept until someone deletes the document in the console. |
 | Applicant records | Firestore `benchPeople` | Same. |
-| Applicant resumes | Storage (private; read only through the admin download route) | Kept until someone deletes the file. Whether deleting an applicant record also removes its resume file was not verified; check Storage and delete the file too. |
+| Applicant resumes | Storage (private; read only through the admin download route) | Kept until someone deletes the file. Whether deleting an applicant record also removes its resume file was not verified; check Storage and delete the file too. **Possible leftover file:** if a resume upload's final save times out and never lands, the uploaded file is deliberately kept (deleting it could break a save that lands late), so a private file can exist at `private/bench-resumes/<id>.<pdf\|docx>` while the applicant record shows no resume. It is private and harmless; the server logs `[bench:resume] finalize outcome unknown; uploaded object kept`. Delete it by hand during the retention review if the record still shows no resume. |
 | Visitor analytics events | Firestore `analytics_events` | Expire automatically (TTL ACTIVE). |
 | Rate-limit counters | Firestore `analyticsRateLimits` (TTL active), `leadRateLimits`, `benchRateLimits` (no TTL) | See A11 and checklist item 2. Contain only hashed network identifiers. |
 

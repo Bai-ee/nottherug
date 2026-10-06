@@ -1,6 +1,6 @@
 # Plan 013 — P5 release packet
-Status: READY FOR TECHNICAL REVIEW (no production action taken)
-Release candidate SHA: **the commit that adds this packet** (exact SHA and its GitHub Actions run via draft PR #1 are given in the relay message)
+Status: CHANGES REQUESTED ADDRESSED — resubmission (no production action taken)
+Release candidate SHA: **the resubmission commit that adds this revision** (exact SHA and its GitHub Actions run via draft PR #1 are given in the relay message). Superseded candidate: `8733c40b7b94c58840c655eb4c053757985e4694` (CI run 37390339544 green; Codex CHANGES REQUESTED).
 Branch: `codex/client-handoff-hardening` (draft PR #1). `main` is an ancestor of the candidate, so the release can be a fast-forward of `main` to exactly this SHA.
 Prior approvals: P0 `3461c67`, P1 `7833d99`, P2 `6e5b764`, P3+P4 `f410241`.
 
@@ -22,7 +22,7 @@ Independent review (`013-P5-review.md`, approve with fixes) found: two timeouts 
 | --- | --- | --- | --- | --- |
 | F01 capture consumes inquiry quota | P1 | P1 (`7833d99`) | Fixed | Namespaced counters; regression + emulator tests (013-P1-report) |
 | F02 capture undoes conversion/booking | P1 | P1 | Fixed | Conditional writes + optimistic retry; 8 emulator ordering tests |
-| F03 resume token replay / stale overwrite | P2 | P1 | Fixed | Single-winner claim, field-scoped writes; 17 emulator tests |
+| F03 resume token replay / stale overwrite | P2 | P1 + P5 finalize fix | Fixed | Single-winner claim, field-scoped writes; 17 emulator tests |
 | F04 capture byte limit | P2 | P1 | Fixed | Shared bounded reader; original audit repro now fails on behavior (413) |
 | F05 CI skips data-boundary tests | P1 | P2 (`6e5b764`) | Fixed | `emulators` job with required mode + zero-executed guard; `e2e-analytics` job; route outages fail in CI |
 | F06 homepage delays usable content | P2 | P3 (`f7b235c`) | Fixed | Mobile CTA 8.07 → 1.56 s, desktop 6.76 → 0.67 s (013-P3P4-report) |
@@ -110,5 +110,13 @@ Project owner (sole Firebase/Vercel/GitHub owner today) authorizes and executes 
 
 Request Codex technical approval of this release packet at the candidate SHA in the relay message. No production action has been taken; release requires the owner's separate authorization.
 
+## Codex review of 8733c40 — CHANGES REQUESTED (addressed)
+
+Blocking: `app/api/bench/apply/resume/route.ts` deleted the uploaded resume when the confirmation read after a failed finalize was negative, but a timed-out finalize write can still commit after that read, leaving the record pointing at a deleted file with the token already used (Codex reproduction `late-finalize.test.ts` failed on `8733c40`).
+
+Fix: on an ambiguous finalize error (timeout, dependency error) the object is **kept**; a fresh read can only confirm success (→ 200). The object is deleted only on a **definite rejection**: the optimistic-retry loop ended with a precondition failure (it retries only on precondition failures, including Firestore `ABORTED`, so no finalize write it made can land). Deviation from the review text, for Codex to confirm: on **attempt lost** the object is *not* deleted, because every attempt uses the same per-person path (`private/bench-resumes/<id>.<ext>`) and the object may belong to the attempt that owns the record — the existing emulator test "does not finalize, or delete anything, when another attempt owns the record" pins this. Unchanged: positive-confirmation success path, single-use token, deadlines, field-scoped writes. Possible private leftover file documented in the runbook (retention table).
+
+Tests: new `tests/unit/bench-resume-finalize.test.ts` (late commit after a negative read keeps the file; confirmation read fails keeps the file and the token stays used; already committed → 200; definite precondition rejection deletes); emulator `bench-resume-emulator.test.ts`: the 503 finalize case now asserts the object is kept, plus a new definite-rejection case (stubbed `FAILED_PRECONDITION` commits) asserting deletion. Local (Codex-requested): resume + emulator concurrency suites under `REQUIRE_EMULATORS=1` — 8 files, 66 passed, 0 skipped; Codex reproduction passes; lint 0 warnings; typecheck clean.
+
 ## Reviewer decision — Codex only
-PENDING
+PENDING (resubmission)
