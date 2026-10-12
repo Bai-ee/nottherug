@@ -469,7 +469,7 @@ export default function GroupWalkFeatureCard({
             id="home-group-walk-feature-details-btn"
             className="service-details-btn"
             aria-haspopup="dialog"
-            aria-label={`${GROUP_WALK_PREVIEW.title}: full details and rates`}
+            aria-label={`Rates & Details: ${GROUP_WALK_PREVIEW.title}, full details and rates`}
             onClick={() => onOpenDetails(GROUP_WALK_PREVIEW)}
           >
             Rates &amp; Details
@@ -478,7 +478,7 @@ export default function GroupWalkFeatureCard({
         </div>
 
         <div id="home-group-walk-feature-title-row">
-          <h3 id="home-group-walk-feature-title">{GROUP_WALK_PREVIEW.title}</h3>
+          <h3 id="home-group-walk-feature-title" aria-level={2}>{GROUP_WALK_PREVIEW.title}</h3>
           <div id="home-group-walk-feature-price-block">
             <div id="home-group-walk-feature-was-row">
               <span id="home-group-walk-feature-unit">{GROUP_WALK_PREVIEW.priceUnit}</span>
