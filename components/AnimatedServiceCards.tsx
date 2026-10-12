@@ -730,10 +730,8 @@ export default function AnimatedServiceCards() {
   // true from the next render on — no effect, no extra committed render.
   const mounted = useSyncExternalStore(subscribeNever, () => true, () => false);
   const router = useRouter();
-  // This component only ever mounts behind the disabled
-  // `{false && <AnimatedServiceCards />}` gate in
-  // components/marketing/DisabledHomeSections.tsx, so this never runs on the
-  // live site — kept as a real Next.js navigation instead of the removed SPA
+  // This component only mounts from the dev-gated playground
+  // (app/playground/service-cards/), so this never runs on the live site — kept as a real Next.js navigation instead of the removed SPA
   // `window.showPage` global (R13) in case the carousel is re-enabled later.
   const goToServices = () => router.push("/#home-personalized-care-section");
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);

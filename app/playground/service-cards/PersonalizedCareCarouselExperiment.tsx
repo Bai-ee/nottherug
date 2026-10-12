@@ -1,21 +1,18 @@
 'use client';
 
 // Recoverable copy of the disabled home-page "Personalized Care Carousel"
-// section. Moved here from components/marketing/DisabledHomeSections.tsx
-// (plans/010 P2.2 / P3.6) so AnimatedServiceCards.tsx — and the GSAP import
-// and experimental card assets it pulls in — is reachable only from this
+// section (plans/010 P2.2 / P3.6) so AnimatedServiceCards.tsx — and the GSAP
+// import and experimental card assets it pulls in — is reachable only from this
 // dev-gated playground route (app/playground/service-cards/page.tsx returns
 // notFound() in production), never from a production route's module graph.
-// DisabledHomeSections.tsx keeping its own import of this component was
-// enough to make Next include it in the homepage's client bundle even though
-// the call site is gated with `{false && ...}` — the `false` branch never
-// runs, but the static import is still part of the module graph the bundler
-// has to account for.
+// A gated `{false && ...}` call site with a static import would still put this
+// component in the homepage's client bundle, so none is kept.
 //
 // Re-enabling the section on the home page (plans/002 P2A still says not to,
-// without a separate product decision) means moving this file's contents
-// back into DisabledHomeSections.tsx and restoring the `{false && ...}` call
-// site in HomePageContent.tsx.
+// without a separate product decision) means mounting this component from
+// components/marketing/HomePageContent.tsx again. The former
+// DisabledHomeSections.tsx and its other four sections were deleted
+// (plan 014 H1); recover them from git history if needed.
 import AnimatedServiceCards from '@/components/AnimatedServiceCards';
 
 export function PersonalizedCareCarouselExperiment() {

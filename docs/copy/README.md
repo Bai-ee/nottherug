@@ -72,11 +72,10 @@ it in a separate `## Requests that need a developer` block. That is a code chang
 
 - Anything inside a `{false && (...)}` block. `app/page.tsx`'s nine virtual pages were
   extracted into real routes and `components/marketing/**` (see
-  plans/002-production-readiness.md, P2A); the same five disabled homepage sections and
-  the `AnimatedServiceCards` carousel now live in
-  `components/marketing/DisabledHomeSections.tsx`, gated the same way at their call site
-  in `app/(marketing)/page.tsx`. None of that copy is on the live site and none of it is
-  in the tool. Re-enable a block in the code and wire its source back into
+  plans/002-production-readiness.md, P2A); the five disabled homepage sections were deleted
+  (plan 014 H1; recover from git history), and the `AnimatedServiceCards` carousel only
+  mounts from the dev-gated playground. None of that copy is on the live site and none of
+  it is in the tool. Re-enable a block in the code and wire its source back into
   `scripts/copy/extract-copy.mjs` to bring its copy back.
 - The dev tuning overlay `#hc-card-tuning-panel` (inside the disabled `AnimatedServiceCards`,
   so already excluded above). The homepage's `#hiw-paw-tuning-panel` ("Tune Paws") was a
