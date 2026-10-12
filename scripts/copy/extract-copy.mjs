@@ -38,12 +38,13 @@ const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 // garbage "text" items). Each range below was picked by hand against the
 // actual file.
 const JSX_SOURCES = [
-  { file: 'components/SiteNav.tsx', page: 'global', jsxRange: [37, 999], skipRanges: [] },
-  { file: 'components/marketing/SiteFooter.tsx', page: 'global', jsxRange: [8, 999], skipRanges: [] },
+  { file: 'components/SiteNav.tsx', page: 'global', jsxRange: [135, 999], skipRanges: [] },
+  { file: 'components/marketing/SiteFooter.tsx', page: 'global', jsxRange: [61, 999], skipRanges: [] },
 
-  { file: 'components/marketing/HomeHero.tsx', page: 'home', jsxRange: [12, 999], skipRanges: [] },
-  { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', jsxRange: [49, 999], skipRanges: [] },
-  { file: 'components/marketing/TrustBar.tsx', page: 'home', jsxRange: [4, 999], skipRanges: [] },
+  { file: 'components/marketing/HomeHero.tsx', page: 'home', jsxRange: [136, 999], skipRanges: [] },
+  { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', jsxRange: [73, 999], skipRanges: [] },
+  { file: 'components/marketing/TrustBar.tsx', page: 'home', jsxRange: [5, 29], skipRanges: [] },
+  { file: 'components/marketing/TrustBar.tsx', page: 'home', jsxRange: [32, 999], skipRanges: [] },
   // Two entries, not one [4, 999] range with a skipRange over the gap: the
   // scanner treats any unescaped `{` it meets outside a tag as the start of
   // a JSX expression and skips to its balanced `}` (skipBalancedBraces) —
@@ -56,20 +57,18 @@ const JSX_SOURCES = [
   // filters output lines; it cannot stop the scan from being derailed by
   // that gap. Two ranges, each ending before the other component's own
   // `{`, avoid the gap entirely.
-  { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [4, 11], skipRanges: [] },
-  { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [19, 999], skipRanges: [] },
-  { file: 'components/marketing/ClosingTrust.tsx', page: 'home', jsxRange: [11, 999], skipRanges: [] },
-  { file: 'components/marketing/FeaturedReviews.tsx', page: 'home', jsxRange: [7, 999], skipRanges: [] },
-  { file: 'components/marketing/HomePageContent.tsx', page: 'home', jsxRange: [28, 999], skipRanges: [] },
+  { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [60, 89], skipRanges: [] },
+  { file: 'components/marketing/ServicesPreview.tsx', page: 'home', jsxRange: [105, 999], skipRanges: [] },
+  { file: 'components/marketing/ClosingTrust.tsx', page: 'home', jsxRange: [14, 999], skipRanges: [] },
+  { file: 'components/marketing/FeaturedReviews.tsx', page: 'home', jsxRange: [96, 999], skipRanges: [] },
+  { file: 'components/marketing/HomePageContent.tsx', page: 'home', jsxRange: [30, 999], skipRanges: [] },
 
-  { file: 'components/marketing/ServicesPageContent.tsx', page: 'services', jsxRange: [40, 999], skipRanges: [] },
-  { file: 'components/marketing/ServiceGrid.tsx', page: 'services', jsxRange: [6, 999], skipRanges: [] },
 
   { file: 'components/marketing/SampleWalkReportCard.tsx', page: 'how-it-works', jsxRange: [3, 999], skipRanges: [] },
 
-  { file: 'components/marketing/AboutPageContent.tsx', page: 'about', jsxRange: [15, 999], skipRanges: [] },
-  { file: 'components/marketing/TeamGrid.tsx', page: 'about', jsxRange: [46, 999], skipRanges: [] },
-  { file: 'components/marketing/ValuesGrid.tsx', page: 'about', jsxRange: [9, 999], skipRanges: [] },
+  { file: 'components/marketing/AboutPageContent.tsx', page: 'about', jsxRange: [16, 999], skipRanges: [] },
+  { file: 'components/marketing/TeamGrid.tsx', page: 'about', jsxRange: [5, 999], skipRanges: [] },
+  { file: 'components/marketing/ValuesGrid.tsx', page: 'about', jsxRange: [4, 999], skipRanges: [] },
 
   { file: 'components/marketing/SafetyPageContent.tsx', page: 'safety', jsxRange: [16, 999], skipRanges: [] },
   { file: 'components/marketing/CertificationStrip.tsx', page: 'safety', jsxRange: [5, 999], skipRanges: [] },
@@ -77,7 +76,7 @@ const JSX_SOURCES = [
 
   { file: 'components/marketing/NeighborhoodsPageContent.tsx', page: 'neighborhoods', jsxRange: [16, 999], skipRanges: [] },
   { file: 'components/marketing/NeighborhoodCard.tsx', page: 'neighborhoods', jsxRange: [19, 999], skipRanges: [] },
-  { file: 'components/marketing/NeighborhoodDetail.tsx', page: 'neighborhoods', jsxRange: [9, 999], skipRanges: [] },
+  { file: 'components/marketing/NeighborhoodDetail.tsx', page: 'neighborhoods', jsxRange: [8, 999], skipRanges: [] },
 
   { file: 'components/marketing/ReviewsPageContent.tsx', page: 'reviews', jsxRange: [14, 999], skipRanges: [] },
 
@@ -89,42 +88,38 @@ const JSX_SOURCES = [
   // code-like garbage in docs/copy/copy-inventory.json (import/export/
   // function/useState/useEffect text instead of real copy) after any change
   // to these three files, and update the ranges below if it appears.
-  { file: 'components/booking/BookingForm.tsx', page: 'MeetGreetForm', jsxRange: [253, 426], skipRanges: [] },
+  { file: 'components/booking/BookingForm.tsx', page: 'MeetGreetForm', jsxRange: [527, 837], skipRanges: [] },
   // BookingSteps.tsx exports five separate step components, each with its
   // own `return (` — five disjoint ranges, not one [42, 999] range, for the
   // same reason as ServicesPreview.tsx above: the next step's own
   // `function StepX(...) {` would introduce an unmatched `{` that swallows
   // the rest of the file.
-  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [42, 107], skipRanges: [] },
-  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [110, 159], skipRanges: [] },
-  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [162, 195], skipRanges: [] },
-  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [222, 298], skipRanges: [] },
-  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [321, 361], skipRanges: [] },
-  { file: 'components/booking/SchedulingDialog.tsx', page: 'MeetGreetForm', jsxRange: [93, 221], skipRanges: [] },
-  { file: 'app/(marketing)/book/page.tsx', page: 'book', jsxRange: [13, 999], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [49, 121], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [125, 173], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [177, 209], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [237, 312], skipRanges: [] },
+  { file: 'components/booking/BookingSteps.tsx', page: 'MeetGreetForm', jsxRange: [344, 385], skipRanges: [] },
+  { file: 'components/booking/SchedulingDialog.tsx', page: 'MeetGreetForm', jsxRange: [187, 296], skipRanges: [] },
+  { file: 'app/(marketing)/book/page.tsx', page: 'book', jsxRange: [25, 999], skipRanges: [] },
   { file: 'app/(marketing)/contact/page.tsx', page: 'contact', jsxRange: [21, 999], skipRanges: [] },
-  { file: 'components/marketing/ContactInfoCard.tsx', page: 'contact', jsxRange: [19, 999], skipRanges: [] },
+  { file: 'components/marketing/ContactInfoCard.tsx', page: 'contact', jsxRange: [20, 999], skipRanges: [] },
 ];
 
 // Copy that lives in plain object literals or module constants, not in JSX.
 const DATA_SOURCES = [
-  { file: 'lib/content/services.ts', page: 'home', range: [17, 42], props: ['title', 'copy', 'price', 'priceUnit', 'badge'] },
-  { file: 'lib/content/services.ts', page: 'services', range: [50, 96], props: ['title', 'copy', 'price', 'priceUnit', 'badge'] },
-  { file: 'lib/content/coverage.ts', page: 'neighborhoods', range: [16, 24], props: ['name', 'tagline', 'desc', 'seo'], arrayProps: ['parks'] },
+  { file: 'lib/content/services.ts', page: 'home', range: [43, 130], props: ['title', 'copy', 'price', 'priceUnit', 'badge'] },
+  { file: 'lib/content/coverage.ts', page: 'neighborhoods', range: [16, 26], props: ['name', 'tagline', 'desc', 'seo'], arrayProps: ['parks'] },
   { file: 'lib/content/contact.ts', page: 'contact', range: [1, 17], consts: ['PHONE_DISPLAY', 'EMAIL_DISPLAY', 'ADDRESS_LINE_1', 'ADDRESS_LINE_2', 'RESPONSE_HOURS', 'RESPONSE_TIME_NOTE', 'SERVICE_AREA_NOTE'] },
 
   { file: 'components/marketing/ProofMarquee.tsx', page: 'home', range: [1, 11], props: ['quote', 'author'] },
-  { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', range: [38, 43], props: ['title', 'copy'] },
-  { file: 'components/marketing/ServicesPageContent.tsx', page: 'services', range: [13, 34], props: ['title', 'desc'] },
-  { file: 'components/marketing/TeamGrid.tsx', page: 'about', range: [12, 43], props: ['name', 'role', 'bio'] },
-  { file: 'components/marketing/ValuesGrid.tsx', page: 'about', range: [1, 6], props: ['title', 'copy'] },
+  { file: 'components/marketing/HowItWorksStrip.tsx', page: 'home', range: [41, 66], props: ['title', 'copy'] },
+  { file: 'lib/content/team.ts', page: 'about', range: [30, 77], props: ['name', 'role', 'bio'] },
+  { file: 'lib/content/about.ts', page: 'about', range: [30, 35], props: ['title', 'copy'] },
   { file: 'components/marketing/TrustCards.tsx', page: 'safety', range: [1, 27], props: ['title', 'copy'] },
   { file: 'components/marketing/SafetyFaq.tsx', page: 'safety', range: [5, 11], props: ['q', 'a'] },
-  { file: 'components/marketing/ReviewsMasonry.tsx', page: 'reviews', range: [1, 18], props: ['name', 'meta', 'text'] },
+  { file: 'components/marketing/ReviewsMasonry.tsx', page: 'reviews', range: [6, 33], props: ['name', 'meta', 'text'] },
 
   { file: 'app/(marketing)/page.tsx', page: 'home', range: [1, 30], props: ['title', 'description'] },
-  { file: 'app/(marketing)/services/page.tsx', page: 'services', range: [1, 13], props: ['title', 'description'] },
-  { file: 'app/(marketing)/how-it-works/page.tsx', page: 'how-it-works', range: [1, 13], props: ['title', 'description'] },
   { file: 'app/(marketing)/about/page.tsx', page: 'about', range: [1, 13], props: ['title', 'description'] },
   { file: 'app/(marketing)/safety/page.tsx', page: 'safety', range: [1, 13], props: ['title', 'description'] },
   { file: 'app/(marketing)/neighborhoods/williamsburg/page.tsx', page: 'neighborhoods', range: [1, 13], props: ['title', 'description'] },

@@ -130,6 +130,12 @@ export const SECTIONS = {
   'lib/content/services.ts': [
     [1, 999, 'services-data', 'Service names, copy and prices (typed data)', 'Feeds both the homepage rates preview and the /services grid. The two use different names/copy for the same services on purpose — see the file comment.'],
   ],
+  'lib/content/team.ts': [
+    [1, 999, 'about-team', 'Team bios', 'Fixed at the current number of people. Adding or removing a team member is a code change, not a copy change.'],
+  ],
+  'lib/content/about.ts': [
+    [1, 999, 'about-how-we-work', 'How we work (values)', ''],
+  ],
   'lib/content/contact.ts': [
     [1, 999, 'contactpage-body', 'Contact details (typed data)', 'Phone, email, address and hours — feeds the /contact page.'],
   ],
