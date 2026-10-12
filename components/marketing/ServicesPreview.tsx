@@ -64,7 +64,7 @@ export function PreviewCard({
           id={`home-rate-sticker-${stickerSlug(item.title)}`}
           className="home-rate-sticker service-details-btn"
           aria-haspopup="dialog"
-          aria-label={`${item.title}: full details and rates`}
+          aria-label={`${stickerLabel}: ${item.title}, full details and rates`}
           onClick={() => onOpenDetails(item)}
         >
           {stickerLabel}
@@ -90,9 +90,8 @@ export function PreviewCard({
 }
 
 // Home page "rates preview" row. The animated product carousel that used to
-// sit above it is disabled per current direction (see
-// components/marketing/DisabledHomeSections.tsx notes) — the static cards
-// below are the shipped replacement, not a fallback.
+// sit above it was retired — the static cards below are the shipped design,
+// not a fallback.
 export default function ServicesPreview() {
   // Scope for the sticker/rate parallax — the hook only ever touches elements
   // inside this row (see hooks/useRateStickerParallax.ts).

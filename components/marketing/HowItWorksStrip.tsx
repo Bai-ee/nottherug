@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 import { WILLIAMSBURG } from '@/lib/content/coverage';
-// import { useHowItWorksPawTrail } from './hooks/useHowItWorksPawTrail';
 
 /* Paw-print watermark trail temporarily disabled — restore this block and
    the #home-how-it-works-paw-trail markup below to bring the paws back.
@@ -31,7 +30,7 @@ function PawTrailPrint({ left, top, rotate }: { left: string; top: string; rotat
 
 // left%/top%/rotate for the 4 watermark prints, computed once from the
 // tuned defaults (startX 4, spreadX 79, rowTop 12, rowBottom 56,
-// baseRotation 90, rotationVariance 6) — see useHowItWorksPawTrail.
+// baseRotation 90, rotationVariance 6).
 const PAW_POSITIONS = [0, 1, 2, 3].map((i) => ({
   left: `${4 + (79 * i) / 3}%`,
   top: `${i % 2 === 0 ? 12 : 56}%`,
@@ -70,7 +69,6 @@ export default function HowItWorksStrip() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   // Reveal disabled with the paw trail: this hook also hid the step copy until
   // a ScrollTrigger fired, which left the strip blank. Steps render static.
-  // useHowItWorksPawTrail(sectionRef);
 
   return (
     <div id="home-how-it-works-block" ref={sectionRef}>
@@ -97,7 +95,7 @@ export default function HowItWorksStrip() {
           <div className="hiw-step" key={step.number}>
             <div className="hiw-step-copy">
               <div className="hiw-step-number" aria-hidden="true">{step.number}</div>
-              <h4>{step.title}</h4>
+              <h4 aria-level={3}>{step.title}</h4>
               <p>{step.copy}</p>
             </div>
           </div>
@@ -109,7 +107,7 @@ export default function HowItWorksStrip() {
       <div id="home-how-it-works-coverage-points">
         {COVERAGE_POINTS.map((point) => (
           <div className="home-coverage-point" key={point.title}>
-            <h4>{point.title}</h4>
+            <h4 aria-level={3}>{point.title}</h4>
             <p>{point.copy}</p>
           </div>
         ))}
