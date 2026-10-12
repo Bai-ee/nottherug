@@ -69,7 +69,7 @@ export default function SiteFooter() {
             <div id="footer-art-shell">
               <Image
                 id="footer-art-image"
-                src="/img/bg-section-graphic-1.webp"
+                src="/img/footer-williamsburg-bridge.webp"
                 alt="Not The Rug — NYC dog walking. A collage of the Williamsburg Bridge and the Manhattan skyline."
                 width={1620}
                 height={971}
