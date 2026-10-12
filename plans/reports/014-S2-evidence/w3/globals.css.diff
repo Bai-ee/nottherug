@@ -1,0 +1,197 @@
+diff --git a/app/globals.css b/app/globals.css
+index e70c4d7..d027e47 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -23,7 +23,10 @@
+   --terracotta: #A9503A; /* was #C4674B (3.31:1 under paper text); 4.57:1 */
+   --terracotta-light: #E8A896;
+   --gold: #C9A96E;
+-  --gold-light: #E8D4A8;
++  --gold-light: #F5EACB; /* was #E8D4A8 (3.9-4.2:1 on the olive bands); 4.7+ */
++  --gold-ink: #9A7A33; /* star glyphs on paper; --gold was 1.8:1 */
++  --gold-text: #6F5620; /* gold as text on paper (Reddit note); 5.3:1 */
++  --sage-ink: #5A6F4B; /* sage as text on paper; --sage was 3.1:1, this is 4.9:1 */
+ 
+   --font-display: var(--font-fraunces), 'DM Serif Display', serif;
+   --font-body: var(--font-outfit), sans-serif;
+@@ -187,7 +190,7 @@ nav {
+   padding: 7px 9px; border-radius: 4px;
+   font-size: 13.5px; font-weight: 500;
+   white-space: nowrap;
+-  color: rgba(255,255,255,0.7);
++  color: rgba(255,255,255,0.9);
+   transition: all .2s;
+ }
+ /* Icon-only entry: an inline <svg> sits on the text baseline, which left the
+@@ -566,7 +569,7 @@ h3 { font-size: clamp(22px, 2vw, 30px); }
+ /* =============================================
+    STAR RATING
+    ============================================= */
+-.stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
++.stars { color: var(--gold-ink); font-size: 14px; letter-spacing: 1px; }
+ 
+ /* =============================================
+    SECTION BACKGROUNDS
+@@ -691,7 +694,7 @@ footer {
+ .footer-bottom { grid-area: legal; padding-top: 12px; text-align: center; }
+ .footer-tagline {
+   font-family: var(--font-type);
+-  font-size: 15px; color: rgba(255,255,255,0.78);
++  font-size: 15px; color: rgba(255,255,255,0.92);
+   line-height: 1.7; max-width: 320px; margin-bottom: 24px;
+ }
+ .footer-social { display: flex; gap: 12px; }
+@@ -705,16 +708,16 @@ footer {
+ .footer-col h4 {
+   font-family: var(--font-body); font-size: 13px;
+   font-weight: 500; letter-spacing: 0.3px;
+-  text-transform: none; color: rgba(255,255,255,0.72);
++  text-transform: none; color: rgba(255,255,255,0.9);
+   margin-bottom: 18px;
+ }
+ .footer-col li { margin-bottom: 10px; }
+ .footer-col li a {
+-  font-size: 14px; color: rgba(255,255,255,0.8);
++  font-size: 14px; color: rgba(255,255,255,0.92);
+   transition: color .2s;
+ }
+ .footer-col li a:hover { color: white; }
+-.footer-copy { font-size: 13px; color: rgba(255,255,255,0.7); }
++.footer-copy { font-size: 13px; color: rgba(255,255,255,0.95); }
+ /* Tablet: the art leads, everything else is arranged under it. */
+ @media (max-width: 1100px) {
+   .footer-grid {
+@@ -794,11 +797,12 @@ footer {
+ #home-how-it-works-section h2,
+ #home-team-section h2,
+ #home-closing-trust-section h2,
++#home-contact-sheet-section h1,
+ #home-contact-sheet-section h2 { color: var(--cream); }
+ #home-closing-trust-section .label { color: var(--gold-light); }
+ #home-closing-trust-section h3,
+ #home-closing-trust-section h4 { color: var(--cream); }
+-#home-closing-trust-section p { color: rgba(243,236,217,0.7); }
++#home-closing-trust-section p { color: rgba(243,236,217,0.92); }
+ #home-closing-trust-section .divider { background: rgba(243,236,217,0.2); }
+ #home-closing-trust-section .cert-label { color: rgba(243,236,217,0.6); }
+ /* position:relative anchors the watermark trail's negative z-index into this
+@@ -1097,7 +1101,7 @@ footer {
+    is now the only place this strip appears — the reviews band's copy of it was
+    replaced by its two platform clickouts. */
+ #hero-stats-strip .hero-stat-num { color: var(--cream); }
+-#hero-stats-strip .hero-stat-label { color: rgba(243,236,217,0.62); }
++#hero-stats-strip .hero-stat-label { color: rgba(243,236,217,0.74); }
+ #hero-stats-strip .hero-stat-divider {
+   background: linear-gradient(to bottom, rgba(243,236,217,0.28) 0%, transparent 100%);
+ }
+@@ -1529,7 +1533,9 @@ footer {
+   position: relative;
+ }
+ .page-hero h1 { color: white; margin-bottom: 20px; }
+-.page-hero p { font-family: var(--font-type); color: rgba(255,255,255,0.65); font-size: 18px; max-width: 540px; margin: 0 auto; }
++/* The eyebrow carries an inline sage-light colour (3.5-4.5:1 over the photo); !important is the only way past it from CSS. */
++.page-hero .label { color: #DDE8CE !important; }
++.page-hero p { font-family: var(--font-type); color: rgba(255,255,255,0.85); font-size: 18px; max-width: 540px; margin: 0 auto; }
+ 
+ .pricing-card {
+   background: var(--warm-white);
+@@ -1649,7 +1655,7 @@ footer {
+ }
+ .team-info { padding: 24px; }
+ .team-name { font-family: var(--font-display); font-size: 22px; margin-bottom: 4px; }
+-.team-role { font-size: 13px; font-weight: 500; letter-spacing: 0.2px; text-transform: none; color: var(--sage); margin-bottom: 12px; }
++.team-role { font-size: 13px; font-weight: 500; letter-spacing: 0.2px; text-transform: none; color: var(--sage-ink); margin-bottom: 12px; }
+ .team-bio { font-family: var(--font-type); font-size: 14px; color: var(--mid-gray); line-height: 1.65; }
+ .team-certifications { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+ 
+@@ -1754,7 +1760,7 @@ footer {
+   margin-top: 16px;
+ }
+ #home-closing-trust-section .trust-park-tag {
+-  background: rgba(243, 236, 217, 0.10);
++  background: rgba(243, 236, 217, 0.07);
+   border-color: rgba(243, 236, 217, 0.28);
+   color: var(--cream);
+ }
+@@ -1794,14 +1800,14 @@ footer {
+   aspect-ratio: 4/3;
+   transition: all .3s;
+ }
+-.hood-card:hover .hood-card-overlay { background: rgba(28,28,26,0.55); }
++.hood-card:hover .hood-card-overlay { background: linear-gradient(to top, rgba(28,28,26,0.78) 0%, rgba(28,28,26,0.55) 60%); }
+ .hood-card:hover { transform: scale(1.02); }
+ .hood-card-img {
+   position: absolute; inset: 0;
+ }
+ .hood-card-overlay {
+   position: absolute; inset: 0;
+-  background: rgba(28,28,26,0.4);
++  background: linear-gradient(to top, rgba(28,28,26,0.66) 0%, rgba(28,28,26,0.4) 60%);
+   transition: all .3s;
+   display: flex; align-items: flex-end; padding: 24px;
+ }
+@@ -1880,7 +1886,7 @@ footer {
+   font-family: var(--font-display); font-size: 80px; line-height: 1;
+   color: white;
+ }
+-.review-source-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
++.review-source-label { font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+ .reviews-divider { width: 1px; height: 80px; background: rgba(255,255,255,0.2); }
+ .reviews-masonry {
+   columns: 3; gap: 20px;
+@@ -2636,7 +2642,7 @@ footer {
+   text-transform: uppercase;
+   /* The star row's own line box (14px glyphs at the body's 1.6). */
+   line-height: calc(14px * 1.6);
+-  color: var(--gold);
++  color: var(--gold-text);
+ }
+ /* The Reddit voice leads the row, so it wears a light gold wash and a gold
+    rule on top: unprompted word of mouth, set a little apart. */
+@@ -3206,12 +3212,12 @@ footer {
+   background-size: cover;
+ }
+ #home-team-photo-art { background-image: url('/img/bg-section-1-cover.webp'); opacity: 0.10; }
+-#home-closing-trust-photo-art { background-image: url('/img/bg-section-1-cover.webp'); opacity: 0.12; }
+-#footer-photo-art { background-image: url('/img/bg-section-2-cover.webp'); opacity: 0.15; }
++#home-closing-trust-photo-art { background-image: url('/img/bg-section-1-cover.webp'); opacity: 0.08; }
++#footer-photo-art { background-image: url('/img/bg-section-2-cover.webp'); opacity: 0.12; }
+ /* The contact sheet only carries the photo on the closing band (home, signup,
+    walk-with-us); in the welcome modal its layer stays empty. */
+ #home-closing-band-shell #home-contact-sheet-photo-art,
+-#home-closing-band-shell #footer-photo-art { background-image: url('/img/bg-section-2-cover.webp'); opacity: 0.20; }
++#home-closing-band-shell #footer-photo-art { background-image: url('/img/bg-section-2-cover.webp'); opacity: 0.14; }
+ /* Dog collage parallax shell: mirrors the image's own flex sizing, so the
+    image's width and % margins resolve exactly as before. */
+ #home-contact-sheet-clipping-shell { flex: 0 0 auto; width: 100%; }
+@@ -4593,10 +4599,10 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
+   display: block;
+   font-family: var(--font-stamp);
+   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+-  color: rgba(255, 255, 255, 0.68);
++  color: rgba(255, 255, 255, 0.93);
+   margin-bottom: 2px;
+ }
+-.footer-contact-value { display: block; font-size: 14px; color: rgba(255, 255, 255, 0.85); }
++.footer-contact-value { display: block; font-size: 14px; color: rgba(255, 255, 255, 0.95); }
+ a.footer-contact-value:hover { color: white; }
+ .footer-contact-note { display: block; font-size: 12px; line-height: 1.5; color: rgba(255, 255, 255, 0.45); }
+ 
+@@ -4608,7 +4614,7 @@ a.footer-contact-value:hover { color: white; }
+   font-family: inherit;
+   font-size: 13.5px; font-weight: 500;
+   white-space: nowrap;
+-  color: rgba(255, 255, 255, 0.7);
++  color: rgba(255, 255, 255, 0.9);
+   background: none; border: none;
+   transition: all 0.2s;
+ }
+@@ -4618,7 +4624,7 @@ a.footer-contact-value:hover { color: white; }
+ .footer-link-btn {
+   padding: 0; background: none; border: none;
+   font-family: inherit; font-size: 14px; text-align: left;
+-  color: rgba(255, 255, 255, 0.75);
++  color: rgba(255, 255, 255, 0.92);
+   transition: color 0.2s;
+ }
+ .footer-link-btn:hover { color: white; }

@@ -1,0 +1,58 @@
+{
+ "/ 390": {
+  "violations": [],
+  "incomplete": 230
+ },
+ "/ 1440": {
+  "violations": [],
+  "incomplete": 238
+ },
+ "/about 390": {
+  "violations": [],
+  "incomplete": 39
+ },
+ "/about 1440": {
+  "violations": [],
+  "incomplete": 44
+ },
+ "/safety 390": {
+  "violations": [],
+  "incomplete": 34
+ },
+ "/safety 1440": {
+  "violations": [],
+  "incomplete": 39
+ },
+ "/neighborhoods/williamsburg 390": {
+  "violations": [],
+  "incomplete": 45
+ },
+ "/neighborhoods/williamsburg 1440": {
+  "violations": [],
+  "incomplete": 50
+ },
+ "/reviews 390": {
+  "violations": [],
+  "incomplete": 37
+ },
+ "/reviews 1440": {
+  "violations": [],
+  "incomplete": 56
+ },
+ "/book 390": {
+  "violations": [],
+  "incomplete": 4
+ },
+ "/book 1440": {
+  "violations": [],
+  "incomplete": 3
+ },
+ "/signup 390": {
+  "violations": [],
+  "incomplete": 70
+ },
+ "/signup 1440": {
+  "violations": [],
+  "incomplete": 67
+ }
+}
