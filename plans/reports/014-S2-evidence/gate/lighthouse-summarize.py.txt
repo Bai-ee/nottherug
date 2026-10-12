@@ -1,0 +1,22 @@
+import json,glob,statistics as st,sys,os
+def m(f):
+    j=json.load(open(f));a=j['audits'];c=j['categories']
+    reqs=a['network-requests']['details']['items']
+    vid=sum(r.get('transferSize',0) for r in reqs if any(x in r['url'] for x in ('.mp4','.webm')))
+    el=a.get('largest-contentful-paint-element',{}).get('details',{}).get('items',[])
+    sel=el[0]['items'][0]['node']['selector'] if el and el[0].get('items') and el[0]['items'][0].get('node') else ''
+    return dict(perf=round(c['performance']['score']*100) if c['performance']['score'] is not None else None,lcp=round(a['largest-contentful-paint']['numericValue']),fcp=round(a['first-contentful-paint']['numericValue']),tbt=round(a['total-blocking-time']['numericValue']),cls=round(a['cumulative-layout-shift']['numericValue'],3),si=round(a['speed-index']['numericValue']),a11y=round(c['accessibility']['score']*100),bp=round(c['best-practices']['score']*100),seo=round(c['seo']['score']*100),kb=round(a['total-byte-weight']['numericValue']/1024),vkb=round(vid/1024),lcpel=sel)
+out={}
+for t in ['base','s2']:
+  for f in ['mobile','desktop']:
+    rs=[m(x) for x in sorted(glob.glob(f'px-{t}-{f}-*.json'))]
+    out[f'px-{t}-{f}']=rs
+    print('px',t,f)
+    for r in rs: print('  ',r)
+    print('  MEDIAN',{k:st.median([r[k] for r in rs]) for k in rs[0] if k!='lcpel'})
+for t in ['base','s2']:
+  for f in ['mobile','desktop']:
+    r=m(f'loc-{t}-{f}.json');out[f'loc-{t}-{f}']=r;print('loc',t,f,r)
+for p in ['book','contact']:
+    r=m(f'a11y-{p}.json');out['a11y-'+p]=r;print(p,r['a11y'],r['perf'])
+json.dump(out,open('summary.json','w'),indent=1)

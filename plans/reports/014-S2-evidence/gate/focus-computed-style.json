@@ -1,0 +1,418 @@
+{
+ "s2/book": [
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 70)",
+   "bs": "rgba(243, 236, 217, 0.345) 0px 0px 0px 1.03659px, rgba(79, 90, 61, 0.345) 0px 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 70)",
+   "bs": "rgba(243, 236, 217, 0.345) 0px 0px 0px 1.03659px, rgba(79, 90, 61, 0.345) 0px 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 70)",
+   "bs": "rgba(243, 236, 217, 0.345) 0px 0px 0px 1.03659px, rgba(79, 90, 61, 0.345) 0px 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 70)",
+   "bs": "rgba(243, 236, 217, 0.345) 0px 0px 0px 1.03659px, rgba(79, 90, 61, 0.345) 0px 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 71)",
+   "bs": "rgba(243, 236, 217, 0.345) 0px 0px 0px 1.03887px, rgba(79, 90, 61, 0.345) 0px 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#book-tab-meetgreet-owner-name",
+   "ow": "2px",
+   "os": "solid",
+   "oc": "rgb(79, 90, 61)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#book-tab-meetgreet-phone",
+   "ow": "2px",
+   "os": "solid",
+   "oc": "rgb(79, 90, 61)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#book-tab-meetgreet-email",
+   "ow": "2px",
+   "os": "solid",
+   "oc": "rgb(79, 90, 61)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#book-tab-meetgreet-next-button",
+   "ow": "1px",
+   "os": "solid",
+   "oc": "rgba(243, 236, 217, 0.45)",
+   "bs": "rgba(243, 236, 217, 0.576) 0px 0px 0px 1.72752px, rgba(79, 90, 61, 0.576) 0px 0p",
+   "vis": true,
+   "fv": true
+  }
+ ],
+ "s2/contact": [
+  {
+   "sel": "button#nav-contact-us-trigger",
+   "ow": "2px",
+   "os": "solid",
+   "oc": "rgba(223, 203, 168, 0.957)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#nav-hamburger-toggle",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 71)",
+   "bs": "rgba(243, 236, 217, 0.345) 0px 0px 0px 1.03887px, rgba(79, 90, 61, 0.345) 0px 0p",
+   "vis": true,
+   "fv": true
+  }
+ ],
+ "s2 home modal": [
+  {
+   "sel": "input#welcome-walk-modal-email-input",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "rgba(79, 90, 61, 0.325) 0px 0px 0px 0.590207px inset, rgba(79, 90, 61, 0.082) 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-secondary",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-details",
+   "ow": "1px",
+   "os": "solid",
+   "oc": "rgba(243, 236, 217, 0.45)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-close",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#welcome-walk-modal-email-input",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "rgba(79, 90, 61, 0.325) 0px 0px 0px 0.590207px inset, rgba(79, 90, 61, 0.082) 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-secondary",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-details",
+   "ow": "1px",
+   "os": "solid",
+   "oc": "rgba(243, 236, 217, 0.45)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-close",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#welcome-walk-modal-email-input",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "rgba(79, 90, 61, 0.325) 0px 0px 0px 0.591681px inset, rgba(79, 90, 61, 0.082) 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-secondary",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  }
+ ],
+ "s2 home rates sheet": "not found",
+ "base/book": [
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 70)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 70)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 71)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 70)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 71)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#book-tab-meetgreet-owner-name",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#book-tab-meetgreet-phone",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#book-tab-meetgreet-email",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#book-tab-meetgreet-next-button",
+   "ow": "1px",
+   "os": "solid",
+   "oc": "rgba(243, 236, 217, 0.45)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  }
+ ],
+ "base/contact": [
+  {
+   "sel": "button#nav-contact-us-trigger",
+   "ow": "2px",
+   "os": "solid",
+   "oc": "rgba(219, 198, 159, 0.875)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#nav-hamburger-toggle",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button",
+   "ow": "2px",
+   "os": "auto",
+   "oc": "rgb(0, 33, 71)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  }
+ ],
+ "base home modal": [
+  {
+   "sel": "input#welcome-walk-modal-email-input",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "rgba(79, 90, 61, 0.325) 0px 0px 0px 0.590207px inset, rgba(79, 90, 61, 0.082) 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-secondary",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-details",
+   "ow": "1px",
+   "os": "solid",
+   "oc": "rgba(243, 236, 217, 0.45)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-close",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#welcome-walk-modal-email-input",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "rgba(79, 90, 61, 0.325) 0px 0px 0px 0.590944px inset, rgba(79, 90, 61, 0.082) 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-secondary",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-details",
+   "ow": "1px",
+   "os": "solid",
+   "oc": "rgba(243, 236, 217, 0.45)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-close",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "input#welcome-walk-modal-email-input",
+   "ow": "3px",
+   "os": "none",
+   "oc": "rgb(36, 35, 33)",
+   "bs": "rgba(79, 90, 61, 0.325) 0px 0px 0px 0.590944px inset, rgba(79, 90, 61, 0.082) 0p",
+   "vis": true,
+   "fv": true
+  },
+  {
+   "sel": "button#welcome-walk-modal-cta-secondary",
+   "ow": "1px",
+   "os": "auto",
+   "oc": "rgb(0, 95, 204)",
+   "bs": "none",
+   "vis": true,
+   "fv": true
+  }
+ ],
+ "base home rates sheet": "not found",
+ "s2 wburg h2": [
+  "Dog Walking inWilliamsburg => rgb(36, 35, 33)"
+ ],
+ "base wburg h2": [
+  "Dog Walking inWilliamsburg => rgb(36, 35, 33)"
+ ]
+}

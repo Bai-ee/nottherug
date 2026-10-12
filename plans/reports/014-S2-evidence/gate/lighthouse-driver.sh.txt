@@ -1,0 +1,17 @@
+#!/bin/zsh
+S=/private/tmp/claude-501/-Users-bballi-Documents-Repos-NotTheRug/2d13b54b-465d-4403-b124-4a9630337cca/scratchpad/g/lh
+cd $S
+run(){ # name url preset
+  P=""; [ "$3" = desktop ] && P="--preset=desktop"
+  npx -y lighthouse@12.8.2 $2 $P --chrome-flags="--headless=new --no-sandbox" --output=json --output-path=$S/$1.json --quiet >/dev/null 2>&1
+}
+for i in 1 2 3; do
+  for f in mobile desktop; do
+    run px-base-$f-$i http://localhost:3031/ $f
+    run px-s2-$f-$i http://localhost:3021/ $f
+  done
+done
+for f in mobile desktop; do run loc-base-$f http://localhost:3030/ $f; run loc-s2-$f http://localhost:3020/ $f; done
+run a11y-book http://localhost:3020/book mobile
+run a11y-contact http://localhost:3020/contact mobile
+echo ALLDONE > $S/DONE
