@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { REDDIT_RECOMMENDATIONS_URL, REDDIT_UPVOTES, REVIEW_RATINGS } from '@/lib/content/site';
 import UpvoteIcon from './UpvoteIcon';
 import Image from 'next/image';
+import { preload } from 'react-dom';
 import { useHomeHeroMotion } from './hooks/useHomeHeroMotion';
 import { pickHeroVideo } from './hooks/heroVideoPolicy';
 import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
@@ -108,7 +109,16 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
   }, [videoRef]);
 }
 
+const HERO_POSTER = '/video/hero-mccarren-poster.webp';
+// The polaroid's paper background (globals.css .polaroid, also the loading
+// screen's sheet). Otherwise both files are only found once the stylesheet
+// lands and the elements are styled, queued behind the fonts, and they are
+// what the hero's LCP waits on.
+const PAPER_TEXTURE = '/textures/paper-grain.png';
+
 export default function HomeHero() {
+  preload(HERO_POSTER, { as: 'image', fetchPriority: 'high' });
+  preload(PAPER_TEXTURE, { as: 'image', fetchPriority: 'high' });
   const heroRef = useRef<HTMLElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   useHomeHeroMotion(heroRef);
@@ -150,7 +160,7 @@ export default function HomeHero() {
               loop
               playsInline
               preload="none"
-              poster="/video/hero-mccarren-poster.webp"
+              poster={HERO_POSTER}
             >
               {/* Sources are attached after first paint and idle by
                   useHeroVideoLifecycle (poster only for reduced motion and
