@@ -26,8 +26,8 @@ const TILT_CLASSES = ['polaroid-tilt-left', 'polaroid-tilt-right'];
  * every page scroll. The scrub is gone rather than gated.
  *
  * A tap or click on a face, or on the name with its "›", opens that walker
- * in TeamMemberDialog: the whole photo larger, plus a short bio for walkers
- * who have one. Tap only, not hover, so phones and desktops behave the same.
+ * in TeamMemberDialog: the whole photo larger, with their bio. Tap only, not
+ * hover, so phones and desktops behave the same.
  * The chips are cropped squares; the dialog shows the whole frame.
  */
 /** How far below the viewport the band may sit before its portraits start

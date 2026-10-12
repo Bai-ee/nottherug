@@ -3,7 +3,7 @@ import { suppressWelcomeModal } from './helpers/welcomeModal';
 import { waitForHomeEffectsAndHeroDecision } from './helpers/hydration';
 
 // The homepage team chips open TeamMemberDialog on a tap or click — never on
-// hover — and only walkers with a `shortBio` (Beth Ann today) show one.
+// hover — with that walker's bio (the /about copy).
 
 test.describe('home team dialog', () => {
   test.beforeEach(async ({ page }) => {
@@ -28,8 +28,9 @@ test.describe('home team dialog', () => {
     const dialog = page.getByRole('dialog', { name: /Luis · Founder/ });
     await expect(dialog).toBeVisible();
     await expect(page.locator('#home-team-preview-close-btn')).toBeFocused();
-    // No bio for walkers without a shortBio.
-    await expect(dialog.locator('.home-team-preview-bio')).toHaveCount(0);
+    // One paragraph: Luis's bio has no paragraph breaks.
+    await expect(dialog.locator('.home-team-preview-bio')).toHaveCount(1);
+    await expect(dialog).toContainText('SiriusXM');
     await page.keyboard.press('Escape');
     await expect(page.locator('#home-team-preview')).toHaveCount(0);
     await expect(trigger).toBeFocused();
@@ -51,5 +52,10 @@ test.describe('home team dialog', () => {
     // A tap on the dimmed backdrop, clear of the frame, closes it.
     await page.locator('#home-team-preview').click({ position: { x: 6, y: 6 } });
     await expect(page.locator('#home-team-preview')).toHaveCount(0);
+  });
+
+  test('the band links to the full team on /about', async ({ page }) => {
+    await page.locator('#home-team-about-link').click();
+    await expect(page).toHaveURL(/\/about$/);
   });
 });

@@ -21,10 +21,10 @@ export interface TeamMember {
    *  [1x desktop chip, source width]. The JPEG in `photo` stays the /about
    *  grid + preview source and the <img> fallback. */
   chipWidths: readonly [number, number];
-  /** Optional short bio for the homepage walker dialog (TeamMemberDialog),
-   *  one string per paragraph. Walkers without one show photo, name and role
-   *  only; `bio` above stays the /about grid's copy. */
-  shortBio?: readonly string[];
+  /** Paragraph breaks for `bio` in the homepage walker dialog
+   *  (TeamMemberDialog), when it runs to more than one paragraph. Must say
+   *  the same as `bio`; without it the dialog shows `bio` as one paragraph. */
+  bioParagraphs?: readonly string[];
 }
 
 export const TEAM: readonly TeamMember[] = [
@@ -69,7 +69,7 @@ export const TEAM: readonly TeamMember[] = [
     bio: "If you've seen Beth Ann around the neighborhood walking pups, you know she has a gentle way with them. She takes her time, pays attention to the little things, and gets to know each dog's personality and what helps them feel comfortable. She's also a musician. On Sundays, she hosts Sunday Sounds, a music series where she brings together artists from different musical backgrounds. It's a chance to share music, hear something new, and bring people together.",
     photo: '/img/team/beth-ann.jpg', photoWidth: 675, photoHeight: 900, photoSize: '250%', photoPosition: '51% 5%',
     chipWidths: [375, 675],
-    shortBio: [
+    bioParagraphs: [
       'If you’ve seen Beth Ann around the neighborhood walking pups, you know she has a gentle way with them. She takes her time, pays attention to the little things, and gets to know each dog’s personality and what helps them feel comfortable.',
       'She’s also a musician. On Sundays, she hosts Sunday Sounds, a music series where she brings together artists from different musical backgrounds. It’s a chance to share music, hear something new, and bring people together.',
     ],

@@ -2933,8 +2933,8 @@ footer {
 .home-team-chip-name-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
 /* Walker dialog (TeamMemberDialog): the whole portrait in a paper frame on a
    dimmed backdrop — the look of the "Always Included" previews
-   (#home-included-preview) — plus a close button and, for walkers who have
-   one, a short bio. A tap on the backdrop closes it. */
+   (#home-included-preview) — plus a close button and the walker's bio. A
+   tap on the backdrop closes it. */
 #home-team-preview {
   position: fixed;
   inset: 0;
@@ -2971,14 +2971,18 @@ footer {
   width: 100%;
   height: auto;
   display: block;
-  /* The roster photos are portrait; cap them so a short viewport never pushes
-     the caption off screen. */
-  max-height: 70vh;
+  /* The roster photos are portrait; capped so the name and the first lines
+     of the bio show without scrolling the frame. */
+  max-height: 48vh;
   object-fit: contain;
   filter: contrast(0.96) saturate(0.9);
 }
-/* With a bio the photo gives up height so name and first lines show at once. */
-#home-team-preview[data-has-bio] #home-team-preview-frame img { max-height: 48vh; }
+/* Link to the full team on /about, centred under the roster. */
+#home-team-about-link-row {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(18px, 3vw, 32px);
+}
 #home-team-preview-frame #home-team-preview-close-btn {
   position: absolute;
   top: 22px;

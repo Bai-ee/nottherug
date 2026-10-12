@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import TeamScroller from './TeamScroller';
 
 // The team roster band — NTR 01 stamp, headline, then the full-bleed roster.
@@ -5,8 +6,8 @@ import TeamScroller from './TeamScroller';
 // to your dog's daily routine", which is the process strip's headline (and
 // still is) — one line cannot introduce two different bands.
 // Sits in the green band above the rest of the closing bands (globals.css:
-// #home-team-section). Label, headline and the roster only; nothing else lives
-// in this band.
+// #home-team-section). Label, headline, the roster, and a link to the full
+// team on /about.
 export default function TeamBand() {
   return (
     <section className="section" id="home-team-section">
@@ -23,6 +24,11 @@ export default function TeamBand() {
           widens the page. Its own padding re-aligns the first chip with the
           heading above it. */}
       <TeamScroller />
+      <div className="container" id="home-team-about-link-row">
+        <Link href="/about" id="home-team-about-link" className="service-details-btn">
+          Meet the whole team <span className="service-details-btn-chevron" aria-hidden="true">›</span>
+        </Link>
+      </div>
     </section>
   );
 }

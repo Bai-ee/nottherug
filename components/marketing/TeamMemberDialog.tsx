@@ -17,7 +17,7 @@ type Props = {
 
 /**
  * One walker, larger: the whole portrait in a paper frame, name and role,
- * and their short bio when they have one (`shortBio` in lib/content/team.ts).
+ * and their bio — the same copy as the /about grid (lib/content/team.ts).
  * Opened by a tap or click on a homepage team chip (TeamScroller).
  *
  * Portalled to <body>: on phones #home-team-scroller is a sideways scroll
@@ -78,7 +78,6 @@ function TeamMemberSheet({ member, onClose }: { member: TeamMember; onClose: () 
       role="dialog"
       aria-modal="true"
       aria-labelledby="home-team-preview-caption"
-      data-has-bio={member.shortBio ? 'true' : undefined}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -98,7 +97,7 @@ function TeamMemberSheet({ member, onClose }: { member: TeamMember; onClose: () 
             aspect ratios, see lib/content/team.ts). */}
         <Image src={member.photo} alt="" width={member.photoWidth} height={member.photoHeight} />
         <p id="home-team-preview-caption">{member.name} &middot; {member.role}</p>
-        {member.shortBio?.map((paragraph) => (
+        {(member.bioParagraphs ?? [member.bio]).map((paragraph) => (
           <p key={paragraph} className="home-team-preview-bio">{paragraph}</p>
         ))}
       </div>
