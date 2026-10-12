@@ -8,7 +8,7 @@ type GsapContext = ReturnType<GsapBundle['gsap']['context']>;
 const CARD_SELECTOR = [
   // :not() excludes the disabled personalized-care carousel's cards — that
   // section never renders, so this selector list matches the live home page
-  // exactly as it did in app/page.tsx's initSectionReveals.
+  // exactly as it did in the retired app/page.tsx's initSectionReveals.
   '.service-card:not(#home-animated-products-grid .service-card)',
   // The home voices band renders static — four equal columns whose bylines
   // line up across the row, which a per-card fade breaks up (FeaturedReviews).

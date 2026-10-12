@@ -1,5 +1,5 @@
 // Shared marketing-site constants. Values copied verbatim from the source
-// JSX during the app/page.tsx extraction (see plans/002-production-readiness.md,
+// JSX during the extraction of the retired app/page.tsx (see plans/002-production-readiness.md,
 // P2A) — not corrected or reconciled here.
 
 import type { Metadata } from 'next';

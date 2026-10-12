@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-09-15",
   "generator": "scripts/copy/extract-copy.mjs",
-  "totalEntries": 379,
+  "totalEntries": 396,
   "pageOrder": [
     "global",
     "home",
@@ -2276,90 +2276,6 @@
       "duplicateOf": null,
       "lines": [
         89
-      ]
-    },
-    {
-      "key": "how-it-works.hiw-hero.the-process",
-      "page": "how-it-works",
-      "section": "hiw-hero",
-      "sectionTitle": "How It Works page hero",
-      "sectionNote": "",
-      "field": "label",
-      "file": "components/marketing/HowItWorksPageContent.tsx",
-      "line": 21,
-      "anchorId": "how-it-works-page-shell",
-      "current": "The Process",
-      "match": "The Process",
-      "matchKind": "jsx-text",
-      "attrName": null,
-      "note": "",
-      "occurrences": 1,
-      "duplicateOf": null,
-      "lines": [
-        21
-      ]
-    },
-    {
-      "key": "how-it-works.hiw-hero.how-it-works",
-      "page": "how-it-works",
-      "section": "hiw-hero",
-      "sectionTitle": "How It Works page hero",
-      "sectionNote": "",
-      "field": "heading",
-      "file": "components/marketing/HowItWorksPageContent.tsx",
-      "line": 22,
-      "anchorId": "how-it-works-page-shell",
-      "current": "How it works",
-      "match": "How it works",
-      "matchKind": "jsx-text",
-      "attrName": null,
-      "note": "",
-      "occurrences": 1,
-      "duplicateOf": null,
-      "lines": [
-        22
-      ]
-    },
-    {
-      "key": "how-it-works.hiw-hero.from-first-contact-to-daily",
-      "page": "how-it-works",
-      "section": "hiw-hero",
-      "sectionTitle": "How It Works page hero",
-      "sectionNote": "",
-      "field": "body",
-      "file": "components/marketing/HowItWorksPageContent.tsx",
-      "line": 23,
-      "anchorId": "how-it-works-page-shell",
-      "current": "From first contact to daily walks — here&apos;s exactly what to expect when you join Not The Rug.",
-      "match": "From first contact to daily walks — here&apos;s exactly what to expect when you join Not The Rug.",
-      "matchKind": "jsx-text",
-      "attrName": null,
-      "note": "",
-      "occurrences": 1,
-      "duplicateOf": null,
-      "lines": [
-        23
-      ]
-    },
-    {
-      "key": "how-it-works.hiw-hero.mochi-mochi-wlmsbg",
-      "page": "how-it-works",
-      "section": "hiw-hero",
-      "sectionTitle": "How It Works page hero",
-      "sectionNote": "",
-      "field": "link",
-      "file": "components/marketing/HowItWorksPageContent.tsx",
-      "line": 25,
-      "anchorId": "page-hero-label-howitworks",
-      "current": "Mochi · @mochi_wlmsbg",
-      "match": "Mochi · @mochi_wlmsbg",
-      "matchKind": "jsx-text",
-      "attrName": null,
-      "note": "",
-      "occurrences": 1,
-      "duplicateOf": null,
-      "lines": [
-        25
       ]
     },
     {

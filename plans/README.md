@@ -1,21 +1,33 @@
 # Project plans
 
-**Current work:** [013 — client handoff hardening](013-client-handoff-hardening.md) (phase reports in [`reports/`](reports/)). For running and operating the site, use the [README](../README.md) and the [operations runbook](../docs/operations-runbook.md). Plans 001–010 below are historical records, each carrying a banner saying so.
+**Current work:** [014 — web award master plan](014-web-award-master-plan.md), Track S (stabilize and speed) in progress; phase reports in [`reports/`](reports/). 013 closed 2026-10-12. For running and operating the site, use the [README](../README.md) and the [operations runbook](../docs/operations-runbook.md). Plans 001–010 below are historical records, each carrying a banner saying so. There is no plan 005.
 
 | # | Title | Severity | Status |
 | --- | --- | --- | --- |
 | [001](001-reversible-section-reveals.md) | Make section reveal animations reverse on scroll-up (play in, play out) | MEDIUM | DONE |
-| [002](002-production-readiness.md) | Production readiness, code cleanup, and Claude execution plan | HIGH | PLANNED |
+| [002](002-production-readiness.md) | Production readiness, code cleanup, and Claude execution plan | HIGH | HISTORICAL — executed; see [its tracker](002-production-tracker.md) |
 | [003](003-admin-dashboard-and-tracking.md) | Admin dashboard, shared styling, and first-party website tracking | FEATURE | SUPERSEDED BY 009 FOR SEQUENCING |
 | [004](004-frontend-tracking-coverage.md) | Frontend instrumentation coverage for the analytics dashboard | FEATURE | SUPERSEDED BY 009 FOR SEQUENCING |
-| [006](006-homepage-ui-merge-handoff.md) | Homepage UI merge handoff (two trees, uncommitted) | HIGH | OPEN |
-| [007](007-homepage-instagram-section-2026-09-18.md) | Homepage Instagram section — session record, 2026-09-18 | MEDIUM | BUILT, UNCOMMITTED |
-| [008](008-2026-09-18-paw-walk-and-band-session.md) | Paw walk + band layout session, 2026-09-18 | MEDIUM | UNCOMMITTED |
-| [009](009-full-tracking-dashboard-integration.md) | Full tracking and custom dashboard integration | HIGH | IN PROGRESS |
+| [006](006-homepage-ui-merge-handoff.md) | Homepage UI merge handoff (two trees, uncommitted) | HIGH | HISTORICAL — superseded; the homepage work is on `main` |
+| [007](007-homepage-instagram-section-2026-09-18.md) | Homepage Instagram section — session record, 2026-09-18 | MEDIUM | HISTORICAL — session record; the section is on `main` |
+| [008](008-2026-09-18-paw-walk-and-band-session.md) | Paw walk + band layout session, 2026-09-18 | MEDIUM | HISTORICAL — session record; the work is on `main` |
+| [009](009-full-tracking-dashboard-integration.md) | Full tracking and custom dashboard integration | HIGH | HISTORICAL — tracking and dashboard work is on `main` (see 010, 012, 013) |
 | [010](010-production-final-mile-optimization.md) | Production final-mile code quality and performance optimization | HIGH | IMPLEMENTED 2026-09-19 — see its "Release evidence" section |
 | [011](011-backup-walker-bench.md) | Backup walker bench: recruit, stack and dispatch backup walkers | FEATURE | PHASES 0–2 BUILT 2026-09-29 (Join Our Team + Team Applications) |
 | [012](012-tracking-integrity.md) | Tracking integrity: analytics, Calendly, email, lead capture | HIGH | NOT LANDED as a branch — 4 commits on `fix/tracking-integrity` are not on `main` by patch id (dd5cab3, c57766d, 20e88ff, b710fb3). The lead-merge commit is superseded by 013 P1; the leads-digest cron entry is already on `main` via other commits; the dashboard and digest commits are undecided — owner to drop or re-port (2026-10-05) |
-| [013](013-client-handoff-hardening.md) | Client handoff hardening (security, reliability, operations) | HIGH | IN PROGRESS — see `reports/013-tracker.md` |
+| [013](013-client-handoff-hardening.md) | Client handoff hardening (security, reliability, operations) | HIGH | CLOSED 2026-10-12 — released to `main`; see `reports/013-tracker.md` |
+| [014](014-web-award-master-plan.md) | Web award master plan (Track S stabilize and speed, then Track F features) | HIGH | IN PROGRESS — Track S; reports in `reports/014-*` |
+
+## Supporting documents
+
+Not plans themselves; each is historical except 014's reports.
+
+- [002 Claude handoff](002-claude-handoff.md), [002 production tracker](002-production-tracker.md): companions to 002.
+- [003 analytics preview handoff](003-analytics-preview-handoff.md): companion to 003.
+- [007 nav, copy and numbering session](007-2026-09-18-0125-nav-copy-numbering-session.md), [007 homepage session log](007-2026-09-18-homepage-session-log.md), [007 homepage session state](007-2026-09-18-0125-homepage-session-state.md): session records from 2026-09-18.
+- [010 asset optimization spec](010-asset-optimization-spec.md): companion to 010.
+- [Homepage UI session state, 2026-09-18](2026-09-18-0125-homepage-ui-session-state.md): session record.
+- [`reports/`](reports/): phase reports and evidence for 013 and 014.
 
 ## Execution order
 

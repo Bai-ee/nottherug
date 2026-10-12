@@ -24,13 +24,11 @@ const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 // small file below now maps to one (or occasionally two) of the original
 // sections in copy-map.mjs instead of one giant file with line ranges.
 //
-// components/AnimatedServiceCards.tsx and components/marketing/
-// DisabledHomeSections.tsx are deliberately absent: every export in
-// DisabledHomeSections.tsx is only ever mounted behind `{false && ...}` at
-// its call site (app/(marketing)/page.tsx), so none of that copy is on the
-// live site — same rule as the original app/page.tsx `{false && (...)}`
-// blocks. Re-enable a block in the code and wire its source back in here to
-// bring its copy back into the inventory.
+// components/AnimatedServiceCards.tsx is deliberately absent: it only mounts
+// from the dev-gated playground, so none of that copy is on the live site.
+// The five disabled homepage sections formerly in DisabledHomeSections.tsx
+// were deleted (plan 014 H1). Wire a source back in here to bring copy back
+// into the inventory.
 // jsxRange must start at (or after) the component's own `return (` line, not
 // at the top of the file: the scanner treats the first unmatched `{` it sees
 // as the start of a JSX expression and skips to its balanced `}`, so
@@ -67,7 +65,6 @@ const JSX_SOURCES = [
   { file: 'components/marketing/ServicesPageContent.tsx', page: 'services', jsxRange: [40, 999], skipRanges: [] },
   { file: 'components/marketing/ServiceGrid.tsx', page: 'services', jsxRange: [6, 999], skipRanges: [] },
 
-  { file: 'components/marketing/HowItWorksPageContent.tsx', page: 'how-it-works', jsxRange: [15, 999], skipRanges: [] },
   { file: 'components/marketing/SampleWalkReportCard.tsx', page: 'how-it-works', jsxRange: [3, 999], skipRanges: [] },
 
   { file: 'components/marketing/AboutPageContent.tsx', page: 'about', jsxRange: [15, 999], skipRanges: [] },

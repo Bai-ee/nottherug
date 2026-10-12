@@ -130,8 +130,8 @@ type View =
  * Booking-first entry point: email-only gate → Calendly (free Meet & Greet)
  * → verified-completion confirmation → optional questionnaire handoff to
  * /book. Ported from the standalone design-review worktree
- * (NotTheRug-welcome-modal) and reworked per
- * plans/005-booking-first-onboarding.md: the name/phone inputs are gone, the
+ * (NotTheRug-welcome-modal) and reworked for
+ * the booking-first onboarding flow (no plan file): the name/phone inputs are gone, the
  * neighborhood row is a locked display only, and the modal never puts a
  * contact detail in a site URL — see lib/booking/onboarding-handoff.ts for
  * the short-lived, sessionStorage-only draft this hands off to /book.

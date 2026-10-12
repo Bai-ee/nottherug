@@ -14,13 +14,6 @@ import HomeIntroOverlay from './HomeIntroOverlay';
 import HomePawWalk from './HomePawWalk';
 import HowItWorksStrip from './HowItWorksStrip';
 import HomeSectionRevealShell from './HomeSectionRevealShell';
-import {
-  OtherServicesTeaser,
-  WeekdayBenefits,
-  VisitIncludes,
-  FounderPullQuote,
-  NeighborhoodTeaser,
-} from './DisabledHomeSections';
 
 // Server Component: this file composes the page but owns no browser state
 // itself. ProofMarquee, WalkConceptsMarquee, TrustBar, TeamBand, ClosingTrust,
@@ -110,8 +103,6 @@ export default function HomePageContent() {
             instead of being gated here, so its GSAP import stays out of this
             route's module graph — see that file for how to bring it back. */}
 
-        {false && <OtherServicesTeaser />}
-
         {/* Closing band: the How It Works / Meet & Greet sheet and the footer
             share one shell so a single background paints across both. Each of
             them used to carry its own surface, and the two met as a visible
@@ -122,11 +113,6 @@ export default function HomePageContent() {
         <ContactSheetSection source="home" paneId="home-meetgreet" />
           <SiteFooter />
         </div>
-
-        {false && <WeekdayBenefits />}
-        {false && <VisitIncludes />}
-        {false && <FounderPullQuote />}
-        {false && <NeighborhoodTeaser />}
       </HomeSectionRevealShell>
     </>
   );

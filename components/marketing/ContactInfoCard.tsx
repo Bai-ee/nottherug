@@ -13,7 +13,7 @@ import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '@/lib/content/site';
 import TrackedCtaAnchor from './TrackedCtaAnchor';
 
 // Verified contact details — moved here from the SPA's `?page=contact`
-// content (app/page.tsx), which was reachable only inside the toggling
+// content (the retired single-page app/page.tsx), which was reachable only inside the toggling
 // virtual-page system and is now the real /contact page. Same copy, real
 // tel:/mailto: links, no fake form (R02).
 export default function ContactInfoCard() {

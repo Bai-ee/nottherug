@@ -1,8 +1,7 @@
 /**
  * What every walk carries, in marquee-length form. These are the titles from
- * the "Every visit includes" section (VISIT_INCLUDES in
- * components/marketing/DisabledHomeSections.tsx), which is commented out of the
- * home page — the claims still belong on the page, just as a line that scrolls
+ * the former "Every visit includes" section (VISIT_INCLUDES in the
+ * deleted DisabledHomeSections.tsx; see git history) — the claims still belong on the page, just as a line that scrolls
  * past rather than a nine-card grid.
  */
 export const WALK_CONCEPTS: readonly string[] = [

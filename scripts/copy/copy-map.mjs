@@ -54,12 +54,6 @@ export const SECTIONS = {
     [1, 999, 'services-grid', 'Services + pricing grid', 'Prices must match the homepage rates.'],
   ],
 
-  'components/marketing/HowItWorksPageContent.tsx': [
-    [1, 999, 'hiw-hero', 'How It Works page hero', ''],
-  ],
-  'components/marketing/ProcessSteps.tsx': [
-    [1, 999, 'hiw-steps', 'How It Works steps', ''],
-  ],
   'components/marketing/SampleWalkReportCard.tsx': [
     [1, 999, 'hiw-steps', 'How It Works steps + walk report', ''],
   ],
