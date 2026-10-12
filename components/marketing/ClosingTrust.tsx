@@ -13,6 +13,10 @@ import TrackedCtaLink from './TrackedCtaLink';
 export default function ClosingTrust() {
   return (
     <section className="section" id="home-closing-trust-section">
+      {/* Background photo — parallax layer, see useCityscapeParallax. */}
+      <div className="city-parallax-frame" id="home-closing-trust-photo-frame" aria-hidden="true">
+        <div className="city-parallax-art city-parallax-photo" id="home-closing-trust-photo-art" data-city-parallax="photo" />
+      </div>
       <div className="container">
         <div className="grid-2" id="home-closing-trust-grid" style={{ gap: '56px', alignItems: 'start' }}>
           <div id="home-closing-williamsburg-pitch">

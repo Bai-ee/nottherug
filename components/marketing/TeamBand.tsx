@@ -10,6 +10,10 @@ import TeamScroller from './TeamScroller';
 export default function TeamBand() {
   return (
     <section className="section" id="home-team-section">
+      {/* Background photo — parallax layer, see useCityscapeParallax. */}
+      <div className="city-parallax-frame" id="home-team-photo-frame" aria-hidden="true">
+        <div className="city-parallax-art city-parallax-photo" id="home-team-photo-art" data-city-parallax="photo" />
+      </div>
       <div className="container">
         <div id="home-team-block">
           <div className="home-band-block-header">

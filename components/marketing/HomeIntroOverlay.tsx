@@ -62,6 +62,9 @@ export default function HomeIntroOverlay() {
               decoding="async"
             />
           </div>
+          {/* Dashed walk line under the walker: draws out, then retracts
+              behind it as it leaves (#home-intro-walk-path in globals.css). */}
+          <span id="home-intro-walk-path" />
         </div>
       )}
     </>

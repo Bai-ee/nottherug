@@ -135,6 +135,11 @@ export default function HomeHero() {
 
   return (
     <section className="hero" id="home-hero-section" ref={heroRef}>
+      {/* Bridge-and-skyline strip: its own layer (not a background) so
+          useCityscapeParallax can move it on the compositor. */}
+      <div className="city-parallax-frame" id="hero-cityscape-frame" aria-hidden="true">
+        <div className="city-parallax-art" id="hero-cityscape-art" data-city-parallax="hero" />
+      </div>
       <div className="hero-visual" id="hero-visual-video-shell">
         <figure className="polaroid polaroid-tilt-right taped taped-center" id="hero-polaroid-frame">
           <div className="polaroid-window" id="hero-polaroid-window">
