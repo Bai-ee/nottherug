@@ -107,7 +107,7 @@ export default function FeaturedReviews() {
           {REVIEWS.map((review) => (
             <figure className="review-card" key={review.name} data-source={review.source.toLowerCase()}>
               {review.rated ? (
-                <div className="stars">★★★★★</div>
+                <div className="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
               ) : (
                 <div className="stars review-platform-note">
                   <UpvoteIcon />

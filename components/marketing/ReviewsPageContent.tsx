@@ -18,18 +18,18 @@ export default function ReviewsPageContent() {
       <main id="reviews-main">
       <div id="reviews-hero-section" className="page-hero bg-charcoal" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00006.webp') center 20%/cover no-repeat" }}>
         <div className="container">
-          <div className="label" style={{ color: 'var(--sage-light)' }}>Client Reviews</div>
+          <div className="label">Client Reviews</div>
           <h1 style={{ color: 'white' }}>What Brooklyn<br />dog owners say</h1>
           <div className="reviews-hero-stats">
             <a id="reviews-hero-google-rating" className="reviews-hero-rating-link" href={REVIEW_RATINGS.google.url} target="_blank" rel="noopener">
               <div className="review-big-num">{REVIEW_RATINGS.google.rating}</div>
-              <div className="stars" style={{ fontSize: '20px', marginTop: '4px' }}>★★★★★</div>
+              <div className="stars" role="img" aria-label="5 out of 5 stars" style={{ fontSize: '20px', marginTop: '4px' }}>★★★★★</div>
               <div className="review-source-label">Google Rating · {REVIEW_RATINGS.google.count} Reviews</div>
             </a>
             <div className="reviews-divider"></div>
             <a id="reviews-hero-yelp-rating" className="reviews-hero-rating-link" href={REVIEW_RATINGS.yelp.url} target="_blank" rel="noopener">
               <div className="review-big-num">{REVIEW_RATINGS.yelp.rating}</div>
-              <div className="stars" style={{ fontSize: '20px', marginTop: '4px' }}>★★★★★</div>
+              <div className="stars" role="img" aria-label="5 out of 5 stars" style={{ fontSize: '20px', marginTop: '4px' }}>★★★★★</div>
               <div className="review-source-label">Yelp Rating · {REVIEW_RATINGS.yelp.count} Reviews</div>
             </a>
             <div className="reviews-divider"></div>

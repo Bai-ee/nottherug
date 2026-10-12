@@ -9,7 +9,7 @@ export default function NeighborhoodDetail({ hood }: { hood: NeighborhoodInfo })
     <>
       <div style={{ background: `${hood.color}22`, border: `1px solid ${hood.color}44`, borderRadius: 'var(--radius-lg)', padding: '48px', marginBottom: '40px' }}>
         <div className="label">{hood.seo}</div>
-        <h2>Dog Walking in<br /><span style={{ color: hood.color, fontStyle: 'italic', fontFamily: 'var(--font-italic)' }}>{hood.name}</span></h2>
+        <h2>Dog Walking in<br /><span style={{ color: `color-mix(in oklab, ${hood.color} 62%, black)`, fontStyle: 'italic', fontFamily: 'var(--font-italic)' }}>{hood.name}</span></h2>
         <div className="divider"></div>
         <p style={{ color: 'var(--mid-gray)', fontSize: '16px', lineHeight: '1.8', maxWidth: '620px', marginBottom: '28px' }}>{hood.desc}</p>
         <div>

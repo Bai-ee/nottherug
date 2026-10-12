@@ -20,7 +20,7 @@ export default function NeighborhoodsPageContent() {
       <main id="neighborhoods-williamsburg-main">
       <div id="neighborhoods-williamsburg-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00005.webp') center 20%/cover no-repeat" }}>
         <div className="container">
-          <div className="label" style={{ color: 'var(--sage-light)' }}>Service Areas</div>
+          <div className="label">Service Areas</div>
           <h1>Williamsburg is our<br />backyard</h1>
           <p>We&apos;re a Williamsburg service through and through — we know every park, shortcut, and puddle to avoid.</p>
         </div>
