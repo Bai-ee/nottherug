@@ -20,7 +20,7 @@
   --sage: #7A9068;
   --sage-light: #B4C89E;
   --sage-dark: var(--olive);
-  --terracotta: #C4674B;
+  --terracotta: #A9503A; /* was #C4674B (3.31:1 under paper text); 4.57:1 */
   --terracotta-light: #E8A896;
   --gold: #C9A96E;
   --gold-light: #E8D4A8;
