@@ -27,7 +27,7 @@
 
   --font-display: var(--font-fraunces), 'DM Serif Display', serif;
   --font-body: var(--font-outfit), sans-serif;
-  --font-italic: var(--font-fraunces), serif;
+  --font-italic: var(--font-fraunces-italic), var(--font-fraunces), serif;
   --font-stamp: var(--font-oswald), 'Arial Narrow', sans-serif;
   --font-headline: var(--font-bebas), 'Anton', 'Arial Narrow', sans-serif;
   --font-type: var(--font-courier), 'Courier New', monospace;

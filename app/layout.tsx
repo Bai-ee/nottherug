@@ -12,8 +12,19 @@ import { SITE_URL } from "@/lib/content/site";
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  style: ["normal", "italic"],
+  style: ["normal"],
   axes: ["opsz"],
+});
+
+// Italic is a separate instance so it is not preloaded on every route: only a
+// few surfaces set it (the `--font-italic` users in globals.css), and the
+// browser still fetches the file on demand when one of them renders.
+const frauncesItalic = Fraunces({
+  variable: "--font-fraunces-italic",
+  subsets: ["latin"],
+  style: ["italic"],
+  axes: ["opsz"],
+  preload: false,
 });
 
 const outfit = Outfit({
@@ -84,7 +95,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable}`}
+      className={`${fraunces.variable} ${frauncesItalic.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable}`}
     >
       <body>
         {children}
