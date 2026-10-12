@@ -16,7 +16,7 @@ export interface HeroVideoSignals {
 }
 
 export interface HeroVideoSources {
-  webm: string;
+  webm?: string;
   mp4: string;
 }
 
@@ -24,9 +24,9 @@ const DESKTOP: HeroVideoSources = {
   webm: '/video/hero-mccarren-1080.webm',
   mp4: '/video/hero-mccarren-1080.mp4',
 };
+// Mobile ships MP4 only: the CRF 30 H.264 clip is smaller than the VP9 one.
 const MOBILE: HeroVideoSources = {
-  webm: '/video/hero-mccarren-540.webm',
-  mp4: '/video/hero-mccarren-540.mp4',
+  mp4: '/video/hero-mccarren-540-v2.mp4',
 };
 
 const SLOW_CONNECTIONS = new Set(['slow-2g', '2g']);

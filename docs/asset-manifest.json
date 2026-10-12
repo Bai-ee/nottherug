@@ -27,8 +27,20 @@
       "exception": "Same crop as the MP4 sibling; VP9 fallback source."
     },
     {
-      "source": "/video/hero-mccarren-540.mp4",
+      "source": "/video/hero-mccarren-540-v2.mp4",
       "consumers": ["/ #hero-bg-video (viewport <= 768px)"],
+      "maxCssBox": { "width": 380, "height": 380 },
+      "targetDpr": 1.5,
+      "intrinsic": { "width": 540, "height": 540 },
+      "format": "mp4",
+      "bytes": 1495042,
+      "loading": "injected after first paint/idle; skipped for reduced motion and data-saving",
+      "exception": "Mobile derivative of the 1920x1080 master (libx264 CRF 30, 540x540, no audio), MP4 only. Replaces hero-mccarren-540.mp4/.webm."
+    },
+    {
+      "source": "/video/hero-mccarren-540.mp4",
+      "consumers": [],
+      "unreferenced": "Superseded by hero-mccarren-540-v2.mp4; kept on disk, no longer requested.",
       "maxCssBox": { "width": 380, "height": 380 },
       "targetDpr": 1.5,
       "intrinsic": { "width": 540, "height": 540 },
@@ -39,7 +51,8 @@
     },
     {
       "source": "/video/hero-mccarren-540.webm",
-      "consumers": ["/ #hero-bg-video (viewport <= 768px)"],
+      "consumers": [],
+      "unreferenced": "Superseded by hero-mccarren-540-v2.mp4; kept on disk, no longer requested.",
       "maxCssBox": { "width": 380, "height": 380 },
       "targetDpr": 1.5,
       "intrinsic": { "width": 540, "height": 540 },

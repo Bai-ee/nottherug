@@ -60,10 +60,12 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
     const attachSources = () => {
       if (cancelled || loaded) return;
       loaded = true;
-      for (const [src, type] of [
+      const candidates: [string | undefined, string][] = [
         [sources.webm, 'video/webm'],
         [sources.mp4, 'video/mp4'],
-      ]) {
+      ];
+      for (const [src, type] of candidates) {
+        if (!src) continue;
         const source = document.createElement('source');
         source.src = src;
         source.type = type;
