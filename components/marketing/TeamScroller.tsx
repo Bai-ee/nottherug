@@ -1,9 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { TEAM, teamChipPhoto, type TeamMember } from '@/lib/content/team';
+import TeamMemberDialog from './TeamMemberDialog';
 
 /** Same alternation the Instagram tiles use (InstagramGrid). */
 const TILT_CLASSES = ['polaroid-tilt-left', 'polaroid-tilt-right'];
@@ -26,17 +25,19 @@ const TILT_CLASSES = ['polaroid-tilt-left', 'polaroid-tilt-right'];
  * strip it would have fought the viewer's thumb, snapping the row back on
  * every page scroll. The scrub is gone rather than gated.
  *
- * Hovering a face opens a centred preview of that photo at full size — the
- * same interaction the "Always Included" icons use (see AlwaysIncluded:
- * #home-included-preview), down to the paper frame, the dimmed backdrop and
- * the hover/focus/tap triggers, so the two read as one behaviour rather than
- * two. The chips are cropped squares; the preview is the whole frame.
+ * A tap or click on a face, or on the name with its "›", opens that walker
+ * in TeamMemberDialog: the whole photo larger, plus a short bio for walkers
+ * who have one. Tap only, not hover, so phones and desktops behave the same.
+ * The chips are cropped squares; the dialog shows the whole frame.
  */
 /** How far below the viewport the band may sit before its portraits start
     loading. Native `loading="lazy"` was tried first, but Chromium's own
     threshold is 1250-2500px and the band sits ~2400px down the page, so the
     browser fetched all six on load — an explicit observer keeps them back. */
 const PORTRAIT_LOAD_MARGIN = '300px 0px';
+
+/** DOM id fragment for a walker: "Beth Ann" -> "beth-ann". */
+const slug = (name: string) => name.toLowerCase().replace(/\s+/g, '-');
 
 /**
  * One chip portrait: an <img> (not a CSS background) so it can be withheld
@@ -101,53 +102,39 @@ export default function TeamScroller() {
               type="button"
               className="home-team-chip-trigger"
               data-active={active?.name === member.name}
-              aria-expanded={active?.name === member.name}
-              aria-label={`Preview ${member.name}, Not The Rug dog walker`}
-              // Hover and keyboard focus preview; a tap toggles. Touch must not
-              // also count as hover/focus, or one tap opens and closes it.
-              onPointerEnter={(e) => { if (e.pointerType === 'mouse') setActiveName(member.name); }}
-              onPointerLeave={(e) => { if (e.pointerType === 'mouse') setActiveName((current) => (current === member.name ? null : current)); }}
-              onFocus={(e) => { if (e.currentTarget.matches(':focus-visible')) setActiveName(member.name); }}
-              onBlur={() => setActiveName((current) => (current === member.name ? null : current))}
-              onClick={() => setActiveName((current) => (current === member.name ? null : member.name))}
+              aria-haspopup="dialog"
+              aria-label={`Open ${member.name}, Not The Rug dog walker`}
+              onClick={() => setActiveName(member.name)}
             >
               <div className="polaroid-window">
                 <div
                   className="home-team-chip-photo"
-                  id={`home-team-chip-photo-${member.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  id={`home-team-chip-photo-${slug(member.name)}`}
                   aria-hidden="true"
                 >
                   <TeamChipImage member={member} load={nearViewport} />
                 </div>
               </div>
             </button>
-            <div className="polaroid-caption" id={`home-team-chip-caption-${member.name.toLowerCase().replace(/\s+/g, '-')}`}>
-              <div className="home-team-chip-name">{member.name}</div>
+            <div className="polaroid-caption" id={`home-team-chip-caption-${slug(member.name)}`}>
+              {/* The name is a second way in, with the "›" saying it opens. */}
+              <button
+                type="button"
+                className="home-team-chip-name-btn"
+                id={`home-team-chip-open-${slug(member.name)}`}
+                aria-haspopup="dialog"
+                onClick={() => setActiveName(member.name)}
+              >
+                <span className="home-team-chip-name">{member.name}</span>
+                <span className="home-team-chip-chevron" aria-hidden="true">›</span>
+              </button>
               <div className="home-team-chip-role">{member.role}</div>
             </div>
           </li>
         ))}
       </ul>
 
-      {/* Portalled to <body>: on phones #home-team-scroller is a sideways
-          scroll container in its own stacking layer, which clipped this
-          full-screen preview and kept it under the neighbouring sections.
-          `active` is only set by a pointer/focus event, so document exists. */}
-      {active && createPortal(
-        <div id="home-team-preview" role="presentation">
-          <div id="home-team-preview-frame">
-            {/* Decorative: the trigger already names the walker.
-                #home-team-preview-frame img (globals.css) is width:100%,
-                height:auto, object-fit:contain, so the intrinsic
-                width/height below must match this member's own photo (they
-                are cropped to different aspect ratios per person, see
-                lib/content/team.ts) rather than one shared guess. */}
-            <Image src={active.photo} alt="" width={active.photoWidth} height={active.photoHeight} />
-            <p id="home-team-preview-caption">{active.name} &middot; {active.role}</p>
-          </div>
-        </div>,
-        document.body,
-      )}
+      <TeamMemberDialog member={active} onClose={() => setActiveName(null)} />
     </div>
   );
 }

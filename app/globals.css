@@ -2889,7 +2889,8 @@ footer {
   color: var(--ink);
 }
 /* Photo trigger — the button wrapper must not change the polaroid's box, so
-   it resets to a plain block. Hovering it opens #home-team-preview below. */
+   it resets to a plain block. A tap or click opens #home-team-preview
+   (TeamMemberDialog). */
 .home-team-chip-trigger {
   display: block;
   width: 100%;
@@ -2907,9 +2908,33 @@ footer {
 .home-team-chip-trigger[data-active='true'] .home-team-chip-photo {
   filter: contrast(1) saturate(1);
 }
-/* Centred preview while a face is hovered, focused or tapped — the same
-   treatment AlwaysIncluded uses for its icon previews (#home-included-preview),
-   so the two hover behaviours on this page read as one. */
+/* The name under each face is a second trigger; the olive "›" says it opens. */
+.home-team-chip-name-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.home-team-chip-chevron {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1;
+  color: var(--olive);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.home-team-chip-name-btn:hover .home-team-chip-chevron,
+.home-team-chip-trigger:hover + .polaroid-caption .home-team-chip-chevron { transform: translateX(3px); }
+.home-team-chip-name-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+/* Walker dialog (TeamMemberDialog): the whole portrait in a paper frame on a
+   dimmed backdrop — the look of the "Always Included" previews
+   (#home-included-preview) — plus a close button and, for walkers who have
+   one, a short bio. A tap on the backdrop closes it. */
 #home-team-preview {
   position: fixed;
   inset: 0;
@@ -2918,7 +2943,6 @@ footer {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  pointer-events: none;
   background: rgba(28, 28, 26, 0.55);
   /* Own keyframes, not AlwaysIncluded's: that component defines its copy in
      an inline <style>, so borrowing the name would tie this to that section
@@ -2930,8 +2954,13 @@ footer {
   to { opacity: 1; }
 }
 #home-team-preview-frame {
+  position: relative;
   max-width: min(420px, 82vw);
   width: 100%;
+  /* A bio can outgrow a short phone screen; the frame scrolls, the page does not. */
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--warm-white) url('/textures/paper-grain.png');
   background-size: 300px 300px;
   border: 1px solid var(--ink);
@@ -2948,6 +2977,22 @@ footer {
   object-fit: contain;
   filter: contrast(0.96) saturate(0.9);
 }
+/* With a bio the photo gives up height so name and first lines show at once. */
+#home-team-preview[data-has-bio] #home-team-preview-frame img { max-height: 48vh; }
+#home-team-preview-frame #home-team-preview-close-btn {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 1;
+}
+.home-team-preview-bio {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 10px 4px 0;
+}
+.home-team-preview-bio + .home-team-preview-bio { margin-top: 8px; }
 #home-team-preview-caption {
   font-family: var(--font-stamp);
   font-size: 12px;
@@ -2959,6 +3004,7 @@ footer {
 }
 @media (prefers-reduced-motion: reduce) {
   #home-team-preview { animation: none; }
+  .home-team-chip-chevron { transition: none; }
   .home-team-chip-trigger .home-team-chip-photo { transition: none; }
 }
 /* Small screens: the roster stops trying to fit and becomes a swipe strip,
@@ -3986,7 +4032,8 @@ html[data-home-intro='loading'] #home-intro-walker-shell {
   padding: clamp(14px, 2.2vw, 20px) clamp(16px, 2.4vw, 24px) 0;
 }
 #contact-modal-close-btn,
-#service-modal-close-btn {
+#service-modal-close-btn,
+#home-team-preview-close-btn {
   position: relative;
   flex-shrink: 0;
   border: 1px solid var(--olive);
@@ -3999,15 +4046,18 @@ html[data-home-intro='loading'] #home-intro-walker-shell {
 }
 /* Invisible tap-target extension; the visible button keeps its size. */
 #contact-modal-close-btn::before,
-#service-modal-close-btn::before { content: ''; position: absolute; inset: -9px; }
+#service-modal-close-btn::before,
+#home-team-preview-close-btn::before { content: ''; position: absolute; inset: -9px; }
 #contact-modal-close-btn:hover,
-#service-modal-close-btn:hover {
+#service-modal-close-btn:hover,
+#home-team-preview-close-btn:hover {
   /* Same darker-olive step as the rate labels (.service-details-btn). */
   background: color-mix(in oklab, var(--olive) 80%, black);
   border-color: color-mix(in oklab, var(--olive) 80%, black);
 }
 #contact-modal-close-btn:focus-visible,
-#service-modal-close-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+#service-modal-close-btn:focus-visible,
+#home-team-preview-close-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
 
 #contact-modal-heading-panel {
   container-type: inline-size;
