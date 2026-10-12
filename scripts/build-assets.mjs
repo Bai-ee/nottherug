@@ -12,12 +12,15 @@
  * change:
  *
  *   node scripts/build-assets.mjs
+ *   node scripts/build-assets.mjs --only=video   # just the ffmpeg clips (needs ffmpeg on PATH)
  *
  * Every output file's exact sharp() pipeline is listed in JOBS below so the
  * command is reproducible without re-reading this file's prose.
  */
 import sharp from 'sharp';
 import { mkdir, copyFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,6 +29,7 @@ const ROOT = path.resolve(__dirname, '..');
 const SRC_IMG = path.join(ROOT, 'assets-src/img');
 const PUB_IMG = path.join(ROOT, 'public/img');
 const PUB_LOGOS = path.join(ROOT, 'public/logos');
+const execFileAsync = promisify(execFile);
 
 // Each job: copy the current public/ original into assets-src/img as the
 // preserved master (first run only — copyFile is idempotent), then emit
@@ -77,6 +81,37 @@ const TEAM_PORTRAITS = [
 ];
 const TEAM_DESKTOP_BOX = 150; // CSS px of a 1x desktop chip window (148 at 1440)
 
+// Plan 014 P6: the mobile (<=768px) hero clip, regenerated from the 1920x1080
+// master in assets-src/video/. Centre-crop to the same square the 1080 clip
+// uses (x offset 420), scale to 540, x264 CRF 30 (SSIM vs master 0.966, same as
+// the old 540 MP4 at 0.966 but 13% smaller). MP4 only: at equal SSIM the VP9
+// WebM comes out 1.2-2.3x LARGER than this MP4 on this grainy footage (VP9
+// crf 40 = 1.76 MB at SSIM 0.945), so mobile serves MP4 and the old 540 WebM
+// is no longer referenced. New filename: caches are sticky.
+const VIDEO_JOBS = [
+  {
+    master: 'assets-src/video/hero-mccarren-master.mp4',
+    out: 'public/video/hero-mccarren-540-v2.mp4',
+    filter: 'crop=1080:1080:420:0,scale=540:540:flags=lanczos',
+    crf: 30,
+  },
+];
+
+async function buildVideos() {
+  await mkdir(path.join(ROOT, 'public/video'), { recursive: true });
+  for (const job of VIDEO_JOBS) {
+    await execFileAsync('ffmpeg', [
+      '-v', 'error', '-y', '-i', path.join(ROOT, job.master),
+      '-vf', job.filter, '-an',
+      '-c:v', 'libx264', '-preset', 'veryslow', '-crf', String(job.crf),
+      '-profile:v', 'main', '-pix_fmt', 'yuv420p', '-tag:v', 'avc1',
+      '-movflags', '+faststart', '-map_metadata', '-1',
+      path.join(ROOT, job.out),
+    ]);
+    console.log(`${job.master} -> ${job.out} (crf ${job.crf})`);
+  }
+}
+
 async function ensureMaster(job) {
   const rel = job.master.replace(/^public\//, '');
   const srcMasterPath = path.join(ROOT, 'assets-src', rel);
@@ -86,6 +121,10 @@ async function ensureMaster(job) {
 }
 
 async function run() {
+  if (process.argv.includes('--only=video')) {
+    await buildVideos();
+    return;
+  }
   await mkdir(SRC_IMG, { recursive: true });
   await mkdir(PUB_IMG, { recursive: true });
   await mkdir(PUB_LOGOS, { recursive: true });
@@ -139,6 +178,8 @@ async function run() {
       console.log(`${job.master} -> team/${name}-w${width}.{webp,avif}`);
     }
   }
+
+  await buildVideos();
 }
 
 run().catch((err) => {
