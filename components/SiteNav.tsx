@@ -139,15 +139,15 @@ export default function SiteNav() {
           <Link href="/" className="nav-logo">
             {/* Nav wordmark, CSS-sized (#nav-logo-img in app/globals.css sets
                 width: 370/200/190/168px across breakpoints/scroll states,
-                height: auto). Plain <img>, not next/image: the source PNG is
-                already ~50KB and shown above the fold on every route, so the
+                height: auto). Plain <img>, not next/image: the source WebP is
+                already ~8KB and shown above the fold on every route, so the
                 ~60KB next/image client runtime this dragged into every
                 marketing route's bundle cost more than the resize/format
                 conversion saved — see plans/010 "Release budgets". */}
-            {/* eslint-disable-next-line @next/next/no-img-element -- small (~50KB) CSS-sized wordmark shown as-is; next/image runtime cost exceeds its savings here */}
+            {/* eslint-disable-next-line @next/next/no-img-element -- small (~8KB) CSS-sized wordmark shown as-is; next/image runtime cost exceeds its savings here */}
             <img
               id="nav-logo-img"
-              src="/img/horiz_logo_off_white.png"
+              src="/img/horiz_logo_off_white-v2.webp"
               alt="Not The Rug"
               width={498}
               height={88}
