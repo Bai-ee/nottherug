@@ -48,6 +48,7 @@ export default function HomePageContent() {
             sections it crosses — see lib/marketing/paw-walk-path.ts. */}
         <HomePawWalk />
 
+        <main id="home-main">
         <HomeHero />
 
         {/* Rates follow the fold directly — the featured Group Walk card is
@@ -113,6 +114,7 @@ export default function HomePageContent() {
         <ContactSheetSection source="home" paneId="home-meetgreet" />
           <SiteFooter />
         </div>
+        </main>
       </HomeSectionRevealShell>
     </>
   );

@@ -106,11 +106,20 @@ export function StepAboutYou({
               `neighborhood` stays whatever the form already holds, so the
               payload is unchanged and still a valid NEIGHBORHOOD_OPTIONS
               value. */}
-          <span className="booking-field-caption" style={{ fontWeight: 500 }}>Neighborhood</span>
+          <span
+            id={`${paneId}-neighborhood-caption`}
+            className="booking-field-caption"
+            style={{ fontWeight: 500 }}
+          >
+            Neighborhood
+          </span>
+          {/* role="group" so the name is allowed on this div (aria-label and
+              aria-labelledby are prohibited on a role-less div). */}
           <div
             id={`${paneId}-neighborhood-display`}
             className="form-control booking-locked-field"
-            aria-label={`Neighborhood: ${SERVICE_AREA_LABEL}`}
+            role="group"
+            aria-labelledby={`${paneId}-neighborhood-caption`}
             title="Williamsburg is the only neighborhood we serve"
           >
             {SERVICE_AREA_LABEL}

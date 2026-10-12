@@ -22,6 +22,7 @@ export default function ContactPage() {
     <div id="contact-page" className="page" style={{ display: 'block' }}>
       <SiteNav />
 
+      <main id="contact-main">
       <div
         id="contact-hero"
         className="page-hero"
@@ -53,6 +54,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+      </main>
     </div>
   );
 }

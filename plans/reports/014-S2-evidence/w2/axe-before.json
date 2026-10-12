@@ -1,0 +1,496 @@
+{
+ "390 /": [
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 100,
+   "t": [
+    "#hero-polaroid-window",
+    "#hero-polaroid-caption",
+    "#hero-content-shell"
+   ]
+  }
+ ],
+ "390 /about": [
+  {
+   "id": "color-contrast",
+   "impact": "serious",
+   "n": 11,
+   "t": [
+    ".card-hover.team-card:nth-child(1) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(2) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(3) > .team-info > .team-role"
+   ]
+  },
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 2,
+   "t": [
+    "#join-team-card > h4",
+    ".value-cell:nth-child(1) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 14,
+   "t": [
+    "#about-hero-section",
+    "#about-story-section",
+    "#about-team-section > .container > div:nth-child(1)"
+   ]
+  }
+ ],
+ "390 /safety": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".trust-card:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 12,
+   "t": [
+    "#safety-hero-section",
+    ".trust-card:nth-child(1) > div:nth-child(2)",
+    ".trust-card:nth-child(2) > div:nth-child(2)"
+   ]
+  }
+ ],
+ "390 /reviews": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 3,
+   "t": [
+    "#reviews-hero-section",
+    "#reviews-wall-section",
+    "#reviews-leave-review-section"
+   ]
+  }
+ ],
+ "390 /book": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 4,
+   "t": [
+    "#book-hero-shell",
+    "#book-tab-meetgreet-progress-row",
+    "div[aria-hidden=\"false\"]"
+   ]
+  }
+ ],
+ "390 /contact": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".contact-method:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 13,
+   "t": [
+    "#contact-hero",
+    ".contact-method:nth-child(1) > div:nth-child(2)",
+    ".contact-method:nth-child(2) > div:nth-child(2)"
+   ]
+  }
+ ],
+ "390 /signup": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "#signup-meetgreet-group-you-header > h3"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 4,
+   "t": [
+    "#home-contact-sheet-header-copy",
+    "#signup-meetgreet-progress-row",
+    "#signup-meetgreet-carousel-row"
+   ]
+  }
+ ],
+ "390 /walk-with-us": [
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 3,
+   "t": [
+    "#home-contact-sheet-header",
+    "#walk-with-us-application-progress-row",
+    "#walk-with-us-application-carousel-row"
+   ]
+  }
+ ],
+ "390 /neighborhoods/williamsburg": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".card.card-pad:nth-child(1) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 9,
+   "t": [
+    "#neighborhoods-williamsburg-hero-section",
+    "#neighborhoods-williamsburg-coverage-section",
+    "#neighborhoods-williamsburg-detail-section > .container > div:nth-child(1)"
+   ]
+  }
+ ],
+ "1440 /": [
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 99,
+   "t": [
+    "#hero-visual-video-shell",
+    "#hero-content-shell",
+    "#hero-stat-years"
+   ]
+  }
+ ],
+ "1440 /about": [
+  {
+   "id": "color-contrast",
+   "impact": "serious",
+   "n": 11,
+   "t": [
+    ".card-hover.team-card:nth-child(1) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(2) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(3) > .team-info > .team-role"
+   ]
+  },
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 2,
+   "t": [
+    "#join-team-card > h4",
+    ".value-cell:nth-child(1) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 14,
+   "t": [
+    "#about-hero-section",
+    "#about-story-section",
+    "#about-team-section > .container > div:nth-child(1)"
+   ]
+  }
+ ],
+ "1440 /safety": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".trust-card:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 12,
+   "t": [
+    "#safety-hero-section",
+    ".trust-card:nth-child(1) > div:nth-child(2)",
+    ".trust-card:nth-child(2) > div:nth-child(2)"
+   ]
+  }
+ ],
+ "1440 /reviews": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 3,
+   "t": [
+    "#reviews-hero-section",
+    "#reviews-wall-section",
+    "#reviews-leave-review-section"
+   ]
+  }
+ ],
+ "1440 /book": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 4,
+   "t": [
+    "#book-hero-shell",
+    "#book-tab-meetgreet-progress-row",
+    "div[aria-hidden=\"false\"]"
+   ]
+  }
+ ],
+ "1440 /contact": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".contact-method:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 13,
+   "t": [
+    "#contact-hero",
+    ".contact-method:nth-child(1) > div:nth-child(2)",
+    ".contact-method:nth-child(2) > div:nth-child(2)"
+   ]
+  }
+ ],
+ "1440 /signup": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "#signup-meetgreet-group-you-header > h3"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 4,
+   "t": [
+    "#home-contact-sheet-header-copy",
+    "#signup-meetgreet-progress-row",
+    "#signup-meetgreet-carousel-row"
+   ]
+  }
+ ],
+ "1440 /walk-with-us": [
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 3,
+   "t": [
+    "#home-contact-sheet-header",
+    "#walk-with-us-application-progress-row",
+    "#walk-with-us-application-carousel-row"
+   ]
+  }
+ ],
+ "1440 /neighborhoods/williamsburg": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".card.card-pad:nth-child(1) > h4"
+   ]
+  },
+  {
+   "id": "landmark-one-main",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "html"
+   ]
+  },
+  {
+   "id": "region",
+   "impact": "moderate",
+   "n": 9,
+   "t": [
+    "#neighborhoods-williamsburg-hero-section",
+    "#neighborhoods-williamsburg-coverage-section",
+    "#neighborhoods-williamsburg-detail-section > .container > div:nth-child(1)"
+   ]
+  }
+ ]
+}

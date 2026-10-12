@@ -1,0 +1,22 @@
+const { chromium } = require('/Users/bballi/Documents/Repos/NotTheRug-014-s2-w2/node_modules/playwright');
+const fs = require('fs');
+const axeSrc = fs.readFileSync('/Users/bballi/Documents/Repos/NotTheRug-014-s2-w2/node_modules/axe-core/axe.min.js','utf8');
+const routes = ['/','/about','/safety','/reviews','/book','/contact','/signup','/walk-with-us','/neighborhoods/williamsburg'];
+(async()=>{
+  const b = await chromium.launch(); const out = {};
+  for (const w of [390,1440]) {
+    const ctx = await b.newContext({viewport:{width:w,height:w===390?844:900}, reducedMotion:'reduce'});
+    for (const r of routes) {
+      const p = await ctx.newPage();
+      await p.goto('http://localhost:3022'+r,{waitUntil:'load'}); await p.waitForTimeout(2500);
+      await p.evaluate(axeSrc);
+      const res = await p.evaluate(()=>axe.run(document,{resultTypes:['violations']}));
+      out[w+' '+r] = res.violations.map(v=>({id:v.id,impact:v.impact,n:v.nodes.length,t:v.nodes.slice(0,3).map(n=>n.target.join(' '))}));
+      await p.close();
+    }
+    await ctx.close();
+  }
+  await b.close();
+  fs.writeFileSync(process.argv[2], JSON.stringify(out,null,1));
+  for (const k in out) console.log(k, out[k].map(v=>v.id+'x'+v.n).join(', ')||'clean');
+})();

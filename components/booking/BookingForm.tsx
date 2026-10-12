@@ -573,6 +573,19 @@ export default function BookingForm({
           background: rgba(36, 35, 33, 0.05);
           border-style: dashed;
         }
+        /* Keyboard focus ring. globals.css gives .form-control outline: none and
+           only tints the border on :focus, which reads as no focus at all on
+           the cream /book sheet. Qualified by the pane id (1,2,0) to beat that
+           outline: none. :focus-visible, so a mouse click gets no extra ring. */
+        #${paneId} .form-control:focus-visible {
+          outline: 2px solid var(--olive);
+          outline-offset: 2px;
+        }
+        /* Buttons use outline as their printed inner frame, so the ring is a
+           box-shadow pair (paper gap, olive ring) instead of an outline. */
+        #${paneId} button:focus-visible {
+          box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--olive);
+        }
         [data-section="meetgreet-carousel-track"][data-layout="full"] > div + div {
           margin-top: clamp(28px, 3.4vw, 44px);
           border-top: 1px solid var(--zine-rule, rgba(36, 35, 33, 0.22));
