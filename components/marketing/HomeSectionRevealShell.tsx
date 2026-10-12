@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { useSectionReveals } from './hooks/useSectionReveals';
+import { useCityscapeParallax } from './hooks/useCityscapeParallax';
 import { useScrollToTopOnLoad } from './hooks/useScrollToTopOnLoad';
 
 /**
@@ -9,7 +10,7 @@ import { useScrollToTopOnLoad } from './hooks/useScrollToTopOnLoad';
  * HomePageContent (a Server Component) renders the page's sections — some of
  * them Server Components themselves, some already client leaves like
  * HomeHero — and passes the whole tree in here as `children`. That keeps this
- * file's own module graph to just itself plus the two hooks: nothing it
+ * file's own module graph to just itself plus its hooks: nothing it
  * receives as children is pulled into its client bundle by being rendered
  * here (see the Next.js docs on interleaving Server and Client Components —
  * children passed to a Client Component are rendered ahead of time on the
@@ -26,6 +27,7 @@ export default function HomeSectionRevealShell({ children }: { children: React.R
   // reveals replay from the start.
   useScrollToTopOnLoad();
   useSectionReveals(pageRef);
+  useCityscapeParallax(pageRef);
 
   return (
     <div id="page-home" className="page active" ref={pageRef}>

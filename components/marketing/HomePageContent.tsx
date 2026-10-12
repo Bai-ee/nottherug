@@ -92,6 +92,10 @@ export default function HomePageContent() {
             then what working with us actually looks like. Trial placement —
             it used to open the green closing band above the form. */}
         <section className="section" id="home-process-section">
+          {/* Seam art riding over the voices band — parallax layer, see useCityscapeParallax. */}
+          <div className="city-parallax-frame" id="home-process-cityscape-frame" aria-hidden="true">
+            <div className="city-parallax-art" id="home-process-cityscape-art" data-city-parallax="section" />
+          </div>
           <div className="container">
             <HowItWorksStrip />
           </div>

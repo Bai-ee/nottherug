@@ -105,6 +105,10 @@ export default function ServicesPreview() {
 
   return (
     <section className="section" id="home-personalized-care-section">
+      {/* Bridge collage behind the rates — parallax layer, see useCityscapeParallax. */}
+      <div className="city-parallax-frame" id="home-services-cityscape-frame" aria-hidden="true">
+        <div className="city-parallax-art" id="home-services-cityscape-art" data-city-parallax="section" />
+      </div>
       <div className="container" id="home-rates-preview-row">
         {/* Secondary rates: roughly half the scale of the featured card and
             with no CTA of their own — the featured card carries the action. */}

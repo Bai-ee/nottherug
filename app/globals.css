@@ -640,9 +640,9 @@ footer {
      #footer-art-shell, laid out below. */
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(79, 90, 61, 0.85), rgba(79, 90, 61, 0.85)),
-    url('/img/bg-section-2-cover.webp') center / cover no-repeat,
-    var(--sage-dark);
+    linear-gradient(rgb(79, 90, 61), rgb(79, 90, 61));
+  /* The photo is its own layer (#footer-photo-art, CITYSCAPE PARALLAX
+     LAYERS): 0.15 photo over solid olive = the old 0.85 veil over photo. */
   color: white;
   padding: 76px 0 40px;
   position: relative;
@@ -783,10 +783,10 @@ footer {
    the top edge only: the strip supplies its own border-top, and two adjacent
    1px rules would render as a double line at the seam. */
 #home-team-section {
+  /* Photo is its own layer (#home-team-photo-art, CITYSCAPE PARALLAX LAYERS). */
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(79, 90, 61, 0.90), rgba(79, 90, 61, 0.90)),
-    url('/img/bg-section-1-cover.webp') center / cover no-repeat;
+    linear-gradient(rgb(79, 90, 61), rgb(79, 90, 61));
   border-top: 1px solid rgba(243,236,217,0.14);
   padding-bottom: clamp(36px, 5vw, 64px);
 }
@@ -878,10 +878,11 @@ footer {
    No hairline on either edge: it continues the team band above it and runs
    straight into the process strip below. */
 #home-closing-trust-section {
+  /* Photo is its own layer (#home-closing-trust-photo-art, CITYSCAPE
+     PARALLAX LAYERS). */
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(79, 90, 61, 0.88), rgba(79, 90, 61, 0.88)),
-    url('/img/bg-section-1-cover.webp') center / cover no-repeat;
+    linear-gradient(rgb(79, 90, 61), rgb(79, 90, 61));
   /* Continues the team band directly beneath the roster: no rule and no top
      pad at that seam, so the faces and the credentials read as one band. The
      bottom hairline still separates it from the process strip below, which is
@@ -913,18 +914,16 @@ footer {
    its area, the footer fits the photo to its own height (cover) instead of
    stretching one image over the full shell, which upscaled it and blurred it. */
 #home-closing-band-shell #home-contact-sheet-section {
+  /* Photo is its own layer (CITYSCAPE PARALLAX LAYERS), at 0.20 here. */
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(79, 90, 61, 0.80), rgba(79, 90, 61, 0.80)),
-    url('/img/bg-section-2-cover.webp') center / cover no-repeat,
-    var(--sage-dark);
+    linear-gradient(rgb(79, 90, 61), rgb(79, 90, 61));
 }
 #home-closing-band-shell #main-footer {
+  /* Photo is its own layer (CITYSCAPE PARALLAX LAYERS), at 0.20 here. */
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(79, 90, 61, 0.80), rgba(79, 90, 61, 0.80)),
-    url('/img/bg-section-2-cover.webp') center / cover no-repeat,
-    var(--sage-dark);
+    linear-gradient(rgb(79, 90, 61), rgb(79, 90, 61));
 }
 /* The art's torn top edge is pulled up over the seam between the sheet and the
    footer. Pull-up = the print's transparent top margin plus the paper's rise
@@ -984,12 +983,9 @@ footer {
   padding-top: clamp(20px, 3vw, 36px);
   background:
     url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-    linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    /* `cover` scaled this collage to exactly the section height, so a
-       background-position percentage had no slack to move it. Overscaling the
-       height and anchoring at the top is what actually drops the artwork —
-       130% = roughly 30% of the section height lower. */
-    url('/img/bg-section-graphic-1.webp') center top / auto 130% no-repeat;
+    linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80));
+  /* The bridge collage is its own layer now (#home-services-cityscape-art,
+     CITYSCAPE PARALLAX LAYERS) so it can move on scroll. */
 }
 #home-personalized-care-pin-stage {
   background:
@@ -1023,8 +1019,9 @@ footer {
       calc(12% - (var(--hero-walker-ramp) * 0.022))
       / clamp(420px, calc(42vw + (var(--hero-walker-ramp) * 0.27)), 720px) auto
       no-repeat,
-    linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-    url('/img/hero-walker-strip.webp') bottom center / 100% auto no-repeat;
+    linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80));
+  /* The bridge strip along the bottom is its own layer now
+     (#hero-cityscape-art, CITYSCAPE PARALLAX LAYERS). */
 }
 /* Hero walker across mid widths — the illustration is tuned for the widest
    viewports (720px wide at 60% 12%). Its old 42vw ramp only reached that 720px
@@ -2089,8 +2086,7 @@ footer {
     background:
       url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
       linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-      url('/img/3Top-flipped.png') 60% 12% / clamp(300px, 86vw, 460px) auto no-repeat,
-      url('/img/hero-walker-strip.webp') bottom center / 100% auto no-repeat;
+      url('/img/3Top-flipped.png') 60% 12% / clamp(300px, 86vw, 460px) auto no-repeat;
   }
   #hero-stats-strip { grid-column: 1; grid-row: 3; width: calc(100% - 40px); padding-left: 20px; padding-right: 20px; margin-bottom: 40px; }
   .hero-visual { grid-column: 1; grid-row: 1; height: auto; width: 100%; position: static; padding-bottom: 0; }
@@ -3138,29 +3134,89 @@ footer {
     linear-gradient(var(--cream), var(--cream));
   scroll-margin-top: var(--nav-h);
 }
-/* Seam art between the voices band and this one. It rides 30% of its own
-   height above the section's top edge, so it is a positioned box rather than a
-   background layer — a background is clipped to its own element no matter what
-   `overflow` says. Absolutely positioned, so it adds no height to either
-   section, and `aspect-ratio` gives it the artwork's proportions at whatever
-   width the breakpoint hands it. The opacity stands in for the paper veil it
-   used to sit under. */
-#home-process-section::before {
-  content: '';
+/* ── CITYSCAPE PARALLAX LAYERS ─────────────────────────────────────────────
+   The bridge/skyline art in the hero, the rates section and the process band
+   lives in its own pair of boxes instead of a background layer, so
+   useCityscapeParallax can drift it on scroll with a transform (compositor
+   only, no repaint). The frame sits at z-index -1 inside an isolated section:
+   above the section's own paper and veil, under every bit of its content, with
+   no z-index needed on the content itself. The art's opacity stands in for the
+   0.80 cream veil it used to sit under (0.2 art over cream = 0.8 veil over
+   art). With reduced motion or no JS, the layers are simply static. */
+#home-hero-section,
+#home-personalized-care-section,
+#home-process-section { position: relative; isolation: isolate; }
+.city-parallax-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+.city-parallax-art {
   position: absolute;
   left: 0;
   right: 0;
-  /* 30% of the art's own height: it is 1536x642, so at full page width its
-     height is 0.418 x that width, and 0.3 of that is 12.54vw. */
-  top: -12.54vw;
-  aspect-ratio: 1536 / 642;
-  background: url('/img/bg-section-graphic-2.webp') center top / 100% auto no-repeat;
-  opacity: 0.17;
-  pointer-events: none;
-  z-index: 0;
+  background-repeat: no-repeat;
 }
+/* Hero: strip pinned to the bottom edge at full width, ratio kept. */
+#hero-cityscape-art {
+  bottom: 0;
+  aspect-ratio: 1620 / 971;
+  background-image: url('/img/hero-walker-strip.webp');
+  background-position: bottom center;
+  background-size: 100% auto;
+  opacity: 0.2;
+}
+/* Rates: 130% of the section's height, anchored at the top — overscaling the
+   height is what drops the artwork ~30% lower; the frame crops the rest. */
+#home-services-cityscape-art {
+  top: 0;
+  height: 130%;
+  background-image: url('/img/bg-section-graphic-1.webp');
+  background-position: center top;
+  background-size: auto 100%;
+  opacity: 0.2;
+}
+/* Process: seam art riding 30% of its own height above the section's top edge
+   (1536x642, so 0.418 x width, and 0.3 of that is 12.54vw). Its frame starts
+   there and is not cropped, so the art still overlaps the voices band. */
+#home-process-cityscape-frame { top: -12.54vw; overflow: visible; }
+#home-process-cityscape-art {
+  top: 0;
+  aspect-ratio: 1536 / 642;
+  background-image: url('/img/bg-section-graphic-2.webp');
+  background-position: center top;
+  background-size: 100% auto;
+  opacity: 0.17;
+}
+/* Background photos on the green bands and the footer. Each was the cover
+   photo under an olive veil; the layer carries the photo at (1 - veil) opacity
+   over solid olive, which paints the same colour. Overscanned top and bottom
+   past the parallax travel (useCityscapeParallax PHOTO_TRAVEL) so an edge
+   never shows. */
+#home-team-section,
+#home-closing-trust-section,
+#home-closing-band-shell #home-contact-sheet-section,
+#main-footer { position: relative; isolation: isolate; }
+.city-parallax-photo {
+  top: -140px;
+  bottom: -140px;
+  background-position: center;
+  background-size: cover;
+}
+#home-team-photo-art { background-image: url('/img/bg-section-1-cover.webp'); opacity: 0.10; }
+#home-closing-trust-photo-art { background-image: url('/img/bg-section-1-cover.webp'); opacity: 0.12; }
+#footer-photo-art { background-image: url('/img/bg-section-2-cover.webp'); opacity: 0.15; }
+/* The contact sheet only carries the photo on the closing band (home, signup,
+   walk-with-us); in the welcome modal its layer stays empty. */
+#home-closing-band-shell #home-contact-sheet-photo-art,
+#home-closing-band-shell #footer-photo-art { background-image: url('/img/bg-section-2-cover.webp'); opacity: 0.20; }
+/* Dog collage parallax shell: mirrors the image's own flex sizing, so the
+   image's width and % margins resolve exactly as before. */
+#home-contact-sheet-clipping-shell { flex: 0 0 auto; width: 100%; }
 /* Content clears the art. */
-#home-process-section > * { position: relative; z-index: 1; }
+#home-process-section > *:not(.city-parallax-frame) { position: relative; z-index: 1; }
 #home-process-section .hiw-step h4,
 #home-process-section .home-coverage-point h4 { color: var(--ink); }
 #home-process-section .hiw-step p { color: var(--mid-gray); }
@@ -3861,6 +3917,12 @@ footer {
      lifted rather than a different surface sliding away. */
   background: var(--cream) url('/textures/paper-grain.png');
   background-size: 300px 300px;
+  /* Walker over its walk line. */
+  flex-direction: column;
+  gap: 14px;
+  /* Lands below the viewport at rest; only shows once the sheet lifts, so
+     the rising edge reads as paper with a little air under it. */
+  box-shadow: 0 26px 48px -10px rgba(0, 0, 0, 0.22);
   will-change: transform;
 }
 html[data-home-intro='loading'] #home-intro-overlay {
@@ -3921,9 +3983,32 @@ html[data-home-intro='loading'] #home-intro-walker-shell {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-7px); }
 }
+/* Dashed walk line under the walker, same ink and strength as the
+   silhouette. It draws out as the walker sets off, then retracts behind it on
+   the way out — done by 0.7s, inside the intro's existing envelope, so it adds
+   no time. Not one of homeIntroClock's tracked keyframes. The origin flips
+   between 30% and 31% while the line is at full scale, so nothing jumps. */
+#home-intro-walk-path {
+  display: block;
+  width: min(46vw, 360px);
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.3) 0 10px, transparent 10px 18px);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+html[data-home-intro='loading'] #home-intro-walk-path {
+  animation: home-intro-walk-path 0.7s both;
+}
+@keyframes home-intro-walk-path {
+  0% { transform: scaleX(0); transform-origin: left center; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+  30% { transform: scaleX(1); transform-origin: left center; }
+  31% { transform: scaleX(1); transform-origin: right center; animation-timing-function: cubic-bezier(0.55, 0.06, 0.68, 0.19); }
+  100% { transform: scaleX(0); transform-origin: right center; }
+}
 
 @media (max-width: 640px) {
   #home-intro-walker-silhouette { width: min(76vw, 340px); }
+  #home-intro-walk-path { width: min(62vw, 280px); }
 }
 
 /* ── PHONE HERO COMPACTION ─────────────────────────────────────────────────
@@ -3991,8 +4076,7 @@ html[data-home-intro='loading'] #home-intro-walker-shell {
   .hero {
     background:
       url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-      linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-      url('/img/hero-walker-strip.webp') bottom center / 100% auto no-repeat;
+      linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80));
   }
   #hero-polaroid-badge { display: none; }
 }

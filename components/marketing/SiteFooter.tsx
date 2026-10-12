@@ -60,15 +60,21 @@ const FOOTER_COMPANY: Array<{ href: string; label: string; id?: string; cta?: Ct
 export default function SiteFooter() {
   return (
     <footer id="main-footer">
+      {/* Background photo — parallax layer, see useCityscapeParallax. */}
+      <div className="city-parallax-frame" id="footer-photo-frame" aria-hidden="true">
+        <div className="city-parallax-art city-parallax-photo" id="footer-photo-art" data-city-parallax="photo" />
+      </div>
       <div className="container">
         <div id="footer-content-zone">
           <div className="footer-grid">
             {/* The collage carries its own "Not The Rug · NYC Dog Walking" label,
                 so it stands in for the cream circle badge this footer used to
-                lead with. Static, sized by CSS (#footer-art-image). */}
+                lead with. Sized by CSS (#footer-art-image); drifts on scroll
+                (useCityscapeParallax). */}
             <div id="footer-art-shell">
               <Image
                 id="footer-art-image"
+                data-city-parallax="print"
                 src="/img/footer-williamsburg-bridge.webp"
                 alt="Not The Rug — NYC dog walking. A collage of the Williamsburg Bridge and the Manhattan skyline."
                 width={1620}
