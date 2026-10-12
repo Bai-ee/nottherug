@@ -94,7 +94,7 @@ export default function HomePawWalk() {
   useLayoutEffect(() => {
     const layer = layerRef.current;
     if (!layer) return;
-    const required = estimateRequiredPawSteps(layer, tuning, measuredSize);
+    const required = estimateRequiredPawSteps(layer, tuning, measuredSize, true);
     if (required + SAFETY_BUFFER_STEPS > stepCount) growStepCount(required);
     // measuredSize is a rough fallback only used when tuning.size is 0 (dev
     // tuner "use the CSS clamp" mode); it does not need to retrigger this.

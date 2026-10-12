@@ -58,6 +58,90 @@ function applyStoredPath(layer: HTMLElement): void {
   layer.querySelector<SVGPathElement>('#home-paw-walk-path')?.setAttribute('d', stored);
 }
 
+/** Sample count for the length ESTIMATE only. A route-length sum converges
+    fast, so it reads every ESTIMATE_STRIDE-th point of the GAIT.samples grid
+    (the same points, so nothing is sampled twice). */
+const ESTIMATE_SAMPLES = 100;
+const ESTIMATE_STRIDE = GAIT.samples / ESTIMATE_SAMPLES;
+/** Main-thread budget per slice when sampling in the background. */
+const SAMPLE_SLICE_MS = 8;
+
+/**
+ * The route in path space (before the page-box stretch), sampled on the
+ * GAIT.samples grid. getPointAtLength is the expensive part of a layout and
+ * the route is static, so this is computed once, in background slices, and
+ * every layout / resize / estimate afterwards only scales it into pixels.
+ * Keyed on `d` + length so a dragged route (dev path editor) re-samples.
+ */
+interface RouteSamples {
+  key: string;
+  total: number;
+  x: Float64Array;
+  y: Float64Array;
+  filled: Uint8Array;
+}
+let routeCache: RouteSamples | undefined;
+
+function routeSamplesFor(path: SVGPathElement): RouteSamples {
+  const total = path.getTotalLength();
+  const key = `${path.getAttribute('d')}|${total}`;
+  if (routeCache?.key !== key) {
+    routeCache = {
+      key,
+      total,
+      x: new Float64Array(GAIT.samples + 1),
+      y: new Float64Array(GAIT.samples + 1),
+      filled: new Uint8Array(GAIT.samples + 1),
+    };
+  }
+  return routeCache;
+}
+
+function sampleAt(path: SVGPathElement, s: RouteSamples, k: number): void {
+  if (s.filled[k]) return;
+  const p = path.getPointAtLength((s.total * k) / GAIT.samples);
+  s.x[k] = p.x;
+  s.y[k] = p.y;
+  s.filled[k] = 1;
+}
+
+/** Fills whatever is missing, synchronously. Only a cold cache pays for this
+    (reduced-motion fallback paths, the live path editor). */
+function sampleAll(path: SVGPathElement): RouteSamples {
+  const s = routeSamplesFor(path);
+  for (let k = 0; k <= GAIT.samples; k++) sampleAt(path, s, k);
+  return s;
+}
+
+/** True once every sample for the current route is cached. */
+function routeSamplesReady(path: SVGPathElement): boolean {
+  const s = routeSamplesFor(path);
+  return s.filled.every(Boolean);
+}
+
+/** Fills the cache in short slices so no single task is long. */
+async function sampleAllInSlices(path: SVGPathElement, isCancelled: () => boolean): Promise<void> {
+  const s = routeSamplesFor(path);
+  let k = 0;
+  while (k <= GAIT.samples) {
+    const sliceStart = performance.now();
+    while (k <= GAIT.samples && performance.now() - sliceStart < SAMPLE_SLICE_MS) sampleAt(path, s, k++);
+    if (k > GAIT.samples) return;
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    if (isCancelled()) return;
+  }
+}
+
+/** Runs `cb` when the main thread is idle (setTimeout where rIC is missing, e.g. Safari). */
+function whenIdle(cb: () => void): () => void {
+  if (typeof window.requestIdleCallback === 'function') {
+    const id = window.requestIdleCallback(cb, { timeout: 1500 });
+    return () => window.cancelIdleCallback(id);
+  }
+  const id = window.setTimeout(cb, 200);
+  return () => window.clearTimeout(id);
+}
+
 /**
  * Walks the SVG route at a fixed on-screen stride and positions one print per
  * step, alternating sides of the line. Pure DOM + geometry, no gsap, so the
@@ -80,14 +164,13 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
   // Sample the route in path space, map each sample into page pixels, and
   // keep a running pixel length so the stride below is a real on-screen
   // distance rather than a path-space one.
-  const total = path.getTotalLength();
+  const route = sampleAll(path);
   const xs = new Float64Array(GAIT.samples + 1);
   const ys = new Float64Array(GAIT.samples + 1);
   const cum = new Float64Array(GAIT.samples + 1);
   for (let k = 0; k <= GAIT.samples; k++) {
-    const p = path.getPointAtLength((total * k) / GAIT.samples);
-    xs[k] = p.x * sx;
-    ys[k] = p.y * sy;
+    xs[k] = route.x[k] * sx;
+    ys[k] = route.y[k] * sy;
     cum[k] = k === 0 ? 0 : cum[k - 1] + Math.hypot(xs[k] - xs[k - 1], ys[k] - ys[k - 1]);
   }
   const routeLength = cum[GAIT.samples];
@@ -185,14 +268,6 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
   return placed;
 }
 
-/** Sample count for the length ESTIMATE only (not the real per-print
-    placement in layoutPawWalk, which needs GAIT.samples' finer resolution to
-    place individual prints accurately). A route-length sum converges fast —
-    100 samples is within a percent or two of GAIT.samples' 1400 — and this
-    runs in a layout effect on every mount, so keeping it cheap matters more
-    than the extra precision would. */
-const ESTIMATE_SAMPLES = 100;
-
 /**
  * DOM-measuring half of the print-count estimate (see `pawStepsForRouteLength`
  * for the arithmetic half). Samples the route the same way `layoutPawWalk`
@@ -205,7 +280,10 @@ const ESTIMATE_SAMPLES = 100;
 export function estimateRequiredPawSteps(
   layer: HTMLElement,
   tuning: PawWalkTuning,
-  fallbackPawSize: number
+  fallbackPawSize: number,
+  /** Only answer from the cached route (0 if it is not sampled yet), so a
+      pre-paint caller never pays for getPointAtLength. */
+  cachedOnly = false
 ): number {
   const page = layer.parentElement;
   const path = layer.querySelector<SVGPathElement>('#home-paw-walk-path');
@@ -217,14 +295,16 @@ export function estimateRequiredPawSteps(
   const sx = pageW / (box?.width || PAW_WALK_UNITS);
   const sy = pageH / (box?.height || PAW_WALK_UNITS);
 
-  const total = path.getTotalLength();
+  const route = routeSamplesFor(path);
+  if (cachedOnly && !routeSamplesReady(path)) return 0;
   let routeLength = 0;
   let prevX = 0;
   let prevY = 0;
   for (let k = 0; k <= ESTIMATE_SAMPLES; k++) {
-    const p = path.getPointAtLength((total * k) / ESTIMATE_SAMPLES);
-    const x = p.x * sx;
-    const y = p.y * sy;
+    const i = k * ESTIMATE_STRIDE;
+    sampleAt(path, route, i);
+    const x = route.x[i] * sx;
+    const y = route.y[i] * sy;
     if (k > 0) routeLength += Math.hypot(x - prevX, y - prevY);
     prevX = x;
     prevY = y;
@@ -274,8 +354,9 @@ export function useHomePawWalk(
     const layer = layerRef.current;
     if (!layer) return;
 
-    applyStoredPath(layer);
-
+    // Everything in start() runs once the route has been sampled (in
+    // background slices, after first paint) so sampling never blocks the hero.
+    const start = (): (() => void) | undefined => {
     // The route may need more prints than are currently mounted (first paint
     // before the real count is known, or a resize that made the page taller).
     // Bail and let the caller re-render with enough of them — this effect
@@ -383,6 +464,29 @@ export function useHomePawWalk(
       if (relayout && ScrollTriggerRef) ScrollTriggerRef.removeEventListener('refreshInit', relayout);
       relayoutRef.current = undefined;
       ctx?.revert();
+    };
+    };
+
+    applyStoredPath(layer);
+    const path = layer.querySelector<SVGPathElement>('#home-paw-walk-path');
+    let stopped = false;
+    let teardown: (() => void) | undefined;
+    const begin = () => {
+      if (!stopped) teardown = start();
+    };
+    const prepare = () => {
+      if (!path) return begin();
+      void sampleAllInSlices(path, () => stopped).then(begin);
+    };
+    // A warm cache (tuner slider move, resize-driven re-run) needs no wait.
+    let cancelIdle = () => {};
+    if (path && routeSamplesReady(path)) begin();
+    else cancelIdle = whenIdle(prepare);
+
+    return () => {
+      stopped = true;
+      cancelIdle();
+      teardown?.();
     };
     // tuning is reconstructed on every change; tuningKey is its stable identity.
     // eslint-disable-next-line react-hooks/exhaustive-deps
