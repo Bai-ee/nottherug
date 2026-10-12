@@ -65,7 +65,6 @@ const JSX_SOURCES = [
   { file: 'components/marketing/ServicesPageContent.tsx', page: 'services', jsxRange: [40, 999], skipRanges: [] },
   { file: 'components/marketing/ServiceGrid.tsx', page: 'services', jsxRange: [6, 999], skipRanges: [] },
 
-  { file: 'components/marketing/HowItWorksPageContent.tsx', page: 'how-it-works', jsxRange: [15, 999], skipRanges: [] },
   { file: 'components/marketing/SampleWalkReportCard.tsx', page: 'how-it-works', jsxRange: [3, 999], skipRanges: [] },
 
   { file: 'components/marketing/AboutPageContent.tsx', page: 'about', jsxRange: [15, 999], skipRanges: [] },
