@@ -42,6 +42,13 @@ type Props = {
    */
   layout?: 'steps' | 'full';
   /**
+   * Outline level (aria-level) for the step title / group headers. The tag
+   * stays h3 for the CSS; pages where the form sits straight under the h1
+   * pass 2 so the heading outline has no gap. Defaults to 3 (form under an
+   * h2, as on the home page and in the welcome modal).
+   */
+  headingLevel?: number;
+  /**
    * Called once the lead is saved, so a host that owns the surrounding
    * surface can take over — the welcome modal shows its own closing panel
    * instead of leaving the visitor on a success line inside the form.
@@ -156,10 +163,12 @@ function GroupHeader({
   index,
   paneId,
   fullLayout,
+  headingLevel,
 }: {
   index: number;
   paneId: string;
   fullLayout: boolean;
+  headingLevel: number;
 }) {
   if (!fullLayout) return null;
   return (
@@ -170,7 +179,7 @@ function GroupHeader({
       <span className="stamp-label booking-group-stamp">
         {`${String(index + 1).padStart(2, '0')} · ${BOOKING_STEPS[index].label}`}
       </span>
-      <h3>{BOOKING_STEPS[index].title}</h3>
+      <h3 aria-level={headingLevel}>{BOOKING_STEPS[index].title}</h3>
     </div>
   );
 }
@@ -210,6 +219,7 @@ export default function BookingForm({
   initialPhoneConsult = false,
   bookedDetailsMode = false,
   layout = 'steps',
+  headingLevel = 3,
   onSubmitted,
 }: Props) {
   const [form, setForm] = useState<BookingFormValues>({ ...initial, ...initialValues });
@@ -649,7 +659,7 @@ export default function BookingForm({
           </div>
           )}
           {!fullLayout && (
-          <h3 key={BOOKING_STEPS[step].key} style={{ fontFamily: 'var(--font-display)', margin: 0, animation: 'mgStepTitleIn 0.35s ease both' }}>
+          <h3 key={BOOKING_STEPS[step].key} aria-level={headingLevel} style={{ fontFamily: 'var(--font-display)', margin: 0, animation: 'mgStepTitleIn 0.35s ease both' }}>
             {BOOKING_STEPS[step].title}
           </h3>
           )}
@@ -679,22 +689,22 @@ export default function BookingForm({
               : { display: 'flex', alignItems: 'flex-start', transform: `translateX(-${step * 100}%)`, transition: 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)' }}
           >
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[0] = el; }} {...groupProps(0)}>
-              <GroupHeader index={0} paneId={paneId} fullLayout={fullLayout} />
+              <GroupHeader index={0} paneId={paneId} fullLayout={fullLayout} headingLevel={headingLevel} />
               <StepAboutYou {...stepProps} />
             </div>
 
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[1] = el; }} {...groupProps(1)}>
-              <GroupHeader index={1} paneId={paneId} fullLayout={fullLayout} />
+              <GroupHeader index={1} paneId={paneId} fullLayout={fullLayout} headingLevel={headingLevel} />
               <StepYourDog {...stepProps} />
             </div>
 
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[2] = el; }} {...groupProps(2)}>
-              <GroupHeader index={2} paneId={paneId} fullLayout={fullLayout} />
+              <GroupHeader index={2} paneId={paneId} fullLayout={fullLayout} headingLevel={headingLevel} />
               <StepCare {...stepProps} />
             </div>
 
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[3] = el; }} {...groupProps(3)}>
-              <GroupHeader index={3} paneId={paneId} fullLayout={fullLayout} />
+              <GroupHeader index={3} paneId={paneId} fullLayout={fullLayout} headingLevel={headingLevel} />
               <StepQuirks
                 paneId={paneId}
                 reactivity={reactivity}
@@ -710,7 +720,7 @@ export default function BookingForm({
             </div>
 
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[4] = el; }} {...groupProps(4)}>
-              <GroupHeader index={4} paneId={paneId} fullLayout={fullLayout} />
+              <GroupHeader index={4} paneId={paneId} fullLayout={fullLayout} headingLevel={headingLevel} />
               <StepWrapUp
                 paneId={paneId}
                 notes={form.notes}

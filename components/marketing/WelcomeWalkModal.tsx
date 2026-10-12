@@ -1293,6 +1293,7 @@ export default function WelcomeWalkModal({
                                 "for" attribute to reference. Styled to match the email
                                 field's label via .welcome-walk-modal-field-caption. */}
                             <span
+                              id="welcome-walk-modal-neighborhood-caption"
                               className="welcome-walk-modal-field-caption"
                               style={{ fontWeight: 500 }}
                             >
@@ -1305,7 +1306,8 @@ export default function WelcomeWalkModal({
                             <div
                               id="welcome-walk-modal-neighborhood-display"
                               className="form-control"
-                              aria-label={`Neighborhood: ${SERVICE_AREA_LABEL}`}
+                              role="group"
+                              aria-labelledby="welcome-walk-modal-neighborhood-caption welcome-walk-modal-neighborhood-display"
                               title="Williamsburg is the only neighborhood we serve"
                             >
                               {SERVICE_AREA_LABEL}

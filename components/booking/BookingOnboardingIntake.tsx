@@ -125,6 +125,7 @@ export default function BookingOnboardingIntake({
         initialValues={values}
         initialPhoneConsult={initialPhoneConsult}
         bookedDetailsMode={bookedDetailsMode}
+        headingLevel={2}
       />
     </div>
   );

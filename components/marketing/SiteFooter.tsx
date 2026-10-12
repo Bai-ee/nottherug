@@ -118,7 +118,7 @@ export default function SiteFooter() {
               </div>
             </div>
             <div className="footer-col" id="footer-col-rates">
-              <h4>Services</h4>
+              <h4 aria-level={2}>Services</h4>
               <ul>
                 {FOOTER_RATES.map((link) => (
                   <li key={link.href}>
@@ -128,7 +128,7 @@ export default function SiteFooter() {
               </ul>
             </div>
             <div className="footer-col" id="footer-col-company">
-              <h4>Company</h4>
+              <h4 aria-level={2}>Company</h4>
               <ul>
                 {FOOTER_COMPANY.map((link) => (
                   <li key={link.href}>
@@ -155,7 +155,7 @@ export default function SiteFooter() {
                 on the legal line below, and the full service-area caveat
                 stays in the modal. */}
             <div className="footer-col" id="footer-col-contact">
-              <h4>Contact</h4>
+              <h4 aria-level={2}>Contact</h4>
               <ul id="footer-contact-list">
                 <li className="footer-contact-item">
                   <span className="footer-contact-label">Call or Text</span>

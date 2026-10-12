@@ -55,7 +55,7 @@ export default function ContactSheetSection({
         <div id="home-book-form-wrap" className="booking-form-wrap">
           <div className="booking-form" id="home-contact-sheet-form-sheet">
             <div className="booking-form-body">
-              <MeetGreetForm paneId={paneId} source={source} layout="full" />
+              <MeetGreetForm paneId={paneId} source={source} layout="full" headingLevel={headingLevel === 'h1' ? 2 : 3} />
             </div>
           </div>
         </div>

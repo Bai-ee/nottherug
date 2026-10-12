@@ -6,7 +6,7 @@ export default function ValuesGrid() {
       {PRINCIPLES.map((value) => (
         <div className="value-cell" style={value.tinted ? { background: 'var(--cream)' } : undefined} key={value.num}>
           <div className="value-num">{value.num}</div>
-          <h4>{value.title}</h4>
+          <h4 aria-level={3}>{value.title}</h4>
           <p>{value.copy}</p>
         </div>
       ))}
