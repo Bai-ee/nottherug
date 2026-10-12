@@ -43,7 +43,7 @@ const STEPS: Array<{ number: string; title: string; copy: string }> = [
   { number: '1', title: 'Phone Call & Meet & Greet', copy: 'A free in-home consultation so you and your dog can meet your walker before the first walk.' },
   { number: '2', title: 'Set Your Schedule', copy: 'Choose your walking frequency, preferred times, and any special instructions.' },
   { number: '3', title: 'First Walk', copy: 'GPS-tracked 45-minute adventure with post-walk photo report sent to your phone.' },
-  { number: '4', title: 'Ongoing Care', copy: 'Same walker, same routine. Your dog knows the drill and so do we.' },
+  { number: '4', title: 'Ongoing Care', copy: 'Same days, consistent visit times, and familiar faces. We take pride in building a routine your dog feels comfortable with and you can count on.' },
 ];
 
 // Local detail on top of the four steps: what the routine looks like in this
@@ -54,7 +54,7 @@ const STEPS: Array<{ number: string; title: string; copy: string }> = [
 const COVERAGE_POINTS: Array<{ title: string; copy: string }> = [
   {
     title: 'Your Assigned Walker',
-    copy: `We match you with a walker who lives or regularly works in ${WILLIAMSBURG.name} — they know the neighborhood the way you know your apartment.`,
+    copy: `We match your dog with a walker who takes time to learn their personality, routines, and what helps them feel comfortable. A familiar face for your dog and someone you can count on.`,
   },
   {
     title: 'Local Park Routes',

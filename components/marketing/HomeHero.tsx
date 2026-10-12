@@ -152,7 +152,7 @@ export default function HomeHero() {
                   data-saving). */}
             </video>
           </div>
-          <figcaption className="polaroid-caption" id="hero-polaroid-caption"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Williamsburg, Brooklyn</figcaption>
+          <figcaption className="polaroid-caption" id="hero-polaroid-caption"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Williamsburg Brooklyn</figcaption>
           {/* Rendered box is .polaroid-badge / #hero-polaroid-badge in
               globals.css: 80-144px on mobile/tablet, clamp(224px,18vw,288px)
               on desktop. next/image needs the source's real intrinsic size
@@ -180,7 +180,7 @@ export default function HomeHero() {
               once the entrance animation rebuilds the markup. The spaces
               before each <br> matter: phones hide the 1st and 3rd break
               (globals.css) to set the same headline on two centred lines. */}
-          <em>Your peace</em> <br /><em>of mind is</em> <br />their favorite <br />part of the day.
+          <em>Your peace</em> <br /><em>of mind.</em> <br />Their favorite <br />part of the day.
         </h1>
         <p className="hero-p" id="hero-intro-copy">Trusted by Williamsburg dog owners since 2011. Experienced walkers, small groups, and personal attention, with reliable care you can count on and an update after every visit.</p>
         {/* One pair at every width: Book a Meet & Greet is the button and

@@ -261,9 +261,9 @@ type ProductCard = IllustratedProductCard | SimpleProductCard;
 
 const CARDS: ProductCard[] = [
   {
-    title: "Puppy Walk",
-    copy: "Designed for puppies still learning.",
-    price: "$35", priceUnit: "per walk", badge: { text: "Effective", className: "badge-terra" },
+    title: "Puppy Visits",
+    copy: "For puppies ages 2–6 months. One-on-one care for their first routines.",
+    price: "$35", priceUnit: "per visit", badge: { text: "Effective", className: "badge-terra" },
     topLayer: { src: "/img/Puppy Top Layer.png", ratio: 651 / 1292 },
     bottomLayerSrc: "/img/Bottom Layer 3.png",
     tape: "/img/tape/tape-pricing.webp",
@@ -271,18 +271,8 @@ const CARDS: ProductCard[] = [
     tapeSide: "right" as const,
   },
   {
-    title: "Solo Walk",
-    copy: "A private 60-minute walk.",
-    price: "$60", priceUnit: "per walk", badge: { text: "Premium", className: "badge-gold" },
-    topLayer: { src: "/img/DogTop.png", ratio: 238 / 499 },
-    bottomLayerSrc: "/img/Bottom Layer.png",
-    tape: "/img/tape/tape-service.webp",
-    tapeColor: "#c9b591",
-    tapeSide: "right" as const,
-  },
-  {
-    title: "Group Walk",
-    copy: "45-minute walk with up to three dogs max.",
+    title: "Dog Walking",
+    copy: "45-minute visits. Small groups of up to three dogs.",
     price: "$33", priceUnit: "per walk", badge: { text: "Most Popular", className: "badge-sage" },
     topLayer: { src: "/img/3Top.png", ratio: 238 / 499 },
     bottomLayerSrc: "/img/Bottom Layer 2.png",
@@ -292,24 +282,17 @@ const CARDS: ProductCard[] = [
   },
   {
     variant: "simple",
-    title: "Senior Dog Visits",
-    copy: "Gentle 20+-minute one-on-one visits designed for senior dogs and pups with special needs. We move at their pace, with patience, comfort, and plenty of care.",
-    price: "$35", priceUnit: "/visit",
+    title: "Senior & Special Needs Visits",
+    copy: "20-minute visits. Gentle care at your dog's pace.",
+    price: "$25", priceUnit: "/visit",
     icon: "/img/icons/service-senior.svg",
   },
   {
     variant: "simple",
-    title: "Boarding & Overnight Sitting",
-    copy: "Loving overnight care in your dog's own home, where they can stick to their routine and sleep in familiar surroundings while you're away.",
-    price: "$100", priceUnit: "/night", badge: { text: "7+ day discounts", className: "badge-sage" },
+    title: "Boarding & Dog Sitting",
+    copy: "Familiar care while you're away.",
+    price: "$100", priceUnit: "/day", badge: { text: "7+ day discounts", className: "badge-sage" },
     icon: "/img/icons/service-boarding.svg",
-  },
-  {
-    variant: "simple",
-    title: "Cat Visits",
-    copy: "Fresh food, clean water, litter care, playtime, brushing, and plenty of attention. We'll also water plants, bring in the mail, and keep an eye on your home while you're away.",
-    price: "$35", priceUnit: "/visit",
-    icon: "/img/icons/service-cat.svg",
   },
 ];
 

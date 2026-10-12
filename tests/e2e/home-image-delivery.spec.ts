@@ -7,11 +7,11 @@ import { waitForHomeEffectsAndHeroDecision } from './helpers/hydration';
 const HANG_GUARD_MS = 15_000;
 
 // Plan 013 P3 (F07): the paw walk ships 104px WebP prints (not the 444px
-// PNGs) and the six team portraits are lazy, so none is fetched before the
+// PNGs) and the seven team portraits are lazy, so none is fetched before the
 // team band nears the viewport.
 
 const PAW_PNG = /\/img\/paw[lr]\.png/;
-const TEAM_PORTRAIT = /\/img\/team\/(luis|lincoln|marcus|christian|shawn|yenny)[^/]*\.(jpg|webp|avif)/;
+const TEAM_PORTRAIT = /\/img\/team\/(luis|lincoln|marcus|christian|shawn|yenny|beth-ann)[^/]*\.(jpg|webp|avif)/;
 
 test.describe('home image delivery', () => {
   test.beforeEach(async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe('home image delivery', () => {
     await expect.poll(() => luis.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0), { timeout: HANG_GUARD_MS }).toBe(true);
     await expect.poll(() => portraitRequests.length, { timeout: HANG_GUARD_MS }).toBeGreaterThan(0);
     // Every chip's portrait paints once it is near.
-    for (const name of ['luis', 'lincoln', 'marcus', 'christian', 'shawn', 'yenny']) {
+    for (const name of ['luis', 'lincoln', 'marcus', 'christian', 'shawn', 'yenny', 'beth-ann']) {
       const img = page.locator(`#home-team-chip-photo-${name} img`);
       await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.currentSrc !== '' && el.complete && el.naturalWidth > 0), { timeout: HANG_GUARD_MS }).toBe(true);
     }

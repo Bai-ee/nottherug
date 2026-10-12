@@ -218,7 +218,7 @@ export default function AlwaysIncluded() {
       </div>
 
       <p id="home-always-included-lead">
-        No contracts. No hidden fees. Just dependable neighborhood care from a team your dog knows and trusts.
+        Experienced walkers who get to know your dog, dependable care that fits your routine, and an update after every visit.
       </p>
 
       {active && (

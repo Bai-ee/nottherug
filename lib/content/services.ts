@@ -42,14 +42,14 @@ export interface ServicePreviewItem {
 /** The headline package, rendered as the featured rate card. */
 export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
   title: 'Dog Walking',
-  copy: '45-minute walks. Small groups of up to three dogs.',
+  copy: '45-minute visits. Small groups of up to three dogs.',
   price: '$33',
   priceUnit: 'per walk',
   serviceInterest: 'Daily Group Walks',
   nameLines: ['Dog', 'Walking'],
   fineprint: '45 minutes, three dogs max',
   details: [
-    'Experienced walkers who get to know your dog’s personality and pace. Each walk includes fresh water, treats, clean paws, and a photo and update so you know how it went. Feeding and medication can be arranged in advance.',
+    'Experienced walkers who get to know your dog’s personality and pace. Each visit includes fresh water, treats, clean paws, and a photo and update so you know how it went. Feeding and medication can be arranged in advance.',
   ],
   rateGroups: [
     {
@@ -84,6 +84,21 @@ export const GROUP_WALK_PRICE_NOTE = '+ sales tax · 9+ walks a month';
 /** Rates other than Dog Walking, shown as columns beside the featured card, in this order. */
 export const HOME_OTHER_RATES: ServicePreviewItem[] = [
   {
+    title: 'Puppy Visits',
+    copy: 'For puppies ages 2–6 months. One-on-one care for their first routines.',
+    price: '$35',
+    priceUnit: 'per visit',
+    serviceInterest: 'Puppy Walks',
+    nameLines: ['Puppy', 'Visits'],
+    fineprint: 'For puppies ages 2–6 months',
+    details: [
+      'Potty breaks, play, and gentle encouragement while you’re away. Our solo visits support potty training, early social skills, and everyday routines through positive reinforcement.',
+      'We’ll work with you to plan visits around your puppy’s age, needs, and your schedule. Multiple daily visits are available, with reduced rates for the second and third visits on the same day.',
+      'As your puppy grows, we’ll adjust their schedule together and introduce small-group walks when they’re ready.',
+    ],
+    notes: ['Plus applicable sales tax.'],
+  },
+  {
     title: 'Boarding & Dog Sitting',
     copy: 'Familiar care while you’re away.',
     price: '$100',
@@ -94,37 +109,22 @@ export const HOME_OTHER_RATES: ServicePreviewItem[] = [
     details: [
       'Available exclusively to our dog-walking clients, so your dog stays in the care of a team they already know. We’ll go over feeding, walks, sleeping arrangements, and any special needs beforehand to help keep their routine consistent and their stay comfortable.',
     ],
-    rateLines: ['$100–110 per day'],
+    rateLines: ['$100–$110 per day'],
     notes: ['Discounts available for stays longer than seven days.', 'Plus applicable sales tax.'],
   },
   {
-    title: 'Puppy Walks',
-    copy: 'For puppies ages 2–6 months. One-on-one care for their first routines.',
-    price: '$35',
-    priceUnit: 'per walk',
-    serviceInterest: 'Puppy Walks',
-    nameLines: ['Puppy', 'Walks'],
-    fineprint: 'For puppies ages 2–6 months',
-    details: [
-      'Potty breaks, play, and gentle encouragement while you’re away. Our solo walks support potty training, early social skills, and everyday routines through positive reinforcement.',
-      'We’ll work with you to plan walks around your puppy’s age, needs, and your schedule. Multiple daily walks are available, with reduced rates for the second and third walks on the same day.',
-      'As your puppy grows, we’ll adjust their schedule together and introduce small-group walks when they’re ready.',
-    ],
-    notes: ['Plus applicable sales tax.'],
-  },
-  {
-    title: 'Senior & Special Needs Walks',
-    copy: '20-minute walks. Gentle care at your dog’s pace.',
+    title: 'Senior & Special Needs Visits',
+    copy: '20-minute visits. Gentle care at your dog’s pace.',
     price: '$25',
-    priceUnit: 'per walk',
+    priceUnit: 'per visit',
     serviceInterest: 'Senior Dog Care',
     nameLines: ['Senior &', 'Special Needs'],
     fineprint: '20 minutes, at your dog’s pace',
     details: [
-      'For dogs who benefit from a shorter outing and a little extra attention. We make time for potty breaks and sniffing, with fresh water, treats, clean paws, and a photo and update after each walk. Feeding and medication can be arranged in advance.',
-      'Choose a walk with a compatible dog friend or a solo walk for one-on-one care.',
+      'For dogs who benefit from a shorter outing and a little extra attention. We make time for potty breaks and sniffing, with fresh water, treats, clean paws, and a photo and update after each visit. Feeding and medication can be arranged in advance.',
+      'Choose a walk with a compatible dog friend or a solo visit for one-on-one care.',
     ],
-    rateLines: ['$25 per walk with a dog friend', '$35 per walk for solo care'],
+    rateLines: ['$25 per visit with a dog friend', '$35 per visit for solo care'],
     notes: ['Plus applicable sales tax.'],
   },
 ];
@@ -155,7 +155,7 @@ export const ALWAYS_INCLUDED: Array<{
   },
   {
     icon: 'leash',
-    title: 'Double-Leash Safety',
+    title: 'Leash Safety Collar Companion method',
     copy: 'Our signature dual collar-and-harness method on every walk.',
   },
   {

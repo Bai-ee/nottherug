@@ -647,7 +647,7 @@ footer {
   padding: 76px 0 40px;
   position: relative;
 }
-/* The Brooklyn Bridge collage is the footer's focal point: a real element at
+/* The Williamsburg Bridge collage is the footer's focal point: a real element at
    full strength (#footer-art-shell), not a faded overlay, and the grid is laid
    out around it. Desktop: the print stays modest and sits right, the brand
    block balances it on the left, and the three link columns run the full
@@ -955,7 +955,7 @@ footer {
      and the two read as one continuous sheet. */
   border-bottom: none;
 }
-/* Brooklyn Bridge / Manhattan skyline collage behind the rates block — the
+/* Williamsburg Bridge / Manhattan skyline collage behind the rates block — the
    one image in the section-bg pool nothing else was using, and the only
    literal cityscape. Same cream-veil stack as every other light section, so
    it reads at the established ~20%. #home-personalized-care-pin-stage's
@@ -2913,7 +2913,7 @@ footer {
 #home-team-preview {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 300; /* above #main-nav (100) and its dropdown (200): the preview takes the whole screen */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3915,10 +3915,10 @@ html[data-home-intro='loading'] #home-intro-walker-shell {
   }
   #main-nav #nav-logo-img,
   #main-nav.nav-scrolled #nav-logo-img { width: 150px; }
-  /* Caption reads "Williamsburg, Brooklyn", centred under the video. */
+  /* Caption reads "Williamsburg Brooklyn", centred under the video. */
   #hero-polaroid-caption { text-align: center; justify-content: center; }
-  /* Same headline as desktop on two lines: "Your peace of mind is" /
-     "their favorite part of the day." (1st and 3rd hard break hidden). */
+  /* Same headline as desktop on two lines: "Your peace of mind." /
+     "Their favorite part of the day." (1st and 3rd hard break hidden). */
   #hero-headline br:nth-of-type(1),
   #hero-headline br:nth-of-type(3) { display: none; }
   /* Line one is about 9.3em wide and never wraps, so the size follows the

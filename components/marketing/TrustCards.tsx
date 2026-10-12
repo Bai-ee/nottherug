@@ -6,7 +6,7 @@ const TRUST_CARDS: Array<{ title: string; copy: string; icon: React.ReactNode }>
   },
   {
     title: 'Background-Checked Team',
-    copy: "Every member of our team undergoes a comprehensive background check before their first walk. We vet our walkers as carefully as you'd vet someone with a key to your home — because that's exactly what they have.",
+    copy: "We carefully vet every walker before their first visit, because caring for your dog and having access to your home is a responsibility we take seriously.",
     icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
   },
   {
@@ -15,8 +15,8 @@ const TRUST_CARDS: Array<{ title: string; copy: string; icon: React.ReactNode }>
     icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
   },
   {
-    title: 'Double-Leash Safety Method',
-    copy: 'Every dog is walked with our secure collar-and-harness system, supported by a leash belt for added protection. Two points of contact help keep your dog safe, and every walker follows our no-phone-while-walking policy, completes hands-on safety training, and receives regular gear checks.',
+    title: 'Leash Safety Collar Companion method',
+    copy: "We connect our leash to both their collar and harness and use a leash belt for added security. Two points of contact, on every walk.",
     icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
   },
   {

@@ -24,7 +24,7 @@ import type { CtaId } from '@/lib/analytics/events';
 // band — the CTA button below covers it), "Our Story" (its band was removed)
 // and the placeholder Privacy/Terms links, which were href="#".
 //
-// Layout note: the Brooklyn Bridge collage (#footer-art-shell) is the footer's
+// Layout note: the Williamsburg Bridge collage (#footer-art-shell) is the footer's
 // focal point — a full-strength print at the centre of the grid on desktop, on
 // top of everything at tablet and phone. The brand block, the link columns, the
 // CTA and the legal line are all grid areas around it (see FOOTER in
@@ -38,10 +38,10 @@ import type { CtaId } from '@/lib/analytics/events';
 // card they landed on. The per-link `id` is a DOM handle for styling and for
 // the wiring test, not a second analytics id.
 const FOOTER_RATES: Array<{ href: string; label: string; id: string }> = [
-  { href: '/#home-rate-boarding-dog-sitting', label: 'Boarding & Dog Sitting', id: 'footer-rates-link-boarding-dog-sitting' },
-  { href: '/#home-rate-puppy-walks', label: 'Puppy Walks', id: 'footer-rates-link-puppy-walks' },
-  { href: '/#home-rate-senior-special-needs-walks', label: 'Senior & Special Needs', id: 'footer-rates-link-senior-special-needs' },
   { href: '/#home-group-walk-feature-card', label: 'Dog Walking', id: 'footer-rates-link-dog-walking' },
+  { href: '/#home-rate-puppy-walks', label: 'Puppy Visits', id: 'footer-rates-link-puppy-walks' },
+  { href: '/#home-rate-boarding-dog-sitting', label: 'Boarding & Dog Sitting', id: 'footer-rates-link-boarding-dog-sitting' },
+  { href: '/#home-rate-senior-special-needs-walks', label: 'Senior & Special Needs', id: 'footer-rates-link-senior-special-needs' },
 ];
 
 // Contact left this list when it became a modal trigger (ContactUsTrigger,
@@ -70,7 +70,7 @@ export default function SiteFooter() {
               <Image
                 id="footer-art-image"
                 src="/img/bg-section-graphic-1.webp"
-                alt="Not The Rug — NYC dog walking. A collage of the Brooklyn Bridge and the Manhattan skyline."
+                alt="Not The Rug — NYC dog walking. A collage of the Williamsburg Bridge and the Manhattan skyline."
                 width={1620}
                 height={971}
                 sizes="(max-width: 767px) 100vw, (max-width: 1100px) 720px, 46vw"

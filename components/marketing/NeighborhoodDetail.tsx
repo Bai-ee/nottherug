@@ -29,7 +29,7 @@ export default function NeighborhoodDetail({ hood }: { hood: NeighborhoodInfo })
         <div className="card card-pad">
           <div style={{ marginBottom: '12px' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
           <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', marginBottom: '8px' }}>Your Assigned Walker</h4>
-          <p style={{ fontSize: '14px', color: 'var(--mid-gray)' }}>We match you with a walker who lives or regularly works in {hood.name} — they know the neighborhood the way you know your apartment.</p>
+          <p style={{ fontSize: '14px', color: 'var(--mid-gray)' }}>We match your dog with a walker who takes time to learn their personality, routines, and what helps them feel comfortable. A familiar face for your dog and someone you can count on.</p>
         </div>
         <div className="card card-pad">
           <div style={{ marginBottom: '12px' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>

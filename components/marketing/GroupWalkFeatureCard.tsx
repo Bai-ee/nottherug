@@ -29,7 +29,7 @@ function trackCta(cta: CtaId) {
 }
 
 
-/** Brooklyn Bridge / Manhattan skyline collage — same backdrop WelcomeWalkModal.tsx uses. */
+/** Williamsburg Bridge / Manhattan skyline collage — same backdrop WelcomeWalkModal.tsx uses. */
 const SKYLINE_IMAGE = '/img/bg-section-graphic-1.webp';
 
 

@@ -55,7 +55,7 @@ export default function ClosingTrust() {
               <div className="trust-icon-box" style={{ flexShrink: 0 }}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
               <div>
                 <h4>Background-Checked Team</h4>
-                <p>Every walker vetted before their first walk — the same way you&apos;d vet anyone holding a key to your home.</p>
+                <p>We carefully vet every walker before their first visit, because caring for your dog and having access to your home is a responsibility we take seriously.</p>
               </div>
             </div>
             <div style={{ display: 'flex', gap: '16px', padding: '20px 0', borderBottom: '1px solid var(--light-gray)' }}>
@@ -68,8 +68,8 @@ export default function ClosingTrust() {
             <div style={{ display: 'flex', gap: '16px', padding: '20px 0' }}>
               <div className="trust-icon-box" style={{ flexShrink: 0 }}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
               <div>
-                <h4>Double-Leash Safety Method</h4>
-                <p>Secure collar-and-harness plus a leash belt — two points of contact on every walk, every dog.</p>
+                <h4>Leash Safety Collar Companion method</h4>
+                <p>We connect our leash to both their collar and harness and use a leash belt for added security. Two points of contact, on every walk.</p>
               </div>
             </div>
           </div>

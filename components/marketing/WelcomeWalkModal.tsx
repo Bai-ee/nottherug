@@ -57,7 +57,7 @@ const GROUP_WALK_CARD = {
   topLayer: { src: '/img/3Top.png', ratio: 238 / 499 },
 } as const;
 
-/** Brooklyn Bridge / Manhattan skyline collage — the walk's backdrop. */
+/** Williamsburg Bridge / Manhattan skyline collage — the walk's backdrop. */
 const SKYLINE_IMAGE = '/img/bg-section-graphic-1.webp';
 
 /** Same circular seal as the home page's floating badge. */

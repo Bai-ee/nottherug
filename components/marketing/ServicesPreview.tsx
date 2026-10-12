@@ -20,15 +20,22 @@ import { useRateStickerParallax } from './hooks/useRateStickerParallax';
  */
 const RATE_STICKERS: Record<string, string> = {
   'Boarding & Dog Sitting': '7+ Day Discounts',
-  'Puppy Walks': 'Puppy Pace',
-  'Senior & Special Needs Walks': 'Gentle Pace',
+  'Puppy Visits': 'Puppy Pace',
+  'Senior & Special Needs Visits': 'Gentle Pace',
 };
 
 /** kebab-case id fragment so each sticker is addressable for later tuning. */
 /** Carousel order in the service modal: the featured package, then the rest as laid out. */
 const DETAIL_SERVICES: readonly ServicePreviewItem[] = [GROUP_WALK_PREVIEW, ...HOME_OTHER_RATES];
 
+// Anchor ids predate the "Visits" titles; the footer links to them, so they stay.
+const LEGACY_SLUGS: Record<string, string> = {
+  'Puppy Visits': 'puppy-walks',
+  'Senior & Special Needs Visits': 'senior-special-needs-walks',
+};
+
 function stickerSlug(title: string) {
+  if (LEGACY_SLUGS[title]) return LEGACY_SLUGS[title];
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
@@ -191,17 +198,15 @@ export default function ServicesPreview() {
           }
 
         `}</style>
+        {/* Featured Dog Walking card leads; the three other rates sit below it. */}
+        <div id="home-rates-preview-featured-row" style={{ marginTop: 'clamp(40px, 6vw, 84px)' }}>
+          <GroupWalkFeatureCard onOpenDetails={openDetails} />
+        </div>
+
         <div id="home-rates-preview-other-cards" ref={ratesRowRef}>
           {HOME_OTHER_RATES.map((item) => (
             <PreviewCard key={item.title} item={item} onOpenDetails={openDetails} />
           ))}
-        </div>
-
-        {/* Featured Group Walk card moved BELOW the other rates as a layout
-            trial — it sat above them before. Revert by moving this block back
-            above #home-rates-preview-other-cards. */}
-        <div id="home-rates-preview-featured-row" style={{ marginTop: 'clamp(40px, 6vw, 84px)' }}>
-          <GroupWalkFeatureCard onOpenDetails={openDetails} />
         </div>
 
         {/* COMMENTED OUT — the in-section intake sheet ("First" + the 5-step

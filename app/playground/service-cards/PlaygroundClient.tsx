@@ -238,9 +238,9 @@ const STANDARD_TOP_RATIO = 238 / 499;
 
 const CARDS = [
   {
-    title: "Puppy Walk",
-    copy: "Designed for puppies still learning.",
-    price: "$35", priceUnit: "per walk", badge: { text: "Effective", className: "badge-terra" },
+    title: "Puppy Visits",
+    copy: "For puppies ages 2–6 months. One-on-one care for their first routines.",
+    price: "$35", priceUnit: "per visit", badge: { text: "Effective", className: "badge-terra" },
     topLayer: { src: "/img/Puppy Top Layer.png", ratio: 651 / 1292 },
     bottomLayerSrc: "/img/Bottom Layer 3.png",
     tape: "/img/tape/tape-pricing.webp",
@@ -248,18 +248,8 @@ const CARDS = [
     tapeSide: "right",
   },
   {
-    title: "Solo Walk",
-    copy: "A private 60-minute walk.",
-    price: "$60", priceUnit: "per walk", badge: { text: "Premium", className: "badge-gold" },
-    topLayer: { src: "/img/DogTop.png", ratio: STANDARD_TOP_RATIO },
-    bottomLayerSrc: "/img/Bottom Layer.png",
-    tape: "/img/tape/tape-service.webp",
-    tapeColor: "#c9b591",
-    tapeSide: "right",
-  },
-  {
-    title: "Group Walk",
-    copy: "45-minute walk with up to three dogs max.",
+    title: "Dog Walking",
+    copy: "45-minute visits. Small groups of up to three dogs.",
     price: "$33", priceUnit: "per walk", badge: { text: "Most Popular", className: "badge-sage" },
     topLayer: { src: "/img/3Top.png", ratio: STANDARD_TOP_RATIO },
     bottomLayerSrc: "/img/Bottom Layer 2.png",

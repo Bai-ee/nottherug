@@ -60,6 +60,12 @@ export const TEAM: readonly TeamMember[] = [
     photo: '/img/team/yenny.jpg', photoWidth: 750, photoHeight: 1000, photoSize: '265%', photoPosition: '47% 9%',
     chipWidths: [398, 750],
   },
+  {
+    name: 'Beth Ann', role: 'Walker',
+    bio: "If you've seen Beth Ann around the neighborhood walking pups, you know she has a gentle way with them. She takes her time, pays attention to the little things, and gets to know each dog's personality and what helps them feel comfortable. She's also a musician. On Sundays, she hosts Sunday Sounds, a music series where she brings together artists from different musical backgrounds. It's a chance to share music, hear something new, and bring people together.",
+    photo: '/img/team/beth-ann.jpg', photoWidth: 675, photoHeight: 900, photoSize: '250%', photoPosition: '51% 5%',
+    chipWidths: [375, 675],
+  },
 ];
 
 const POSITION_RE = /^(-?[\d.]+)%\s+(-?[\d.]+)%$/;

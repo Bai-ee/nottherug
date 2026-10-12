@@ -73,7 +73,7 @@ const PAW_JOBS = [
 // [name, source width, photoSize % from lib/content/team.ts]
 const TEAM_PORTRAITS = [
   ['luis', 675, 150], ['lincoln', 506, 275], ['marcus', 675, 275],
-  ['christian', 506, 170], ['shawn', 675, 290], ['yenny', 750, 265],
+  ['christian', 506, 170], ['shawn', 675, 290], ['yenny', 750, 265], ['beth-ann', 675, 250],
 ];
 const TEAM_DESKTOP_BOX = 150; // CSS px of a 1x desktop chip window (148 at 1440)
 

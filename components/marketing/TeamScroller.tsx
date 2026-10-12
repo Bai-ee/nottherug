@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { TEAM, teamChipPhoto, type TeamMember } from '@/lib/content/team';
 
 /** Same alternation the Instagram tiles use (InstagramGrid). */
@@ -102,23 +103,25 @@ export default function TeamScroller() {
               data-active={active?.name === member.name}
               aria-expanded={active?.name === member.name}
               aria-label={`Preview ${member.name}, Not The Rug dog walker`}
-              onMouseEnter={() => setActiveName(member.name)}
-              onMouseLeave={() => setActiveName((current) => (current === member.name ? null : current))}
-              onFocus={() => setActiveName(member.name)}
+              // Hover and keyboard focus preview; a tap toggles. Touch must not
+              // also count as hover/focus, or one tap opens and closes it.
+              onPointerEnter={(e) => { if (e.pointerType === 'mouse') setActiveName(member.name); }}
+              onPointerLeave={(e) => { if (e.pointerType === 'mouse') setActiveName((current) => (current === member.name ? null : current)); }}
+              onFocus={(e) => { if (e.currentTarget.matches(':focus-visible')) setActiveName(member.name); }}
               onBlur={() => setActiveName((current) => (current === member.name ? null : current))}
               onClick={() => setActiveName((current) => (current === member.name ? null : member.name))}
             >
               <div className="polaroid-window">
                 <div
                   className="home-team-chip-photo"
-                  id={`home-team-chip-photo-${member.name.toLowerCase()}`}
+                  id={`home-team-chip-photo-${member.name.toLowerCase().replace(/\s+/g, '-')}`}
                   aria-hidden="true"
                 >
                   <TeamChipImage member={member} load={nearViewport} />
                 </div>
               </div>
             </button>
-            <div className="polaroid-caption" id={`home-team-chip-caption-${member.name.toLowerCase()}`}>
+            <div className="polaroid-caption" id={`home-team-chip-caption-${member.name.toLowerCase().replace(/\s+/g, '-')}`}>
               <div className="home-team-chip-name">{member.name}</div>
               <div className="home-team-chip-role">{member.role}</div>
             </div>
@@ -126,7 +129,11 @@ export default function TeamScroller() {
         ))}
       </ul>
 
-      {active && (
+      {/* Portalled to <body>: on phones #home-team-scroller is a sideways
+          scroll container in its own stacking layer, which clipped this
+          full-screen preview and kept it under the neighbouring sections.
+          `active` is only set by a pointer/focus event, so document exists. */}
+      {active && createPortal(
         <div id="home-team-preview" role="presentation">
           <div id="home-team-preview-frame">
             {/* Decorative: the trigger already names the walker.
@@ -138,7 +145,8 @@ export default function TeamScroller() {
             <Image src={active.photo} alt="" width={active.photoWidth} height={active.photoHeight} />
             <p id="home-team-preview-caption">{active.name} &middot; {active.role}</p>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
