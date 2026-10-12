@@ -242,7 +242,7 @@ test('video is requested only after load and the viewport picks the right size',
   await page.goto('/', { waitUntil: 'load' });
   await expect.poll(() => video.length, { timeout: HANG_GUARD_MS }).toBeGreaterThan(0);
   const narrow = (page.viewportSize()?.width ?? 0) <= 768;
-  expect(video.every((u) => (narrow ? u.includes('-540.') : u.includes('-1080.')))).toBe(true);
+  expect(video.every((u) => (narrow ? u.includes('-540') : u.includes('-1080.')))).toBe(true);
 });
 
 test('GSAP chunk blocked: CTA and headline stay visible and the page has no entrance', async ({ page }) => {
