@@ -9,7 +9,7 @@ import TrackedCtaLink from './TrackedCtaLink';
 // final "why us" push before the ask. No header of its own: it reads as a
 // continuation of the process steps above it, not a new pitch. Copy is reused verbatim from the
 // /safety and /neighborhoods/williamsburg pages (source of truth for these
-// claims), same as in the original app/page.tsx.
+// claims), same as in the retired single-page app/page.tsx.
 export default function ClosingTrust() {
   return (
     <section className="section" id="home-closing-trust-section">

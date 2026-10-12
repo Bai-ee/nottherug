@@ -669,7 +669,7 @@ function LayerFeelGroup({ layerKey, label, feel, onUpdate }: {
 }
 
 // The pin's ScrollTrigger, published by initPersonalizedCareScroll
-// (app/page.tsx) once it exists. Only present on desktop with motion allowed;
+// (app/playground/service-cards/) once it exists. Only present on desktop with motion allowed;
 // every control below no-ops without it, which is what keeps mobile a plain
 // stacked list.
 type CareScrollTrigger = { start: number; end: number };
@@ -745,7 +745,7 @@ export default function AnimatedServiceCards() {
   // Carousel nav (arrows + dots) — scrolls the page to the matching position
   // within the pin instead of animating the track's x directly. The track's
   // x is driven exclusively by initPersonalizedCareScroll's scroll-scrub
-  // (app/page.tsx); window.scrollY is the single source of truth for it, so
+  // (playground host page); window.scrollY is the single source of truth for it, so
   // navigation here just moves scrollY and lets that scrub follow — no
   // second system fighting over the same transform.
   const goToCarouselIndex = (i: number) => {
@@ -945,7 +945,7 @@ export default function AnimatedServiceCards() {
     <>
       <div id="home-personalized-care-carousel">
         {/* Track's x is driven entirely by initPersonalizedCareScroll's
-            scroll-scrub (app/page.tsx) — the carousel controls below
+            scroll-scrub (playground host page) — the carousel controls below
             (arrows/dots/drag) move window.scrollY instead of animating x
             directly, so nothing here ever fights that scrub. */}
         <div

@@ -1,5 +1,5 @@
 // Verified contact details — copied verbatim from the SPA's ?page=contact
-// content (app/page.tsx, former #page-contact) and the site footer. Do not
+// content (the retired app/page.tsx, former #page-contact) and the site footer. Do not
 // invent or "correct" values here; flag disputes in the P2A report instead.
 
 export const PHONE_DISPLAY = '(347) 610-9676';

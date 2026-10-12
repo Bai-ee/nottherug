@@ -1,4 +1,4 @@
-// Neighborhood coverage data — copied verbatim from app/page.tsx's former
+// Neighborhood coverage data — copied verbatim from the retired app/page.tsx's former
 // `hoodData` map (used by the SPA's `showNeighborhood()` innerHTML injection).
 // Only Williamsburg ships a route; do not add neighborhoods here that don't
 // have an approved page per plans/002-production-readiness.md P2A scope.

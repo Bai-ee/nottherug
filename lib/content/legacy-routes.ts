@@ -1,5 +1,5 @@
 // Compatibility map for the old SPA's `?page=`/`?hood=` deep links
-// (app/page.tsx's `showPage`/`showNeighborhood`), still referenced by
+// (the retired app/page.tsx's `showPage`/`showNeighborhood`), still referenced by
 // external links and bookmarks. See plans/002-production-readiness.md P2A
 // item 3 — these are redirected, not re-implemented.
 
