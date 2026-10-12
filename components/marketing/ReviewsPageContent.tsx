@@ -15,6 +15,7 @@ export default function ReviewsPageContent() {
     <div id="reviews-page-shell" ref={pageRef}>
       <SiteNav />
 
+      <main id="reviews-main">
       <div id="reviews-hero-section" className="page-hero bg-charcoal" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00006.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Client Reviews</div>
@@ -54,7 +55,7 @@ export default function ReviewsPageContent() {
         <div className="container">
           <div style={{ textAlign: 'center', marginTop: '56px', padding: '40px', background: 'var(--warm-white)', border: '1px solid var(--light-gray)', borderRadius: 'var(--radius-lg)' }}>
             <div className="label">Leave a Review</div>
-            <h3>Loved working with us?</h3>
+            <h3 aria-level={2}>Loved working with us?</h3>
             <p style={{ color: 'var(--mid-gray)', margin: '12px 0 28px' }}>Your review helps other Brooklyn dog owners find trustworthy care — and it means the world to our team.</p>
             <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
               {/* Google lets a business ask for reviews; Yelp forbids it, so
@@ -66,6 +67,8 @@ export default function ReviewsPageContent() {
           </div>
         </div>
       </section>
+
+      </main>
 
       <SiteFooter />
     </div>

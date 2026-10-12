@@ -22,6 +22,7 @@ export default function ContactPage() {
     <div id="contact-page" className="page" style={{ display: 'block' }}>
       <SiteNav />
 
+      <main id="contact-main">
       <div
         id="contact-hero"
         className="page-hero"
@@ -41,7 +42,7 @@ export default function ContactPage() {
             <ContactInfoCard />
             <div id="contact-form-column">
               <div className="label">Send a Message</div>
-              <h3 style={{ marginBottom: '24px' }}>Tell us about your dog</h3>
+              <h3 aria-level={2} style={{ marginBottom: '24px' }}>Tell us about your dog</h3>
               <div id="contact-form-wrap-shell" className="booking-form-wrap">
                 <div className="booking-form">
                   <div id="contact-form-body" className="booking-form-body">
@@ -53,6 +54,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+      </main>
     </div>
   );
 }

@@ -1,0 +1,10 @@
+const { chromium } = require('/Users/bballi/Documents/Repos/NotTheRug-014-s2-w2/node_modules/playwright');
+const routes = ['/','/about','/safety','/reviews','/book','/contact','/signup','/walk-with-us','/neighborhoods/williamsburg'];
+const widths = (process.argv[2]||'390').split(',').map(Number);
+const verbose = process.argv[3]==='v';
+(async()=>{const b=await chromium.launch();
+for(const w of widths){const ctx=await b.newContext({viewport:{width:w,height:900},reducedMotion:'reduce'});
+for(const r of routes){const p=await ctx.newPage();await p.goto('http://localhost:3022'+r,{waitUntil:'load'});await p.waitForTimeout(2000);
+const o=await p.evaluate((v)=>[...document.querySelectorAll('h1,h2,h3,h4,h5,h6,[role=heading]')].map(e=>(e.getAttribute('aria-level')||e.tagName[1])+(v?':'+e.textContent.trim().slice(0,16)+(e.closest('footer')?'[F]':''):'')).join(v?' | ':''),verbose);
+console.log(w,r,o);await p.close();}await ctx.close();}
+await b.close();})();

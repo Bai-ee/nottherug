@@ -47,6 +47,9 @@ export default async function BookPage({
           <div className="nav-links">
             <Link
               href="/admin"
+              // Not prefetched: the admin layout ships its own CSS chunk and
+              // Space Mono fonts, which /book would preload and never use.
+              prefetch={false}
               id="nav-admin-login-link"
               style={{
                 background: '#fff',
@@ -67,6 +70,7 @@ export default async function BookPage({
         </div>
       </nav>
 
+      <main id="book-main">
       <div
         id="book-hero-shell"
         className="book-hero"
@@ -103,6 +107,7 @@ export default async function BookPage({
           </div>
         </div>
       </section>
+      </main>
     </div>
   );
 }

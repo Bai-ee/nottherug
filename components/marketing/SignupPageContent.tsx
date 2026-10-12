@@ -13,10 +13,12 @@ export default function SignupPageContent() {
       <SiteNav />
       {/* The band clears the fixed nav on its own here; on the home page the
           sections above it do that. */}
+      <main id="signup-main">
       <div id="home-closing-band-shell" style={{ paddingTop: 'var(--nav-h)' }}>
         <ContactSheetSection source="signup" paneId="signup-meetgreet" headingLevel="h1" />
         <SiteFooter />
       </div>
+      </main>
     </div>
   );
 }

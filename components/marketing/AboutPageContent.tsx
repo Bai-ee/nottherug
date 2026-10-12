@@ -17,6 +17,7 @@ export default function AboutPageContent() {
     <div id="about-page-shell" ref={pageRef}>
       <SiteNav />
 
+      <main id="about-main">
       <div id="about-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00003.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Our Story</div>
@@ -80,6 +81,8 @@ export default function AboutPageContent() {
           <ValuesGrid />
         </div>
       </section>
+
+      </main>
 
       <SiteFooter />
     </div>

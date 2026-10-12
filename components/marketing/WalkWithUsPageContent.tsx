@@ -133,6 +133,7 @@ export default function WalkWithUsPageContent({
         }
       `}</style>
       <SiteNav />
+      <main id="walk-with-us-main">
       <div id="home-closing-band-shell" style={{ paddingTop: 'var(--nav-h)' }}>
         <section className="section" id="home-contact-sheet-section" data-section="walk-with-us">
           <div className="container">
@@ -174,6 +175,7 @@ export default function WalkWithUsPageContent({
         </section>
         <SiteFooter />
       </div>
+      </main>
     </div>
   );
 }

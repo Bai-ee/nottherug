@@ -1,0 +1,42 @@
+{
+ "390 /": [],
+ "390 /about": [
+  {
+   "id": "color-contrast",
+   "impact": "serious",
+   "n": 11,
+   "t": [
+    ".card-hover.team-card:nth-child(1) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(2) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(3) > .team-info > .team-role"
+   ]
+  }
+ ],
+ "390 /safety": [],
+ "390 /reviews": [],
+ "390 /book": [],
+ "390 /contact": [],
+ "390 /signup": [],
+ "390 /walk-with-us": [],
+ "390 /neighborhoods/williamsburg": [],
+ "1440 /": [],
+ "1440 /about": [
+  {
+   "id": "color-contrast",
+   "impact": "serious",
+   "n": 11,
+   "t": [
+    ".card-hover.team-card:nth-child(1) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(2) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(3) > .team-info > .team-role"
+   ]
+  }
+ ],
+ "1440 /safety": [],
+ "1440 /reviews": [],
+ "1440 /book": [],
+ "1440 /contact": [],
+ "1440 /signup": [],
+ "1440 /walk-with-us": [],
+ "1440 /neighborhoods/williamsburg": []
+}

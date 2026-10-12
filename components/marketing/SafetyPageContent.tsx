@@ -17,6 +17,7 @@ export default function SafetyPageContent() {
     <div id="safety-page-shell" ref={pageRef}>
       <SiteNav />
 
+      <main id="safety-main">
       <div id="safety-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Safety &amp; Trust</div>
@@ -51,6 +52,8 @@ export default function SafetyPageContent() {
           <SafetyFaq />
         </div>
       </section>
+
+      </main>
 
       <SiteFooter />
     </div>

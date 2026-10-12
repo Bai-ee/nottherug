@@ -17,6 +17,7 @@ export default function NeighborhoodsPageContent() {
     <div id="neighborhoods-williamsburg-page-shell" ref={pageRef}>
       <SiteNav />
 
+      <main id="neighborhoods-williamsburg-main">
       <div id="neighborhoods-williamsburg-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00005.webp') center 20%/cover no-repeat" }}>
         <div className="container">
           <div className="label" style={{ color: 'var(--sage-light)' }}>Service Areas</div>
@@ -45,6 +46,8 @@ export default function NeighborhoodsPageContent() {
           <NeighborhoodDetail hood={WILLIAMSBURG} />
         </div>
       </section>
+
+      </main>
 
       <SiteFooter />
     </div>

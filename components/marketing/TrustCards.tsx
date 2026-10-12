@@ -33,7 +33,7 @@ export default function TrustCards() {
         <div className="trust-card" key={card.title}>
           <div className="trust-icon-box">{card.icon}</div>
           <div>
-            <h4>{card.title}</h4>
+            <h4 aria-level={2}>{card.title}</h4>
             <p>{card.copy}</p>
           </div>
         </div>

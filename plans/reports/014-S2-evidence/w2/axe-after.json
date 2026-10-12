@@ -1,0 +1,168 @@
+{
+ "390 /": [],
+ "390 /about": [
+  {
+   "id": "color-contrast",
+   "impact": "serious",
+   "n": 11,
+   "t": [
+    ".card-hover.team-card:nth-child(1) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(2) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(3) > .team-info > .team-role"
+   ]
+  },
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 2,
+   "t": [
+    "#join-team-card > h4",
+    ".value-cell:nth-child(1) > h4"
+   ]
+  }
+ ],
+ "390 /safety": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".trust-card:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  }
+ ],
+ "390 /reviews": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  }
+ ],
+ "390 /book": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  }
+ ],
+ "390 /contact": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".contact-method:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  }
+ ],
+ "390 /signup": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "#signup-meetgreet-group-you-header > h3"
+   ]
+  }
+ ],
+ "390 /walk-with-us": [],
+ "390 /neighborhoods/williamsburg": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".card.card-pad:nth-child(1) > h4"
+   ]
+  }
+ ],
+ "1440 /": [],
+ "1440 /about": [
+  {
+   "id": "color-contrast",
+   "impact": "serious",
+   "n": 11,
+   "t": [
+    ".card-hover.team-card:nth-child(1) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(2) > .team-info > .team-role",
+    ".card-hover.team-card:nth-child(3) > .team-info > .team-role"
+   ]
+  },
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 2,
+   "t": [
+    "#join-team-card > h4",
+    ".value-cell:nth-child(1) > h4"
+   ]
+  }
+ ],
+ "1440 /safety": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".trust-card:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  }
+ ],
+ "1440 /reviews": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  }
+ ],
+ "1440 /book": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "h3"
+   ]
+  }
+ ],
+ "1440 /contact": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".contact-method:nth-child(1) > div:nth-child(2) > h4"
+   ]
+  }
+ ],
+ "1440 /signup": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    "#signup-meetgreet-group-you-header > h3"
+   ]
+  }
+ ],
+ "1440 /walk-with-us": [],
+ "1440 /neighborhoods/williamsburg": [
+  {
+   "id": "heading-order",
+   "impact": "moderate",
+   "n": 1,
+   "t": [
+    ".card.card-pad:nth-child(1) > h4"
+   ]
+  }
+ ]
+}
