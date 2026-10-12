@@ -1,6 +1,6 @@
 # Plan 013 — P5 release packet
-Status: CHANGES REQUESTED ADDRESSED — resubmission (no production action taken)
-Release candidate SHA: **the resubmission commit that adds this revision** (exact SHA and its GitHub Actions run via draft PR #1 are given in the relay message). Superseded candidate: `8733c40b7b94c58840c655eb4c053757985e4694` (CI run 37390339544 green; Codex CHANGES REQUESTED).
+Status: RELEASED — `9928453` on `main` and Vercel production (2026-10-12 closeout below)
+Release candidate SHA: `9928453fa1fb70572825d630435788dbcf5bad5f` (GitHub Actions run 37398726016 on `main`, green). Superseded candidate: `8733c40b7b94c58840c655eb4c053757985e4694` (CI run 37390339544 green; Codex CHANGES REQUESTED).
 Branch: `codex/client-handoff-hardening` (draft PR #1). `main` is an ancestor of the candidate, so the release can be a fast-forward of `main` to exactly this SHA.
 Prior approvals: P0 `3461c67`, P1 `7833d99`, P2 `6e5b764`, P3+P4 `f410241`.
 
@@ -119,4 +119,13 @@ Fix: on an ambiguous finalize error (timeout, dependency error) the object is **
 Tests: new `tests/unit/bench-resume-finalize.test.ts` (late commit after a negative read keeps the file; confirmation read fails keeps the file and the token stays used; already committed → 200; definite precondition rejection deletes); emulator `bench-resume-emulator.test.ts`: the 503 finalize case now asserts the object is kept, plus a new definite-rejection case (stubbed `FAILED_PRECONDITION` commits) asserting deletion. Local (Codex-requested): resume + emulator concurrency suites under `REQUIRE_EMULATORS=1` — 8 files, 66 passed, 0 skipped; Codex reproduction passes; lint 0 warnings; typecheck clean.
 
 ## Reviewer decision — Codex only
-PENDING (resubmission)
+Waived by the owner on 2026-10-12; released on CI evidence and the regression tests above.
+
+## Release closeout — 2026-10-12
+
+- §5.1 branch protection: not applied (owner action; requiring checks would block direct pushes to `main`).
+- §5.2–5.3: `main` = `9928453`; production `dpl_EAt54Nr6erAhAjWJ1WcmWwh4F16p` READY on that SHA.
+- §5.4: live Firestore ruleset `33a047a9-482d-4cb7-98cd-373e9fdfd1f4` (2026-10-06T01:22Z) matches `firestore.rules`; Storage `2e328ac4` matches `storage.rules`.
+- §5.5: TTL ACTIVE on `leadRateLimits` and `benchRateLimits` (and both analytics collections).
+- §6.1–4 passed (static `/` cache HIT, `/?page=about` 307, robots/sitemap clean, admin API 401 `private, no-store`). §6.5 owner admin sign-in not checked here. §6.6 skipped by the owner.
+- §6.8: `pawl.png`/`pawr.png` kept; `scripts/build-assets.mjs` uses them as sources.
