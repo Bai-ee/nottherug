@@ -2913,6 +2913,8 @@ footer {
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
+  /* Two-word names ("Beth Ann") stay on one line in the narrow seven-up grid. */
+  white-space: nowrap;
   background: none;
   border: 0;
   padding: 0;
