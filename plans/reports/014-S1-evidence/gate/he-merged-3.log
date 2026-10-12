@@ -1,0 +1,47 @@
+
+Running 11 tests using 7 workers
+
+[1/11] [desktop] › tests/e2e/home-entrance.spec.ts:203:5 › reduced motion: final state at once, no intro, no video request
+[2/11] [desktop] › tests/e2e/home-entrance.spec.ts:329:7 › video aborted in the page: CTA stays visible and operable
+[3/11] [desktop] › tests/e2e/home-entrance.spec.ts:222:5 › data-saving signal: poster only, no video request
+[4/11] [desktop] › tests/e2e/home-entrance.spec.ts:329:7 › video held in the page: CTA stays visible and operable
+[5/11] [desktop] › tests/e2e/home-entrance.spec.ts:237:5 › video is requested only after load and the viewport picks the right size
+[6/11] [desktop] › tests/e2e/home-entrance.spec.ts:183:5 › headline and primary CTA are visible and operable from the first frame, without waiting for the intro
+[7/11] [desktop] › tests/e2e/home-entrance.spec.ts:248:5 › GSAP chunk blocked: CTA and headline stay visible and the page has no entrance
+[8/11] [desktop] › tests/e2e/home-entrance.spec.ts:379:5 › keyboard can reach and activate the primary CTA
+[9/11] [desktop] › tests/e2e/home-entrance.spec.ts:398:7 › no horizontal overflow at 375px after the intro
+[10/11] [desktop] › tests/e2e/home-entrance.spec.ts:398:7 › no horizontal overflow at 768px after the intro
+[11/11] [desktop] › tests/e2e/home-entrance.spec.ts:398:7 › no horizontal overflow at 1440px after the intro
+  1) [desktop] › tests/e2e/home-entrance.spec.ts:248:5 › GSAP chunk blocked: CTA and headline stay visible and the page has no entrance 
+
+    Error: expect(received).not.toBeNull()
+
+    Received: null
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+      152 |  */
+      153 | async function expectIntroEndedWithinCeiling(page: Page) {
+    > 154 |   await expect.poll(async () => (await readProbe(page)).introDoneAt, { timeout: HANG_GUARD_MS }).not.toBeNull();
+          |                                                                                                      ^
+      155 |   const probe = await readProbe(page);
+      156 |   expect(probe.introLoadingAt).not.toBeNull();
+      157 |   expect(probe.introDoneAt!).toBeLessThanOrEqual(INTRO_CEILING_MS + INTRO_CEILING_MARGIN_MS);
+        at expectIntroEndedWithinCeiling (/Users/bballi/Documents/Repos/NotTheRug-014-s1/tests/e2e/home-entrance.spec.ts:154:102)
+        at /Users/bballi/Documents/Repos/NotTheRug-014-s1/tests/e2e/home-entrance.spec.ts:269:9
+
+    Error Context: test-results/home-entrance-GSAP-chunk-b-42bdf-nd-the-page-has-no-entrance-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/home-entrance-GSAP-chunk-b-42bdf-nd-the-page-has-no-entrance-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/home-entrance-GSAP-chunk-b-42bdf-nd-the-page-has-no-entrance-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [desktop] › tests/e2e/home-entrance.spec.ts:248:5 › GSAP chunk blocked: CTA and headline stay visible and the page has no entrance 
+  10 passed (18.5s)

@@ -1,0 +1,207 @@
+[
+ {
+  "run": 1,
+  "pageHeight": 13335,
+  "scrollStart": 6356,
+  "count": 6,
+  "tbtAll": 1724.4959999999999,
+  "tbtLoad": 1724.4959999999999,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 1523,
+    "start": 705,
+    "phase": "load/idle",
+    "top": [
+     "d 2wdjtc41fusq8.js:130:1406 1384ms",
+     "c 2wdjtc41fusq8.js:130:3339 99ms",
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 4ms"
+    ]
+   },
+   {
+    "dur": 117,
+    "start": 548,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 103ms",
+     "iw 35lzrzzuthkpm.js:31:101579 5ms",
+     "X turbopack-2_v4q6it0cbgn.js:1:8992 2ms"
+    ]
+   },
+   {
+    "dur": 116,
+    "start": 65,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 116ms",
+     "(idle) :NaN:NaN 1ms"
+    ]
+   },
+   {
+    "dur": 116,
+    "start": 431,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 102ms",
+     "(program) :NaN:NaN 1ms",
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 1ms"
+    ]
+   },
+   {
+    "dur": 97,
+    "start": 193,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 96ms"
+    ]
+   },
+   {
+    "dur": 55,
+    "start": 295,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 32ms",
+     "(anon) 35lzrzzuthkpm.js:31:8848 2ms",
+     "(anon) 35lzrzzuthkpm.js:1:6785 1ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 2,
+  "pageHeight": 13335,
+  "scrollStart": 6327,
+  "count": 6,
+  "tbtAll": 1697.775,
+  "tbtLoad": 1697.775,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 1525,
+    "start": 663,
+    "phase": "load/idle",
+    "top": [
+     "d 2wdjtc41fusq8.js:130:1406 1382ms",
+     "c 2wdjtc41fusq8.js:130:3339 100ms",
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 5ms"
+    ]
+   },
+   {
+    "dur": 113,
+    "start": 520,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 102ms",
+     "iw 35lzrzzuthkpm.js:31:101579 4ms",
+     "appendChild :NaN:NaN 2ms"
+    ]
+   },
+   {
+    "dur": 112,
+    "start": 406,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 102ms",
+     "iw 35lzrzzuthkpm.js:31:101579 1ms",
+     "o 34bug6qw18-k6.js:1:8339 1ms"
+    ]
+   },
+   {
+    "dur": 105,
+    "start": 59,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 104ms",
+     "(idle) :NaN:NaN 0ms"
+    ]
+   },
+   {
+    "dur": 87,
+    "start": 175,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 86ms",
+     "(idle) :NaN:NaN 1ms"
+    ]
+   },
+   {
+    "dur": 56,
+    "start": 265,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 30ms",
+     "(anon) 35lzrzzuthkpm.js:31:8848 2ms",
+     "(program) :NaN:NaN 2ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 3,
+  "pageHeight": 13335,
+  "scrollStart": 6329,
+  "count": 6,
+  "tbtAll": 1686.5489999999998,
+  "tbtLoad": 1686.5489999999998,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 1519,
+    "start": 665,
+    "phase": "load/idle",
+    "top": [
+     "d 2wdjtc41fusq8.js:130:1406 1377ms",
+     "c 2wdjtc41fusq8.js:130:3339 99ms",
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 6ms"
+    ]
+   },
+   {
+    "dur": 114,
+    "start": 520,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 102ms",
+     "iw 35lzrzzuthkpm.js:31:101579 4ms",
+     "appendChild :NaN:NaN 2ms"
+    ]
+   },
+   {
+    "dur": 111,
+    "start": 407,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 102ms",
+     "uu 35lzrzzuthkpm.js:31:117461 2ms",
+     "a 34bug6qw18-k6.js:22:1458 1ms"
+    ]
+   },
+   {
+    "dur": 98,
+    "start": 168,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 97ms"
+    ]
+   },
+   {
+    "dur": 91,
+    "start": 65,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 91ms",
+     "(idle) :NaN:NaN 0ms"
+    ]
+   },
+   {
+    "dur": 55,
+    "start": 268,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 29ms",
+     "(program) :NaN:NaN 2ms",
+     "t 34bug6qw18-k6.js:2:88262 2ms"
+    ]
+   }
+  ]
+ }
+]

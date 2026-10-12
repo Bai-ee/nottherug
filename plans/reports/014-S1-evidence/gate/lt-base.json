@@ -1,0 +1,205 @@
+[
+ {
+  "run": 1,
+  "pageHeight": 13335,
+  "scrollStart": 6317,
+  "count": 6,
+  "tbtAll": 1571.4080000000001,
+  "tbtLoad": 1571.4080000000001,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 1430,
+    "start": 628,
+    "phase": "load/idle",
+    "top": [
+     "d 2wdjtc41fusq8.js:130:1406 1303ms",
+     "c 2wdjtc41fusq8.js:130:3339 92ms",
+     "t 1elfxn6vo43kj.js:1:54828 5ms"
+    ]
+   },
+   {
+    "dur": 108,
+    "start": 492,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 94ms",
+     "iw 35lzrzzuthkpm.js:31:101579 2ms",
+     "appendChild :NaN:NaN 2ms"
+    ]
+   },
+   {
+    "dur": 103,
+    "start": 388,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 95ms",
+     "iE 35lzrzzuthkpm.js:31:102291 2ms",
+     "sx 35lzrzzuthkpm.js:31:152923 1ms"
+    ]
+   },
+   {
+    "dur": 96,
+    "start": 158,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 95ms"
+    ]
+   },
+   {
+    "dur": 82,
+    "start": 65,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 81ms",
+     "(idle) :NaN:NaN 1ms"
+    ]
+   },
+   {
+    "dur": 53,
+    "start": 258,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 28ms",
+     "(program) :NaN:NaN 2ms",
+     "querySelectorAll :NaN:NaN 2ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 2,
+  "pageHeight": 13335,
+  "scrollStart": 6307,
+  "count": 6,
+  "tbtAll": 1569.8629999999998,
+  "tbtLoad": 1569.8629999999998,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 1434,
+    "start": 615,
+    "phase": "load/idle",
+    "top": [
+     "d 2wdjtc41fusq8.js:130:1406 1300ms",
+     "c 2wdjtc41fusq8.js:130:3339 93ms",
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 4ms"
+    ]
+   },
+   {
+    "dur": 106,
+    "start": 483,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 95ms",
+     "iw 35lzrzzuthkpm.js:31:101579 3ms",
+     "X turbopack-2_v4q6it0cbgn.js:1:8992 1ms"
+    ]
+   },
+   {
+    "dur": 105,
+    "start": 375,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 95ms",
+     "i 34bug6qw18-k6.js:1:8284 1ms",
+     "fu 35lzrzzuthkpm.js:31:194491 1ms"
+    ]
+   },
+   {
+    "dur": 96,
+    "start": 63,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 96ms"
+    ]
+   },
+   {
+    "dur": 78,
+    "start": 170,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 78ms"
+    ]
+   },
+   {
+    "dur": 51,
+    "start": 251,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 29ms",
+     "(anon) 35lzrzzuthkpm.js:31:8848 2ms",
+     "(program) :NaN:NaN 2ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 3,
+  "pageHeight": 13335,
+  "scrollStart": 6310,
+  "count": 6,
+  "tbtAll": 1579.61,
+  "tbtLoad": 1579.61,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 1445,
+    "start": 627,
+    "phase": "load/idle",
+    "top": [
+     "d 2wdjtc41fusq8.js:130:1406 1307ms",
+     "c 2wdjtc41fusq8.js:130:3339 96ms",
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 5ms"
+    ]
+   },
+   {
+    "dur": 107,
+    "start": 490,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 95ms",
+     "iw 35lzrzzuthkpm.js:31:101579 2ms",
+     "(anon) 2wdjtc41fusq8.js:125:12333 2ms"
+    ]
+   },
+   {
+    "dur": 102,
+    "start": 386,
+    "phase": "load/idle",
+    "top": [
+     "c 2wdjtc41fusq8.js:130:3339 93ms",
+     "sw 35lzrzzuthkpm.js:31:147862 1ms",
+     "uu 35lzrzzuthkpm.js:31:117461 1ms"
+    ]
+   },
+   {
+    "dur": 96,
+    "start": 66,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 95ms",
+     "(idle) :NaN:NaN 0ms"
+    ]
+   },
+   {
+    "dur": 79,
+    "start": 173,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 80ms"
+    ]
+   },
+   {
+    "dur": 50,
+    "start": 254,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 28ms",
+     "(anon) 34bug6qw18-k6.js:2:88925 2ms",
+     "(anon) 35lzrzzuthkpm.js:31:8848 2ms"
+    ]
+   }
+  ]
+ }
+]

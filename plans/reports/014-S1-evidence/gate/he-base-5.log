@@ -1,0 +1,15 @@
+
+Running 11 tests using 7 workers
+
+[1/11] [desktop] › tests/e2e/home-entrance.spec.ts:329:7 › video held in the page: CTA stays visible and operable
+[2/11] [desktop] › tests/e2e/home-entrance.spec.ts:183:5 › headline and primary CTA are visible and operable from the first frame, without waiting for the intro
+[3/11] [desktop] › tests/e2e/home-entrance.spec.ts:222:5 › data-saving signal: poster only, no video request
+[4/11] [desktop] › tests/e2e/home-entrance.spec.ts:329:7 › video aborted in the page: CTA stays visible and operable
+[5/11] [desktop] › tests/e2e/home-entrance.spec.ts:237:5 › video is requested only after load and the viewport picks the right size
+[6/11] [desktop] › tests/e2e/home-entrance.spec.ts:248:5 › GSAP chunk blocked: CTA and headline stay visible and the page has no entrance
+[7/11] [desktop] › tests/e2e/home-entrance.spec.ts:203:5 › reduced motion: final state at once, no intro, no video request
+[8/11] [desktop] › tests/e2e/home-entrance.spec.ts:379:5 › keyboard can reach and activate the primary CTA
+[9/11] [desktop] › tests/e2e/home-entrance.spec.ts:398:7 › no horizontal overflow at 375px after the intro
+[10/11] [desktop] › tests/e2e/home-entrance.spec.ts:398:7 › no horizontal overflow at 768px after the intro
+[11/11] [desktop] › tests/e2e/home-entrance.spec.ts:398:7 › no horizontal overflow at 1440px after the intro
+  11 passed (5.9s)

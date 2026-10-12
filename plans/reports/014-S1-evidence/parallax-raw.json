@@ -1,0 +1,515 @@
+[
+ {
+  "variant": "on",
+  "run": 1,
+  "artEls": 9,
+  "artElsPatched": 0,
+  "frames": 749,
+  "frameMsMean": 16.67,
+  "gt20": 0,
+  "gt33": 0,
+  "gt16_7": 319,
+  "scriptMsPerFrame": 0.109,
+  "layoutMsPerFrame": 0.005,
+  "styleMsPerFrame": 0.198,
+  "taskMsPerFrame": 1.152,
+  "loadScriptMs": 325,
+  "loadTaskMs": 2410,
+  "loadLayoutMs": 142,
+  "loadStyleMs": 69,
+  "profileFns": 43,
+  "hookCandidates": [
+   {
+    "k": "d@130:1406",
+    "ms": 1349.6
+   },
+   {
+    "k": "c@130:3339",
+    "ms": 297
+   },
+   {
+    "k": "r@130:8320",
+    "ms": 3
+   },
+   {
+    "k": "(anon)@130:8309",
+    "ms": 0.9
+   },
+   {
+    "k": "w@130:17470",
+    "ms": 0.8
+   },
+   {
+    "k": "(anon)@428:11429",
+    "ms": 0.8
+   },
+   {
+    "k": "(anon)@130:967",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@517:3066",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@517:5041",
+    "ms": 0.6
+   },
+   {
+    "k": "m@125:12722",
+    "ms": 0.6
+   },
+   {
+    "k": "(anon)@130:15622",
+    "ms": 0.4
+   },
+   {
+    "k": "(anon)@130:2235",
+    "ms": 0.3
+   },
+   {
+    "k": "(anon)@517:2706",
+    "ms": 0.2
+   },
+   {
+    "k": "(anon)@130:1998",
+    "ms": 0.2
+   }
+  ],
+  "longTasks": [
+   1484,
+   177,
+   111,
+   110,
+   54
+  ]
+ },
+ {
+  "variant": "on",
+  "run": 2,
+  "artEls": 9,
+  "artElsPatched": 0,
+  "frames": 749,
+  "frameMsMean": 16.67,
+  "gt20": 0,
+  "gt33": 0,
+  "gt16_7": 323,
+  "scriptMsPerFrame": 0.103,
+  "layoutMsPerFrame": 0.005,
+  "styleMsPerFrame": 0.178,
+  "taskMsPerFrame": 1.075,
+  "loadScriptMs": 320,
+  "loadTaskMs": 2356,
+  "loadLayoutMs": 138,
+  "loadStyleMs": 64,
+  "profileFns": 51,
+  "hookCandidates": [
+   {
+    "k": "d@130:1406",
+    "ms": 1320.5
+   },
+   {
+    "k": "c@130:3339",
+    "ms": 289.1
+   },
+   {
+    "k": "r@130:8320",
+    "ms": 2.4
+   },
+   {
+    "k": "h@517:2179",
+    "ms": 1.2
+   },
+   {
+    "k": "(anon)@517:387",
+    "ms": 1
+   },
+   {
+    "k": "(anon)@517:5147",
+    "ms": 0.8
+   },
+   {
+    "k": "(anon)@130:8738",
+    "ms": 0.8
+   },
+   {
+    "k": "(anon)@130:12032",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@125:9844",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@130:13437",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@130:16696",
+    "ms": 0.6
+   },
+   {
+    "k": "(anon)@130:15622",
+    "ms": 0.6
+   },
+   {
+    "k": "m@125:12722",
+    "ms": 0.4
+   },
+   {
+    "k": "c@517:2130",
+    "ms": 0.2
+   }
+  ],
+  "longTasks": [
+   1459,
+   168,
+   108,
+   105,
+   54
+  ]
+ },
+ {
+  "variant": "on",
+  "run": 3,
+  "artEls": 9,
+  "artElsPatched": 0,
+  "frames": 749,
+  "frameMsMean": 16.67,
+  "gt20": 0,
+  "gt33": 0,
+  "gt16_7": 302,
+  "scriptMsPerFrame": 0.089,
+  "layoutMsPerFrame": 0.004,
+  "styleMsPerFrame": 0.159,
+  "taskMsPerFrame": 0.985,
+  "loadScriptMs": 323,
+  "loadTaskMs": 2295,
+  "loadLayoutMs": 132,
+  "loadStyleMs": 57,
+  "profileFns": 36,
+  "hookCandidates": [
+   {
+    "k": "d@130:1406",
+    "ms": 1315.6
+   },
+   {
+    "k": "c@130:3339",
+    "ms": 286.5
+   },
+   {
+    "k": "r@130:8320",
+    "ms": 4.1
+   },
+   {
+    "k": "h@517:2179",
+    "ms": 1.1
+   },
+   {
+    "k": "(anon)@125:9844",
+    "ms": 1
+   },
+   {
+    "k": "(anon)@517:2569",
+    "ms": 0.8
+   },
+   {
+    "k": "m@125:12722",
+    "ms": 0.8
+   },
+   {
+    "k": "(anon)@130:114",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@517:5041",
+    "ms": 0.6
+   },
+   {
+    "k": "(anon)@130:8004",
+    "ms": 0.4
+   },
+   {
+    "k": "(anon)@130:18180",
+    "ms": 0.4
+   },
+   {
+    "k": "w@130:17470",
+    "ms": 0.3
+   },
+   {
+    "k": "(anon)@125:12333",
+    "ms": 0.2
+   },
+   {
+    "k": "rotation@130:8541",
+    "ms": 0.2
+   }
+  ],
+  "longTasks": [
+   1452,
+   153,
+   110,
+   105,
+   52
+  ]
+ },
+ {
+  "variant": "off",
+  "run": 1,
+  "artEls": 9,
+  "artElsPatched": 0,
+  "frames": 749,
+  "frameMsMean": 16.67,
+  "gt20": 0,
+  "gt33": 0,
+  "gt16_7": 314,
+  "scriptMsPerFrame": 0.085,
+  "layoutMsPerFrame": 0.007,
+  "styleMsPerFrame": 0.132,
+  "taskMsPerFrame": 0.929,
+  "loadScriptMs": 315,
+  "loadTaskMs": 2317,
+  "loadLayoutMs": 137,
+  "loadStyleMs": 55,
+  "profileFns": 39,
+  "hookCandidates": [
+   {
+    "k": "d@130:1406",
+    "ms": 1324.2
+   },
+   {
+    "k": "c@130:3339",
+    "ms": 287.8
+   },
+   {
+    "k": "r@130:8320",
+    "ms": 2
+   },
+   {
+    "k": "(anon)@130:967",
+    "ms": 1
+   },
+   {
+    "k": "u@125:12799",
+    "ms": 1
+   },
+   {
+    "k": "(anon)@130:7828",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@125:9915",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@130:1998",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@130:12032",
+    "ms": 0.6
+   },
+   {
+    "k": "(anon)@130:8004",
+    "ms": 0.6
+   },
+   {
+    "k": "(anon)@517:2569",
+    "ms": 0.5
+   },
+   {
+    "k": "(anon)@517:5041",
+    "ms": 0.5
+   },
+   {
+    "k": "(anon)@125:12333",
+    "ms": 0.5
+   },
+   {
+    "k": "(anon)@428:864",
+    "ms": 0.4
+   }
+  ],
+  "longTasks": [
+   1458,
+   108,
+   106,
+   102,
+   79,
+   54
+  ]
+ },
+ {
+  "variant": "off",
+  "run": 2,
+  "artEls": 9,
+  "artElsPatched": 0,
+  "frames": 749,
+  "frameMsMean": 16.67,
+  "gt20": 0,
+  "gt33": 0,
+  "gt16_7": 314,
+  "scriptMsPerFrame": 0.078,
+  "layoutMsPerFrame": 0.006,
+  "styleMsPerFrame": 0.117,
+  "taskMsPerFrame": 0.929,
+  "loadScriptMs": 320,
+  "loadTaskMs": 2318,
+  "loadLayoutMs": 137,
+  "loadStyleMs": 54,
+  "profileFns": 34,
+  "hookCandidates": [
+   {
+    "k": "d@130:1406",
+    "ms": 1328.7
+   },
+   {
+    "k": "c@130:3339",
+    "ms": 291.1
+   },
+   {
+    "k": "h@517:2179",
+    "ms": 1
+   },
+   {
+    "k": "(anon)@125:12333",
+    "ms": 0.9
+   },
+   {
+    "k": "w@130:17474",
+    "ms": 0.8
+   },
+   {
+    "k": "(anon)@125:90",
+    "ms": 0.8
+   },
+   {
+    "k": "r@517:4934",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@130:12489",
+    "ms": 0.7
+   },
+   {
+    "k": "(anon)@130:12032",
+    "ms": 0.6
+   },
+   {
+    "k": "r@130:8320",
+    "ms": 0.5
+   },
+   {
+    "k": "(anon)@130:114",
+    "ms": 0.2
+   },
+   {
+    "k": "(anon)@517:5147",
+    "ms": 0.2
+   },
+   {
+    "k": "(anon)@130:44",
+    "ms": 0.1
+   },
+   {
+    "k": "(anon)@130:8309",
+    "ms": 0.1
+   }
+  ],
+  "longTasks": [
+   1459,
+   109,
+   108,
+   101,
+   88,
+   53
+  ]
+ },
+ {
+  "variant": "off",
+  "run": 3,
+  "artEls": 9,
+  "artElsPatched": 0,
+  "frames": 749,
+  "frameMsMean": 16.67,
+  "gt20": 0,
+  "gt33": 0,
+  "gt16_7": 316,
+  "scriptMsPerFrame": 0.084,
+  "layoutMsPerFrame": 0.005,
+  "styleMsPerFrame": 0.129,
+  "taskMsPerFrame": 0.936,
+  "loadScriptMs": 323,
+  "loadTaskMs": 2298,
+  "loadLayoutMs": 134,
+  "loadStyleMs": 53,
+  "profileFns": 30,
+  "hookCandidates": [
+   {
+    "k": "d@130:1406",
+    "ms": 1327.4
+   },
+   {
+    "k": "c@130:3339",
+    "ms": 288.3
+   },
+   {
+    "k": "r@130:8320",
+    "ms": 2.7
+   },
+   {
+    "k": "(anon)@517:3066",
+    "ms": 1.1
+   },
+   {
+    "k": "(anon)@130:7828",
+    "ms": 1.1
+   },
+   {
+    "k": "(anon)@130:8004",
+    "ms": 0.4
+   },
+   {
+    "k": "(anon)@428:864",
+    "ms": 0.3
+   },
+   {
+    "k": "(anon)@130:8309",
+    "ms": 0.3
+   },
+   {
+    "k": "(anon)@517:5041",
+    "ms": 0.2
+   },
+   {
+    "k": "h@517:2179",
+    "ms": 0.2
+   },
+   {
+    "k": "(anon)@130:44",
+    "ms": 0.1
+   },
+   {
+    "k": "(anon)@130:7512",
+    "ms": 0.1
+   },
+   {
+    "k": "(anon)@125:9844",
+    "ms": 0.1
+   },
+   {
+    "k": "(anon)@130:16700",
+    "ms": 0.1
+   }
+  ],
+  "longTasks": [
+   1457,
+   109,
+   109,
+   98,
+   81,
+   52
+  ]
+ }
+]

@@ -1,0 +1,46 @@
+
+## mobile
+
+base
+1 {"perf":64,"lcp":8824,"tbt":404,"tti":8931,"cls":0,"fcp":1054,"si":3517,"a11y":95,"seo":69,"bp":100,"kb":3280,"vid":1651,"ccscore":0}
+2 {"perf":66,"lcp":8906,"tbt":361,"tti":9006,"cls":0,"fcp":1054,"si":3476,"a11y":95,"seo":69,"bp":100,"kb":3172,"vid":1542,"ccscore":0}
+3 {"perf":65,"lcp":8902,"tbt":401,"tti":9002,"cls":0,"fcp":1057,"si":3448,"a11y":95,"seo":69,"bp":100,"kb":3444,"vid":1813,"ccscore":0}
+median perf=65 lcp=8902 tbt=401 tti=9002 cls=0 fcp=1054 si=3476 a11y=95 seo=69 bp=100 kb=3280 vid=1651
+LCP 1 div#hero-visual-video-shell > figure#hero-polaroid-frame > div#hero-polaroid-window > video#hero-bg-video | TTFB:452 Load:0 Load:0 Render:8372
+LCP 2 div#hero-visual-video-shell > figure#hero-polaroid-frame > div#hero-polaroid-window > video#hero-bg-video | TTFB:452 Load:0 Load:0 Render:8454
+LCP 3 div#hero-visual-video-shell > figure#hero-polaroid-frame > div#hero-polaroid-window > video#hero-bg-video | TTFB:453 Load:0 Load:0 Render:8448
+
+merged
+1 {"perf":75,"lcp":8108,"tbt":8,"tti":8228,"cls":0,"fcp":1054,"si":2878,"a11y":100,"seo":69,"bp":100,"kb":3421,"vid":1873,"ccscore":1}
+2 {"perf":75,"lcp":8334,"tbt":8,"tti":8462,"cls":0,"fcp":1054,"si":2933,"a11y":100,"seo":69,"bp":100,"kb":3421,"vid":1873,"ccscore":1}
+3 {"perf":75,"lcp":8268,"tbt":9,"tti":8389,"cls":0,"fcp":1054,"si":2770,"a11y":100,"seo":69,"bp":100,"kb":3421,"vid":1873,"ccscore":1}
+median perf=75 lcp=8268 tbt=8 tti=8389 cls=0 fcp=1054 si=2878 a11y=100 seo=69 bp=100 kb=3421 vid=1873
+LCP 1 div#hero-visual-video-shell > figure#hero-polaroid-frame > div#hero-polaroid-window > video#hero-bg-video | TTFB:452 Load:253 Load:176 Render:7227
+LCP 2 div#hero-visual-video-shell > figure#hero-polaroid-frame > div#hero-polaroid-window > video#hero-bg-video | TTFB:452 Load:256 Load:205 Render:7421
+LCP 3 div#hero-visual-video-shell > figure#hero-polaroid-frame > div#hero-polaroid-window > video#hero-bg-video | TTFB:452 Load:218 Load:173 Render:7425
+
+color-contrast items merged: [[],[],[]]
+color-contrast items base: [["nav#main-nav > div.nav-inner > div#nav-actions-row > a#nav-book-cta","section#home-featured-reviews-section > div.container > div#home-featured-reviews-clickout-row > a#home-reviews-leave-review-cta"],["nav#main-nav > div.nav-inner > div#nav-actions-row > a#nav-book-cta","section#home-featured-reviews-section > div.container > div#home-featured-reviews-clickout-row > a#home-reviews-leave-review-cta"],["nav#main-nav > div.nav-inner > div#nav-actions-row > a#nav-book-cta","section#home-featured-reviews-section > div.container > div#home-featured-reviews-clickout-row > a#home-reviews-leave-review-cta"]]
+
+## desktop
+
+base
+1 {"perf":90,"lcp":1967,"tbt":65,"tti":1997,"cls":0,"fcp":284,"si":1196,"a11y":95,"seo":69,"bp":100,"kb":4539,"vid":2716,"ccscore":0}
+2 {"perf":90,"lcp":1975,"tbt":69,"tti":2006,"cls":0,"fcp":284,"si":1211,"a11y":95,"seo":69,"bp":100,"kb":4475,"vid":2651,"ccscore":0}
+3 {"perf":90,"lcp":1973,"tbt":65,"tti":2000,"cls":0,"fcp":284,"si":1199,"a11y":95,"seo":69,"bp":100,"kb":4539,"vid":2715,"ccscore":0}
+median perf=90 lcp=1973 tbt=65 tti=2000 cls=0 fcp=284 si=1199 a11y=95 seo=69 bp=100 kb=4539 vid=2715
+LCP 1 div#page-home > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art | TTFB:122 Load:0 Load:0 Render:1845
+LCP 2 div#page-home > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art | TTFB:122 Load:0 Load:0 Render:1853
+LCP 3 div#page-home > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art | TTFB:122 Load:0 Load:0 Render:1851
+
+merged
+1 {"perf":93,"lcp":1757,"tbt":0,"tti":1788,"cls":0,"fcp":284,"si":874,"a11y":100,"seo":69,"bp":100,"kb":5075,"vid":3332,"ccscore":1}
+2 {"perf":93,"lcp":1755,"tbt":0,"tti":1786,"cls":0,"fcp":284,"si":855,"a11y":100,"seo":69,"bp":100,"kb":4947,"vid":3204,"ccscore":1}
+3 {"perf":93,"lcp":1776,"tbt":0,"tti":1805,"cls":0,"fcp":285,"si":827,"a11y":100,"seo":69,"bp":100,"kb":5203,"vid":3460,"ccscore":1}
+median perf=93 lcp=1757 tbt=0 tti=1788 cls=0 fcp=284 si=855 a11y=100 seo=69 bp=100 kb=5075 vid=3332
+LCP 1 div#page-home > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art | TTFB:122 Load:0 Load:0 Render:1635
+LCP 2 div#page-home > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art | TTFB:122 Load:0 Load:0 Render:1633
+LCP 3 div#page-home > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art | TTFB:122 Load:0 Load:0 Render:1654
+
+color-contrast items merged: [[],[],[]]
+color-contrast items base: [["nav#main-nav > div.nav-inner > div#nav-actions-row > a#nav-book-cta","section#home-featured-reviews-section > div.container > div#home-featured-reviews-clickout-row > a#home-reviews-leave-review-cta"],["nav#main-nav > div.nav-inner > div#nav-actions-row > a#nav-book-cta","section#home-featured-reviews-section > div.container > div#home-featured-reviews-clickout-row > a#home-reviews-leave-review-cta"],["nav#main-nav > div.nav-inner > div#nav-actions-row > a#nav-book-cta","section#home-featured-reviews-section > div.container > div#home-featured-reviews-clickout-row > a#home-reviews-leave-review-cta"]]

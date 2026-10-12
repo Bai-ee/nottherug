@@ -1,0 +1,5 @@
+
+Running 1 test using 1 worker
+
+[1/1] [desktop] › tests/e2e/home-entrance.spec.ts:379:5 › keyboard can reach and activate the primary CTA
+  1 passed (1.1s)

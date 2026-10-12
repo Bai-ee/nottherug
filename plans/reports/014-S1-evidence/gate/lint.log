@@ -1,0 +1,9 @@
+
+/Users/bballi/Documents/Repos/NotTheRug-014-s1/plans/reports/014-S1-evidence/w4/trace-lib.cjs
+  3:22  error    A `require()` style import is forbidden           @typescript-eslint/no-require-imports
+  4:12  error    A `require()` style import is forbidden           @typescript-eslint/no-require-imports
+  7:58  warning  'screenshots' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 20 problems (16 errors, 4 warnings)
+
+LINT_EXIT=1

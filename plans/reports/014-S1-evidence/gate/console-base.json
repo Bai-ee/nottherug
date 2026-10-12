@@ -1,0 +1,52 @@
+{
+ "1440 /": {
+  "errors": 0,
+  "warnings": 0,
+  "pageerrors": 0,
+  "hydration": 0,
+  "sample": []
+ },
+ "1440 /book": {
+  "errors": 0,
+  "warnings": 3,
+  "pageerrors": 0,
+  "hydration": 0,
+  "sample": [
+   "The resource http://localhost:3032/_next/static/media/8d05cfa5faa8406c-s.p.1s123piy9_v1m.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please m",
+   "The resource http://localhost:3032/_next/static/media/dc0d9adbac686440-s.p.3cik_s2si-ft-.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please m",
+   "The resource http://localhost:3032/_next/static/chunks/2n13tp9-dzemr.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an app"
+  ]
+ },
+ "1440 /contact": {
+  "errors": 0,
+  "warnings": 0,
+  "pageerrors": 0,
+  "hydration": 0,
+  "sample": []
+ },
+ "390 /": {
+  "errors": 0,
+  "warnings": 0,
+  "pageerrors": 0,
+  "hydration": 0,
+  "sample": []
+ },
+ "390 /book": {
+  "errors": 0,
+  "warnings": 3,
+  "pageerrors": 0,
+  "hydration": 0,
+  "sample": [
+   "The resource http://localhost:3032/_next/static/media/8d05cfa5faa8406c-s.p.1s123piy9_v1m.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please m",
+   "The resource http://localhost:3032/_next/static/media/dc0d9adbac686440-s.p.3cik_s2si-ft-.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please m",
+   "The resource http://localhost:3032/_next/static/chunks/2n13tp9-dzemr.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an app"
+  ]
+ },
+ "390 /contact": {
+  "errors": 0,
+  "warnings": 0,
+  "pageerrors": 0,
+  "hydration": 0,
+  "sample": []
+ }
+}
