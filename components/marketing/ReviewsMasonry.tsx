@@ -37,11 +37,11 @@ export default function ReviewsMasonry() {
     <div className="reviews-masonry">
       {REVIEWS.map((review) => (
         <div className="review-card card-hover" key={review.href ?? review.initials}>
-          <div className="review-mark">&quot;</div>
-          {review.href ? null : <div className="stars">★★★★★</div>}
+          <div className="review-mark" aria-hidden="true">&quot;</div>
+          {review.href ? null : <div className="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>}
           <p className="review-text">{review.text}</p>
           <div className="review-author">
-            <div className="review-avatar"><div className="review-avatar-ph">{review.initials}</div></div>
+            <div className="review-avatar" aria-hidden="true"><div className="review-avatar-ph">{review.initials}</div></div>
             <div>
               <div className="review-name">{review.name}</div>
               <div className="review-meta">

@@ -1,0 +1,18 @@
+after / 390 {"label":null,"h2span":null,"viol":[]}
+after / 1440 {"label":null,"h2span":null,"viol":[]}
+after /about 390 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /about 1440 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /safety 390 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /safety 1440 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /neighborhoods/williamsburg 390 {"label":"rgb(221, 232, 206)","h2span":"oklab(0.414831 -0.0264934 0.0091174)","viol":[]}
+after /neighborhoods/williamsburg 1440 {"label":"rgb(221, 232, 206)","h2span":"oklab(0.414831 -0.0264934 0.0091174)","viol":[]}
+after /reviews 390 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /reviews 1440 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /book 390 {"label":null,"h2span":null,"viol":[]}
+after /book 1440 {"label":null,"h2span":null,"viol":[]}
+after /signup 390 {"label":null,"h2span":null,"viol":[]}
+after /signup 1440 {"label":null,"h2span":null,"viol":[]}
+after /contact 390 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /contact 1440 {"label":"rgb(221, 232, 206)","h2span":null,"viol":[]}
+after /walk-with-us 390 {"label":null,"h2span":null,"viol":[]}
+after /walk-with-us 1440 {"label":null,"h2span":null,"viol":[]}

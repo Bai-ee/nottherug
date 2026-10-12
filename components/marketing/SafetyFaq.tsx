@@ -42,7 +42,7 @@ export default function SafetyFaq() {
             }}
           >
             <summary style={{ fontWeight: 600, fontSize: '15px', listStyle: 'none', display: 'flex', justifyContent: 'space-between' }}>
-              {faq.q} <span style={{ color: 'var(--sage)' }}>{openIndex.has(i) ? '−' : '+'}</span>
+              {faq.q} <span aria-hidden="true" style={{ color: 'var(--sage)' }}>{openIndex.has(i) ? '−' : '+'}</span>
             </summary>
             <p style={{ color: 'var(--mid-gray)', fontSize: '14px', marginTop: '12px', lineHeight: '1.7' }}>{faq.a}</p>
           </details>

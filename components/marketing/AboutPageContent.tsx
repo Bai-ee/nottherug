@@ -20,7 +20,7 @@ export default function AboutPageContent() {
       <main id="about-main">
       <div id="about-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00003.webp') center 20%/cover no-repeat" }}>
         <div className="container">
-          <div className="label" style={{ color: 'var(--sage-light)' }}>Our Story</div>
+          <div className="label">Our Story</div>
           <h1>15 years of walks,<br />one neighborhood</h1>
           <p>Not The Rug was born in Williamsburg and has never left. Here&apos;s why that matters.</p>
         </div>

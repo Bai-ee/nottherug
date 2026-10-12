@@ -13,7 +13,7 @@ function ProofTrackItems({ keyPrefix }: { keyPrefix: string }) {
     <>
       {PROOF_ITEMS.map((item, i) => (
         <div key={`${keyPrefix}-item-${i}`} className="proof-item">
-          <div className="stars">★★★★★</div>
+          <div className="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
           <span className="proof-quote">&quot;{item.quote}&quot;</span>
           <span className="proof-author">— {item.author}</span>
         </div>

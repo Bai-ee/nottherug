@@ -29,7 +29,7 @@ export default function ContactPage() {
         style={{ background: CONTACT_HERO_BACKGROUND }}
       >
         <div className="container">
-          <div className="label" style={{ color: 'var(--sage-light)' }}>Get In Touch</div>
+          <div className="label">Get In Touch</div>
           <h1>We&apos;re real people<br />with a real number</h1>
           <p>No chatbots, no ticket queues. Text us, call us, or fill out the form.</p>
         </div>

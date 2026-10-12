@@ -1,0 +1,13 @@
+w3b /about 390 77
+w3b /about 768 156
+w3b /about 1440 239
+w3b /safety 390 299
+w3b /safety 768 362
+w3b /safety 1440 428
+w3b /neighborhoods/williamsburg 390 476
+w3b /neighborhoods/williamsburg 768 524
+w3b /neighborhoods/williamsburg 1440 576
+w3b /reviews 390 644
+w3b /reviews 768 711
+w3b /reviews 1440 783
+w3b total 783 fail(mean) 59 fail(p5) 80

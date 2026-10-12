@@ -20,7 +20,7 @@ export default function SafetyPageContent() {
       <main id="safety-main">
       <div id="safety-hero-section" className="page-hero" style={{ background: "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.webp') center 20%/cover no-repeat" }}>
         <div className="container">
-          <div className="label" style={{ color: 'var(--sage-light)' }}>Safety &amp; Trust</div>
+          <div className="label">Safety &amp; Trust</div>
           <h1>Why trust matters<br />more than price</h1>
           <p>Every trust and safety standard we hold ourselves to — and why we hold it.</p>
         </div>

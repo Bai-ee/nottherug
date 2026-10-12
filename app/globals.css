@@ -1534,7 +1534,7 @@ footer {
 }
 .page-hero h1 { color: white; margin-bottom: 20px; }
 /* The eyebrow carries an inline sage-light colour (3.5-4.5:1 over the photo); !important is the only way past it from CSS. */
-.page-hero .label { color: #DDE8CE !important; }
+.page-hero .label { color: #DDE8CE; }
 .page-hero p { font-family: var(--font-type); color: rgba(255,255,255,0.85); font-size: 18px; max-width: 540px; margin: 0 auto; }
 
 .pricing-card {
