@@ -1,0 +1,3984 @@
+{
+ "390/": {
+  "violations": [
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "#home-group-walk-feature-title"
+      ],
+      "html": "<h3 id=\"home-group-walk-feature-title\">Dog Walking</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(1) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Phone Call &amp; Meet &amp; Greet</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#hero-polaroid-window"
+      ],
+      "html": "<div class=\"polaroid-window\" id=\"hero-polaroid-window\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-polaroid-caption"
+      ],
+      "html": "<figcaption class=\"polaroid-caption\" id=\"hero-polaroid-caption\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-eyebrow-stamp-row"
+      ],
+      "html": "<div class=\"hero-eyebrow\" id=\"hero-eyebrow-stamp-row\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; visibility: inherit;\"><span class=\"stamp-label\" id=\"hero-stamp-label\">Williamsburg, Brooklyn · Est. 2011</span></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(1)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\"><em>Your</em></span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(2)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\"><em>peace</em></span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(4)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\"><em>of</em></span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(5)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\"><em>mind.</em></span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(7)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\">Their</span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(8)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\">favorite</span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(10)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\">part</span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(11)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\">of</span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(12)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\">the</span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".word-wrap:nth-child(13)"
+      ],
+      "html": "<span class=\"word-wrap\"><span class=\"word-inner\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0%);\">day.</span></span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-intro-copy"
+      ],
+      "html": "<p class=\"hero-p\" id=\"hero-intro-copy\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; visibility: inherit;\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-actions-row"
+      ],
+      "html": "<div class=\"hero-actions\" id=\"hero-actions-row\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0px);\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-years"
+      ],
+      "html": "<div class=\"hero-stat-item\" id=\"hero-stat-years\"><div class=\"hero-stat-num\">15+</div><div class=\"hero-stat-label\">Years in<br>Williamsburg</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-reddit"
+      ],
+      "html": "<a class=\"hero-stat-item hero-stat-link\" id=\"hero-stat-reddit\" data-variant=\"star\" href=\"https://www.reddit.com/r/williamsburg/comments/1s2ys0x/looking_for_a_confident_and_reliable_dogwalker/\" target=\"_blank\" rel=\"noopener\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-google"
+      ],
+      "html": "<a class=\"hero-stat-item hero-stat-link\" id=\"hero-stat-google\" data-variant=\"star\" href=\"https://www.google.com/maps/place/?q=place_id:ChIJvW9dSVlZwokR4cwWUqQruvA\" target=\"_blank\" rel=\"noopener\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-yelp"
+      ],
+      "html": "<a class=\"hero-stat-item hero-stat-link\" id=\"hero-stat-yelp\" data-variant=\"star\" href=\"https://www.yelp.com/biz/not-the-rug-brooklyn-8\" target=\"_blank\" rel=\"noopener\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-art-figure"
+      ],
+      "html": "<div id=\"home-group-walk-feature-art-figure\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-promo-line"
+      ],
+      "html": "<p id=\"home-group-walk-feature-promo-line\">45 minutes, three dogs max</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-title-row"
+      ],
+      "html": "<div id=\"home-group-walk-feature-title-row\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-fields"
+      ],
+      "html": "<div id=\"home-group-walk-feature-fields\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-name"
+      ],
+      "html": "<h3 class=\"home-rate-name\">Puppy<br>Visits</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-unit"
+      ],
+      "html": "<div class=\"home-rate-unit\">per visit</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-price"
+      ],
+      "html": "<div class=\"home-rate-price\">$35</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-fineprint"
+      ],
+      "html": "<p class=\"home-rate-fineprint\">For puppies ages 2–6 months</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-name"
+      ],
+      "html": "<h3 class=\"home-rate-name\">Boarding &amp;<br>Dog Sitting</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-unit"
+      ],
+      "html": "<div class=\"home-rate-unit\">from, per day</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-price"
+      ],
+      "html": "<div class=\"home-rate-price\">$100</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-fineprint"
+      ],
+      "html": "<p class=\"home-rate-fineprint\">Familiar care while you’re away</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-name"
+      ],
+      "html": "<h3 class=\"home-rate-name\">Senior &amp;<br>Special Needs</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-unit"
+      ],
+      "html": "<div class=\"home-rate-unit\">per visit</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-price"
+      ],
+      "html": "<div class=\"home-rate-price\">$25</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-fineprint"
+      ],
+      "html": "<p class=\"home-rate-fineprint\">20 minutes, at your dog’s pace</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-trust-marquee-bar"
+      ],
+      "html": "<div class=\"trust-bar\" id=\"home-trust-marquee-bar\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-section > .container"
+      ],
+      "html": "<div class=\"container\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-luis"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-luis\"><div class=\"home-team-chip-name\">Luis</div><div class=\"home-team-chip-role\">Founder</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-lincoln"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-lincoln\"><div class=\"home-team-chip-name\">Lincoln</div><div class=\"home-team-chip-role\">Manager</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-marcus"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-marcus\"><div class=\"home-team-chip-name\">Marcus</div><div class=\"home-team-chip-role\">Sr Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-christian"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-christian\"><div class=\"home-team-chip-name\">Christian</div><div class=\"home-team-chip-role\">Sr Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-shawn"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-shawn\"><div class=\"home-team-chip-name\">Shawn</div><div class=\"home-team-chip-role\">Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-yenny"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-yenny\"><div class=\"home-team-chip-name\">Yenny</div><div class=\"home-team-chip-role\">Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-beth-ann"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-beth-ann\"><div class=\"home-team-chip-name\">Beth Ann</div><div class=\"home-team-chip-role\">Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-williamsburg-pitch"
+      ],
+      "html": "<div id=\"home-closing-williamsburg-pitch\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(1) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Fully Insured &amp; Bonded</h4><p>Comprehensive pet care liability insurance, fully bonded. Proof shared on request.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(2) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Background-Checked Team</h4><p>We carefully vet every walker before their first visit, because caring for your dog and having access to your home is a responsibility we take seriously.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(3) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>GPS Tracking on Every Walk</h4><p>A post-walk route map showing exactly where your dog went and how long they were out. No guessing.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(4) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Leash Safety Collar Companion method</h4><p>We connect our leash to both their collar and harness and use a leash belt for added security. Two points of contact, on every walk.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(1) > h4"
+      ],
+      "html": "<h4>GPS Tracking</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(1) > p"
+      ],
+      "html": "<p>Live route map sent after every walk so you see exactly where they went.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(2) > h4"
+      ],
+      "html": "<h4>Photo Report</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(2) > p"
+      ],
+      "html": "<p>Post-walk update with photos, mood notes, and any observations.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(3) > h4"
+      ],
+      "html": "<h4>Leash Safety Collar Companion method</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(3) > p"
+      ],
+      "html": "<p>Our signature dual collar-and-harness method on every walk.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(4) > h4"
+      ],
+      "html": "<h4>Direct Communication</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(4) > p"
+      ],
+      "html": "<p>Text or call your walker directly — no support tickets, no bots.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-always-included-lead"
+      ],
+      "html": "<p id=\"home-always-included-lead\">Experienced walkers who get to know your dog, dependable care that fits your routine, and an update after every visit.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-instagram-header"
+      ],
+      "html": "<div id=\"home-instagram-header\"><div class=\"stamp-label stamp-label-dark stamp-label-heading\">Roll 02 · Instagram</div><h2 id=\"home-instagram-headline\">Find us on <em style=\"font-style:normal;color:var(--gold-light)\">Instagram</em></h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"][data-nimg=\"1\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>214</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>11</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Morning group walk</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"][data-nimg=\"1\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>168</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>7</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Pickup, 9:40am</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"][data-nimg=\"1\"]"
+      ],
+      "html": "<img alt=\"Placeholder — two do...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>4.8K</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->views</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>309</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">New friend on N 7th</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"][data-nimg=\"1\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>252</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>19</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Post-walk nap earned</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"][data-nimg=\"1\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>187</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>9</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Same crew, every day</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-instagram-follow-row"
+      ],
+      "html": "<div id=\"home-instagram-follow-row\"><a class=\"btn btn-primary btn-accent\" id=\"home-instagram-follow-cta\" href=\"https://www.instagram.com/nottherug/\" target=\"_blank\" rel=\"noopener noreferrer\">Follow us on Instagram</a></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-proof-marquee"
+      ],
+      "html": "<div class=\"social-proof-strip\" id=\"home-proof-marquee\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-featured-reviews-section"
+      ],
+      "html": "<section class=\"section\" id=\"home-featured-reviews-section\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-how-it-works-header"
+      ],
+      "html": "<div class=\"home-band-block-header\" id=\"home-how-it-works-header\"><div class=\"stamp-label stamp-label-heading\">NTR 04 · How It Works</div><h2 id=\"home-how-it-works-headline\">From the first hello to your dog's<!-- --> <em style=\"font-style:normal;color:var(--sage-dark)\">daily routine</em></h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(1) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Phone Call &amp; Meet &amp; Greet</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(1) > .hiw-step-copy > p"
+      ],
+      "html": "<p>A free in-home consultation so you and your dog can meet your walker before the first walk.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(2) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Set Your Schedule</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(2) > .hiw-step-copy > p"
+      ],
+      "html": "<p>Choose your walking frequency, preferred times, and any special instructions.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(3) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>First Walk</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(3) > .hiw-step-copy > p"
+      ],
+      "html": "<p>GPS-tracked 45-minute adventure with post-walk photo report sent to your phone.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(4) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Ongoing Care</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(4) > .hiw-step-copy > p"
+      ],
+      "html": "<p>Same days, consistent visit times, and familiar faces. We take pride in building a routine your dog feels comfortable with and you can count on.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-how-it-works-coverage-points"
+      ],
+      "html": "<div id=\"home-how-it-works-coverage-points\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-contact-sheet-header-copy"
+      ],
+      "html": "<div id=\"home-contact-sheet-header-copy\"><div class=\"stamp-label stamp-label-dark stamp-label-heading\">Sign Up 05 · Let’s Get Started</div><h2>What We'd Like to Know....</h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"home-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-meetgreet-carousel-row"
+      ],
+      "html": "<div id=\"home-meetgreet-carousel-row\" data-section=\"meetgreet-carousel-row\" style=\"margin:0 -4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Your peace of mind. Their favorite part of the day.",
+   "H3: Dog Walking",
+   "H3: PuppyVisits",
+   "H3: Boarding &Dog Sitting",
+   "H3: Senior &Special Needs",
+   "H2: Meet our team of professionals",
+   "H3: We're a Williamsburg service, through and through",
+   "H4: Fully Insured & Bonded",
+   "H4: Background-Checked Team",
+   "H4: GPS Tracking on Every Walk",
+   "H4: Leash Safety Collar Companion method",
+   "H4: GPS Tracking",
+   "H4: Photo Report",
+   "H4: Leash Safety Collar Companion method",
+   "H4: Direct Communication",
+   "H2: Find us on Instagram",
+   "H2: What our clients say",
+   "H2: From the first hello to your dog's daily routine",
+   "H4: Phone Call & Meet & Greet",
+   "H4: Set Your Schedule",
+   "H4: First Walk",
+   "H4: Ongoing Care",
+   "H4: Your Assigned Walker",
+   "H4: Local Park Routes",
+   "H4: Fast Availability",
+   "H2: What We'd Like to Know....",
+   "H3: A little about you",
+   "H3: Now, tell us about your dog",
+   "H3: What kind of care are you looking for?",
+   "H3: Anything we should watch for?",
+   "H3: Last step: anything else?",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact",
+   "H2: 45-Minute Dog Walking"
+  ]
+ },
+ "390/book": {
+  "violations": [
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "h3"
+      ],
+      "html": "<h3 style=\"font-family:var(--font-display);margin:0;animation:mgStepTitleIn 0.35s ease both\">A little about you</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#book-hero-shell"
+      ],
+      "html": "<div id=\"book-hero-shell\" class=\"book-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#book-tab-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"book-tab-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "div[aria-hidden=\"false\"]"
+      ],
+      "html": "<div aria-hidden=\"false\" style=\"flex:0 0 100%;min-width:0;padding:4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   },
+   {
+    "id": "target-size",
+    "impact": "serious",
+    "help": "All touch targets must be 24px large, or leave sufficient space",
+    "nodes": [
+     {
+      "target": [
+       "button[aria-label=\"Go to step 1: You\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 1: You\" aria-current=\"step\" style=\"width:22px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--sage-dark);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (22px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":22,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 2: Your dog\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 2: Your dog\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 3: The care\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 3: The care\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 4: Quirks\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 4: Quirks\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 5: Wrap up\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 5: Wrap up\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Book your freeMeet & Greet",
+   "H3: A little about you"
+  ]
+ },
+ "390/contact": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       ".contact-method:nth-child(1) > div:nth-child(2) > h4"
+      ],
+      "html": "<h4>Call or Text</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#contact-hero"
+      ],
+      "html": "<div id=\"contact-hero\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(1) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Call or Text</h4><p>The fastest way to reach us. Luis personally responds to all messages.</p><a href=\"tel:+13476109676\" id=\"contact-phone-link\" style=\"display:block;margin-top:10px\">(347) 610-9676</a></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(2) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Email</h4><p>For new client intake, less urgent inquiries, or detailed questions.</p><a href=\"mailto:luis@nottherug.com\" id=\"contact-email-link\" style=\"display:block;margin-top:10px\">luis@nottherug.com</a></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(3) > div:nth-child(2)"
+      ],
+      "html": "<div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(4) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Response Hours</h4><p>Mon–Fri, 9 AM–7 PM · Sat–Sun, 10 AM–4 PM</p><p style=\"margin-top:4px;font-size:13px;color:var(--mid-gray)\">Typically reply within 2 hours on weekdays</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-info-card-shell > div:nth-child(2) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:20px;margin-bottom:8px;color:white\">Follow us on Instagram</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-info-card-shell > div:nth-child(2) > p"
+      ],
+      "html": "<p style=\"color:rgba(255,255,255,0.6);font-size:14px;margin-bottom:16px\">Daily walk photos, dog spotlights, neighborhood content, and the occasional chaos.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".btn-outline-white"
+      ],
+      "html": "<a href=\"https://www.instagram.com/nottherug/\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-outline-white btn-sm\" style=\"display:inline-flex\">@nottherug</a>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-form-column > .label"
+      ],
+      "html": "<div class=\"label\">Send a Message</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-form-column > h3"
+      ],
+      "html": "<h3 style=\"margin-bottom:24px\">Tell us about your dog</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-tab-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"contact-tab-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "div[aria-hidden=\"false\"]"
+      ],
+      "html": "<div aria-hidden=\"false\" style=\"flex:0 0 100%;min-width:0;padding:4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   },
+   {
+    "id": "target-size",
+    "impact": "serious",
+    "help": "All touch targets must be 24px large, or leave sufficient space",
+    "nodes": [
+     {
+      "target": [
+       "button[aria-label=\"Go to step 1: You\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 1: You\" aria-current=\"step\" style=\"width:22px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--sage-dark);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (22px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":22,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 2: Your dog\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 2: Your dog\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 3: The care\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 3: The care\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 4: Quirks\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 4: Quirks\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 5: Wrap up\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 5: Wrap up\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: We're real peoplewith a real number",
+   "H4: Call or Text",
+   "H4: Email",
+   "H4: Service Area",
+   "H4: Response Hours",
+   "H4: Follow us on Instagram",
+   "H3: Tell us about your dog",
+   "H3: A little about you"
+  ]
+ },
+ "390/walk-with-us": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-training > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">Training first</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-notice > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">Premium rates</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-experience > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">All kinds of dogs</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-hours > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">Part-time &amp; full-time</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#home-contact-sheet-header"
+      ],
+      "html": "<div id=\"home-contact-sheet-header\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#walk-with-us-application-progress-row"
+      ],
+      "html": "<div id=\"walk-with-us-application-progress-row\" style=\"margin-bottom:24px\"><p style=\"color:var(--mid-gray);font-size:14px;margin:6px 0 0\">Answer in your own words; there are no trick questions. Your answers are saved on this device as you go.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#walk-with-us-application-carousel-row"
+      ],
+      "html": "<div id=\"walk-with-us-application-carousel-row\" data-section=\"walker-application-row\" style=\"margin:0 -4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Join our team",
+   "H2: We show you how we walk",
+   "H2: Available on short notice?",
+   "H2: Bring what you know",
+   "H2: Hours that fit you",
+   "H3: About you and the role",
+   "H3: When can you cover?",
+   "H3: Your experience with dogs",
+   "H3: How you’d handle it",
+   "H3: Last step",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "390/signup": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       ".stamp-label-dark"
+      ],
+      "html": "<div class=\"stamp-label stamp-label-dark stamp-label-heading\">Sign Up 05 · Let’s Get Started</div>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "#signup-meetgreet-group-you-header > h3"
+      ],
+      "html": "<h3>A little about you</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#home-contact-sheet-header-copy"
+      ],
+      "html": "<div id=\"home-contact-sheet-header-copy\"><div class=\"stamp-label stamp-label-dark stamp-label-heading\">Sign Up 05 · Let’s Get Started</div><h1>What We'd Like to Know....</h1></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#signup-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"signup-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#signup-meetgreet-carousel-row"
+      ],
+      "html": "<div id=\"signup-meetgreet-carousel-row\" data-section=\"meetgreet-carousel-row\" style=\"margin:0 -4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: What We'd Like to Know....",
+   "H3: A little about you",
+   "H3: Now, tell us about your dog",
+   "H3: What kind of care are you looking for?",
+   "H3: Anything we should watch for?",
+   "H3: Last step: anything else?",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "390/about": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "#footer-col-rates > h4"
+      ],
+      "html": "<h4>Services</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#about-hero-section"
+      ],
+      "html": "<div id=\"about-hero-section\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00003.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-story-section"
+      ],
+      "html": "<section id=\"about-story-section\" class=\"section\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-team-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:48px\"><div class=\"label\">The Team</div><h2>Meet your dog's people</h2><div class=\"divider divider-center\"></div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-principles-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:48px\"><div class=\"label\">How We Work</div><h2>The principles behind every walk</h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-principles-section > .container > p"
+      ],
+      "html": "<p style=\"text-align:center;color:var(--mid-gray);max-width:620px;margin:0 auto 48px;font-size:16px;line-height:1.8\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: 15 years of walks,one neighborhood",
+   "H2: A neighborhood service, not a platform",
+   "H2: Meet your dog's people",
+   "H4: Join the team",
+   "H2: The principles behind every walk",
+   "H4: Consistency Over Convenience",
+   "H4: Small Groups, Real Attention",
+   "H4: Neighborhood Expertise",
+   "H4: Real People, Always Reachable",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "390/safety": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       ".trust-card:nth-child(1) > div:nth-child(2) > h4"
+      ],
+      "html": "<h4>Fully Insured &amp; Bonded</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#safety-hero-section"
+      ],
+      "html": "<div id=\"safety-hero-section\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".trust-card:nth-child(1) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Fully Insured &amp; Bonded</h4><p>Not The Rug carries comprehensive pet care liability insurance and is fully bonded. In the unlikely event of an accident or property issue, you're protected. We'll share proof of insurance on request.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#safety-credentials-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:32px\"><div class=\"label\">Certifications &amp; Memberships</div><h3>Professional credentials</h3></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(1) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">NAPPS Member</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(2) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">Background Checked</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(3) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">Fully Insured</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(4) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">Bonded</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#safety-faq-section > .container > div > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:40px\"><div class=\"label\">Common Questions</div><h3>What families usually ask</h3></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Why trust mattersmore than price",
+   "H4: Fully Insured & Bonded",
+   "H4: Background-Checked Team",
+   "H4: GPS Tracking on Every Walk",
+   "H4: Leash Safety Collar Companion method",
+   "H4: Max 3 Dogs Per Walk",
+   "H3: Professional credentials",
+   "H3: What families usually ask",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "390/reviews": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#reviews-leave-review-cta"
+      ],
+      "html": "<a class=\"btn btn-primary btn-accent\" id=\"reviews-leave-review-cta\" href=\"https://search.google.com/local/writereview?placeid=ChIJvW9dSVlZwokR4cwWUqQruvA\" target=\"_blank\" rel=\"noopener\">Leave a Review</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"10.5pt (14px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "h3"
+      ],
+      "html": "<h3>Loved working with us?</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#reviews-hero-section"
+      ],
+      "html": "<div id=\"reviews-hero-section\" class=\"page-hero bg-charcoal\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00006.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#reviews-leave-review-section"
+      ],
+      "html": "<section id=\"reviews-leave-review-section\" class=\"section\" style=\"padding-top:0\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: What Brooklyndog owners say",
+   "H3: Loved working with us?",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "390/neighborhoods/williamsburg": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       ".card.card-pad:nth-child(1) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Your Assigned Walker</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#neighborhoods-williamsburg-hero-section"
+      ],
+      "html": "<div id=\"neighborhoods-williamsburg-hero-section\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00005.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#neighborhoods-williamsburg-coverage-section"
+      ],
+      "html": "<section id=\"neighborhoods-williamsburg-coverage-section\" class=\"section\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#neighborhoods-williamsburg-detail-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"background:#7D9E8C22;border:1px solid #7D9E8C44;border-radius:var(--radius-lg);padding:48px;margin-bottom:40px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(1) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Your Assigned Walker</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(1) > p"
+      ],
+      "html": "<p style=\"font-size:14px;color:var(--mid-gray)\">We match your dog with a walker who takes time to learn their personality, routines, and what helps them feel comfortable. A familiar face for your dog and someone you can count on.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(2) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Local Park Routes</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(2) > p"
+      ],
+      "html": "<p style=\"font-size:14px;color:var(--mid-gray)\">Our walkers have season-calibrated routes for <!-- -->Williamsburg<!-- --> — shaded summer paths, dry winter routes, and parks with good off-leash hours.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(3) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Fast Availability</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(3) > p"
+      ],
+      "html": "<p style=\"font-size:14px;color:var(--mid-gray)\">We typically have walker availability in <!-- -->Williamsburg<!-- --> within 1–2 weeks of inquiry. Contact us to check current capacity.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Williamsburg is ourbackyard",
+   "H2: Dog Walking inWilliamsburg",
+   "H4: Your Assigned Walker",
+   "H4: Local Park Routes",
+   "H4: Fast Availability",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "1440/": {
+  "violations": [
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "#home-group-walk-feature-title"
+      ],
+      "html": "<h3 id=\"home-group-walk-feature-title\">Dog Walking</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(1) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Phone Call &amp; Meet &amp; Greet</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#hero-visual-video-shell"
+      ],
+      "html": "<div class=\"hero-visual\" id=\"hero-visual-video-shell\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-content-shell"
+      ],
+      "html": "<div class=\"hero-content\" id=\"hero-content-shell\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-years"
+      ],
+      "html": "<div class=\"hero-stat-item\" id=\"hero-stat-years\"><div class=\"hero-stat-num\">15+</div><div class=\"hero-stat-label\">Years in<br>Williamsburg</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-reddit"
+      ],
+      "html": "<a class=\"hero-stat-item hero-stat-link\" id=\"hero-stat-reddit\" data-variant=\"star\" href=\"https://www.reddit.com/r/williamsburg/comments/1s2ys0x/looking_for_a_confident_and_reliable_dogwalker/\" target=\"_blank\" rel=\"noopener\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-google"
+      ],
+      "html": "<a class=\"hero-stat-item hero-stat-link\" id=\"hero-stat-google\" data-variant=\"star\" href=\"https://www.google.com/maps/place/?q=place_id:ChIJvW9dSVlZwokR4cwWUqQruvA\" target=\"_blank\" rel=\"noopener\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#hero-stat-yelp"
+      ],
+      "html": "<a class=\"hero-stat-item hero-stat-link\" id=\"hero-stat-yelp\" data-variant=\"star\" href=\"https://www.yelp.com/biz/not-the-rug-brooklyn-8\" target=\"_blank\" rel=\"noopener\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-art-figure"
+      ],
+      "html": "<div id=\"home-group-walk-feature-art-figure\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-promo-line"
+      ],
+      "html": "<p id=\"home-group-walk-feature-promo-line\">45 minutes, three dogs max</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-title-row"
+      ],
+      "html": "<div id=\"home-group-walk-feature-title-row\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-group-walk-feature-fields"
+      ],
+      "html": "<div id=\"home-group-walk-feature-fields\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-name"
+      ],
+      "html": "<h3 class=\"home-rate-name\">Puppy<br>Visits</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-unit"
+      ],
+      "html": "<div class=\"home-rate-unit\">per visit</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-price"
+      ],
+      "html": "<div class=\"home-rate-price\">$35</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-puppy-walks > .home-rate-fineprint"
+      ],
+      "html": "<p class=\"home-rate-fineprint\">For puppies ages 2–6 months</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-name"
+      ],
+      "html": "<h3 class=\"home-rate-name\">Boarding &amp;<br>Dog Sitting</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-unit"
+      ],
+      "html": "<div class=\"home-rate-unit\">from, per day</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-price"
+      ],
+      "html": "<div class=\"home-rate-price\">$100</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-boarding-dog-sitting > .home-rate-fineprint"
+      ],
+      "html": "<p class=\"home-rate-fineprint\">Familiar care while you’re away</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-name"
+      ],
+      "html": "<h3 class=\"home-rate-name\">Senior &amp;<br>Special Needs</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-unit"
+      ],
+      "html": "<div class=\"home-rate-unit\">per visit</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-price"
+      ],
+      "html": "<div class=\"home-rate-price\">$25</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-rate-senior-special-needs-walks > .home-rate-fineprint"
+      ],
+      "html": "<p class=\"home-rate-fineprint\">20 minutes, at your dog’s pace</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-trust-marquee-bar"
+      ],
+      "html": "<div class=\"trust-bar\" id=\"home-trust-marquee-bar\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-section > .container"
+      ],
+      "html": "<div class=\"container\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-luis"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-luis\"><div class=\"home-team-chip-name\">Luis</div><div class=\"home-team-chip-role\">Founder</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-lincoln"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-lincoln\"><div class=\"home-team-chip-name\">Lincoln</div><div class=\"home-team-chip-role\">Manager</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-marcus"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-marcus\"><div class=\"home-team-chip-name\">Marcus</div><div class=\"home-team-chip-role\">Sr Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-christian"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-christian\"><div class=\"home-team-chip-name\">Christian</div><div class=\"home-team-chip-role\">Sr Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-shawn"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-shawn\"><div class=\"home-team-chip-name\">Shawn</div><div class=\"home-team-chip-role\">Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-yenny"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-yenny\"><div class=\"home-team-chip-name\">Yenny</div><div class=\"home-team-chip-role\">Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-team-chip-caption-beth-ann"
+      ],
+      "html": "<div class=\"polaroid-caption\" id=\"home-team-chip-caption-beth-ann\"><div class=\"home-team-chip-name\">Beth Ann</div><div class=\"home-team-chip-role\">Walker</div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-williamsburg-pitch"
+      ],
+      "html": "<div id=\"home-closing-williamsburg-pitch\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(1) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Fully Insured &amp; Bonded</h4><p>Comprehensive pet care liability insurance, fully bonded. Proof shared on request.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(2) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Background-Checked Team</h4><p>We carefully vet every walker before their first visit, because caring for your dog and having access to your home is a responsibility we take seriously.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(3) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>GPS Tracking on Every Walk</h4><p>A post-walk route map showing exactly where your dog went and how long they were out. No guessing.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-closing-safety-list > div:nth-child(4) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Leash Safety Collar Companion method</h4><p>We connect our leash to both their collar and harness and use a leash belt for added security. Two points of contact, on every walk.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(1) > h4"
+      ],
+      "html": "<h4>GPS Tracking</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(1) > p"
+      ],
+      "html": "<p>Live route map sent after every walk so you see exactly where they went.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(2) > h4"
+      ],
+      "html": "<h4>Photo Report</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(2) > p"
+      ],
+      "html": "<p>Post-walk update with photos, mood notes, and any observations.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(3) > h4"
+      ],
+      "html": "<h4>Leash Safety Collar Companion method</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(3) > p"
+      ],
+      "html": "<p>Our signature dual collar-and-harness method on every walk.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(4) > h4"
+      ],
+      "html": "<h4>Direct Communication</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".home-included-item:nth-child(4) > p"
+      ],
+      "html": "<p>Text or call your walker directly — no support tickets, no bots.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-always-included-lead"
+      ],
+      "html": "<p id=\"home-always-included-lead\">Experienced walkers who get to know your dog, dependable care that fits your routine, and an update after every visit.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-instagram-header"
+      ],
+      "html": "<div id=\"home-instagram-header\"><div class=\"stamp-label stamp-label-dark stamp-label-heading\">Roll 02 · Instagram</div><h2 id=\"home-instagram-headline\">Find us on <em style=\"font-style:normal;color:var(--gold-light)\">Instagram</em></h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][height=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>214</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>11</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(1) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Morning group walk</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][height=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>168</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>7</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(2) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Pickup, 9:40am</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][height=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"]"
+      ],
+      "html": "<img alt=\"Placeholder — two do...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>4.8K</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->views</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>309</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(3) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">New friend on N 7th</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][height=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>252</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>19</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(4) > .polaroid-tilt-right.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Post-walk nap earned</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > img[width=\"900\"][height=\"900\"][sizes=\"(max-width: 900px) 280px, 20vw\"]"
+      ],
+      "html": "<img alt=\"Placeholder — a dog ...\" loading=\"lazy\" width=\"900\" height=\"900\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" sizes=\"(max-width: 900px) 2...\" srcset=\"/_next/image?url=%2F...\" src=\"/_next/image?url=%2F...\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > span:nth-child(2)"
+      ],
+      "html": "<span>187</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(1) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->likes</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > span:nth-child(2)"
+      ],
+      "html": "<span>9</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-row > .instagram-tile-stat:nth-child(2) > .sr-only"
+      ],
+      "html": "<span class=\"sr-only\"> <!-- -->comments</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-window.polaroid-window > .instagram-tile-stats > .instagram-tile-stats-cue"
+      ],
+      "html": "<span class=\"instagram-tile-stats-cue\">View on Instagram</span>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".instagram-tile:nth-child(5) > .polaroid-tilt-left.polaroid[rel=\"noopener noreferrer\"] > .instagram-tile-caption.polaroid-caption"
+      ],
+      "html": "<div class=\"polaroid-caption instagram-tile-caption\">Same crew, every day</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-instagram-follow-row"
+      ],
+      "html": "<div id=\"home-instagram-follow-row\"><a class=\"btn btn-primary btn-accent\" id=\"home-instagram-follow-cta\" href=\"https://www.instagram.com/nottherug/\" target=\"_blank\" rel=\"noopener noreferrer\">Follow us on Instagram</a></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-proof-marquee"
+      ],
+      "html": "<div class=\"social-proof-strip\" id=\"home-proof-marquee\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-featured-reviews-section"
+      ],
+      "html": "<section class=\"section\" id=\"home-featured-reviews-section\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-how-it-works-header"
+      ],
+      "html": "<div class=\"home-band-block-header\" id=\"home-how-it-works-header\"><div class=\"stamp-label stamp-label-heading\">NTR 04 · How It Works</div><h2 id=\"home-how-it-works-headline\">From the first hello to your dog's<!-- --> <em style=\"font-style:normal;color:var(--sage-dark)\">daily routine</em></h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(1) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Phone Call &amp; Meet &amp; Greet</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(1) > .hiw-step-copy > p"
+      ],
+      "html": "<p>A free in-home consultation so you and your dog can meet your walker before the first walk.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(2) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Set Your Schedule</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(2) > .hiw-step-copy > p"
+      ],
+      "html": "<p>Choose your walking frequency, preferred times, and any special instructions.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(3) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>First Walk</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(3) > .hiw-step-copy > p"
+      ],
+      "html": "<p>GPS-tracked 45-minute adventure with post-walk photo report sent to your phone.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(4) > .hiw-step-copy > h4"
+      ],
+      "html": "<h4>Ongoing Care</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".hiw-step:nth-child(4) > .hiw-step-copy > p"
+      ],
+      "html": "<p>Same days, consistent visit times, and familiar faces. We take pride in building a routine your dog feels comfortable with and you can count on.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-how-it-works-coverage-points"
+      ],
+      "html": "<div id=\"home-how-it-works-coverage-points\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-contact-sheet-header-copy"
+      ],
+      "html": "<div id=\"home-contact-sheet-header-copy\"><div class=\"stamp-label stamp-label-dark stamp-label-heading\">Sign Up 05 · Let’s Get Started</div><h2>What We'd Like to Know....</h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"home-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#home-meetgreet-carousel-row"
+      ],
+      "html": "<div id=\"home-meetgreet-carousel-row\" data-section=\"meetgreet-carousel-row\" style=\"margin:0 -4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Your peace of mind. Their favorite part of the day.",
+   "H3: Dog Walking",
+   "H3: PuppyVisits",
+   "H3: Boarding &Dog Sitting",
+   "H3: Senior &Special Needs",
+   "H2: Meet our team of professionals",
+   "H3: We're a Williamsburg service, through and through",
+   "H4: Fully Insured & Bonded",
+   "H4: Background-Checked Team",
+   "H4: GPS Tracking on Every Walk",
+   "H4: Leash Safety Collar Companion method",
+   "H4: GPS Tracking",
+   "H4: Photo Report",
+   "H4: Leash Safety Collar Companion method",
+   "H4: Direct Communication",
+   "H2: Find us on Instagram",
+   "H2: What our clients say",
+   "H2: From the first hello to your dog's daily routine",
+   "H4: Phone Call & Meet & Greet",
+   "H4: Set Your Schedule",
+   "H4: First Walk",
+   "H4: Ongoing Care",
+   "H4: Your Assigned Walker",
+   "H4: Local Park Routes",
+   "H4: Fast Availability",
+   "H2: What We'd Like to Know....",
+   "H3: A little about you",
+   "H3: Now, tell us about your dog",
+   "H3: What kind of care are you looking for?",
+   "H3: Anything we should watch for?",
+   "H3: Last step: anything else?",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact",
+   "H2: 45-Minute Dog Walking"
+  ]
+ },
+ "1440/book": {
+  "violations": [
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "h3"
+      ],
+      "html": "<h3 style=\"font-family:var(--font-display);margin:0;animation:mgStepTitleIn 0.35s ease both\">A little about you</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#book-hero-shell"
+      ],
+      "html": "<div id=\"book-hero-shell\" class=\"book-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#book-tab-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"book-tab-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "div[aria-hidden=\"false\"]"
+      ],
+      "html": "<div aria-hidden=\"false\" style=\"flex:0 0 100%;min-width:0;padding:4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   },
+   {
+    "id": "target-size",
+    "impact": "serious",
+    "help": "All touch targets must be 24px large, or leave sufficient space",
+    "nodes": [
+     {
+      "target": [
+       "button[aria-label=\"Go to step 1: You\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 1: You\" aria-current=\"step\" style=\"width:22px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--sage-dark);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (22px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":22,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 2: Your dog\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 2: Your dog\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 3: The care\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 3: The care\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 4: Quirks\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 4: Quirks\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 5: Wrap up\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 5: Wrap up\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Book your freeMeet & Greet",
+   "H3: A little about you"
+  ]
+ },
+ "1440/contact": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"12.0pt (16px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       ".contact-method:nth-child(1) > div:nth-child(2) > h4"
+      ],
+      "html": "<h4>Call or Text</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#contact-hero"
+      ],
+      "html": "<div id=\"contact-hero\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(1) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Call or Text</h4><p>The fastest way to reach us. Luis personally responds to all messages.</p><a href=\"tel:+13476109676\" id=\"contact-phone-link\" style=\"display:block;margin-top:10px\">(347) 610-9676</a></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(2) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Email</h4><p>For new client intake, less urgent inquiries, or detailed questions.</p><a href=\"mailto:luis@nottherug.com\" id=\"contact-email-link\" style=\"display:block;margin-top:10px\">luis@nottherug.com</a></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(3) > div:nth-child(2)"
+      ],
+      "html": "<div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".contact-method:nth-child(4) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Response Hours</h4><p>Mon–Fri, 9 AM–7 PM · Sat–Sun, 10 AM–4 PM</p><p style=\"margin-top:4px;font-size:13px;color:var(--mid-gray)\">Typically reply within 2 hours on weekdays</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-info-card-shell > div:nth-child(2) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:20px;margin-bottom:8px;color:white\">Follow us on Instagram</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-info-card-shell > div:nth-child(2) > p"
+      ],
+      "html": "<p style=\"color:rgba(255,255,255,0.6);font-size:14px;margin-bottom:16px\">Daily walk photos, dog spotlights, neighborhood content, and the occasional chaos.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".btn-outline-white"
+      ],
+      "html": "<a href=\"https://www.instagram.com/nottherug/\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-outline-white btn-sm\" style=\"display:inline-flex\">@nottherug</a>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-form-column > .label"
+      ],
+      "html": "<div class=\"label\">Send a Message</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-form-column > h3"
+      ],
+      "html": "<h3 style=\"margin-bottom:24px\">Tell us about your dog</h3>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#contact-tab-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"contact-tab-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "div[aria-hidden=\"false\"]"
+      ],
+      "html": "<div aria-hidden=\"false\" style=\"flex:0 0 100%;min-width:0;padding:4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   },
+   {
+    "id": "target-size",
+    "impact": "serious",
+    "help": "All touch targets must be 24px large, or leave sufficient space",
+    "nodes": [
+     {
+      "target": [
+       "button[aria-label=\"Go to step 1: You\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 1: You\" aria-current=\"step\" style=\"width:22px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--sage-dark);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (22px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":22,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 2: Your dog\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 2: Your dog\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 3: The care\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 3: The care\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 4: Quirks\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 4: Quirks\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     },
+     {
+      "target": [
+       "button[aria-label=\"Go to step 5: Wrap up\"]"
+      ],
+      "html": "<button type=\"button\" class=\"step-dot-hit-slop\" aria-label=\"Go to step 5: Wrap up\" style=\"width:8px;height:8px;border-radius:99px;border:none;padding:0;cursor:pointer;background:var(--light-gray);transition:all 0.3s\"></button>",
+      "msg": "Target has insufficient size (8px by 8px, should be at least 24px by 24px)",
+      "data": "{\"minSize\":24,\"width\":8,\"height\":8}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: We're real peoplewith a real number",
+   "H4: Call or Text",
+   "H4: Email",
+   "H4: Service Area",
+   "H4: Response Hours",
+   "H4: Follow us on Instagram",
+   "H3: Tell us about your dog",
+   "H3: A little about you"
+  ]
+ },
+ "1440/walk-with-us": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"12.0pt (16px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-training > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">Training first</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-notice > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">Premium rates</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-experience > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">All kinds of dogs</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#walk-with-us-term-hours > .stamp-label"
+      ],
+      "html": "<span class=\"stamp-label\">Part-time &amp; full-time</span>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#home-contact-sheet-header"
+      ],
+      "html": "<div id=\"home-contact-sheet-header\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#walk-with-us-application-progress-row"
+      ],
+      "html": "<div id=\"walk-with-us-application-progress-row\" style=\"margin-bottom:24px\"><p style=\"color:var(--mid-gray);font-size:14px;margin:6px 0 0\">Answer in your own words; there are no trick questions. Your answers are saved on this device as you go.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#walk-with-us-application-carousel-row"
+      ],
+      "html": "<div id=\"walk-with-us-application-carousel-row\" data-section=\"walker-application-row\" style=\"margin:0 -4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Join our team",
+   "H2: We show you how we walk",
+   "H2: Available on short notice?",
+   "H2: Bring what you know",
+   "H2: Hours that fit you",
+   "H3: About you and the role",
+   "H3: When can you cover?",
+   "H3: Your experience with dogs",
+   "H3: How you’d handle it",
+   "H3: Last step",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "1440/signup": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"12.0pt (16px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       ".stamp-label-dark"
+      ],
+      "html": "<div class=\"stamp-label stamp-label-dark stamp-label-heading\">Sign Up 05 · Let’s Get Started</div>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.0pt (12px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "#signup-meetgreet-group-you-header > h3"
+      ],
+      "html": "<h3>A little about you</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#home-contact-sheet-header-copy"
+      ],
+      "html": "<div id=\"home-contact-sheet-header-copy\"><div class=\"stamp-label stamp-label-dark stamp-label-heading\">Sign Up 05 · Let’s Get Started</div><h1>What We'd Like to Know....</h1></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#signup-meetgreet-progress-row"
+      ],
+      "html": "<div id=\"signup-meetgreet-progress-row\" data-section=\"meetgreet-progress-row\" style=\"margin-bottom:24px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#signup-meetgreet-carousel-row"
+      ],
+      "html": "<div id=\"signup-meetgreet-carousel-row\" data-section=\"meetgreet-carousel-row\" style=\"margin:0 -4px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#booking-tracking-disclosure"
+      ],
+      "html": "<p id=\"booking-tracking-disclosure\" class=\"form-note\">We count visits to our own site without cookies. We never store what you type in this form, and we never sell your information.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: What We'd Like to Know....",
+   "H3: A little about you",
+   "H3: Now, tell us about your dog",
+   "H3: What kind of care are you looking for?",
+   "H3: Anything we should watch for?",
+   "H3: Last step: anything else?",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "1440/about": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"12.0pt (16px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "#footer-col-rates > h4"
+      ],
+      "html": "<h4>Services</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#about-hero-section"
+      ],
+      "html": "<div id=\"about-hero-section\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00003.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-story-section"
+      ],
+      "html": "<section id=\"about-story-section\" class=\"section\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-team-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:48px\"><div class=\"label\">The Team</div><h2>Meet your dog's people</h2><div class=\"divider divider-center\"></div></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-principles-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:48px\"><div class=\"label\">How We Work</div><h2>The principles behind every walk</h2></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#about-principles-section > .container > p"
+      ],
+      "html": "<p style=\"text-align:center;color:var(--mid-gray);max-width:620px;margin:0 auto 48px;font-size:16px;line-height:1.8\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: 15 years of walks,one neighborhood",
+   "H2: A neighborhood service, not a platform",
+   "H2: Meet your dog's people",
+   "H4: Join the team",
+   "H2: The principles behind every walk",
+   "H4: Consistency Over Convenience",
+   "H4: Small Groups, Real Attention",
+   "H4: Neighborhood Expertise",
+   "H4: Real People, Always Reachable",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "1440/safety": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"12.0pt (16px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       ".trust-card:nth-child(1) > div:nth-child(2) > h4"
+      ],
+      "html": "<h4>Fully Insured &amp; Bonded</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#safety-hero-section"
+      ],
+      "html": "<div id=\"safety-hero-section\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00004.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".trust-card:nth-child(1) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Fully Insured &amp; Bonded</h4><p>Not The Rug carries comprehensive pet care liability insurance and is fully bonded. In the unlikely event of an accident or property issue, you're protected. We'll share proof of insurance on request.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".trust-card:nth-child(2) > div:nth-child(2)"
+      ],
+      "html": "<div><h4>Background-Checked Team</h4><p>We carefully vet every walker before their first visit, because caring for your dog and having access to your home is a responsibility we take seriously.</p></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#safety-credentials-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:32px\"><div class=\"label\">Certifications &amp; Memberships</div><h3>Professional credentials</h3></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(1) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">NAPPS Member</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(2) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">Background Checked</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(3) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">Fully Insured</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".cert-item:nth-child(4) > .cert-label"
+      ],
+      "html": "<div class=\"cert-label\">Bonded</div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#safety-faq-section > .container > div > div:nth-child(1)"
+      ],
+      "html": "<div style=\"text-align:center;margin-bottom:40px\"><div class=\"label\">Common Questions</div><h3>What families usually ask</h3></div>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Why trust mattersmore than price",
+   "H4: Fully Insured & Bonded",
+   "H4: Background-Checked Team",
+   "H4: GPS Tracking on Every Walk",
+   "H4: Leash Safety Collar Companion method",
+   "H4: Max 3 Dogs Per Walk",
+   "H3: Professional credentials",
+   "H3: What families usually ask",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "1440/reviews": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"12.0pt (16px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#reviews-leave-review-cta"
+      ],
+      "html": "<a class=\"btn btn-primary btn-accent\" id=\"reviews-leave-review-cta\" href=\"https://search.google.com/local/writereview?placeid=ChIJvW9dSVlZwokR4cwWUqQruvA\" target=\"_blank\" rel=\"noopener\">Leave a Review</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"10.5pt (14px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       "h3"
+      ],
+      "html": "<h3>Loved working with us?</h3>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#reviews-hero-section"
+      ],
+      "html": "<div id=\"reviews-hero-section\" class=\"page-hero bg-charcoal\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00006.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".review-card.card-hover:nth-child(1)"
+      ],
+      "html": "<div class=\"review-card card-hover\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; visibility: inherit;\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".review-card.card-hover:nth-child(4)"
+      ],
+      "html": "<div class=\"review-card card-hover\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; visibility: inherit;\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".review-card.card-hover:nth-child(6)"
+      ],
+      "html": "<div class=\"review-card card-hover\" style=\"translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1; visibility: inherit;\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#reviews-leave-review-section"
+      ],
+      "html": "<section id=\"reviews-leave-review-section\" class=\"section\" style=\"padding-top:0\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: What Brooklyndog owners say",
+   "H3: Loved working with us?",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ },
+ "1440/neighborhoods/williamsburg": {
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "nodes": [
+     {
+      "target": [
+       "#nav-book-cta"
+      ],
+      "html": "<a id=\"nav-book-cta\" class=\"nav-cta btn-accent\" data-page=\"book\" href=\"/book\">Book a Walk</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"12.0pt (16px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     },
+     {
+      "target": [
+       "#footer-book-luis-cta"
+      ],
+      "html": "<a id=\"footer-book-luis-cta\" class=\"btn btn-primary btn-sm btn-accent\" href=\"/book\">Book a Meet &amp; Greet</a>",
+      "msg": "Element has insufficient color contrast of 3.3 (foreground color: #f3ecd9, background color: #c4674b, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+      "data": "{\"fgColor\":\"#f3ecd9\",\"bgColor\":\"#c4674b\",\"contrastRatio\":3.3,\"fontSize\":\"9.8pt (13px)\",\"fontWeight\":\"normal\",\"messageKey\":null,\"expectedContrastRatio\":\"4.5:1\"}"
+     }
+    ]
+   },
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "help": "Heading levels should only increase by one",
+    "nodes": [
+     {
+      "target": [
+       ".card.card-pad:nth-child(1) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Your Assigned Walker</h4>",
+      "msg": "Heading order invalid",
+      "data": null
+     }
+    ]
+   },
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "help": "Document should have one main landmark",
+    "nodes": [
+     {
+      "target": [
+       "html"
+      ],
+      "html": "<html lang=\"en\" class=\"fraunces_3361e256-module__6mAs-G__variable outfit_ca35ecd4-module__VNkuCW__variable oswald_5abc433a-module__DfzfOq__variable bebas_neue_6d3d12e8-module__u4Z6Va__variable courier_prime_31fd528a-module__NZX_mG__variable\">",
+      "msg": "Document does not have a main landmark"
+     }
+    ]
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "help": "All page content should be contained by landmarks",
+    "nodes": [
+     {
+      "target": [
+       "#neighborhoods-williamsburg-hero-section"
+      ],
+      "html": "<div id=\"neighborhoods-williamsburg-hero-section\" class=\"page-hero\" style=\"background:linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00005.webp') center 20%/cover no-repeat\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#neighborhoods-williamsburg-coverage-section"
+      ],
+      "html": "<section id=\"neighborhoods-williamsburg-coverage-section\" class=\"section\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       "#neighborhoods-williamsburg-detail-section > .container > div:nth-child(1)"
+      ],
+      "html": "<div style=\"background:#7D9E8C22;border:1px solid #7D9E8C44;border-radius:var(--radius-lg);padding:48px;margin-bottom:40px\">",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(1) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Your Assigned Walker</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(1) > p"
+      ],
+      "html": "<p style=\"font-size:14px;color:var(--mid-gray)\">We match your dog with a walker who takes time to learn their personality, routines, and what helps them feel comfortable. A familiar face for your dog and someone you can count on.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(2) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Local Park Routes</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(2) > p"
+      ],
+      "html": "<p style=\"font-size:14px;color:var(--mid-gray)\">Our walkers have season-calibrated routes for <!-- -->Williamsburg<!-- --> — shaded summer paths, dry winter routes, and parks with good off-leash hours.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(3) > h4"
+      ],
+      "html": "<h4 style=\"font-family:var(--font-display);font-size:18px;margin-bottom:8px\">Fast Availability</h4>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     },
+     {
+      "target": [
+       ".card.card-pad:nth-child(3) > p"
+      ],
+      "html": "<p style=\"font-size:14px;color:var(--mid-gray)\">We typically have walker availability in <!-- -->Williamsburg<!-- --> within 1–2 weeks of inquiry. Contact us to check current capacity.</p>",
+      "msg": "Some page content is not contained by landmarks",
+      "data": "{\"isIframe\":false}"
+     }
+    ]
+   }
+  ],
+  "headings": [
+   "H1: Williamsburg is ourbackyard",
+   "H2: Dog Walking inWilliamsburg",
+   "H4: Your Assigned Walker",
+   "H4: Local Park Routes",
+   "H4: Fast Availability",
+   "H4: Services",
+   "H4: Company",
+   "H4: Contact"
+  ]
+ }
+}
