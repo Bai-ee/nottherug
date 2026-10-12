@@ -20,14 +20,14 @@
   --sage: #7A9068;
   --sage-light: #B4C89E;
   --sage-dark: var(--olive);
-  --terracotta: #C4674B;
+  --terracotta: #A9503A; /* was #C4674B (3.31:1 under paper text); 4.57:1 */
   --terracotta-light: #E8A896;
   --gold: #C9A96E;
   --gold-light: #E8D4A8;
 
   --font-display: var(--font-fraunces), 'DM Serif Display', serif;
   --font-body: var(--font-outfit), sans-serif;
-  --font-italic: var(--font-fraunces), serif;
+  --font-italic: var(--font-fraunces-italic), var(--font-fraunces), serif;
   --font-stamp: var(--font-oswald), 'Arial Narrow', sans-serif;
   --font-headline: var(--font-bebas), 'Anton', 'Arial Narrow', sans-serif;
   --font-type: var(--font-courier), 'Courier New', monospace;
@@ -959,7 +959,7 @@ footer {
    literal cityscape. Same cream-veil stack as every other light section, so
    it reads at the established ~20%. #home-personalized-care-pin-stage's
    background below is dead weight while the pinned carousel is disabled
-   ({false && ...} in app/page.tsx) — left in place in case it comes back. */
+   ({false && ...} in components/marketing/HomePageContent.tsx) — left in place in case it comes back. */
 /* Every band the nav or the footer links to clears the fixed nav when the
    browser jumps to it. */
 #home-team-section,
@@ -1284,7 +1284,7 @@ footer {
   }
 }
 /* Clips the horizontal product row and stretches it edge-to-edge — this
-   section deliberately renders outside .container (see app/page.tsx) so
+   section deliberately renders outside .container (see components/marketing/HomePageContent.tsx) so
    there's no max-width/side-padding constraining it. */
 #home-personalized-care-scroll-window {
   overflow: hidden;
