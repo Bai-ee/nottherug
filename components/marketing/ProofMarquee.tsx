@@ -1,3 +1,5 @@
+import MarqueeHoverBoost from './MarqueeHoverBoost';
+
 // Scrolling social-proof marquee between the hero and How It Works. The
 // track is duplicated once in the source markup so the CSS marquee loops
 // seamlessly — preserved as-is.
@@ -33,6 +35,8 @@ export default function ProofMarquee() {
         <ProofTrackItems keyPrefix="a" />
         <ProofTrackItems keyPrefix="b" />
       </div>
+      {/* Doubles the scroll speed while hovered (see MarqueeHoverBoost). */}
+      <MarqueeHoverBoost stripId="home-proof-marquee" trackId="proof-track" />
     </div>
   );
 }
