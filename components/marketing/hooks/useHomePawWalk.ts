@@ -190,7 +190,11 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
     if (!from || !to) return [];
     return [
       {
-        top: from.getBoundingClientRect().top + window.scrollY - pageTop,
+        top:
+          (w.fromEdge === 'bottom' ? from.getBoundingClientRect().bottom : from.getBoundingClientRect().top) +
+          window.scrollY -
+          pageTop +
+          (w.fromOffset ?? 0),
         // Bottom edge, so the last prints finish underneath the closing element
         // rather than stopping short of it.
         bottom: to.getBoundingClientRect().bottom + window.scrollY - pageTop,
@@ -198,8 +202,9 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
       },
     ];
   });
-  const bands = Array.from(page.children)
-    .filter((el): el is HTMLElement => el instanceof HTMLElement && el.matches(DARK_SECTION_SELECTOR))
+  // Sections sit inside <main>, not directly under #page-home, so search the
+  // subtree; a direct-children filter matched nothing and left ink prints on green.
+  const bands = Array.from(page.querySelectorAll<HTMLElement>(DARK_SECTION_SELECTOR))
     .map((el) => {
       const r = el.getBoundingClientRect();
       const top = r.top + window.scrollY - pageTop;
@@ -214,7 +219,16 @@ function layoutPawWalk(layer: HTMLElement, tuning: PawWalkTuning): PlacedPrint[]
   const scrollRange = Math.max(pageH - window.innerHeight, 1);
   const placed: PlacedPrint[] = [];
 
+  // Start the stride where the route first enters a visible window, so the first
+  // print sits right at the window's edge (under the hero video) instead of
+  // wherever the stride phase from the top of the page happens to land.
   let cursor = 0;
+  if (windows.length) {
+    const opensAt = Math.min(...windows.map((w) => w.top));
+    const entry = ys.findIndex((y) => y >= opensAt);
+    // +0.01 so the first print resolves to the entry sample, not the one above the edge.
+    if (entry > 0) cursor = cum[entry] + 0.01;
+  }
   let sample = 0;
   for (let i = 0; i < prints.length; i++) {
     const print = prints[i];
@@ -315,8 +329,8 @@ export function estimateRequiredPawSteps(
 }
 
 /**
- * Scroll-scrubbed paw walk down the home page, starting at the gate section
- * (PAW_WALK_GATE_SELECTOR) so the hero scrolls clean. Each print is pinned to
+ * Scroll-scrubbed paw walk down the home page, starting just under the hero
+ * video (PAW_WALK_WINDOWS). Each print is pinned to
  * the point on the route where it sits, so it lands as that point passes the
  * walking line and lifts back off when you scroll up — the trail always ends
  * where you are on the page.

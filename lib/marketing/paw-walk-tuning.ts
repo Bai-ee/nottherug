@@ -21,16 +21,18 @@ export interface PawWalkTuning {
 }
 
 export const PAW_WALK_DEFAULTS: PawWalkTuning = {
-  size: 33,
-  strideRatio: 3.7,
-  stepDuration: 0.008,
+  size: 102,
+  strideRatio: 2.3,
+  stepDuration: 0.004,
   scrub: 1,
   lead: 0.7,
-  opacity: 0.28,
+  opacity: 0.14,
   trackHalfWidth: 24,
 };
 
-export const PAW_WALK_TUNING_KEY = 'nottherug:paw-walk-tuning';
+// v2: defaults were re-tuned (size 102, stride 2.3, footfall 0.004, opacity 0.14);
+// values saved under v1 are ignored so they stop overriding the shipped defaults.
+export const PAW_WALK_TUNING_KEY = 'nottherug:paw-walk-tuning:v2';
 
 /**
  * Dev only. The bezier path editor is ON by default while developing, so the
@@ -58,7 +60,8 @@ export function pawWalkDevFlags(): { tune: boolean; path: boolean } {
   return { tune: q.has('pawtune') && on('pawtune'), path: q.has('pawpath') && on('pawpath') };
 }
 
-export const PAW_WALK_PATH_KEY = 'nottherug:paw-walk-path';
+// v2: the default route became a straight centre line; saved v1 drags are ignored.
+export const PAW_WALK_PATH_KEY = 'nottherug:paw-walk-path:v2';
 
 /**
  * A route dragged in the path editor, kept so it survives a reload — a dev
