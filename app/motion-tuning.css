@@ -181,3 +181,36 @@ body .section-rail-marker:focus-visible { outline-color: var(--gold); }
   #hero-cta-primary,
   #hero-cta-secondary { white-space: nowrap; }
 }
+
+/* ---- Service dialog: range price ("$100–$110") stays on one line ---- */
+/* A lone, single price takes the biggest size (26cqi) from a rule that outranks
+   the range-specific one in globals.css, so a range like Boarding's "$100–$110"
+   was sized for one short number and wrapped onto two lines. Same specificity as
+   that rule, later in the cascade; scales with the panel (cqi) and never wraps. */
+#service-modal .service-modal-rates-row .contact-modal-detail:only-child dd > .service-modal-rate:only-child .service-modal-rate-amount-range {
+  font-size: clamp(40px, 18cqi, 120px);
+  white-space: nowrap;
+}
+
+/* ---- Dog Walking card: walker sits higher on medium screens ---- */
+/* At 768-1279px the figure's feet landed on (and past) the art panel's bottom
+   edge because of its -4% placement. Raises it to 9% (about 35px) so the dogs'
+   paws sit clear of the edge. Card-id prefix outranks the component's own <style>. */
+@media (min-width: 768px) and (max-width: 1279px) {
+  #home-group-walk-feature-card #home-group-walk-feature-art-figure { bottom: 9%; }
+}
+
+/* ---- Hero: no bridge strip on phones (<=768px) ---- */
+/* Hides the hero's bridge/skyline art layer (#hero-cityscape-frame, holding
+   #hero-cityscape-art) on phones only. Desktop and tablet are untouched. */
+@media (max-width: 768px) {
+  #home-main #hero-cityscape-frame { display: none; }
+}
+
+/* ---- Reviews marquee: same speed as the black trust marquee ---- */
+/* Speed is px/s: the trust bar's track half-width is 982px over 38s (26px/s); the
+   quote track's half-width is 3321px, so matching 26px/s takes 3321 / 26 = 128.5s
+   (it ran 25s, ~133px/s). Both widths are fixed at every viewport width. If the
+   quotes or trust items change, recompute (half-width / 26). Hover doubles the
+   rate in MarqueeHoverBoost (JS), so it does not restart the animation. */
+#proof-track { animation-duration: 128.5s; }
