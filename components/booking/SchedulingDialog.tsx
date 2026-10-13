@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { track } from '@/lib/analytics/track';
 import { buildCalendlyEmbedUrl } from '@/lib/booking/calendlyEmbedUrl';
@@ -84,6 +84,14 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // Calendly takes a beat to paint; the loader covers the blank frame until
+  // the iframe's load event. Reset on close so a reopen shows it again.
+  const [calendarLoaded, setCalendarLoaded] = useState(false);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (!open) setCalendarLoaded(false);
+  }
   // Persists for the dialog's whole mount lifetime by default; the effect
   // below is the one exception, for a genuinely new attempt.
   const bookingObservedRef = useRef(false);
@@ -222,6 +230,56 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
           }
           #calendly-modal-iframe { min-height: 75vh; }
         }
+        /* Loader over the iframe: the home intro's walker silhouette and
+           dashed walk line, plus a short status line. */
+        #calendly-modal-frame-shell { position: relative; flex: 1; display: flex; flex-direction: column; }
+        #calendly-modal-loader {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 14px;
+          background: var(--paper);
+          transition: opacity 0.35s ease-out, visibility 0.35s;
+          pointer-events: none;
+        }
+        #calendly-modal-loader[data-loaded='true'] { opacity: 0; visibility: hidden; }
+        #calendly-modal-loader-walker {
+          width: min(52vw, 260px);
+          height: auto;
+          filter: brightness(0);
+          opacity: 0.3;
+          animation: home-intro-walker-bob 2.4s ease-in-out infinite;
+        }
+        #calendly-modal-loader-path {
+          display: block;
+          width: min(40vw, 220px);
+          height: 2px;
+          background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.3) 0 10px, transparent 10px 18px);
+          transform-origin: left center;
+          animation: calendly-loader-path 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+        }
+        @keyframes calendly-loader-path {
+          0% { transform: scaleX(0); transform-origin: left center; }
+          50% { transform: scaleX(1); transform-origin: left center; }
+          51% { transform: scaleX(1); transform-origin: right center; }
+          100% { transform: scaleX(0); transform-origin: right center; }
+        }
+        #calendly-modal-loader-text {
+          font-family: var(--font-stamp);
+          font-size: 13px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--mid-gray);
+          margin: 0;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          #calendly-modal-loader-walker,
+          #calendly-modal-loader-path { animation: none; }
+          #calendly-modal-loader-path { transform: none; }
+        }
       `}</style>
       <div
         ref={dialogRef}
@@ -283,16 +341,32 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
             Close ×
           </button>
         </div>
-        <iframe
-          ref={iframeRef}
-          id="calendly-modal-iframe"
-          title="Calendly scheduling"
-          src={buildCalendlyEmbedUrl(
-            calendlyUrl,
-            typeof window === 'undefined' ? undefined : window.location.hostname,
-          )}
-          style={{ flex: 1, width: '100%', border: 'none', background: 'var(--paper)' }}
-        />
+        <div id="calendly-modal-frame-shell">
+          <iframe
+            ref={iframeRef}
+            id="calendly-modal-iframe"
+            title="Calendly scheduling"
+            src={buildCalendlyEmbedUrl(
+              calendlyUrl,
+              typeof window === 'undefined' ? undefined : window.location.hostname,
+            )}
+            onLoad={() => setCalendarLoaded(true)}
+            style={{ flex: 1, width: '100%', border: 'none', background: 'var(--paper)' }}
+          />
+          <div
+            id="calendly-modal-loader"
+            data-loaded={calendarLoaded ? 'true' : 'false'}
+            role="status"
+            aria-live="polite"
+            aria-hidden={calendarLoaded}
+          >
+            {/* Plain <img>, same reason as the logo above. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img id="calendly-modal-loader-walker" src="/img/home-intro-walker-silhouette.webp" alt="" width={499} height={238} />
+            <span id="calendly-modal-loader-path" aria-hidden="true" />
+            <p id="calendly-modal-loader-text">Loading calendar…</p>
+          </div>
+        </div>
       </div>
     </div>,
     document.body
