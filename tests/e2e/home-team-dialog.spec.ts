@@ -54,8 +54,8 @@ test.describe('home team dialog', () => {
     await expect(page.locator('#home-team-preview')).toHaveCount(0);
   });
 
-  test('the band links to the full team on /about', async ({ page }) => {
-    await page.locator('#home-team-about-link').click();
-    await expect(page).toHaveURL(/\/about$/);
+  test('the band links to the Join Our Team application', async ({ page }) => {
+    await page.locator('#home-team-join-cta').click();
+    await expect(page).toHaveURL(/\/walk-with-us$/);
   });
 });

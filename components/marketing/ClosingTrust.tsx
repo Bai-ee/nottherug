@@ -1,5 +1,4 @@
 import { WILLIAMSBURG } from '@/lib/content/coverage';
-import Link from 'next/link';
 import AlwaysIncluded from './AlwaysIncluded';
 import InstagramGrid from './InstagramGrid';
 import TrackedCtaLink from './TrackedCtaLink';
@@ -37,14 +36,7 @@ export default function ClosingTrust() {
             </div>
             <div className="divider" style={{ margin: '28px 0' }}></div>
             <div id="home-closing-cta-row" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              {/* The "Join Our Team" link below stays untracked on purpose:
-                  it is recruiting, not a customer action. */}
               <TrackedCtaLink href="/book" className="btn btn-primary btn-accent" id="home-closing-book-luis-cta" cta="closing_trust_book" opensWelcomeModal>Book a Meet &amp; Greet</TrackedCtaLink>
-              {/* Secondary action beside the client CTA — walkers, not clients:
-                  the Join Our Team application page. */}
-              <Link id="home-closing-join-team-cta" className="btn btn-outline" href="/walk-with-us">
-                Join Our Team
-              </Link>
             </div>
           </div>
           <div id="home-closing-safety-list">

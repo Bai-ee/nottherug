@@ -3001,11 +3001,11 @@ footer {
   object-fit: contain;
   filter: contrast(0.96) saturate(0.9);
 }
-/* Link to the full team on /about, centred under the roster. */
-#home-team-about-link-row {
+/* Join Our Team, centred tight under the roster. */
+#home-team-join-cta-row {
   display: flex;
   justify-content: center;
-  margin-top: clamp(18px, 3vw, 32px);
+  margin-top: clamp(8px, 1.5vw, 16px);
 }
 #home-team-preview-frame #home-team-preview-close-btn {
   position: absolute;
