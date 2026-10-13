@@ -20,7 +20,7 @@
   --sage: #7A9068;
   --sage-light: #B4C89E;
   --sage-dark: var(--olive);
-  --terracotta: #A9503A; /* was #C4674B (3.31:1 under paper text); 4.57:1 */
+  --terracotta: #964228; /* was #C4674B (3.31:1), then #A9503A (4.57:1); 5.73:1 under paper text */
   --terracotta-light: #E8A896;
   --gold: #C9A96E;
   --gold-light: #F5EACB; /* was #E8D4A8 (3.9-4.2:1 on the olive bands); 4.7+ */
@@ -684,7 +684,13 @@ footer {
   /* Seats the paper print on the olive: a soft contact shadow, no border. */
   filter: drop-shadow(0 16px 24px rgba(20, 24, 12, 0.35));
 }
-#footer-art-image { display: block; width: 100%; height: auto; }
+#footer-art-image {
+  display: block; width: 100%; height: auto;
+  /* The collage has a peach/yellow cast that reads warmer than the page cream
+     (#f3ecd9). Colour-corrected here, not in the image master: lower saturation, a
+     small hue nudge toward neutral, a hair brighter. */
+  filter: saturate(0.6) hue-rotate(4deg) brightness(1.02);
+}
 #footer-brand-block { grid-area: brand; align-self: start; max-width: 340px; }
 #footer-col-rates { grid-area: rates; }
 #footer-col-company { grid-area: company; }
@@ -821,10 +827,11 @@ footer {
 
    Both overlays sit inside their own section: one hanging past the edge would
    be clipped by the strip's overflow:hidden and painted over by the later
-   sibling's background. z-index:-1 against the section's own stacking context
-   keeps them above the band's background and below its content (same trick the
-   paw trail uses above). */
-#home-closing-trust-section { position: relative; z-index: 0; }
+   sibling's background. The how-it-works overlay uses z-index:-1 against that
+   section's own stacking context (z-index:0 above) to sit above its background and
+   below its content. The closing-trust band is not isolated (so the paw walk can
+   run over its background), so its fade sits at z-index:0 instead: above the band
+   colour, below the paw layer and the content. */
 #home-closing-trust-section::after,
 #home-how-it-works-section::before {
   content: '';
@@ -836,6 +843,7 @@ footer {
   pointer-events: none;
 }
 #home-closing-trust-section::after {
+  z-index: 0;
   bottom: 0;
   background: linear-gradient(to bottom, rgba(79, 90, 61, 0) 0%, rgba(79, 90, 61, 0.55) 55%, rgba(79, 90, 61, 0.92) 100%);
 }
@@ -1047,6 +1055,9 @@ footer {
   padding: 112px 64px 64px 32px;
   max-width: 660px; margin-left: auto;
   grid-column: 1; grid-row: 1;
+  /* Above the paw-walk layer (z-index 4): the trail starts under the video, so
+     the hero's copy must paint over it like every other section's content. */
+  position: relative; z-index: 5;
 }
 .hero-eyebrow {
   display: flex; align-items: center; gap: 10px;
@@ -1084,6 +1095,15 @@ footer {
   text-wrap: pretty;
 }
 .hero-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+/* Desktop / tablet (>768px): View Services stays beside Book a Meet & Greet. The
+   row used to wrap it underneath when the left column got narrow; it now stays on
+   one line and may spill a little into the column's empty right padding. Phones
+   keep the stacked layout (the row is display: contents there). */
+@media (min-width: 769px) {
+  .hero-actions { flex-wrap: nowrap; gap: 14px clamp(12px, 1.6vw, 20px); }
+  #hero-cta-primary,
+  #hero-cta-secondary { white-space: nowrap; }
+}
 
 .hero-stats {
   position: relative;
@@ -1175,6 +1195,8 @@ footer {
   height: calc(100svh - var(--nav-h));
   /* bias the centered polaroid upward so it reads balanced, not sunk */
   padding-bottom: 9vh;
+  /* Above the paw-walk layer (z-index 4), like the hero copy. */
+  z-index: 5;
 }
 /* Hero polaroid composition (docs/design.md — hero: one large polaroid, taped).
    Sized independently of the grid row: width capped by both the column and the
@@ -1224,7 +1246,13 @@ footer {
 }
 .proof-track {
   display: flex; gap: 48px; align-items: center;
-  animation: scrollTrack 25s linear infinite;
+  /* Same speed as the black trust marquee. Speed is px/s: the trust track's
+     half-width is 982px over 38s (26px/s); this track's half-width is 3321px, so
+     matching 26px/s takes 3321 / 26 = 128.5s (it ran 25s, ~133px/s). Both widths
+     are fixed at every viewport width; if the quotes or trust items change,
+     recompute (half-width / 26). Hover doubles the rate in MarqueeHoverBoost (JS),
+     which changes playbackRate so the animation does not restart. */
+  animation: scrollTrack 128.5s linear infinite;
   width: max-content;
 }
 @keyframes scrollTrack { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -2085,17 +2113,9 @@ footer {
      child (the nowrap headline), which widened the whole stacked hero past the
      screen and pushed it right. */
   .hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; height: auto; min-height: auto; }
-  /* Stacked layout puts the headline over the walker illustration, so on
-     mobile it moves under the cream veil (faint) instead of sitting at full
-     strength above it like it does on desktop. */
-  .hero {
-    background:
-      url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-      linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80)),
-      url('/img/3Top-flipped.png') 60% 12% / clamp(300px, 86vw, 460px) auto no-repeat;
-  }
   #hero-stats-strip { grid-column: 1; grid-row: 3; width: calc(100% - 40px); padding-left: 20px; padding-right: 20px; margin-bottom: 40px; }
-  .hero-visual { grid-column: 1; grid-row: 1; height: auto; width: 100%; position: static; padding-bottom: 0; }
+  /* relative (not static) so the z-index above applies; top: auto cancels the desktop sticky offset. */
+  .hero-visual { grid-column: 1; grid-row: 1; height: auto; width: 100%; position: relative; top: auto; padding-bottom: 0; }
   .nav-logo { padding: 7px 10px; transform: rotate(-2deg) translateY(22px); }
   .nav-logo::before { width: 84px; height: 22px; top: -9px; left: 50%; margin-left: -42px; }
   #nav-logo-img { width: 200px; }
@@ -3151,7 +3171,19 @@ footer {
    art). With reduced motion or no JS, the layers are simply static. */
 #home-hero-section,
 #home-personalized-care-section,
-#home-process-section { position: relative; isolation: isolate; }
+#home-process-section { position: relative; }
+/* These sections are deliberately NOT isolated stacking contexts: the paw-walk
+   layer (#home-paw-walk-layer, z-index 4) has to sit between each section's
+   background/photo wash and its content, so the walk runs over backgrounds and
+   under every bit of text, image and field. Their photo-wash frames therefore sit
+   at z-index 0 (above the section background, below the paw layer) instead of -1;
+   content containers are raised to z-index 5 in the paw-walk block below. */
+#home-hero-section > .city-parallax-frame,
+#home-personalized-care-section > .city-parallax-frame,
+#home-team-section > .city-parallax-frame,
+#home-closing-trust-section > .city-parallax-frame,
+#home-process-section > .city-parallax-frame,
+#home-main #home-contact-sheet-section > .city-parallax-frame { z-index: 0; }
 .city-parallax-frame {
   position: absolute;
   inset: 0;
@@ -3202,9 +3234,13 @@ footer {
    past the parallax travel (useCityscapeParallax PHOTO_TRAVEL) so an edge
    never shows. */
 #home-team-section,
-#home-closing-trust-section,
+#home-closing-trust-section { position: relative; }
 #home-closing-band-shell #home-contact-sheet-section,
 #main-footer { position: relative; isolation: isolate; }
+/* Home page only (the signup page shares this contact section but has no paw
+   walk): not isolated, so the paw layer can run between its background and its
+   content like the other home sections (see the cityscape note above). */
+#home-main #home-closing-band-shell #home-contact-sheet-section { isolation: auto; }
 .city-parallax-photo {
   top: -140px;
   bottom: -140px;
@@ -3578,9 +3614,12 @@ footer {
   opacity: 0;
   visibility: hidden;
 }
-/* Prints crossing a dark section (see DARK_SECTION_SELECTOR) invert to chalk so
-   they stay readable against it. */
-.home-paw-step[data-paw-tone='dark'] { filter: invert(1); }
+/* Prints crossing a dark section (see DARK_SECTION_SELECTOR) are flipped to a
+   warm cream and softened so they read as the same paws as on the cream bands. A
+   plain invert(1) turns the olive ink into a bright lavender-grey that reads far
+   heavier. grayscale keeps the print's texture, sepia warms it toward the page's
+   cream, opacity(0.6) matches its contrast on green to the cream-band prints. */
+.home-paw-step[data-paw-tone='dark'] { filter: grayscale(1) invert(1) sepia(0.22) opacity(0.6); }
 
 #home-paw-walk-layer[data-paw-walk-state='static'] .home-paw-step {
   opacity: 0.2;
@@ -4076,15 +4115,26 @@ html[data-home-intro='loading'] #home-intro-walk-path {
   #hero-cta-secondary { display: inline-flex; order: 6; align-self: center; }
   /* No tape strip on the video polaroid at phone widths. */
   #hero-polaroid-frame.taped::before { display: none; }
-  /* Phones drop the walker illustration behind the hero (the mobile .hero
-     background above layers it under the veil) and the round sticker on the
-     video polaroid; the paper grain, veil and bottom strip stay. */
+  /* Phones: the hero keeps a big, faint walker illustration under the cream veil
+     (0.86 veil, so it shows at about 14%) behind the headline / stamp / CTA block, below
+     the video, so the copy stays readable and no real content moves. It dropped
+     out on phones before because it used to sit entirely behind the opaque video.
+     The round sticker on the video polaroid is dropped. */
   .hero {
     background:
       url('/textures/paper-grain.png') 0 0 / 300px 300px repeat,
-      linear-gradient(rgba(243, 236, 217, 0.80), rgba(243, 236, 217, 0.80));
+      linear-gradient(rgba(243, 236, 217, 0.86), rgba(243, 236, 217, 0.86)),
+      url('/img/3Top-flipped.png')
+        right -14vw top calc(var(--nav-h) + 450px)
+        / clamp(300px, 104vw, 520px) auto
+        no-repeat;
   }
   #hero-polaroid-badge { display: none; }
+  /* Phones show only the first sentence of the intro paragraph; the rest
+     (#hero-intro-copy-detail) stays in the markup and on desktop. */
+  #hero-intro-copy-detail { display: none; }
+  /* No bridge strip behind the hero on phones. */
+  #hero-cityscape-frame { display: none; }
 }
 
 /* ============================================================
@@ -4431,6 +4481,13 @@ a.contact-modal-detail-value:focus-visible { outline: 2px solid var(--olive); ou
 }
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child dd > .service-modal-rate:only-child .service-modal-rate-amount {
   font-size: clamp(72px, 26cqi, 140px);
+}
+/* A lone range ("$100–$110", Boarding) takes the single-price size above, which is
+   sized for one short number, so it wrapped onto two lines. Same specificity, later in
+   the cascade: scales with the panel (cqi) and never wraps. */
+#service-modal .service-modal-rates-row .contact-modal-detail:only-child dd > .service-modal-rate:only-child .service-modal-rate-amount-range {
+  font-size: clamp(40px, 18cqi, 120px);
+  white-space: nowrap;
 }
 #service-modal .service-modal-rates-row .contact-modal-detail:only-child .service-modal-rate-amount-range {
   font-size: clamp(52px, 17cqi, 104px);

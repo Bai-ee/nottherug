@@ -258,6 +258,9 @@ export default function GroupWalkFeatureCard({
           inset: 0;
           pointer-events: none;
           z-index: 0;
+          /* Resting paw prints behind the copy are hidden (the layer and the
+             hook's refs stay in the markup). */
+          display: none;
         }
         #home-group-walk-feature-paw-trail svg { display: block; }
         #home-group-walk-feature-tax-note {
@@ -325,7 +328,8 @@ export default function GroupWalkFeatureCard({
            was tuned for, so the walker and dogs step down and re-centre to
            sit inside the panel instead of running off both edges. */
         @media (min-width: 900px) and (max-width: 1279px) {
-          #home-group-walk-feature-art-figure { height: 76%; left: 56%; }
+          /* bottom 9% (not the -4% base): lifts the dogs' paws clear of the panel edge. */
+          #home-group-walk-feature-art-figure { height: 76%; left: 56%; bottom: 9%; }
         }
         @media (min-width: 768px) and (max-width: 899px) {
           #home-group-walk-feature-title-row {
@@ -345,7 +349,7 @@ export default function GroupWalkFeatureCard({
           /* The art column is only ~330px wide here, so the walker scales down
              and sits centred in it instead of being cropped hard at its left
              edge. */
-          #home-group-walk-feature-art-figure { height: 66%; left: 54%; }
+          #home-group-walk-feature-art-figure { height: 66%; left: 54%; bottom: 9%; }
           /* Right side gets air: more padding, and the phone field gives up
              width to the email field. */
           #home-group-walk-feature-content { padding-right: 26px; }

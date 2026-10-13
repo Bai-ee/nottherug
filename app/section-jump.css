@@ -72,12 +72,11 @@
   place-items: center;
   border-radius: 50%;
   pointer-events: auto;
-  /* Paper fill, not sage: the control sits over deep-green sections as often
-     as paper ones, and a sage button on green reads as a hole rather than a
-     control. Matches the cream step medallions already on the page. */
-  background: var(--paper);
-  color: var(--olive);
-  border: 1.5px solid rgba(79, 90, 61, 0.35);
+  /* Deep green with a cream paw, matching the desktop rail capsule. A cream
+     hairline keeps its edge visible over the green sections. */
+  background: var(--sage-dark);
+  color: var(--paper);
+  border: 1.5px solid rgba(243, 236, 217, 0.3);
   box-shadow: 0 6px 18px var(--shadow-paper);
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
@@ -86,7 +85,21 @@
   color: var(--paper);
   transform: scale(0.94);
 }
+/* Centred on the viewport below 1280px (left, not transform: the open state and
+   reduced-motion rules both own the trigger's transform). 54px wide, so 27px. */
+@media (max-width: 1279px) {
+  #section-jump-trigger { left: calc(50% - 27px); }
+}
 
+/* The paw glyph is drawn cream: masked by its own artwork and filled with --paper,
+   with object-position pushing the original olive pixels out of the box. */
+#section-jump-trigger-icon-pin {
+  background-color: var(--paper);
+  object-fit: none;
+  object-position: -999px 0;
+  -webkit-mask: url('/img/paw-rail-left.webp') center / contain no-repeat;
+  mask: url('/img/paw-rail-left.webp') center / contain no-repeat;
+}
 .section-jump-trigger-icon {
   /* both glyphs share one grid cell so they cross-fade in place */
   grid-area: 1 / 1;
@@ -146,12 +159,25 @@
   pointer-events: auto;
   transition: opacity 0.2s ease, visibility 0s;
 }
+/* Centred on the viewport (the trigger moves to the centre below 1280px, where the
+   control is shown): the fan centres above it. */
+@media (max-width: 1279px) {
+  #section-jump-menu {
+    left: 0; right: 0;
+    width: max-content;
+    margin-inline: auto;
+  }
+}
 
 #section-jump-list {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
+}
+/* Centred with the fan below 1280px (see the menu rule above). */
+@media (max-width: 1279px) {
+  #section-jump-list { align-items: center; }
 }
 
 /* One straight column: every row starts on the trigger's left edge, so the
@@ -230,6 +256,10 @@
   outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
+/* Opening the fan focuses the current pill; the gold ring would then stack on its
+   own border. The filled green pill already marks it, so drop the ring there (the
+   other pills keep theirs for keyboard users). */
+.section-jump-item[aria-current='true']:focus-visible { outline: none; }
 
 /* ---------- Reduced motion ---------- */
 /* No transform or opacity animation at all: the control and the fan simply

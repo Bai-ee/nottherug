@@ -54,7 +54,7 @@ export const PAW_WALK_WINDOWS: ReadonlyArray<PawWalkWindow> = [
   // One unbroken stretch: from 220px above the bottom edge of the hero video all the way down
   // to the contact sheet ("A little about you"), where the route finishes under
   // the form. Prints sit above every section background and below all content
-  // (see the paw-walk layering block in app/motion-tuning.css / globals.css), so
+  // (see the cityscape / paw-walk layering notes in app/globals.css), so
   // the trail always passes under text, images and fields.
   { from: '#hero-polaroid-frame', fromEdge: 'bottom', fromOffset: -220, to: '#home-contact-sheet-section' },
 ];

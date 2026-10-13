@@ -20,16 +20,16 @@
     left: 20px; top: 50%; right: auto; bottom: auto;
     transform: translateY(-50%);
     height: auto;
-    /* A soft paper capsule instead of the nav band. The site alternates paper
-       and deep-green sections, and an olive-on-olive rule is invisible over
-       the green ones — the capsule gives the prints one constant surface to
-       sit on at every scroll position. */
-    background: rgba(243, 236, 217, 0.55);
-    border: 1px solid rgba(79, 90, 61, 0.14);
+    /* A deep-green capsule with cream prints instead of the nav band. The site
+       alternates paper and deep-green sections; the capsule gives the prints one
+       constant surface to sit on at every scroll position, with a cream hairline
+       so it still reads over the green ones. */
+    background: var(--sage-dark);
+    border: 1px solid rgba(243, 236, 217, 0.22);
     border-radius: 999px;
     padding: 8px 4px;
     backdrop-filter: none;
-    border-bottom: 1px solid rgba(79, 90, 61, 0.14);
+    border-bottom: 1px solid rgba(243, 236, 217, 0.22);
     /* Under #main-nav (100) and the mobile menu (99) so the nav always wins;
        above ordinary page content. */
     z-index: 40;
@@ -53,21 +53,37 @@
   border-radius: 50%;
 }
 .section-rail-marker:focus-visible {
-  outline: 2px solid var(--olive);
+  /* gold: olive is invisible on the green capsule */
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
-/* The same print artwork as the scroll trail, inked as it is on the page.
+/* The same print artwork as the scroll trail, drawn cream on the green capsule.
+   The <img> is masked by its own artwork and filled with --paper; object-position
+   pushes the original olive pixels out of the box (mask-image per foot, below).
    Ahead of the reader the prints are faint, behind them half-set, and the
    current section's print is full strength and a step larger. */
 .section-rail-marker-paw {
   display: block;
   width: 15px; height: auto;
   opacity: 0.3;
+  background-color: var(--paper);
+  object-fit: none;
+  object-position: -999px 0;
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
-.section-rail-marker[data-foot='left'] .section-rail-marker-paw { transform: translateX(-3px) rotate(-10deg); }
-.section-rail-marker[data-foot='right'] .section-rail-marker-paw { transform: translateX(3px) rotate(10deg); }
+.section-rail-marker[data-foot='left'] .section-rail-marker-paw {
+  transform: translateX(-3px) rotate(-10deg);
+  -webkit-mask-image: url('/img/paw-rail-left.webp');
+  mask-image: url('/img/paw-rail-left.webp');
+}
+.section-rail-marker[data-foot='right'] .section-rail-marker-paw {
+  transform: translateX(3px) rotate(10deg);
+  -webkit-mask-image: url('/img/paw-rail-right.webp');
+  mask-image: url('/img/paw-rail-right.webp');
+}
 .section-rail-marker[data-passed='true'] .section-rail-marker-paw { opacity: 0.6; }
 .section-rail-marker:hover .section-rail-marker-paw,
 .section-rail-marker:focus-visible .section-rail-marker-paw { opacity: 0.85; }
