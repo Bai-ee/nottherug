@@ -1,0 +1,91 @@
+[
+ {
+  "run": 1,
+  "pageHeight": 9941,
+  "scrollStart": 6354,
+  "count": 2,
+  "tbtAll": 157.11599999999999,
+  "tbtLoad": 157.11599999999999,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 199,
+    "start": 63,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 199ms",
+     "(idle) :NaN:NaN 1ms"
+    ]
+   },
+   {
+    "dur": 58,
+    "start": 277,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 34ms",
+     "(anon) 34bug6qw18-k6.js:2:88925 2ms",
+     "querySelectorAll :NaN:NaN 1ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 2,
+  "pageHeight": 9941,
+  "scrollStart": 6357,
+  "count": 2,
+  "tbtAll": 153.98499999999999,
+  "tbtLoad": 153.98499999999999,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 196,
+    "start": 49,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 196ms",
+     "(idle) :NaN:NaN 1ms"
+    ]
+   },
+   {
+    "dur": 58,
+    "start": 283,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 31ms",
+     "querySelectorAll :NaN:NaN 2ms",
+     "(anon) 35lzrzzuthkpm.js:31:8848 1ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 3,
+  "pageHeight": 9941,
+  "scrollStart": 6350,
+  "count": 2,
+  "tbtAll": 146.53199999999998,
+  "tbtLoad": 146.53199999999998,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 186,
+    "start": 50,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 186ms"
+    ]
+   },
+   {
+    "dur": 60,
+    "start": 277,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 30ms",
+     "(program) :NaN:NaN 3ms",
+     "(anon) 35lzrzzuthkpm.js:31:8848 2ms"
+    ]
+   }
+  ]
+ }
+]

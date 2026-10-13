@@ -1,0 +1,90 @@
+[
+ {
+  "run": 1,
+  "pageHeight": 13248,
+  "scrollStart": 6433,
+  "count": 2,
+  "tbtAll": 120.176,
+  "tbtLoad": 120.176,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 167,
+    "start": 173,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 168ms"
+    ]
+   },
+   {
+    "dur": 53,
+    "start": 95,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 52ms",
+     "(idle) :NaN:NaN 1ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 2,
+  "pageHeight": 13248,
+  "scrollStart": 6308,
+  "count": 2,
+  "tbtAll": 114.16399999999999,
+  "tbtLoad": 114.16399999999999,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 161,
+    "start": 61,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 161ms",
+     "(idle) :NaN:NaN 0ms"
+    ]
+   },
+   {
+    "dur": 53,
+    "start": 250,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 28ms",
+     "es 34bug6qw18-k6.js:2:86233 1ms",
+     "querySelectorAll :NaN:NaN 1ms"
+    ]
+   }
+  ]
+ },
+ {
+  "run": 3,
+  "pageHeight": 13248,
+  "scrollStart": 6319,
+  "count": 2,
+  "tbtAll": 128.326,
+  "tbtLoad": 128.326,
+  "tbtScroll": 0,
+  "rows": [
+   {
+    "dur": 172,
+    "start": 62,
+    "phase": "load/idle",
+    "top": [
+     "(program) :NaN:NaN 172ms",
+     "(idle) :NaN:NaN 0ms"
+    ]
+   },
+   {
+    "dur": 56,
+    "start": 258,
+    "phase": "load/idle",
+    "top": [
+     "H turbopack-2_v4q6it0cbgn.js:1:7148 33ms",
+     "(program) :NaN:NaN 2ms",
+     "(anon) 34bug6qw18-k6.js:2:88925 1ms"
+    ]
+   }
+  ]
+ }
+]

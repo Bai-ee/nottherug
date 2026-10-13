@@ -1,0 +1,22 @@
+const { chromium } = require('/Users/bballi/Documents/Repos/NotTheRug-motion/node_modules/playwright');
+(async()=>{const b=await chromium.launch();
+for(const [vn,vp] of [['390',{width:390,height:844}],['1440',{width:1440,height:900}]]){
+ const ctx=await b.newContext({viewport:vp,reducedMotion:'reduce'});const p=await ctx.newPage();
+ const errs=[];p.on('console',m=>{if(['error','warning'].includes(m.type()))errs.push(m.type()+': '+m.text().slice(0,150))});p.on('pageerror',e=>errs.push('pageerror '+e));
+ const vids=[];p.on('request',r=>{if(/\.(mp4|webm)/.test(r.url()))vids.push(r.url())});
+ await p.addInitScript(()=>localStorage.setItem('ntr:welcome-walk-modal:v1',new Date().toISOString()));
+ await p.goto(process.env.BASEURL+'/',{waitUntil:'load'});
+ const early=await p.evaluate(()=>document.documentElement.dataset.homeIntro??'none');
+ await p.waitForTimeout(4000);
+ const snap=()=>p.evaluate(()=>{const v=document.querySelector('#hero-bg-video');return {intro:document.documentElement.dataset.homeIntro??'none',paw:document.querySelector('#home-paw-walk-layer')?.dataset.pawWalkState,
+  pawsig:[...document.querySelectorAll('.home-paw-step')].map(e=>e.style.display+e.style.left+e.style.top).join('').length,
+  video:v?{paused:v.paused,src:!!v.currentSrc,sources:v.querySelectorAll('source').length,poster:!!v.poster,rs:v.readyState,t:v.currentTime}:null,
+  tf:[...document.querySelectorAll('[data-city-parallax]')].map(e=>e.style.transform||'-').join('|'),y:scrollY}});
+ const a=await snap();
+ await p.screenshot({path:`rm-${vn}-top.png`});
+ const H=await p.evaluate(()=>document.documentElement.scrollHeight);
+ for(let y=0;y<H;y+=600){await p.evaluate(y=>scrollTo(0,y),y);await p.waitForTimeout(150)}
+ await p.evaluate(()=>scrollTo(0,3500));await p.waitForTimeout(2500);const c=await snap();
+ await p.screenshot({path:`rm-${vn}-mid.png`});
+ console.log(vn,JSON.stringify({early,a,c,vidReq:vids.length,errs}));await ctx.close();}
+await b.close()})();

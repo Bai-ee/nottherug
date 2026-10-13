@@ -1,0 +1,10 @@
+
+> nextapp@0.1.0 test:e2e
+> playwright test
+
+
+Running 230 tests using 7 workers
+
+
+  22 skipped
+  208 passed (36.6s)

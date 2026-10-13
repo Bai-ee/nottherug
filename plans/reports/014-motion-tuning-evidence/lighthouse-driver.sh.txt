@@ -1,0 +1,13 @@
+#!/bin/zsh
+cd /private/tmp/claude-501/-Users-bballi-Documents-Repos-NotTheRug/9c4cf4ec-7adb-4035-a683-9f8a063ef041/scratchpad/lh
+run(){ # name url preset
+  P=""; [ "$3" = desktop ] && P="--preset=desktop"
+  npx -y lighthouse@12.8.2 $2 $P --chrome-flags="--headless=new --no-sandbox" --output=json --output-path=/private/tmp/claude-501/-Users-bballi-Documents-Repos-NotTheRug/9c4cf4ec-7adb-4035-a683-9f8a063ef041/scratchpad/lh/$1.json --quiet >/dev/null 2>/private/tmp/claude-501/-Users-bballi-Documents-Repos-NotTheRug/9c4cf4ec-7adb-4035-a683-9f8a063ef041/scratchpad/lh/$1.err
+}
+for i in 1 2 3; do
+  for f in mobile desktop; do
+    run px-base-$f-$i http://localhost:3129/ $f
+    run px-br-$f-$i http://localhost:3119/ $f
+  done
+done
+echo ALLDONE > /private/tmp/claude-501/-Users-bballi-Documents-Repos-NotTheRug/9c4cf4ec-7adb-4035-a683-9f8a063ef041/scratchpad/lh/DONE

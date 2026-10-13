@@ -1,0 +1,178 @@
+{
+ "base-mobile": [
+  {
+   "perf": 73,
+   "lcp": 7967,
+   "fcp": 1237,
+   "tbt": 109,
+   "cls": 0,
+   "si": 4018,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 2979,
+   "vkb": 1461,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-visual-video-shell > figure#hero-polaroid-frame"
+  },
+  {
+   "perf": 93,
+   "lcp": 3035,
+   "fcp": 1235,
+   "tbt": 0,
+   "cls": 0,
+   "si": 3275,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 2979,
+   "vkb": 1461,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-visual-video-shell > figure#hero-polaroid-frame"
+  },
+  {
+   "perf": 94,
+   "lcp": 2921,
+   "fcp": 1236,
+   "tbt": 0,
+   "cls": 0,
+   "si": 3681,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 2979,
+   "vkb": 1461,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-visual-video-shell > figure#hero-polaroid-frame"
+  }
+ ],
+ "base-desktop": [
+  {
+   "perf": 96,
+   "lcp": 1319,
+   "fcp": 466,
+   "tbt": 0,
+   "cls": 0,
+   "si": 1152,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 5105,
+   "vkb": 3393,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art"
+  },
+  {
+   "perf": 96,
+   "lcp": 1317,
+   "fcp": 465,
+   "tbt": 0,
+   "cls": 0,
+   "si": 1295,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 5169,
+   "vkb": 3456,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art"
+  },
+  {
+   "perf": 96,
+   "lcp": 1330,
+   "fcp": 465,
+   "tbt": 0,
+   "cls": 0,
+   "si": 1150,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 5105,
+   "vkb": 3393,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art"
+  }
+ ],
+ "br-mobile": [
+  {
+   "perf": 87,
+   "lcp": 3185,
+   "fcp": 1235,
+   "tbt": 274,
+   "cls": 0,
+   "si": 3315,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 3071,
+   "vkb": 1461,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-visual-video-shell > figure#hero-polaroid-frame"
+  },
+  {
+   "perf": 94,
+   "lcp": 2917,
+   "fcp": 1233,
+   "tbt": 0,
+   "cls": 0,
+   "si": 3484,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 3071,
+   "vkb": 1461,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-visual-video-shell > figure#hero-polaroid-frame"
+  },
+  {
+   "perf": 94,
+   "lcp": 3035,
+   "fcp": 1235,
+   "tbt": 0,
+   "cls": 0,
+   "si": 2898,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 3071,
+   "vkb": 1461,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-visual-video-shell > figure#hero-polaroid-frame"
+  }
+ ],
+ "br-desktop": [
+  {
+   "perf": 96,
+   "lcp": 1329,
+   "fcp": 465,
+   "tbt": 0,
+   "cls": 0,
+   "si": 1237,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 5104,
+   "vkb": 3393,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art"
+  },
+  {
+   "perf": 96,
+   "lcp": 1330,
+   "fcp": 465,
+   "tbt": 0,
+   "cls": 0,
+   "si": 1222,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 5104,
+   "vkb": 3393,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art"
+  },
+  {
+   "perf": 96,
+   "lcp": 1329,
+   "fcp": 465,
+   "tbt": 0,
+   "cls": 0,
+   "si": 1220,
+   "a11y": 100,
+   "bp": 100,
+   "seo": 69,
+   "kb": 5104,
+   "vkb": 3393,
+   "lcpel": "main#home-main > section#home-hero-section > div#hero-cityscape-frame > div#hero-cityscape-art"
+  }
+ ]
+}

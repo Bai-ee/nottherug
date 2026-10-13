@@ -1,0 +1,14 @@
+const { chromium } = require('/Users/bballi/Documents/Repos/NotTheRug-motion/node_modules/playwright');
+(async()=>{
+ const base=process.argv[2]; const out={};
+ const b=await chromium.launch();
+ for (const [vn,vp] of [['1440',{width:1440,height:900}],['390',{width:390,height:844}]]) for (const r of ['/','/book','/contact']) {
+  const ctx=await b.newContext({viewport:vp}); const p=await ctx.newPage(); const errs=[],warns=[],pe=[];
+  p.on('console',m=>{const t=m.type(); if(t==='error')errs.push(m.text().slice(0,200)); if(t==='warning')warns.push(m.text().slice(0,200));});
+  p.on('pageerror',e=>pe.push(String(e).slice(0,200)));
+  await p.goto(base+r,{waitUntil:'load'}); await p.waitForTimeout(5000);
+  for(let y=0;y<4;y++){await p.mouse.wheel(0,900);await p.waitForTimeout(300);}
+  const all=[...errs,...warns,...pe]; out[vn+' '+r]={errors:errs.length,warnings:warns.length,pageerrors:pe.length,hydration:all.filter(s=>/hydrat/i.test(s)).length,sample:all.slice(0,3)};
+  await ctx.close();}
+ await b.close(); console.log(JSON.stringify(out,null,1));
+})();

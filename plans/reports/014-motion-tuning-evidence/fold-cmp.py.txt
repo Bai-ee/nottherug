@@ -1,0 +1,18 @@
+import json,sys,glob,os
+from PIL import Image, ImageChops
+a,b=sys.argv[1],sys.argv[2]
+for jf in sorted(glob.glob(f'{a}/*.json')):
+    n=os.path.basename(jf)[:-5]
+    A=json.load(open(jf)); B=json.load(open(f'{b}/{n}.json'))
+    diffs=[]
+    if len(A['rows'])!=len(B['rows']): diffs.append(('COUNT',len(A['rows']),len(B['rows'])))
+    else:
+        for ra,rb in zip(A['rows'],B['rows']):
+            if ra[0]!=rb[0]: diffs.append(('PATH',ra[0],rb[0])); continue
+            for p in sorted(set(ra[1])|set(rb[1])):
+                if ra[1].get(p)!=rb[1].get(p): diffs.append((ra[0],p,ra[1].get(p),rb[1].get(p)))
+    ia=Image.open(f'{a}/{n}.png').convert('L'); ib=Image.open(f'{b}/{n}.png').convert('L')
+    if ia.size!=ib.size: print(n,'SIZE DIFF',ia.size,ib.size,'style diffs',len(diffs)); continue
+    d=ImageChops.difference(ia,ib); h=d.histogram(); tot=sum(h[1:]); big=sum(h[25:])
+    print(f'{n:22s} h {A["h"]}=={B["h"]} style diffs {len(diffs):3d} | px diff {tot} ({100*tot/(ia.size[0]*ia.size[1]):.4f}%) >24luma {big}')
+    for x in diffs[:6]: print('      ',str(x)[:240])
