@@ -313,8 +313,8 @@ function ServiceSlide({
   );
 }
 
-/** A leading price ("$33", "$100–110") and the terms after it. */
-const RATE_PATTERN = /^(\$[\d.,]+(?:[–-]\d+)?)\s+(.+)$/;
+/** A leading price ("$33", "$100–110", "$100–$110") and the terms after it. */
+const RATE_PATTERN = /^(\$[\d.,]+(?:[–-]\$?[\d.,]+)?)\s+(.+)$/;
 
 /**
  * One rate line with the price as the first read: the amount set large in the
