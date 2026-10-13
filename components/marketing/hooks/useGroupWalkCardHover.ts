@@ -46,32 +46,41 @@ const CARD = {
 };
 
 /**
- * Walker figure — carousel "top" layer, inverted. The carousel had it resting
- * at zero and stepping left + up in scale on hover; here the stepped-out
- * position IS the rest state and hovering walks it back, so the figure settles
- * toward the copy instead of away from it. Same two values, swapped ends.
+ * Walker figure rest pose. The carousel's "top" layer rested at zero and stepped
+ * left + up in scale on hover; here the stepped-out pose is the rest state, which
+ * is what the scroll drift (WALKER_SCROLL below) is centred on. The figure no
+ * longer reacts to hover at all.
  */
 const WALKER = {
   restXPercent: -12.6,
   restScale: 2.4425 / 2.25,
-  hoverXPercent: 0,
-  hoverScale: 1,
-  duration: 0.75,
-  ease: EASE_IN,
-  resetDuration: 0.75,
-  /* The figure is the largest thing that moves, so the full delta made it the
-     loudest part of the hover. It travels at a fraction of what the other
-     layers do — a drift toward the copy, not a step. */
-  intensity: 0.4,
 };
 
-/** Skyline — carousel "bottom" layer: a 10s drift, so it reads as depth, not motion. */
-const BACKDROP = {
-  xPercentDelta: -11.3,
-  duration: 10,
-  /* Linear-ish: a 10s drift should not accelerate, it should creep. */
-  ease: 'power1.out',
-  resetDuration: 0.75,
+/**
+ * Walker scroll drift. The figure no longer reacts to hover: as the card scrolls
+ * through the viewport it slides left to right (and back as you scroll up),
+ * scrubbed to the scroll position. `travel` is the total horizontal travel as a
+ * fraction of the art panel's width, centred on the figure's rest position, so
+ * it starts `travel / 2` left of rest and ends `travel / 2` right of it.
+ */
+const WALKER_SCROLL = {
+  travel: 0.5,
+  /* Seconds the figure takes to catch up with the scrollbar: smooths wheel
+     steps without making it float after you stop. */
+  scrub: 0.8,
+};
+
+/**
+ * Skyline scroll drift: the walker's counter-move. It slides the opposite way
+ * (right to left while the figure goes left to right) over a shorter distance,
+ * so the two layers separate like foreground and background. `travel` is a
+ * fraction of the art panel's width. The skyline <img> is overscanned 12.5% of
+ * the panel on each side (see #home-group-walk-feature-art-backdrop), so
+ * travel / 2 must stay under 0.125 or the panel edge shows.
+ */
+const BACKDROP_SCROLL = {
+  travel: 0.2,
+  scrub: 1.2,
 };
 
 const PRICE = { hoverScale: 1.055, inDuration: 0.3, outDuration: 0.25 };
@@ -205,15 +214,50 @@ export function useGroupWalkCardHover() {
       .then(({ gsap }) => {
         if (cancelled) return;
         gsapRef.current = gsap;
-        // The backdrop rests at zero; the walker rests stepped out (see WALKER
+        // The skyline rests at zero; the walker rests stepped out (see WALKER
         // above). Placement is still CSS's job on the figure wrapper — this
         // hook owns the image's own transform, so the two never compose.
         mmRef.current = gsap.matchMedia();
+        // Scroll drift (see WALKER_SCROLL / BACKDROP_SCROLL), scrubbed to the card's
+        // pass through the viewport. Shared by every layout: only the walker's rest
+        // pose differs between them (set by the caller). Only transform is
+        // animated; x is in px because the figure's own xPercent is relative to
+        // its width, not the panel's. Created inside a matchMedia callback so it is
+        // reverted when the layout changes.
+        const addScrollDrift = () => {
+          const panel = walker?.closest<HTMLElement>('#home-group-walk-feature-art-panel');
+          if (!walker || !backdrop || !panel) return;
+          const walkerTravel = () => panel.clientWidth * WALKER_SCROLL.travel;
+          const backdropTravel = () => panel.clientWidth * BACKDROP_SCROLL.travel;
+          // Triggered on the art panel, not the card: stacked on a phone the art is
+          // only the card's top strip, so a card-length scroll range would leave the
+          // figure mid-travel while it is on screen. On desktop the panel spans the
+          // whole card, so the range is the same.
+          const trigger = (scrub: number) => ({
+            trigger: panel,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub,
+            invalidateOnRefresh: true,
+          });
+          gsap.fromTo(
+            walker,
+            { x: () => -walkerTravel() / 2 },
+            { x: () => walkerTravel() / 2, ease: 'none', scrollTrigger: trigger(WALKER_SCROLL.scrub) }
+          );
+          gsap.fromTo(
+            backdrop,
+            { x: () => backdropTravel() / 2 },
+            { x: () => -backdropTravel() / 2, ease: 'none', scrollTrigger: trigger(BACKDROP_SCROLL.scrub) }
+          );
+        };
         mmRef.current.add('(min-width: 768px)', () => {
           gsap.set(walker, { xPercent: WALKER.restXPercent, scale: WALKER.restScale });
+          addScrollDrift();
         });
         mmRef.current.add(STACKED_CARD, () => {
           gsap.set(walker, { xPercent: 0, scale: 1 });
+          addScrollDrift();
         });
         gsap.set(backdrop, { xPercent: 0 });
         setPawsStatic(gsap, pawRefs.current);
@@ -227,7 +271,7 @@ export function useGroupWalkCardHover() {
       mmRef.current?.revert();
       const gsap = gsapRef.current;
       if (!gsap) return;
-      gsap.killTweensOf([card, backdrop, walker, price, cta]);
+      gsap.killTweensOf([card, price, cta]);
     };
   }, []);
 
@@ -235,24 +279,13 @@ export function useGroupWalkCardHover() {
     const gsap = gsapRef.current;
     if (!gsap || isStacked()) return;
 
-    gsap.killTweensOf([cardRef.current, backdropRef.current, walkerRef.current, priceRef.current, ctaRef.current]);
+    gsap.killTweensOf([cardRef.current, priceRef.current, ctaRef.current]);
 
     gsap.to(cardRef.current, {
       scale: toward(1, CARD.hoverScale),
       y: toward(0, CARD.hoverY),
       duration: CARD.duration,
       ease: CARD.ease,
-    });
-    gsap.to(walkerRef.current, {
-      xPercent: toward(WALKER.restXPercent, WALKER.hoverXPercent, WALKER.intensity),
-      scale: toward(WALKER.restScale, WALKER.hoverScale, WALKER.intensity),
-      duration: WALKER.duration,
-      ease: WALKER.ease,
-    });
-    gsap.to(backdropRef.current, {
-      xPercent: toward(0, BACKDROP.xPercentDelta),
-      duration: BACKDROP.duration,
-      ease: BACKDROP.ease,
     });
     gsap.to(priceRef.current, {
       scale: toward(1, PRICE.hoverScale),
@@ -270,23 +303,12 @@ export function useGroupWalkCardHover() {
     const gsap = gsapRef.current;
     if (!gsap || isStacked()) return;
 
-    gsap.killTweensOf([cardRef.current, backdropRef.current, walkerRef.current, priceRef.current, ctaRef.current]);
+    gsap.killTweensOf([cardRef.current, priceRef.current, ctaRef.current]);
 
     gsap.to(cardRef.current, {
       scale: 1,
       y: 0,
       duration: CARD.resetDuration,
-      ease: EASE_OUT,
-    });
-    gsap.to(walkerRef.current, {
-      xPercent: WALKER.restXPercent,
-      scale: WALKER.restScale,
-      duration: WALKER.resetDuration,
-      ease: EASE_OUT,
-    });
-    gsap.to(backdropRef.current, {
-      xPercent: 0,
-      duration: BACKDROP.resetDuration,
       ease: EASE_OUT,
     });
     gsap.to(priceRef.current, { scale: 1, duration: PRICE.outDuration, ease: EASE_OUT });
