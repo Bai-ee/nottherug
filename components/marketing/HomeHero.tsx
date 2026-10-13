@@ -199,7 +199,7 @@ export default function HomeHero() {
               (globals.css) to set the same headline on two centred lines. */}
           <em>Your peace</em> <br /><em>of mind.</em> <br />Their favorite <br />part of the day.
         </h1>
-        <p className="hero-p" id="hero-intro-copy">Trusted by Williamsburg dog owners since 2011. Experienced walkers, small groups, and personal attention, with reliable care you can count on and an update after every visit.</p>
+        <p className="hero-p" id="hero-intro-copy">Trusted by Williamsburg dog owners since 2011.<span id="hero-intro-copy-detail"> Experienced walkers, small groups, and personal attention, with reliable care you can count on and an update after every visit.</span></p>
         {/* One pair at every width: Book a Meet & Greet is the button and
             View Services the secondary link, in that order. Handlers are
             shared above. */}

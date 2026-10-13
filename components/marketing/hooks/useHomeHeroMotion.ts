@@ -129,20 +129,25 @@ export function useHomeHeroMotion(heroRef: RefObject<HTMLElement | null>) {
               splitIntoWords(heroH1);
               gsap.set(heroH1.querySelectorAll('.word-inner'), { y: '110%' });
             }
-            gsap.set('.hero-visual', { clipPath: 'inset(0 100% 0 0)' });
+            // Settle, not wipe: a clip-path always crops to the wrapper's box, which
+            // cut the polaroid's drop shadow off until it was removed. A slight
+            // scale + drop + fade keeps the shadow whole and lets it travel with
+            // the frame, as if the polaroid floats down onto the page.
+            gsap.set('.hero-visual', { autoAlpha: 0, scale: 1.05, y: -12, transformOrigin: '50% 40%' });
 
             const words = hero.querySelectorAll('.hero-h1 .word-inner');
             if (words.length) {
               gsap
                 .timeline({ defaults: { ease: 'power4.out' } })
                 .to('.hero-visual', {
-                  clipPath: 'inset(0 0% 0 0)',
-                  duration: 0.8,
-                  ease: 'power4.inOut',
-                  // A finished inset(0) still clips to the element's own box, so
-                  // the polaroid badge that hangs off its left edge came back
-                  // cut. Drop the property once the wipe is done.
-                  onComplete: () => gsap.set('.hero-visual', { clipPath: 'none' }),
+                  autoAlpha: 1,
+                  scale: 1,
+                  y: 0,
+                  duration: 0.9,
+                  ease: 'power3.out',
+                  // Hand the wrapper back to CSS: no leftover transform means no
+                  // stacking context or containing block around the polaroid.
+                  onComplete: () => gsap.set('.hero-visual', { clearProps: 'transform,opacity,visibility,transformOrigin' }),
                 }, 0)
                 .to('.hero-eyebrow', { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1)
                 .to(words, { y: '0%', duration: 0.6, stagger: 0.04 }, 0.1)

@@ -7,6 +7,7 @@ import {
   Courier_Prime,
 } from "next/font/google";
 import "./globals.css";
+import "./motion-tuning.css";
 import { SITE_URL } from "@/lib/content/site";
 
 const fraunces = Fraunces({
