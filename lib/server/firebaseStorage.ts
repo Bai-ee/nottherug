@@ -91,10 +91,11 @@ export async function storageUpload(
 }
 
 /**
- * Upload a buffer as an internal artifact: the object is stored, then its
- * auto-issued download token is immediately cleared so it is reachable only
- * through an authenticated storageDownload() call, never a permanent public
- * token URL. Does not revoke any token already issued by storageUpload().
+ * Upload a buffer as an internal artifact via the Google Cloud Storage JSON
+ * API. Unlike the Firebase v0 endpoint, it never mints a firebaseStorageDownloadTokens
+ * value, so the object is reachable only through an authenticated
+ * storageDownload() call (the Firebase v0 endpoint cannot clear that token —
+ * it rejects the PATCH with 400). Does not revoke tokens issued by storageUpload().
  */
 export async function storageUploadPrivate(
   storagePath: string,
@@ -111,8 +112,9 @@ export async function storageUploadPrivate(
       throw err;
     }
 
-    const nameParam = encodeURIComponent(storagePath);
-    const uploadURL = `${FS_BASE}?name=${nameParam}&uploadType=media`;
+    const uploadURL =
+      `https://storage.googleapis.com/upload/storage/v1/b/${encodeURIComponent(BUCKET)}/o` +
+      `?uploadType=media&name=${encodeURIComponent(storagePath)}`;
 
     const uploadRes = await fetch(uploadURL, {
       method: 'POST',
@@ -122,39 +124,32 @@ export async function storageUploadPrivate(
       },
       body: new Uint8Array(buffer),
       signal,
-  });
+    });
 
-  if (!uploadRes.ok) {
-    console.error('[storage] private upload failed, status:', uploadRes.status, 'path:', storagePath);
-    throw new Error(`Private storage upload failed (${uploadRes.status})`);
-  }
+    if (!uploadRes.ok) {
+      console.error('[storage] private upload failed, status:', uploadRes.status, 'path:', storagePath);
+      throw new Error(`Private storage upload failed (${uploadRes.status})`);
+    }
 
-  const clearRes = await fetch(`${FS_BASE}/${nameParam}`, {
-    method: 'PATCH',
-    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ metadata: { firebaseStorageDownloadTokens: '' } }),
-    signal,
-  });
-
-  if (!clearRes.ok) {
-    console.error('[storage] failed to clear public token, status:', clearRes.status, 'path:', storagePath);
-    // The object is already written with its auto-issued token still live —
-    // Storage evaluates a token-bearing read independently of security rules,
-    // so leaving it in place means anyone holding that token can read it.
-    // Best-effort delete it rather than leaving a publicly-readable object
-    // behind with no remediation; either way, surface exactly what happened.
-    const cleanup = await storageDelete(storagePath).then(
-      () => 'removed',
-      (deleteErr) => {
-        console.error('[storage] cleanup delete also failed, path:', storagePath, deleteErr instanceof Error ? deleteErr.message : deleteErr);
-        return 'FAILED to remove';
-      },
-    );
-    throw new Error(
-      `Failed to secure private upload for "${storagePath}" (${clearRes.status}); cleanup ${cleanup} the object` +
-      (cleanup === 'removed' ? '.' : ' — it may still be readable via its auto-issued token.'),
-    );
-  }
+    // Defensive: the JSON API should never attach a Firebase download token.
+    // If one is present, privacy would be bypassed — remove the object and fail.
+    const uploaded = (await uploadRes.json().catch(() => ({}))) as {
+      metadata?: { firebaseStorageDownloadTokens?: string };
+    };
+    if (uploaded?.metadata?.firebaseStorageDownloadTokens) {
+      console.error('[storage] private upload carries a public download token, path:', storagePath);
+      const cleanup = await storageDelete(storagePath).then(
+        () => 'removed',
+        (deleteErr) => {
+          console.error('[storage] cleanup delete also failed, path:', storagePath, deleteErr instanceof Error ? deleteErr.message : deleteErr);
+          return 'FAILED to remove';
+        },
+      );
+      throw new Error(
+        `Private upload for "${storagePath}" carried a public download token; cleanup ${cleanup} the object` +
+        (cleanup === 'removed' ? '.' : ' — it may still be readable via that token.'),
+      );
+    }
   });
 }
 
