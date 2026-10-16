@@ -49,7 +49,7 @@ const FOOTER_RATES: Array<{ href: string; label: string; id: string }> = [
 // company entry that states an intent rather than a reading interest — so it
 // is also the only one carrying a cta id. The rest stay untracked on purpose.
 const FOOTER_COMPANY: Array<{ href: string; label: string; id?: string; cta?: CtaId }> = [
-  { href: '/about', label: 'The Team' },
+  { href: '/#home-team-section', label: 'The Team' },
   { href: '/#home-closing-trust-section', label: 'Safety & Trust' },
   { href: '/#home-featured-reviews-section', label: 'Reviews' },
   { href: '/#home-instagram-section', label: 'Instagram' },
