@@ -166,6 +166,20 @@ export const PRIVATE_ROUTE_SOURCES = [
   '/admin/not-the-rug/:path*',
 ];
 
+// Permanent (308) redirects from the retired WordPress site's URLs, so search
+// equity and old links carry over at the domain cutover. Each target is the
+// closest real content; legacy paths with no honest match (/gallery, /blog and
+// the 2019 blog posts) are deliberately NOT redirected to the homepage.
+// tests/unit/legacy-redirects.test.ts pins this list and checks every anchor
+// id exists in source.
+export const LEGACY_REDIRECTS = [
+  { source: '/about-us', destination: '/about', permanent: true },
+  { source: '/testimonials', destination: '/reviews', permanent: true },
+  { source: '/our-staff', destination: '/#home-team-section', permanent: true },
+  { source: '/faqs', destination: '/safety', permanent: true },
+  { source: '/services', destination: '/#home-personalized-care-section', permanent: true },
+];
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
@@ -173,13 +187,12 @@ const nextConfig: NextConfig = {
 
   // The standalone /services and /how-it-works pages are gone — rates live in
   // the home page's #home-personalized-care-section panel and the process steps
-  // in #home-how-it-works-section. Old links and bookmarks land there.
-  // Not permanent: a 308 would be cached by browsers indefinitely, and this
-  // consolidation is still settling.
+  // in #home-how-it-works-block. Those two stay temporary (not permanent): a 308
+  // is cached by browsers indefinitely and this consolidation is still settling.
   async redirects() {
     return [
-      { source: '/services', destination: '/#home-personalized-care-section', permanent: false },
       { source: '/how-it-works', destination: '/#home-how-it-works-block', permanent: false },
+      ...LEGACY_REDIRECTS,
     ];
   },
 
