@@ -302,6 +302,16 @@ export default function BookingForm({
     setForm((prev) => (prev.email ? prev : { ...prev, email: seeded }));
   }, [initialValues?.email]);
 
+  // The welcome modal looks up the name the visitor already gave Calendly and
+  // passes it in after mount. Fill it only while the field is still empty;
+  // adjusted during render (React's pattern for reacting to a prop change).
+  const seededOwnerName = initialValues?.ownerName ?? '';
+  const [ownerNameSeedSeen, setOwnerNameSeedSeen] = useState(seededOwnerName);
+  if (seededOwnerName !== ownerNameSeedSeen) {
+    setOwnerNameSeedSeen(seededOwnerName);
+    if (seededOwnerName && !form.ownerName) setForm({ ...form, ownerName: seededOwnerName });
+  }
+
   // Fires once per mount, on the first genuine field interaction — never on
   // mount and never on navigation, so a visitor who only looks at the form is
   // not counted as having started it. Only `source` (a category, never a

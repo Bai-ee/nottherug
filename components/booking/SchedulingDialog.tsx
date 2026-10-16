@@ -20,7 +20,7 @@ type Props = {
    * this callback, so a looser check here would let any page post a fake
    * booking into it.
    */
-  onBooked?: () => void;
+  onBooked?: (booking: CalendlyBooking) => void;
   /** A changed value starts a NEW attempt: the completion dedupe resets. */
   attemptId?: string;
   /**
@@ -55,11 +55,20 @@ function safeTrack(name: Parameters<typeof track>[0], payload?: Parameters<typeo
  * none of it is forwarded anywhere — the event carries only `source`.
  * Exported, free of component state, so it can be unit-tested.
  */
+/** What the welcome modal may learn from a verified booking: only the invitee's API reference. */
+export type CalendlyBooking = { inviteeUri: string | null };
+
+/** Calendly's event_scheduled payload carries `invitee.uri` (an API URL, no personal data). */
+function readInviteeUri(data: unknown): string | null {
+  const uri = (data as { payload?: { invitee?: { uri?: unknown } } } | null)?.payload?.invitee?.uri;
+  return typeof uri === 'string' ? uri : null;
+}
+
 export function createAppointmentCompletionHandler(
   source: string,
   getIframeWindow: () => Window | null,
   hasFired: { current: boolean },
-  onBooked?: () => void,
+  onBooked?: (booking: CalendlyBooking) => void,
 ) {
   return function handleCalendlyMessage(event: MessageEvent) {
     if (hasFired.current) return;
@@ -68,7 +77,7 @@ export function createAppointmentCompletionHandler(
     safeTrack('appointment_completed', { source });
     if (!onBooked) return;
     try {
-      onBooked();
+      onBooked({ inviteeUri: readInviteeUri(event.data) });
     } catch (err) {
       // A caller's callback must never take this listener down with it.
       console.warn('[booking] onBooked callback failed', err);

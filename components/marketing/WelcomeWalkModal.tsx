@@ -13,7 +13,7 @@ import {
   newOnboardingAttemptId,
   writeOnboardingHandoff,
 } from '@/lib/booking/onboarding-handoff';
-import SchedulingDialog from '@/components/booking/SchedulingDialog';
+import SchedulingDialog, { type CalendlyBooking } from '@/components/booking/SchedulingDialog';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { captureLeadEmail } from '@/lib/leads/captureClient';
@@ -161,6 +161,8 @@ export default function WelcomeWalkModal({
     openOnMount?.straightToScheduler && calendlyUrl ? 'scheduler' : 'gate'
   );
   const [email, setEmail] = useState(openOnMount?.email ?? '');
+  /** Name the visitor gave Calendly, once looked up; seeds the questionnaire. */
+  const [inviteeName, setInviteeName] = useState('');
   const [fieldError, setFieldError] = useState('');
   const [attemptId, setAttemptId] = useState<string | null>(null);
 
@@ -500,7 +502,22 @@ export default function WelcomeWalkModal({
    * function every render would detach/reattach the `window.addEventListener('message', ...)`
    * listener on every render of this component, not just on real state changes.
    */
-  const handleBooked = useCallback(() => {
+  const handleBooked = useCallback((booking?: CalendlyBooking) => {
+    // Calendly already asked for their name: look it up so the questionnaire
+    // does not ask again. Best effort; the field stays empty on any failure.
+    const inviteeUri = booking?.inviteeUri;
+    if (inviteeUri) {
+      fetch('/api/booking/invitee', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uri: inviteeUri, email: email.trim() }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data: { name?: unknown } | null) => {
+          if (typeof data?.name === 'string' && data.name) setInviteeName(data.name);
+        })
+        .catch(() => {});
+    }
     if (attemptId) {
       const handoff = createOnboardingHandoff({
         email: email.trim(),
@@ -1233,7 +1250,7 @@ export default function WelcomeWalkModal({
                             source={MODAL_SOURCE}
                             layout="steps"
                             bookedDetailsMode
-                            initialValues={{ email: email.trim() }}
+                            initialValues={{ email: email.trim(), ownerName: inviteeName }}
                             onSubmitted={() => setView('done')}
                           />
                         </>

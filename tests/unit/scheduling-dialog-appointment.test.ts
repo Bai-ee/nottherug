@@ -171,4 +171,20 @@ describe('createAppointmentCompletionHandler', () => {
     expect(JSON.stringify(payload)).not.toContain('Jane');
     expect(JSON.stringify(payload)).not.toContain('example.test');
   });
+  it('hands onBooked the invitee API reference, and nothing else', async () => {
+    const { createAppointmentCompletionHandler } = await import('@/components/booking/SchedulingDialog');
+    const iframeWindow = calendlyWindow();
+    const onBooked = vi.fn();
+    const handle = createAppointmentCompletionHandler('welcome-modal', () => iframeWindow, { current: false }, onBooked);
+    const uri = 'https://api.calendly.com/scheduled_events/abc/invitees/def';
+
+    handle(
+      fakeMessageEvent({
+        source: iframeWindow,
+        data: { event: 'calendly.event_scheduled', payload: { invitee: { uri }, event: { uri: 'x' } } },
+      }),
+    );
+
+    expect(onBooked).toHaveBeenCalledWith({ inviteeUri: uri });
+  });
 });

@@ -100,14 +100,14 @@ export default function WalkWithUsPageContent({
           background: rgba(243, 236, 217, 0.08);
           color: var(--cream);
         }
-        /* Outlined, not filled (overrides the sheet header's terracotta
-           fill), so the card stamps read as labels rather than buttons. */
+        /* Outlined in the card's own hairline, not filled (overrides the
+           sheet header's terracotta fill), so the stamps read as labels. */
         #walk-with-us-terms-row .walk-with-us-term .stamp-label {
           margin-bottom: 10px;
           justify-self: start;
           align-self: start;
           background: transparent;
-          border-color: var(--terracotta);
+          border-color: rgba(243, 236, 217, 0.35);
           color: var(--cream);
         }
         #walk-with-us-terms-row .walk-with-us-term h2 {

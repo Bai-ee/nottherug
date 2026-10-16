@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import ApplicationThankYouDialog from './ApplicationThankYouDialog';
 import {
   AI_NOTICE_TEXT,
   BENCH_FIELD_LIMITS,
@@ -148,6 +149,7 @@ export default function WalkerApplicationForm({
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle');
   const [serverError, setServerError] = useState('');
   const [resumeNote, setResumeNote] = useState('');
+  const [thankYouOpen, setThankYouOpen] = useState(false);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [trackH, setTrackH] = useState<number | undefined>(undefined);
   const lastStep = fullLayout || step === STEPS.length - 1;
@@ -263,6 +265,7 @@ export default function WalkerApplicationForm({
         }
       }
       setStatus('done');
+      setThankYouOpen(true);
     } catch {
       setStatus('error');
       setServerError('Network error. Please try again.');
@@ -388,6 +391,7 @@ export default function WalkerApplicationForm({
         <h3 style={{ fontFamily: 'var(--font-display)', margin: '12px 0 8px' }}>You&apos;re on our list.</h3>
         <p style={{ color: 'var(--mid-gray)', margin: 0 }}>{SUCCESS_MESSAGE}</p>
         {resumeNote ? <p className="form-note form-alert">{resumeNote}</p> : null}
+        <ApplicationThankYouDialog open={thankYouOpen} onClose={() => setThankYouOpen(false)} resumeNote={resumeNote} />
       </div>
     );
   }

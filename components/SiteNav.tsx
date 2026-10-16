@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { GOOGLE_WRITE_REVIEW_URL, INSTAGRAM_URL } from '@/lib/content/site';
 import { track } from '@/lib/analytics/track';
@@ -97,6 +97,39 @@ export default function SiteNav() {
   // so the button keeps its place and colour but does nothing.
   const bookDisabled = pathname?.startsWith('/admin') ?? false;
 
+  /**
+   * The wordmark on home: inert while the visitor is still above the fold
+   * (they are already at the top of home, so there is nowhere to go), then a
+   * back-to-top control once they scroll past it. Off home it is a plain
+   * link to the home page.
+   */
+  const onHome = pathname === '/';
+  const [pastFold, setPastFold] = useState(false);
+  useEffect(() => {
+    if (!onHome) return;
+    const update = () => setPastFold(window.scrollY > window.innerHeight);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [onHome]);
+  const logoInert = onHome && !pastFold;
+
+  function handleLogoClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (!onHome) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    if (logoInert) return;
+    setMobileOpen(false);
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
+  }
+
   function handleBookClick(e: React.MouseEvent<HTMLAnchorElement>, cta: CtaId) {
     trackNavCta(cta);
     // A cmd/ctrl/shift-click means "open this somewhere else" — let the browser
@@ -136,7 +169,16 @@ export default function SiteNav() {
     <>
       <nav id="main-nav" ref={navRef} data-mobile-open={mobileOpen ? 'true' : 'false'}>
         <div className="nav-inner">
-          <Link href="/" className="nav-logo">
+          <Link
+            href="/"
+            id="nav-logo-link"
+            className="nav-logo"
+            data-inert={logoInert ? 'true' : undefined}
+            aria-label={onHome ? 'Not The Rug, back to top' : 'Not The Rug, home'}
+            tabIndex={logoInert ? -1 : undefined}
+            scroll={onHome ? false : undefined}
+            onClick={handleLogoClick}
+          >
             {/* Nav wordmark, CSS-sized (#nav-logo-img in app/globals.css sets
                 width: 370/200/190/168px across breakpoints/scroll states,
                 height: auto). Plain <img>, not next/image: the source WebP is

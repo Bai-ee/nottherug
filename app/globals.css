@@ -125,6 +125,8 @@ nav {
   transform: translateY(-50%) rotate(-2deg) translate(clamp(-40px, calc((1240px - 100vw) / 2), 0px), 46px);
   transform-origin: left top;
 }
+/* Home, above the fold: the wordmark is not a control (SiteNav sets data-inert). */
+#nav-logo-link[data-inert='true'] { cursor: default; }
 .nav-logo::before {
   content: '';
   position: absolute;
