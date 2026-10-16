@@ -107,8 +107,8 @@ export default function WalkWithUsPageContent({
           justify-self: start;
           align-self: start;
           background: transparent;
-          border-color: var(--terracotta-light);
-          color: var(--terracotta-light);
+          border-color: var(--terracotta);
+          color: var(--cream);
         }
         #walk-with-us-terms-row .walk-with-us-term h2 {
           font-family: var(--font-display);
