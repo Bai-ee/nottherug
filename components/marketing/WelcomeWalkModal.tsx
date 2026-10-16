@@ -905,7 +905,8 @@ export default function WelcomeWalkModal({
                 margin: 0 0 16px;
               }
               #welcome-walk-modal-booked-note .stamp-label { margin-bottom: 0; flex-shrink: 0; }
-              #welcome-walk-modal-booked-lede {
+              #welcome-walk-modal-booked-lede,
+              #welcome-walk-modal-gate-lede {
                 margin: 0;
                 font-family: var(--font-body);
                 font-size: clamp(14px, 1.6vw, 15px);
@@ -977,7 +978,8 @@ export default function WelcomeWalkModal({
                   gap: 6px;
                 }
                 #welcome-walk-modal-booked-note .stamp-label { font-size: 9px !important; padding: 3px 6px !important; }
-                #welcome-walk-modal-booked-lede { font-size: 13px !important; }
+                #welcome-walk-modal-booked-lede,
+                #welcome-walk-modal-gate-lede { font-size: 13px !important; }
                 /* The step stamp above already names the step ("STEP 1 OF 5 ·
                    YOU"), so its display title is the one heading a phone can
                    do without here. */
@@ -1142,6 +1144,13 @@ export default function WelcomeWalkModal({
                     Book a Meet &amp; Greet <em>to Schedule a Walk</em>
                   </h2>
                 )}
+                {view === 'gate' && (
+                  <p id="welcome-walk-modal-gate-lede" style={{ marginTop: '10px' }}>
+                    Good care starts with getting to know your dog. Fill out our questionnaire to tell us about
+                    their personality, routine, and needs. From there, we&rsquo;ll arrange a meet and greet so
+                    everyone feels comfortable before the first walk. We reply within 4 hours on weekdays.
+                  </p>
+                )}
                 {/* Same display headline as the gate, in the same slot: the
                     booking is made, and what is left is one short form, so
                     the panel should read as the second half of the same
@@ -1210,8 +1219,8 @@ export default function WelcomeWalkModal({
                           <div id="welcome-walk-modal-booked-note">
                             <span className="stamp-label">Booked</span>
                             <p id="welcome-walk-modal-booked-lede">
-                              Before we walk your dog, we have to meet your dog. Please complete the
-                              questionnaire so we understand their tendencies and can get you onboarded faster.
+                              Let&rsquo;s get to know your dog. Complete this short questionnaire and tell us
+                              about their personality, routine, and needs. We reply within 4 hours on weekdays.
                             </p>
                           </div>
                           {/* The same questionnaire the page carries, in its
@@ -1394,6 +1403,11 @@ export default function WelcomeWalkModal({
                             </>
                           )}
                         </div>
+                        {calendlyUrl && (
+                          <p id="welcome-walk-modal-cta-note" className="form-note" style={{ marginTop: '10px' }}>
+                            For a phone consultation or a meet and greet.
+                          </p>
+                        )}
                       </div>
                     </div>
                   </form>

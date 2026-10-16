@@ -665,9 +665,8 @@ export default function BookingForm({
           )}
           {(fullLayout || step === 0) && (
             <p style={{ color: 'var(--mid-gray)', fontSize: '14px', margin: '6px 0 0' }}>
-              We&apos;re a personal service, not a platform. We meet you and your dog before any walk is booked.
-              These questions take about a minute, tell us who you&apos;d be matched with, and get the onboarding
-              done up front so your free meet &amp; greet is quick. We reply within 2 hours on weekdays.
+              Let&apos;s get to know your dog. Complete this short questionnaire and tell us about their
+              personality, routine, and needs. We reply within 4 hours on weekdays.
             </p>
           )}
         </div>
@@ -830,8 +829,8 @@ export default function BookingForm({
         {/* Plain-language version of what the analytics in this file do, shown
             where a visitor is actually typing (plan 009 P4). */}
         <p id="booking-tracking-disclosure" className="form-note">
-          We count visits to our own site without cookies. We never store what you type
-          in this form, and we never sell your information.
+          We only use your answers to set up care for your dog, and we never sell your
+          information. Site visits are counted without cookies.
         </p>
       </form>
 

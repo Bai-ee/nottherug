@@ -92,7 +92,7 @@ export function customerMeetGreetEmail(lead: LeadRecord): { subject: string; htm
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#fff;color:#1c1c1a;margin:0;padding:24px;">
   <div style="max-width:560px;margin:0 auto;">
     <h2 style="margin:0 0 16px 0;">Thanks, ${escape(firstName)}!</h2>
-    <p>We got your Free Meet &amp; Greet request for <strong>${escape(lead.dogName || 'your dog')}</strong>. ${lead.phoneConsult ? "We'll call you within 2 hours on weekdays." : "We'll reach out within 2 hours on weekdays to schedule your free visit."}</p>
+    <p>We got your Free Meet &amp; Greet request for <strong>${escape(lead.dogName || 'your dog')}</strong>. ${lead.phoneConsult ? "We'll call you within 4 hours on weekdays." : "We'll reach out within 4 hours on weekdays to schedule your free visit."}</p>
 
     <p style="margin-top:20px;">Here's what you sent us:</p>
     <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;">
@@ -111,8 +111,8 @@ export function customerMeetGreetEmail(lead: LeadRecord): { subject: string; htm
     ``,
     `We got your Free Meet & Greet request for ${lead.dogName || 'your dog'}.`,
     lead.phoneConsult
-      ? `We'll call you within 2 hours on weekdays.`
-      : `We'll reach out within 2 hours on weekdays to schedule your free visit.`,
+      ? `We'll call you within 4 hours on weekdays.`
+      : `We'll reach out within 4 hours on weekdays to schedule your free visit.`,
     ``,
     `Neighborhood: ${lead.neighborhood ?? '—'}`,
     `Service interest: ${lead.serviceInterest ?? '—'}`,

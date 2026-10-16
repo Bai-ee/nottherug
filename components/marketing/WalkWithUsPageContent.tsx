@@ -100,7 +100,16 @@ export default function WalkWithUsPageContent({
           background: rgba(243, 236, 217, 0.08);
           color: var(--cream);
         }
-        #walk-with-us-terms-row .walk-with-us-term .stamp-label { margin-bottom: 10px; justify-self: start; align-self: start; }
+        /* Outlined, not filled (overrides the sheet header's terracotta
+           fill), so the card stamps read as labels rather than buttons. */
+        #walk-with-us-terms-row .walk-with-us-term .stamp-label {
+          margin-bottom: 10px;
+          justify-self: start;
+          align-self: start;
+          background: transparent;
+          border-color: var(--terracotta-light);
+          color: var(--terracotta-light);
+        }
         #walk-with-us-terms-row .walk-with-us-term h2 {
           font-family: var(--font-display);
           font-size: clamp(20px, 2.2vw, 26px);

@@ -39,7 +39,6 @@ export const SERVICE_INTEREST_OPTIONS = [
   'Senior Dog Care',
   'Boarding / Sitting',
   'Not sure yet',
-  'Walk & Talk Sessions',
 ] as const;
 
 export const VACCINATION_OPTIONS = [

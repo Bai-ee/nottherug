@@ -34,7 +34,7 @@ export default function NeighborhoodDetail({ hood }: { hood: NeighborhoodInfo })
         <div className="card card-pad">
           <div style={{ marginBottom: '12px' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>
           <h4 aria-level={3} style={{ fontFamily: 'var(--font-display)', fontSize: '18px', marginBottom: '8px' }}>Local Park Routes</h4>
-          <p style={{ fontSize: '14px', color: 'var(--mid-gray)' }}>Our walkers have season-calibrated routes for {hood.name} — shaded summer paths, dry winter routes, and parks with good off-leash hours.</p>
+          <p style={{ fontSize: '14px', color: 'var(--mid-gray)' }}>Our walkers have season-calibrated routes for {hood.name} — shaded summer paths and dry winter routes.</p>
         </div>
         <div className="card card-pad">
           <div style={{ marginBottom: '12px' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>

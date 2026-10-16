@@ -57,7 +57,7 @@ const COVERAGE_POINTS: Array<{ title: string; copy: string }> = [
   },
   {
     title: 'Local Park Routes',
-    copy: `Our walkers have season-calibrated routes for ${WILLIAMSBURG.name} — shaded summer paths, dry winter routes, and parks with good off-leash hours.`,
+    copy: `Our walkers have season-calibrated routes for ${WILLIAMSBURG.name} — shaded summer paths and dry winter routes.`,
   },
   {
     title: 'Fast Availability',
