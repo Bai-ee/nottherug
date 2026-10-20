@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/lib/content/site";
+import { jsonLd, siteGraph } from "@/lib/content/structuredData";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -58,8 +59,10 @@ const OG_IMAGE = '/img/og_meta_mainpage.png';
 const OG_IMAGE_SIZE = { width: 548, height: 315 };
 
 const SITE_NAME = 'Not The Rug';
+/** Also the homepage title in app/(marketing)/page.tsx; keep the two identical. */
+const HOME_TITLE = 'Dog Walker in Williamsburg, Brooklyn | Not The Rug — Since 2011';
 const SITE_DESCRIPTION =
-  'Williamsburg dog walking since 2011. Small groups, the same walker every time, insured and background-checked.';
+  'Experienced Williamsburg dog walkers since 2011. Max 3 dogs per walk, GPS route after every visit, insured and background-checked. Walks from $33. Book a free Meet & Greet.';
 
 // Site-level defaults only. Every page sets its own title, description and
 // canonical; these apply where one does not. The `template` keeps the brand on
@@ -67,7 +70,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Williamsburg Dog Walking Since 2011`,
+    default: HOME_TITLE,
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -75,13 +78,13 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE_NAME,
     url: SITE_URL,
-    title: `${SITE_NAME} — Williamsburg Dog Walking Since 2011`,
+    title: HOME_TITLE,
     description: SITE_DESCRIPTION,
     images: [{ url: OG_IMAGE, ...OG_IMAGE_SIZE, alt: SITE_DESCRIPTION }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_NAME} — Williamsburg Dog Walking Since 2011`,
+    title: HOME_TITLE,
     description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
   },
@@ -98,6 +101,7 @@ export default function RootLayout({
       className={`${fraunces.variable} ${frauncesItalic.variable} ${outfit.variable} ${oswald.variable} ${bebas.variable} ${courierPrime.variable}`}
     >
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(siteGraph()) }} />
         {children}
       </body>
     </html>

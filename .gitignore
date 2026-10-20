@@ -49,3 +49,4 @@ ui-debug.log
 # Bundle-analyzer evidence (plans/010 P0/P3): local before/after records, not
 # project source.
 /evidence/bundle/
+!public/video/hero-mccarren-480-v3.mp4

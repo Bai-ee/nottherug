@@ -5,7 +5,7 @@ import SiteNav from '@/components/SiteNav';
 import SiteFooter from './SiteFooter';
 import ReviewsMasonry from './ReviewsMasonry';
 import { useSectionReveals } from './hooks/useSectionReveals';
-import { INSTAGRAM_PLACEHOLDER_URL, YELP_URL, GOOGLE_WRITE_REVIEW_URL, REDDIT_RECOMMENDATIONS_URL, REVIEW_RATINGS } from '@/lib/content/site';
+import { INSTAGRAM_URL, YELP_URL, GOOGLE_WRITE_REVIEW_URL, REDDIT_RECOMMENDATIONS_URL, REVIEW_RATINGS } from '@/lib/content/site';
 
 export default function ReviewsPageContent() {
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +39,7 @@ export default function ReviewsPageContent() {
             </div>
           </div>
         </div>
-        <a href={INSTAGRAM_PLACEHOLDER_URL} target="_blank" rel="noopener" className="page-hero-label" id="page-hero-label-reviews"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Beans · @beans_wlmsbg</a>
+        <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="page-hero-label" id="page-hero-label-reviews"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Beans · @beans_wlmsbg</a>
       </div>
 
       {/* One content section split into two nav destinations. The CTA panel

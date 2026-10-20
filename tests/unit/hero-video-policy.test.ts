@@ -7,7 +7,7 @@ describe('pickHeroVideo', () => {
   it('uses the 1080 pair on desktop and the 540 pair on mobile', () => {
     expect(pickHeroVideo(base)?.webm).toBe('/video/hero-mccarren-1080.webm');
     expect(pickHeroVideo({ ...base, isMobile: true })).toEqual({
-      mp4: '/video/hero-mccarren-540-v2.mp4',
+      mp4: '/video/hero-mccarren-480-v3.mp4',
     });
   });
 

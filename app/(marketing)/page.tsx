@@ -7,9 +7,9 @@ const PAGE_PATH = '/';
 export const metadata: Metadata = buildPageMetadata({
   path: PAGE_PATH,
   ogImage: OG_IMAGES.home,
-  title: 'Not The Rug — Williamsburg Dog Walking Since 2011',
+  title: 'Dog Walker in Williamsburg, Brooklyn | Not The Rug — Since 2011',
   description:
-    "Not The Rug is Williamsburg's most trusted dog walking service. No strangers, no first-time handlers — just experienced professionals who show up consistently.",
+    'Experienced Williamsburg dog walkers since 2011. Max 3 dogs per walk, GPS route after every visit, insured and background-checked. Walks from $33. Book a free Meet & Greet.',
   // Matches app/layout.tsx's own default title exactly; `absoluteTitle` skips
   // the layout's `%s · Not The Rug` template so the brand name isn't repeated.
   absoluteTitle: true,

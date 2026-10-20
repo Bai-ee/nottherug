@@ -24,9 +24,10 @@ const DESKTOP: HeroVideoSources = {
   webm: '/video/hero-mccarren-1080.webm',
   mp4: '/video/hero-mccarren-1080.mp4',
 };
-// Mobile ships MP4 only: the CRF 30 H.264 clip is smaller than the VP9 one.
+// Mobile ships MP4 only: the 480px CRF 36 H.264 clip (~640 KB) is smaller than
+// the VP9 one, and it was 48% of the page weight at 540px CRF 30 (1.46 MB).
 const MOBILE: HeroVideoSources = {
-  mp4: '/video/hero-mccarren-540-v2.mp4',
+  mp4: '/video/hero-mccarren-480-v3.mp4',
 };
 
 const SLOW_CONNECTIONS = new Set(['slow-2g', '2g']);

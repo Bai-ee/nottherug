@@ -105,21 +105,11 @@ export const FRESHEST_REVIEWS: keyof typeof REVIEW_RATINGS = 'google';
 export const INSTAGRAM_URL = 'https://www.instagram.com/nottherug/';
 export const INSTAGRAM_HANDLE = '@nottherug';
 
-// Carried over as-is from the source JSX (page-hero Instagram credit links).
-// Not a real destination — flagged in the P2A report, fix belongs to P4/R18.
-export const INSTAGRAM_PLACEHOLDER_URL = 'https://instagram.com/placeholder';
-
 // Single source of truth for app/sitemap.ts. Every entry must be a real route
 // that answers 200 and is indexable. Deliberately absent:
 // - /services and /how-it-works: they redirect to home anchors (next.config.ts).
 // - /contact: it sets `noIndex: true` below (unchanged from the pre-P2A route),
 //   and a noindexed page has no business in the sitemap.
-// - /walk-with-us: the walker application. It is linked from the nav
-//   (components/SiteNav.tsx) and the team grid, and it is NOT noindexed and not
-//   blocked in robots.ts, so crawlers can reach and index it via those links;
-//   it is simply not listed here. Whether to list it is an owner decision
-//   (plans/reports/013-P34-worker-K.md): add '/walk-with-us' to list it, or
-//   pass `noIndex: true` in its buildPageMetadata call to keep it out of search.
 // /admin and /playground are never public routes and must never appear here —
 // see app/robots.ts.
 export const PUBLIC_ROUTES: string[] = [
@@ -130,6 +120,7 @@ export const PUBLIC_ROUTES: string[] = [
   '/reviews',
   '/book',
   '/signup',
+  '/walk-with-us',
 ];
 
 /**

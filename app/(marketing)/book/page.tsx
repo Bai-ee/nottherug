@@ -7,8 +7,9 @@ import { buildPageMetadata, OG_IMAGES } from '@/lib/content/site';
 export const metadata: Metadata = buildPageMetadata({
   path: '/book',
   ogImage: OG_IMAGES.book,
-  title: 'Book a Walk — Free Meet & Greet',
-  description: 'No commitment, no charge. We come to you, meet your dog, and answer every question.',
+  title: 'Book a Williamsburg Dog Walker — Free Meet & Greet',
+  description:
+    'Book a free Meet & Greet with Not The Rug, Williamsburg dog walkers since 2011. No commitment, no charge: we come to you, meet your dog, and answer every question. Walks from $33.',
 });
 
 // The welcome modal (components/marketing/WelcomeWalkModal.tsx) sends visitors
@@ -36,7 +37,7 @@ export default async function BookPage({
             {/* eslint-disable-next-line @next/next/no-img-element -- small (~50KB) CSS-sized wordmark shown as-is; next/image runtime cost exceeds its savings here */}
             <img
               id="nav-logo-img"
-              src="/img/horiz_logo_off_white.png"
+              src="/img/horiz_logo_off_white-v2.webp"
               alt="Not The Rug"
               width={498}
               height={88}
@@ -76,7 +77,7 @@ export default async function BookPage({
         className="book-hero"
         style={{
           background:
-            "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/IMAGE 00007.webp') center 20%/cover no-repeat",
+            "linear-gradient(rgba(28,28,26,0.60), rgba(28,28,26,0.60)), url('/dogs/hero-book-900.webp') center 20%/cover no-repeat",
         }}
       >
         <div className="container">

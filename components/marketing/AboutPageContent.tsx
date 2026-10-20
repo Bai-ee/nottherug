@@ -6,7 +6,7 @@ import SiteFooter from './SiteFooter';
 import TeamGrid from './TeamGrid';
 import ValuesGrid from './ValuesGrid';
 import { useSectionReveals } from './hooks/useSectionReveals';
-import { INSTAGRAM_PLACEHOLDER_URL } from '@/lib/content/site';
+import { INSTAGRAM_URL } from '@/lib/content/site';
 import { ABOUT_STATS, FOUNDER_PHOTO, FOUNDER_STORY, PRINCIPLES_INTRO } from '@/lib/content/about';
 
 export default function AboutPageContent() {
@@ -24,7 +24,7 @@ export default function AboutPageContent() {
           <h1>15 years of walks,<br />one neighborhood</h1>
           <p>Not The Rug was born in Williamsburg and has never left. Here&apos;s why that matters.</p>
         </div>
-        <a href={INSTAGRAM_PLACEHOLDER_URL} target="_blank" rel="noopener" className="page-hero-label" id="page-hero-label-about"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Scout · @scout_bklyn</a>
+        <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="page-hero-label" id="page-hero-label-about"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Scout · @scout_bklyn</a>
       </div>
 
       <section id="about-story-section" className="section">

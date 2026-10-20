@@ -48,12 +48,17 @@ const FOOTER_RATES: Array<{ href: string; label: string; id: string }> = [
 // rendered after the map): it is a button now, not an href, and it is the one
 // company entry that states an intent rather than a reading interest — so it
 // is also the only one carrying a cta id. The rest stay untracked on purpose.
+// The Team, Safety & Trust and Reviews point at their full pages, not the home
+// bands: the footer is the one crawlable link to /about, /safety, /reviews and
+// /neighborhoods/williamsburg in the server HTML (the nav renders client-side).
 const FOOTER_COMPANY: Array<{ href: string; label: string; id?: string; cta?: CtaId }> = [
-  { href: '/#home-team-section', label: 'The Team' },
-  { href: '/#home-closing-trust-section', label: 'Safety & Trust' },
-  { href: '/#home-featured-reviews-section', label: 'Reviews' },
+  { href: '/about', label: 'The Team' },
+  { href: '/safety', label: 'Safety & Trust' },
+  { href: '/reviews', label: 'Reviews' },
+  { href: '/neighborhoods/williamsburg', label: 'Williamsburg' },
   { href: '/#home-instagram-section', label: 'Instagram' },
   { href: '/#home-how-it-works-block', label: 'How It Works' },
+  { href: '/walk-with-us', label: 'Join the Team' },
   { href: '/signup', label: 'Sign Up' },
 ];
 
