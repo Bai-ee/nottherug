@@ -149,20 +149,27 @@ export function PersonCard({
     }
   }
 
-  async function openResume() {
+  async function loadResume(mode: 'open' | 'download') {
     setError('');
     try {
       const token = await getToken();
       const res = await fetch(`/api/admin/bench/people/${person.id}/resume`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) {
-        setError('Could not open the resume.');
+        setError(`Could not ${mode} the resume.`);
         return;
       }
       const url = URL.createObjectURL(await res.blob());
-      window.open(url, '_blank', 'noopener');
+      if (mode === 'open') {
+        window.open(url, '_blank', 'noopener');
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `resume-${person.fullName.replace(/[^a-z0-9]/gi, '') || 'applicant'}.${person.resumeKind ?? 'pdf'}`;
+        link.click();
+      }
       setTimeout(() => URL.revokeObjectURL(url), 60_000);
     } catch {
-      setError('Could not open the resume.');
+      setError(`Could not ${mode} the resume.`);
     }
   }
 
@@ -277,9 +284,14 @@ export function PersonCard({
               {busy === 'save_notes' ? 'Saving…' : 'Save notes'}
             </button>
             {person.resumePath ? (
-              <button type="button" className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary" onClick={openResume}>
-                Open resume
-              </button>
+              <>
+                <button type="button" id={`${domId}-open-resume-btn`} className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary" onClick={() => loadResume('open')}>
+                  Open resume
+                </button>
+                <button type="button" id={`${domId}-download-resume-btn`} className="btn btn-primary booking-forward-btn btn-sm admin-btn-secondary" onClick={() => loadResume('download')}>
+                  Download resume
+                </button>
+              </>
             ) : null}
           </div>
           {error ? <p className="form-note text-terra" role="alert">{error}</p> : null}
