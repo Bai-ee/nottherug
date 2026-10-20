@@ -35,8 +35,9 @@ import {
 
 /**
  * Public on-call walker application (plans/011 §7.1). Same protections as the
- * meet & greet intake: capped body, honeypot, per-IP rate limit, and
- * idempotency through fsCreateDoc on an email-keyed id.
+ * meet & greet intake: capped body, honeypot, per-IP rate limit, and one row
+ * per email through fsCreateDoc on an email-keyed id (a repeat application
+ * updates that row, see reapply).
  */
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -237,9 +238,18 @@ export async function POST(req: Request) {
     return errorJson(500, 'Could not save your application. Please try again.');
   }
 
-  // Same address already applied: one row per person, and no second round of
-  // email. The applicant still sees a success, because their application is on file.
-  if (!created) return NextResponse.json({ ok: true, id, duplicate: true });
+  // Same address already applied: still one row per person, but the new answers
+  // replace the old ones and the person goes back through review, so a repeat
+  // applicant is handled like a fresh one (emails included). Admin notes, tier,
+  // rating and an existing resume are kept.
+  if (!created) {
+    try {
+      await reapply(id, person, slice);
+    } catch (err) {
+      console.error('[bench:apply] firestore reapply failed', err instanceof Error ? err.message : 'unknown');
+      return errorJson(500, 'Could not save your application. Please try again.');
+    }
+  }
 
   const notifications: Record<string, NotificationOutcome> = {};
   if (knockout) {
@@ -284,5 +294,48 @@ export async function POST(req: Request) {
     after(() => summarizeApplication(id, blockLabels));
   }
 
-  return NextResponse.json({ ok: true, id, ...(resume ? { resumeToken: resume.token } : {}) });
+  return NextResponse.json({ ok: true, id, ...(created ? {} : { reapplied: true }), ...(resume ? { resumeToken: resume.token } : {}) });
+}
+
+/** Fields a repeat application replaces. Everything else on the row (notes, tier, rating, resume, SMS opt-out) stays. */
+const REAPPLY_FIELDS = [
+  'fullName',
+  'firstName',
+  'phoneE164',
+  'source',
+  'utm',
+  'stage',
+  'areas',
+  'availability',
+  'answers',
+  'confirmedAt',
+  'knockoutReason',
+  'resumeUploadTokenHash',
+  'resumeUploadExpiresAt',
+  'smsConsentAt',
+  'updatedAt',
+] as const satisfies ReadonlyArray<keyof BenchPerson>;
+
+/**
+ * Repeat application for an email already on file: overwrite the application
+ * fields with the fresh submission and append this round to the stage history,
+ * conditional on the version just read. The stage resets to review (or rejected
+ * on a knockout) even if an admin had moved the person on; the re-application
+ * is the newer signal and the history keeps the earlier stages.
+ */
+async function reapply(id: string, fresh: BenchPerson, slice: Slice): Promise<void> {
+  const need = () => {
+    const ms = slice(3_000, EMAIL_WORST_MS);
+    if (!ms) throw new Error('route time budget exhausted');
+    return ms;
+  };
+  await withOptimisticRetry(async () => {
+    const { person, updateTime } = await getBenchPersonWithMeta(id, { timeoutMs: need() });
+    if (!person || !updateTime) throw new Error('Person vanished before reapply');
+    const fields: Partial<BenchPerson> = {};
+    for (const key of REAPPLY_FIELDS) (fields as Record<string, unknown>)[key] = fresh[key];
+    fields.stageHistory = [...person.stageHistory, ...fresh.stageHistory.map((e) => (e.by === 'applicant' ? { ...e, by: 'reapplied' } : e))];
+    fields.aiSummary = null;
+    await mergeBenchPerson(id, fields, { precondition: { updateTime }, timeoutMs: need() });
+  });
 }

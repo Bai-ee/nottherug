@@ -124,14 +124,35 @@ describe('POST /api/bench/apply', () => {
     expect(person.resumeUploadTokenHash).not.toBe(body.resumeToken);
   });
 
-  it('treats the same email applying twice as one person and sends no second email', async () => {
+  it('treats the same email applying twice as one person, replaces the application and emails again', async () => {
     const { POST } = await import('@/app/api/bench/apply/route');
     const first = await (await POST(post(applicationPayload()))).json();
+    docs.set(`benchPeople/${first.id}`, { ...stored(first.id), stage: 'shadow_invited', notes: 'met him', tier: 'A' });
     const second = await (await POST(post(applicationPayload({ email: 'SAM@example.test', fullName: 'Samuel Rivera' })))).json();
 
-    expect(second).toEqual({ ok: true, id: first.id, duplicate: true });
-    expect(stored(first.id).fullName).toBe('Sam Rivera');
-    expect(sendEmail).toHaveBeenCalledTimes(1);
+    expect(second).toEqual({ ok: true, id: first.id, reapplied: true });
+    const person = stored(first.id);
+    expect(person.fullName).toBe('Samuel Rivera');
+    expect(person.stage).toBe('review');
+    const history = person.stageHistory as Array<{ stage: string; by: string }>;
+    expect(history.map((e) => `${e.stage}:${e.by}`)).toEqual([
+      'applied:applicant',
+      'review:applicant',
+      'applied:reapplied',
+      'review:reapplied',
+    ]);
+    expect(person.notes).toBe('met him');
+    expect(person.tier).toBe('A');
+    expect(sendEmail).toHaveBeenCalledTimes(2);
+  });
+
+  it('re-applying with a knockout answer rejects the person again', async () => {
+    const { POST } = await import('@/app/api/bench/apply/route');
+    const first = await (await POST(post(applicationPayload()))).json();
+    await POST(post(applicationPayload({ willingTraining: 'no' })));
+    const person = stored(first.id);
+    expect(person.stage).toBe('rejected');
+    expect(person.knockoutReason).toBe('no_training');
   });
 
   it('auto-invites only when Luis has switched it on and the applicant fills a gap', async () => {
