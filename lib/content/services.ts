@@ -76,7 +76,7 @@ export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
  * copy line (the welcome modal's first-visit pop-up). Keep the duration
  * matching `copy` above.
  */
-export const GROUP_WALK_SHORT_LABEL = '45-Minute Dog Walking';
+export const GROUP_WALK_SHORT_LABEL = '45-Minute Visits';
 
 /** Small print under the headline price wherever it appears alone. */
 export const GROUP_WALK_PRICE_NOTE = '+ sales tax · 9+ walks a month';
