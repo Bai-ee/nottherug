@@ -149,18 +149,6 @@ export default function AlwaysIncluded() {
           padding: 14px;
         }
         #home-included-preview-frame img { width: 100%; height: auto; display: block; }
-        #home-included-preview-placeholder {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 240px;
-          border: 1px dashed rgba(36, 35, 33, 0.4);
-          font-family: var(--font-type);
-          font-size: 12px;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: var(--mid-gray);
-        }
         #home-included-preview-caption {
           font-family: var(--font-stamp);
           font-size: 12px;
@@ -221,25 +209,15 @@ export default function AlwaysIncluded() {
         Experienced walkers who get to know your dog, dependable care that fits your routine, and an update after every visit.
       </p>
 
-      {active && (
+      {/* The preview only opens for an item with real artwork. No ALWAYS_INCLUDED
+          item (lib/content/services.ts) sets `image` yet, so nothing opens today;
+          the old "Image coming soon" placeholder is gone. Convert to next/image
+          once an asset with known dimensions lands (plans/010 P3). */}
+      {active?.image && (
         <div id="home-included-preview" role="presentation">
           <div id="home-included-preview-frame">
-            {active.image ? (
-              <>
-                {/* No ALWAYS_INCLUDED item (lib/content/services.ts) currently
-                    sets `image`, so this path is unreachable with today's
-                    content — there is no real asset yet to measure
-                    width/height/sizes from. next/image conversion belongs in
-                    P3 (plans/010-production-final-mile-optimization.md) once
-                    real artwork with known intrinsic dimensions ships;
-                    fabricating dimensions now would risk the wrong aspect
-                    ratio for whatever image actually lands here. */}
-                {/* eslint-disable-next-line @next/next/no-img-element -- unreachable with current content (no ALWAYS_INCLUDED item sets `image` yet); next/image conversion deferred to P3 once real artwork/dimensions exist */}
-                <img src={active.image} alt={active.title} decoding="async" loading="lazy" />
-              </>
-            ) : (
-              <div id="home-included-preview-placeholder">Image coming soon</div>
-            )}
+            {/* eslint-disable-next-line @next/next/no-img-element -- no asset exists yet to size next/image from */}
+            <img src={active.image} alt={active.title} decoding="async" loading="lazy" />
             <p id="home-included-preview-caption">{active.title}</p>
           </div>
         </div>
