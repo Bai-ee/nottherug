@@ -67,6 +67,23 @@ describe('GET /api/stats', () => {
     expect(getAnalyticsReport).not.toHaveBeenCalled();
   });
 
+  it('adds a definitions block for every booking/lead metric without changing existing fields', async () => {
+    const { GET } = await import('@/app/api/stats/route');
+    const body = await (await GET(get(`Bearer ${KEY}`))).json();
+    expect(Object.keys(body).sort()).toEqual(
+      ['analytics', 'applicants', 'definitions', 'degraded', 'generatedAt', 'leads', 'range', 'site'],
+    );
+    for (const k of [
+      'note', 'bookedLeads', 'appointmentsScheduled', 'calendlyScheduled', 'funnelScheduleStep',
+      'inquiries', 'outstandingCaptures', 'completedQuestionnaires', 'leadsToday',
+    ]) {
+      expect(typeof body.definitions[k]).toBe('string');
+      expect(body.definitions[k].length).toBeGreaterThan(20);
+    }
+    expect(body.definitions.note).toMatch(/not expected to match/);
+    expect(body.leads.today).toBe(2);
+  });
+
   it('429s over the per-IP limit', async () => {
     checkBenchRateLimit.mockResolvedValue(false);
     const { GET } = await import('@/app/api/stats/route');

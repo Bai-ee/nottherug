@@ -35,6 +35,21 @@ const FOCUSABLE_SELECTOR =
 const MODAL_SOURCE = 'welcome-modal';
 
 /**
+ * booking_step 'schedule', best effort. This modal opens SchedulingDialog
+ * directly (skipping the questionnaire in BookingForm, which is the only other
+ * place that reports this step), so without this the funnel's "schedule" row
+ * stays at zero for every visitor who books from here. Exported for
+ * tests/unit/booking-step-funnel.test.ts.
+ */
+export function trackSchedulerStep() {
+  try {
+    track('booking_step', { step: 'schedule', source: MODAL_SOURCE });
+  } catch (err) {
+    console.warn('[analytics] booking_step failed', err);
+  }
+}
+
+/**
  * cta_click, best effort. track() is documented as never throwing, but a
  * violation of that contract must never block the navigation or view change
  * this fires alongside. Only the locked id travels — never a typed value.
@@ -204,6 +219,12 @@ export default function WelcomeWalkModal({
    *  clears it and asks for the booking alone. */
   const [promo, setPromo] = useState(false);
   const welcomeDialogVisible = open && view !== 'scheduler';
+  // Reaching the scheduler is the funnel's "schedule" step. Only when the
+  // dialog is actually rendered (calendlyUrl set), same as the mount below.
+  const schedulerShowing = open && view === 'scheduler' && Boolean(calendlyUrl);
+  useEffect(() => {
+    if (schedulerShowing) trackSchedulerStep();
+  }, [schedulerShowing]);
   /** The self-opened version starts as a small teaser card (plan, price, one
    *  button); its button expands into the full booking modal below. */
   const teaser = promo && view === 'gate';

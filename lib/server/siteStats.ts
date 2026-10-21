@@ -32,9 +32,29 @@ export interface SiteStats {
     last30Days: number;
     onHold: number;
   };
+  /** Plain-English meaning of each booking/lead metric. The numbers are different measures and are not expected to match. */
+  definitions: typeof STAT_DEFINITIONS;
   /** Which dependency failed and was replaced with zeros, if any. */
   degraded: Array<'analytics' | 'leads' | 'applicants'>;
 }
+
+/**
+ * What each booking/lead number counts. Booking figures come from four
+ * different sources (lead documents vs. analytics events vs. per-session
+ * funnel rows), so they legitimately differ; an outside reader should quote
+ * them with these definitions rather than reconcile them.
+ */
+export const STAT_DEFINITIONS = {
+  note: 'The booking and lead numbers measure different things from different sources, so they are not expected to match each other.',
+  bookedLeads: 'Lead records whose visitor reported (self-reported, via their browser) that they booked a Meet & Greet; counts people, whether or not they finished the questionnaire.',
+  appointmentsScheduled: 'Number of appointment_completed analytics events, fired only when a verified Calendly booking message reaches the page; can miss a real booking if that message never arrives.',
+  calendlyScheduled: 'Sessions that both opened the scheduling dialog and recorded an appointment_completed event (per-session, from the funnel).',
+  funnelScheduleStep: 'Sessions that reached the "schedule" booking step, meaning the scheduler was shown after the questionnaire or from the welcome modal; this step was not reported from the welcome modal before this fix, so older ranges undercount it and it is not a count of bookings.',
+  inquiries: 'Completed questionnaires (leads who answered every question); the authoritative inquiry total, excluding email-only captures.',
+  outstandingCaptures: 'Email-only captures still waiting on questionnaire answers; never counted as inquiries.',
+  completedQuestionnaires: 'Leads who answered every question on the questionnaire.',
+  leadsToday: 'Leads submitted today in the site timezone (leads.timezone), excluding email-only captures.',
+} as const;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -103,5 +123,5 @@ export async function getSiteStats(range: ReportRange, now = new Date()): Promis
     degraded.push('applicants');
   }
 
-  return { site: 'nottherug.com', generatedAt: now.toISOString(), range, analytics, leads, applicants, degraded };
+  return { site: 'nottherug.com', generatedAt: now.toISOString(), range, analytics, leads, applicants, definitions: STAT_DEFINITIONS, degraded };
 }
