@@ -23,14 +23,14 @@ export type LeadStats = {
   bySource: Record<string, number>;
 };
 
-const TZ = 'America/New_York';
+export const TZ = 'America/New_York';
 
 // fsQueryCollection has no cursor support; this bounds a single read. When
 // recentCount === RECENT_QUERY_LIMIT, the true total may be higher — see
 // totals.recentCountCap, which callers can use to detect a truncated count.
 const RECENT_QUERY_LIMIT = 1000;
 
-function isoDateInTZ(date: Date, timeZone: string): string {
+export function isoDateInTZ(date: Date, timeZone: string): string {
   const fmt = new Intl.DateTimeFormat('en-CA', {
     timeZone,
     year: 'numeric',

@@ -9,7 +9,8 @@ import { getSiteStats } from '@/lib/server/siteStats';
  * MCP). Not the admin API: no Firebase session, a single shared bearer key
  * (STATS_API_KEY) checked in constant time, and a per-IP rate limit. Returns
  * counts and trends only (lib/server/siteStats.ts), never applicant or lead
- * details. Unset key = endpoint off.
+ * details (person-level records live at /api/stats/people, same key). Unset
+ * key = endpoint off.
  */
 export const runtime = 'nodejs';
 export const maxDuration = 30;
