@@ -15,7 +15,7 @@ import { PHONE_DISPLAY, PHONE_HREF } from '@/lib/content/contact';
 /** Escape hatch under every layout of the form: one tap to call Luis instead of finishing the questionnaire. */
 function CallLuisButton({ id }: { id: string }) {
   return (
-    <a id={id} href={PHONE_HREF} className="btn btn-primary booking-call-luis-btn" data-section="meetgreet-call-luis">
+    <a id={id} href={PHONE_HREF} className="btn btn-outline booking-forward-btn booking-call-luis-btn" data-section="meetgreet-call-luis">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
       Call Luis · {PHONE_DISPLAY}
     </a>
@@ -816,37 +816,37 @@ export default function BookingForm({
           ) : (
             <span aria-hidden="true" />
           )}
-          {!lastStep ? (
-            <button
-              type="submit"
-              className="btn btn-primary booking-forward-btn"
-              id={`${paneId}-next-button`}
-              style={{ padding: '15px 34px' }}
-            >
-              Next →
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="btn btn-primary booking-forward-btn"
-              id={`${paneId}-submit-button`}
-              style={{ padding: '15px 28px' }}
-              disabled={status === 'submitting'}
-            >
-              {status === 'submitting'
-                ? 'Sending…'
-                : bookedDetailsMode
-                  ? "Send My Dog's Details"
-                  : phoneConsult
-                    ? 'Request Phone Consultation'
-                    : 'Book a Meet & Greet'}
-            </button>
-          )}
-        </div>
-        {/* Under the nav on every step: a frustrated visitor can call instead
-            of finishing. Same tel: link the footer uses. */}
-        <div id={`${paneId}-call-luis-row`} data-section="meetgreet-call-luis-row" style={{ display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
-          <CallLuisButton id={`${paneId}-call-luis`} />
+          {/* Forward action and the Call Luis escape hatch sit side by side in
+              the centre column; they wrap to two rows on narrow phones. */}
+          <div id={`${paneId}-forward-group`} data-section="meetgreet-forward-group" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'stretch' }}>
+            {!lastStep ? (
+              <button
+                type="submit"
+                className="btn btn-primary booking-forward-btn"
+                id={`${paneId}-next-button`}
+                style={{ padding: '15px 34px' }}
+              >
+                Next →
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="btn btn-primary booking-forward-btn"
+                id={`${paneId}-submit-button`}
+                style={{ padding: '15px 28px' }}
+                disabled={status === 'submitting'}
+              >
+                {status === 'submitting'
+                  ? 'Sending…'
+                  : bookedDetailsMode
+                    ? "Send My Dog's Details"
+                    : phoneConsult
+                      ? 'Request Phone Consultation'
+                      : 'Book a Meet & Greet'}
+              </button>
+            )}
+            <CallLuisButton id={`${paneId}-call-luis`} />
+          </div>
         </div>
         </>
         )}
