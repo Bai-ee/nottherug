@@ -52,7 +52,22 @@ credentials as Production** (see checklist item 8).
 | `LAUNCH_MODE` | Optional | `true` redirects public pages to `/contact`. |
 | `ANTHROPIC_API_KEY`, `NWS_USER_AGENT`, `NOT_THE_RUG_BRIEF_DATA_DIR` | Optional (secret for the first) | Daily brief pipeline. Brief generation is not scheduled; see A8. |
 | `BENCH_AI_SUMMARIES_ENABLED`, `BENCH_AI_MODEL` | Optional | Applicant AI summary. Leave unset until counsel has confirmed it is acceptable (see `docs/backup-bench.md`). |
+| `STATS_API_KEY` | Optional (secret) | Bearer key for `GET /api/stats` (counts) and `GET /api/stats/people` (person-level records) for the HITLOOP client MCP. Unset = both endpoints return 401. See "Stats API" below. |
 | `TWILIO_*`, `QSTASH_*`, `CHECKR_*` | Not used | Reserved for later bench phases. Nothing reads them today. |
+
+### Stats API (`/api/stats`, `/api/stats/people`)
+
+Server-to-server reads for the HITLOOP client MCP. Auth: `Authorization: Bearer <STATS_API_KEY>`
+(constant-time check; unset key = 401), 60 requests/min per IP per endpoint, `Cache-Control: no-store`.
+
+- `GET /api/stats?range=today|7d|30d|all`: counts and trends only. No person data.
+- `GET /api/stats/people?kind=leads|captures|applicants`: **full person-level records including
+  names, emails, phones and every questionnaire/application answer.** The owner approved this
+  (2026-10-21); treat the key like a customer-data credential and rotate it in Vercel if it leaks.
+  Optional `range` (`today|7d|30d|all`, default `30d`; "today" is the America/New_York day),
+  `id` (one record; 404 if unknown or wrong kind), `stage` (applicants only), `limit` (1-200, default 100).
+  Newest first; `total` is the match count before `limit`. Resume files, storage paths and signed
+  URLs are never returned (`hasResume` is a boolean). Code: `lib/server/sitePeople.ts`.
 
 ## A3. Deploy
 
