@@ -42,7 +42,7 @@ export interface ServicePreviewItem {
 /** The headline package, rendered as the featured rate card. */
 export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
   title: 'Dog Walking',
-  copy: '45-minute visits. Small groups of up to three dogs.',
+  copy: 'Small groups of up to three dogs.',
   price: '$33',
   priceUnit: 'per walk',
   serviceInterest: 'Daily Group Walks',
@@ -76,7 +76,7 @@ export const GROUP_WALK_PREVIEW: ServicePreviewItem = {
  * copy line (the welcome modal's first-visit pop-up). Keep the duration
  * matching `copy` above.
  */
-export const GROUP_WALK_SHORT_LABEL = '45-Minute Visits';
+export const GROUP_WALK_SHORT_LABEL = '45-Minute Dog Visits';
 
 /** Small print under the headline price wherever it appears alone. */
 export const GROUP_WALK_PRICE_NOTE = '+ sales tax · 9+ walks a month';
