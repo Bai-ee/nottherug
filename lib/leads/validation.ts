@@ -122,8 +122,10 @@ export function parseLeadSubmission(input: unknown): LeadParseResult {
   }
   const email = rawEmail.toLowerCase();
   const neighborhood = readEnumField(input, 'neighborhood', NEIGHBORHOOD_OPTIONS, errors);
-  const dogName = readRequiredString(input, 'dogName', LEAD_FIELD_LIMITS.dogName, errors);
-  const breedAge = readRequiredString(input, 'breedAge', LEAD_FIELD_LIMITS.breedAge, errors);
+  // Dog name and breed/age are optional: a visitor who booked on Calendly must
+  // never be blocked from finishing by details Luis can ask at the meet & greet.
+  const dogName = readOptionalString(input, 'dogName', LEAD_FIELD_LIMITS.dogName, errors, '');
+  const breedAge = readOptionalString(input, 'breedAge', LEAD_FIELD_LIMITS.breedAge, errors, '');
   const serviceInterest = readEnumField(input, 'serviceInterest', SERVICE_INTEREST_OPTIONS, errors);
   const vaccinations = readEnumField(input, 'vaccinations', VACCINATION_OPTIONS, errors);
   const walkFrequency = readEnumField(input, 'walkFrequency', WALK_FREQUENCY_OPTIONS, errors);

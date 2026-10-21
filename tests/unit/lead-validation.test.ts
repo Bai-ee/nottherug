@@ -91,6 +91,15 @@ describe('parseLeadSubmission — field type checks', () => {
     const result = parseLeadSubmission(validPayload({ ownerName: '   ' }));
     expect(result.ok).toBe(false);
   });
+
+  it('accepts an empty dog name and breed/age (skippable step)', () => {
+    const result = parseLeadSubmission(validPayload({ dogName: '', breedAge: '   ' }));
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data.dogName).toBe('');
+      expect(result.data.breedAge).toBe('');
+    }
+  });
 });
 
 describe('parseLeadSubmission — lengths and enums', () => {

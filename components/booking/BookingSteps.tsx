@@ -135,7 +135,7 @@ export function StepYourDog({ paneId, values, update, errors, alertId, registerF
     <>
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor={`${paneId}-dog-name`}>Dog&apos;s Name</label>
+          <label htmlFor={`${paneId}-dog-name`}>Dog&apos;s Name <span className="form-optional">(optional)</span></label>
           <input
             id={`${paneId}-dog-name`}
             ref={registerField('dogName')}
@@ -149,7 +149,7 @@ export function StepYourDog({ paneId, values, update, errors, alertId, registerF
           />
         </div>
         <div className="form-group">
-          <label htmlFor={`${paneId}-breed-age`}>Breed &amp; Age</label>
+          <label htmlFor={`${paneId}-breed-age`}>Breed &amp; Age <span className="form-optional">(optional)</span></label>
           <input
             id={`${paneId}-breed-age`}
             ref={registerField('breedAge')}

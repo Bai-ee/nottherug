@@ -10,6 +10,17 @@ import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import { BOOKING_STEPS, StepAboutYou, StepCare, StepQuirks, StepWrapUp, StepYourDog } from './BookingSteps';
 import SchedulingDialog from './SchedulingDialog';
 import ContactUsTrigger from '@/components/marketing/ContactUsTrigger';
+import { PHONE_DISPLAY, PHONE_HREF } from '@/lib/content/contact';
+
+/** Escape hatch under every layout of the form: one tap to call Luis instead of finishing the questionnaire. */
+function CallLuisButton({ id }: { id: string }) {
+  return (
+    <a id={id} href={PHONE_HREF} className="btn btn-primary booking-call-luis-btn" data-section="meetgreet-call-luis">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+      Call Luis · {PHONE_DISPLAY}
+    </a>
+  );
+}
 import type { BookingFieldErrors, BookingFormValues, BookingSubmittedSummary, RegisterField } from './types';
 
 type Props = {
@@ -377,10 +388,8 @@ export default function BookingForm({
       if (!form.email.trim()) errors.email = 'Please enter your email.';
       else if (!isValidEmail(form.email)) errors.email = 'Please enter a valid email address.';
     }
-    if (index === 1) {
-      if (!form.dogName.trim()) errors.dogName = "Please enter your dog's name.";
-      if (!form.breedAge.trim()) errors.breedAge = 'Please share breed & age.';
-    }
+    // Step 1 (Your Dog) has no required fields: name, breed and age are
+    // skippable so the questionnaire never blocks someone who already booked.
     if (index === 3 && allergies.includes('Other') && !allergyOther.trim()) {
       errors.allergyOther = 'Please specify the allergy.';
     }
@@ -787,6 +796,7 @@ export default function BookingForm({
             >
               Just Have a Question?
             </ContactUsTrigger>
+            <CallLuisButton id={`${paneId}-call-luis-full`} />
           </div>
         ) : (
         <>
@@ -832,6 +842,11 @@ export default function BookingForm({
                     : 'Book a Meet & Greet'}
             </button>
           )}
+        </div>
+        {/* Under the nav on every step: a frustrated visitor can call instead
+            of finishing. Same tel: link the footer uses. */}
+        <div id={`${paneId}-call-luis-row`} data-section="meetgreet-call-luis-row" style={{ display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
+          <CallLuisButton id={`${paneId}-call-luis`} />
         </div>
         </>
         )}
