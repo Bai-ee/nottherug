@@ -168,3 +168,20 @@ describe('createStepFunnelTracker', () => {
     expect(track).toHaveBeenCalledTimes(1); // only the (throwing) first call was attempted
   });
 });
+
+describe('welcome modal scheduler step', () => {
+  it('reports the "schedule" booking_step labelled with the welcome-modal source', async () => {
+    track.mockClear();
+    const { trackSchedulerStep } = await import('@/components/marketing/WelcomeWalkModal');
+    trackSchedulerStep();
+    expect(track).toHaveBeenCalledWith('booking_step', { step: 'schedule', source: 'welcome-modal' });
+  });
+
+  it('does not throw when track() throws', async () => {
+    track.mockImplementationOnce(() => {
+      throw new Error('boom');
+    });
+    const { trackSchedulerStep } = await import('@/components/marketing/WelcomeWalkModal');
+    expect(() => trackSchedulerStep()).not.toThrow();
+  });
+});
