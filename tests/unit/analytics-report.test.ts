@@ -166,7 +166,7 @@ describe('getAnalyticsReport', () => {
     expect(report.funnel.calendlyScheduled).toBe(1); // sess-a
 
     expect(report.dailyTrend).toEqual([
-      { date: '2026-01-15', pageviews: 4, sessions: 4, engagedSessions: 1, leadSaved: 2 },
+      { date: '2026-01-15', pageviews: 4, sessions: 4, visitors: null, engagedSessions: 1, leadSaved: 2 },
     ]);
 
     expect(report.live).toEqual({
@@ -175,6 +175,7 @@ describe('getAnalyticsReport', () => {
       endIso: '2026-01-15T18:00:00.000Z',
       pageviews: 1,
       sessions: 1,
+      visitors: 0,
     });
   });
 
@@ -463,7 +464,7 @@ describe('getAnalyticsReport', () => {
     expect(report.pageviews).toBe(2);
     expect(report.sessions).toBe(2);
     expect(report.dailyTrend).toEqual([
-      { date: '2026-11-01', pageviews: 2, sessions: 2, engagedSessions: 0, leadSaved: 0 },
+      { date: '2026-11-01', pageviews: 2, sessions: 2, visitors: null, engagedSessions: 0, leadSaved: 0 },
     ]);
   });
 
@@ -503,7 +504,7 @@ describe('getAnalyticsReport', () => {
     expect(report.outstandingCaptures).toBe(0); // three completed leads, no captures
     expect(report.pageviews).toBe(0);
     expect(report.sessions).toBe(0);
-    expect(report.live).toEqual({ windowMinutes: 60, startIso: '', endIso: '', pageviews: 0, sessions: 0 });
+    expect(report.live).toEqual({ windowMinutes: 60, startIso: '', endIso: '', pageviews: 0, sessions: 0, visitors: 0 });
   });
 
   it('throws (surfaces as a real failure) when both leads and events queries fail', async () => {
@@ -707,6 +708,45 @@ describe('rolling, custom ranges and session-quality metrics', () => {
       { lastStep: 'review', sessions: 0 },
       { lastStep: 'schedule', sessions: 0 },
     ]);
+  });
+
+  it('counts unique, new and returning visitors from visitor ids, leaving id-less sessions out', async () => {
+    const fixtures: RawDoc[] = [
+      // v1: first-ever visit, then a second tab later -> one new visitor, two sessions.
+      ev({ id: 'a1', sid: 's1', vid: 'v1', vr: 'new', receivedAt: '2026-01-15T12:00:00.000Z', src: 'direct' }),
+      ev({ id: 'a2', sid: 's2', vid: 'v1', vr: 'returning', receivedAt: '2026-01-15T14:00:00.000Z', src: 'direct' }),
+      // v2: visited before this range -> returning.
+      ev({ id: 'b1', sid: 's3', vid: 'v2', vr: 'returning', receivedAt: '2026-01-15T13:00:00.000Z', src: 'direct' }),
+      ev({ id: 'b2', sid: 's3', vid: 'v2', receivedAt: '2026-01-15T13:01:00.000Z', route: '/book' }),
+      // s4: from before visitor tracking -> a session, but no visitor.
+      ev({ id: 'c1', sid: 's4', receivedAt: '2026-01-15T15:00:00.000Z', src: 'direct' }),
+      // vr on a non-attribution event is ignored, and a malformed vid is dropped.
+      ev({ id: 'd1', sid: 's5', vid: 'bad id!', receivedAt: '2026-01-15T16:00:00.000Z', src: 'direct' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: NOW });
+
+    expect(report.sessions).toBe(5);
+    expect(report.visitors).toBe(2);
+    expect(report.visitorBreakdown).toMatchObject({
+      newVisitors: 1,
+      returningVisitors: 1,
+      sessionsWithVisitorId: 3,
+      sessionsPerVisitor: 1.5,
+    });
+    expect(report.dailyTrend[0].visitors).toBe(2);
+  });
+
+  it('reports visitors as null (not zero) for a range with sessions but no visitor ids', async () => {
+    fsQueryRange.mockImplementation(rangeQueryMock([ev({ id: 'a1', sid: 's1', receivedAt: '2026-01-15T12:00:00.000Z', src: 'direct' })], leadDocs(0)));
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: NOW });
+    expect(report.sessions).toBe(1);
+    expect(report.visitors).toBeNull();
+    expect(report.visitorBreakdown).toMatchObject({ newVisitors: null, returningVisitors: null, sessionsWithVisitorId: 0, sessionsPerVisitor: null });
+    expect(report.dailyTrend[0].visitors).toBeNull();
   });
 
   it('reports null rates (not zero) when there are no sessions', async () => {

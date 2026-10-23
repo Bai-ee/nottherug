@@ -153,6 +153,8 @@ async function storeOneEvent(raw: unknown, receivedAt: string): Promise<StoreOut
     // route stays for backlog written before the policy existed.
     expiresAt: eventExpiryAt(new Date(receivedAt)),
   };
+  if (event.vid) doc.vid = event.vid;
+  if (event.vr) doc.vr = event.vr;
   if (event.cta) doc.cta = event.cta;
   if (event.step) doc.step = event.step;
   if (event.src) doc.src = event.src;

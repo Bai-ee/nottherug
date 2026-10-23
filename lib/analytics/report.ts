@@ -31,8 +31,10 @@ import {
   type CampaignSlug,
   type CtaId,
   type EventName,
+  isVisitorKind,
   type SourceKind,
   type TrackedRoute,
+  type VisitorKind,
 } from '@/lib/analytics/events';
 
 const TZ = 'America/New_York';
@@ -124,6 +126,10 @@ export interface DailyTrendPoint {
    * once from the whole window's event set.
    */
   sessions: number;
+  /** Distinct visitor ids that day; same no-summing rule as sessions. Null
+   *  when the day had events but none carried a visitor id (before visitor
+   *  tracking began). */
+  visitors: number | null;
   engagedSessions: number;
   /** Tracked lead_saved events that day — the inquiry card's own daily line.
    *  This is the tracked cohort, not the authoritative leads total. */
@@ -190,6 +196,19 @@ export interface SessionDurationInfo {
   note: string;
 }
 
+/** New vs returning split of AnalyticsReport.visitors; nulls follow it. */
+export interface VisitorBreakdown {
+  /** Visitors whose first-ever session (the one that created the id) is in range. */
+  newVisitors: number | null;
+  /** visitors minus newVisitors: the browser had visited before its first session in range. */
+  returningVisitors: number | null;
+  /** Sessions in range carrying a visitor id. Below `sessions` when part of the range predates visitor tracking or storage was blocked. */
+  sessionsWithVisitorId: number;
+  /** sessionsWithVisitorId over visitors. Null when there are no visitors. */
+  sessionsPerVisitor: number | null;
+  note: string;
+}
+
 export interface InquiryRateInfo {
   /** null when the denominator is zero — never divide by zero and call it 0%. */
   rate: number | null;
@@ -206,6 +225,8 @@ export interface LiveTile {
   endIso: string;
   pageviews: number;
   sessions: number;
+  /** Distinct visitor ids in the 60 minutes. */
+  visitors: number;
 }
 
 /**
@@ -307,8 +328,16 @@ export interface AnalyticsReport {
 
   /** Deduplicated page_view event count for the range. */
   pageviews: number;
-  /** Distinct sid count for the range. Sessions/visits, never "unique visitors" or "people". */
+  /** Distinct sid count for the range. Sessions/visits, never "unique visitors" or "people" (that is `visitors`). */
   sessions: number;
+  /**
+   * Distinct browser visitor ids in range (unique visitors). One browser, not
+   * one person: a phone and a laptop are two, and clearing storage starts a
+   * new one. Null when no event in range carries an id, i.e. the range is
+   * before visitor tracking began — never a fabricated zero.
+   */
+  visitors: number | null;
+  visitorBreakdown: VisitorBreakdown;
   /** Sessions with at least one 'engagement' event, over total sessions, as a 0-100 percentage. Replaces bounce rate (decision 2). Null when there are no sessions. */
   engagedVisitPct: number | null;
   /** Sessions that viewed exactly one page and recorded no engagement, CTA click or booking event. */
@@ -347,6 +376,8 @@ export interface StoredAnalyticsEvent {
   src?: SourceKind;
   ref?: string;
   camp?: CampaignSlug;
+  vid?: string;
+  vr?: VisitorKind;
   mode?: 'test';
   /** Server receipt time, ISO-8601 UTC — the reporting authority per the plan. */
   receivedAt: string;
@@ -374,6 +405,7 @@ function toStoredEvent(raw: Record<string, unknown>): StoredAnalyticsEvent | nul
   const route = raw.route === null || raw.route === undefined ? null : isTrackedRoute(raw.route) ? raw.route : null;
 
   const out: StoredAnalyticsEvent = { event: raw.event, id: raw.id, sid: raw.sid, route, receivedAt: raw.receivedAt };
+  if (isOpaqueId(raw.vid)) out.vid = raw.vid;
 
   // Same per-event-type gating as the wire validator, so a corrupted document
   // cannot attach e.g. a cta to a page_view and skew the CTA click table.
@@ -384,6 +416,7 @@ function toStoredEvent(raw: Record<string, unknown>): StoredAnalyticsEvent | nul
     out.src = raw.src;
     if (raw.src === 'campaign' && isCampaignSlug(raw.camp)) out.camp = raw.camp;
     if (raw.src === 'referral' && typeof raw.ref === 'string') out.ref = raw.ref;
+    if (isVisitorKind(raw.vr)) out.vr = raw.vr;
   }
 
   if (raw.mode === 'test') out.mode = 'test';
@@ -570,6 +603,7 @@ async function fetchLive(now: Date, includeTest: boolean): Promise<LiveTile> {
     endIso,
     pageviews: stored.filter((e) => e.event === 'page_view').length,
     sessions: new Set(stored.map((e) => e.sid)).size,
+    visitors: distinctVisitorIds(stored).size,
   };
 }
 
@@ -608,14 +642,42 @@ async function fetchTrackingStartDate(includeTest: boolean): Promise<string | nu
 
 // ---- Metric builders --------------------------------------------------------
 
+function distinctVisitorIds(events: StoredAnalyticsEvent[]): Set<string> {
+  const ids = new Set<string>();
+  for (const e of events) if (e.vid) ids.add(e.vid);
+  return ids;
+}
+
+function buildVisitorBreakdown(events: StoredAnalyticsEvent[]): VisitorBreakdown {
+  const ids = distinctVisitorIds(events);
+  const newIds = new Set<string>();
+  const sidsWithVid = new Set<string>();
+  for (const e of events) {
+    if (!e.vid) continue;
+    sidsWithVid.add(e.sid);
+    if (e.vr === 'new') newIds.add(e.vid);
+  }
+  const unique = ids.size;
+  const measured = unique > 0;
+  return {
+    newVisitors: measured ? newIds.size : null,
+    returningVisitors: measured ? unique - newIds.size : null,
+    sessionsWithVisitorId: sidsWithVid.size,
+    sessionsPerVisitor: measured ? sidsWithVid.size / unique : null,
+    note: 'A visitor is one browser (a random id kept in its local storage), not a person: the same person on a phone and a laptop is two visitors, and clearing browser storage makes them new again. Counted only from when visitor tracking began; null means no visitor ids exist in this range.',
+  };
+}
+
 function bucketDailyTrend(events: StoredAnalyticsEvent[], windows: DayWindow[]): DailyTrendPoint[] {
   return windows.map((w) => {
     const dayEvents = events.filter((e) => e.receivedAt >= w.startIso && e.receivedAt < w.endIso);
     const engagedSids = new Set(dayEvents.filter((e) => e.event === 'engagement').map((e) => e.sid));
+    const dayVisitors = distinctVisitorIds(dayEvents).size;
     return {
       date: w.date,
       pageviews: dayEvents.filter((e) => e.event === 'page_view').length,
       sessions: new Set(dayEvents.map((e) => e.sid)).size,
+      visitors: dayVisitors === 0 && dayEvents.length > 0 ? null : dayVisitors,
       engagedSessions: engagedSids.size,
       leadSaved: dayEvents.filter((e) => e.event === 'lead_saved').length,
     };
@@ -888,10 +950,11 @@ export async function getAnalyticsReport(range: ReportSpec, options: GetAnalytic
   if (liveResult.status === 'rejected') unavailable.push('live');
   if (earliestResult.status === 'rejected') unavailable.push('trackingStart');
 
-  const live = liveResult.status === 'fulfilled' ? liveResult.value : { windowMinutes: 60 as const, startIso: '', endIso: '', pageviews: 0, sessions: 0 };
+  const live = liveResult.status === 'fulfilled' ? liveResult.value : { windowMinutes: 60 as const, startIso: '', endIso: '', pageviews: 0, sessions: 0, visitors: 0 };
   const trackingStartDate = earliestResult.status === 'fulfilled' ? earliestResult.value : null;
 
   const pageviews = events.filter((e) => e.event === 'page_view').length;
+  const visitorCount = distinctVisitorIds(events).size;
   const sessionIds = new Set(events.map((e) => e.sid));
   const sessions = sessionIds.size;
   const engagedSids = new Set(events.filter((e) => e.event === 'engagement').map((e) => e.sid));
@@ -950,6 +1013,8 @@ export async function getAnalyticsReport(range: ReportSpec, options: GetAnalytic
     appointmentsScheduled,
     pageviews,
     sessions,
+    visitors: visitorCount > 0 ? visitorCount : null,
+    visitorBreakdown: buildVisitorBreakdown(events),
     engagedVisitPct,
     bouncedSessions,
     bounceRatePct,

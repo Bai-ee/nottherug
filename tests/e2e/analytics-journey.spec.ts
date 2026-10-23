@@ -124,7 +124,7 @@ test.describe('analytics journey (real browser -> /api/track)', () => {
     // Field-level check as well, so a future field name cannot smuggle values.
     for (const event of collectEvents(trackRequests)) {
       for (const key of Object.keys(event)) {
-        expect(['event', 'id', 'sid', 'route', 'ts', 'cta', 'step', 'src', 'ref', 'camp', 'mode']).toContain(key);
+        expect(['event', 'id', 'sid', 'vid', 'route', 'ts', 'cta', 'step', 'src', 'ref', 'camp', 'vr', 'mode']).toContain(key);
       }
     }
   });

@@ -35,11 +35,13 @@ function stubBrowser(opts: {
   hostname?: string;
   referrer?: string;
   storage?: Storage;
+  localStorage?: Storage;
 } = {}) {
   const storage = opts.storage ?? makeMemoryStorage();
   const listeners: Record<string, Listener[]> = {};
   const win = {
     sessionStorage: storage,
+    localStorage: opts.localStorage ?? makeMemoryStorage(),
     location: {
       pathname: opts.pathname ?? '/',
       search: opts.search ?? '',
@@ -120,11 +122,58 @@ describe('getSessionSnapshot — session lifecycle', () => {
   });
 });
 
+describe('getSessionSnapshot — visitor id', () => {
+  it('creates a visitor id on the first visit and marks that session new', () => {
+    stubBrowser();
+    const first = getSessionSnapshot();
+    const later = getSessionSnapshot();
+
+    expect(first?.vid).toBeTruthy();
+    expect(first?.attribution?.vr).toBe('new');
+    expect(later?.vid).toBe(first?.vid);
+    expect(later?.attribution).toBeUndefined();
+  });
+
+  it('keeps the visitor id across sessions and marks the later session returning', () => {
+    const localStorage = makeMemoryStorage();
+    stubBrowser({ localStorage });
+    const first = getSessionSnapshot();
+    vi.setSystemTime(new Date(Date.now() + SESSION_TIMEOUT_MS + 1000));
+    const second = getSessionSnapshot();
+
+    expect(second?.id).not.toBe(first?.id);
+    expect(second?.vid).toBe(first?.vid);
+    expect(second?.attribution?.vr).toBe('returning');
+  });
+
+  it('a new tab (fresh sessionStorage, same localStorage) is the same visitor, returning', () => {
+    const localStorage = makeMemoryStorage();
+    stubBrowser({ localStorage });
+    const tabA = getSessionSnapshot();
+    stubBrowser({ localStorage });
+    const tabB = getSessionSnapshot();
+
+    expect(tabB?.id).not.toBe(tabA?.id);
+    expect(tabB?.vid).toBe(tabA?.vid);
+    expect(tabB?.attribution?.vr).toBe('returning');
+  });
+
+  it('still tracks the session, without a visitor id, when localStorage is unusable', () => {
+    stubBrowser({ localStorage: throwingStorage() });
+    const snap = getSessionSnapshot();
+
+    expect(snap?.id).toBeTruthy();
+    expect(snap?.vid).toBeUndefined();
+    expect(snap?.attribution).toBeDefined();
+    expect(snap?.attribution?.vr).toBeUndefined();
+  });
+});
+
 describe('getSessionSnapshot — attribution (decision 8)', () => {
   it('attributes an allowlisted campaign slug', () => {
     stubBrowser({ search: '?c=flyer' });
     const snapshot = getSessionSnapshot();
-    expect(snapshot?.attribution).toEqual({ src: 'campaign', camp: 'flyer' });
+    expect(snapshot?.attribution).toEqual({ src: 'campaign', camp: 'flyer', vr: 'new' });
   });
 
   it('falls through to direct/referral for a campaign slug not on the allowlist', () => {
@@ -136,19 +185,19 @@ describe('getSessionSnapshot — attribution (decision 8)', () => {
   it('attributes an external referrer by hostname only — never the full URL', () => {
     stubBrowser({ referrer: 'https://GOOGLE.com/search?q=dogs&secret=1', hostname: 'nottherug.test' });
     const snapshot = getSessionSnapshot();
-    expect(snapshot?.attribution).toEqual({ src: 'referral', ref: 'google.com' });
+    expect(snapshot?.attribution).toEqual({ src: 'referral', ref: 'google.com', vr: 'new' });
   });
 
   it('treats a same-site referrer as direct, not referral', () => {
     stubBrowser({ referrer: 'https://nottherug.test/services', hostname: 'nottherug.test' });
     const snapshot = getSessionSnapshot();
-    expect(snapshot?.attribution).toEqual({ src: 'direct' });
+    expect(snapshot?.attribution).toEqual({ src: 'direct', vr: 'new' });
   });
 
   it('attributes direct when there is no campaign param and no referrer', () => {
     stubBrowser();
     const snapshot = getSessionSnapshot();
-    expect(snapshot?.attribution).toEqual({ src: 'direct' });
+    expect(snapshot?.attribution).toEqual({ src: 'direct', vr: 'new' });
   });
 });
 

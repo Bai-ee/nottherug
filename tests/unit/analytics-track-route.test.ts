@@ -94,6 +94,28 @@ describe('validation', () => {
     expect(fsCreateDoc).toHaveBeenCalledTimes(1);
   });
 
+  it('stores the visitor id on any event and the new/returning flag only with attribution', async () => {
+    await post([
+      makeEvent({ vid: 'visitor-1', src: 'direct', vr: 'new' }),
+      makeEvent({ vid: 'visitor-1', vr: 'returning' }),
+    ]);
+    const [first, second] = Array.from(docsByPath.values());
+
+    expect(first).toMatchObject({ vid: 'visitor-1', vr: 'new' });
+    expect(second.vid).toBe('visitor-1');
+    expect(second.vr).toBeUndefined();
+  });
+
+  it('keeps the event but drops a malformed visitor id or flag', async () => {
+    const res = await post([makeEvent({ vid: 'not a valid id!', src: 'direct', vr: 'someone@example.com' })]);
+    const json = await res.json();
+    const stored = Array.from(docsByPath.values())[0];
+
+    expect(json.stored).toBe(1);
+    expect(stored.vid).toBeUndefined();
+    expect(stored.vr).toBeUndefined();
+  });
+
   it('never stores an unrecognized field a crafted payload attaches to the wrong event', async () => {
     const res = await post([makeEvent({ event: 'page_view', cta: 'closing_trust_book' })]);
     expect(res.status).toBe(202);

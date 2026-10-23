@@ -159,6 +159,13 @@ export type CampaignSlug = (typeof CAMPAIGN_SLUGS)[number];
  */
 export type SourceKind = 'campaign' | 'referral' | 'direct';
 
+/** 'new' = this session created the browser's visitor id; 'returning' = the id was already there. */
+export type VisitorKind = 'new' | 'returning';
+
+export function isVisitorKind(v: unknown): v is VisitorKind {
+  return v === 'new' || v === 'returning';
+}
+
 /**
  * A single event as it travels from browser to server. Deliberately flat and
  * short-keyed: this rides in a sendBeacon body during page unload.
@@ -170,6 +177,13 @@ export interface AnalyticsEvent {
   id: string;
   /** Pseudonymous session id. NOT a person — see reporting rules below. */
   sid: string;
+  /**
+   * Pseudonymous visitor id: a random id kept in this browser's localStorage,
+   * shared by every tab and visit until storage is cleared. One browser, not
+   * one person (a phone and a laptop are two). Absent when localStorage is
+   * unusable; the event is still recorded without it.
+   */
+  vid?: string;
   /** Client clock, milliseconds. Advisory only; the server's receipt time is authoritative. */
   ts: number;
   /** Allowlisted route, or null when the page is not one we track. */
@@ -184,6 +198,8 @@ export interface AnalyticsEvent {
   ref?: string;
   /** Campaign slug, when src === 'campaign'. */
   camp?: CampaignSlug;
+  /** Sent with the session's attribution: whether this browser's visitor id existed before this session started. */
+  vr?: VisitorKind;
   /** 'test' keeps preview/acceptance traffic out of real business numbers (decision 10). */
   mode?: 'test';
 }
@@ -267,6 +283,8 @@ export function validateEvent(input: unknown): AnalyticsEvent | null {
   const route = e.route === null || e.route === undefined ? null : isTrackedRoute(e.route) ? e.route : null;
 
   const out: AnalyticsEvent = { event: e.event, id: e.id, sid: e.sid, ts: e.ts, route };
+  // Optional: a malformed vid is dropped, not a reason to lose the event.
+  if (isOpaqueId(e.vid)) out.vid = e.vid;
 
   // Each optional field is accepted only on the event that may carry it, so a
   // crafted payload cannot attach a cta to a page_view and skew click reports.
@@ -287,6 +305,8 @@ export function validateEvent(input: unknown): AnalyticsEvent | null {
       const host = e.ref.trim().toLowerCase();
       if (/^[a-z0-9.-]+$/.test(host)) out.ref = host;
     }
+    // Rides with attribution only, so it is counted once per session.
+    if (isVisitorKind(e.vr)) out.vr = e.vr;
   }
 
   if (e.mode === 'test') out.mode = 'test';

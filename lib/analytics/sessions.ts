@@ -2,8 +2,9 @@
 // Reads the same bounded raw-event window as lib/analytics/report.ts and
 // replays each session's events in order: where it came from, which pages and
 // CTAs it touched, how far into booking it got. A session is one browser tab
-// (lib/analytics/session.ts), never a person: there is no visitor id, so two
-// sessions can be the same visitor and nothing here can say otherwise.
+// (lib/analytics/session.ts); sessions from the same browser share a visitor
+// id (since visitor tracking began), so repeat visits can be linked. Still a
+// browser, never a named person or a lead.
 
 import {
   fetchRangeEvents,
@@ -15,7 +16,7 @@ import {
   type ReportSpec,
   type StoredAnalyticsEvent,
 } from '@/lib/analytics/report';
-import { BOOKING_STEPS, type BookingStep } from '@/lib/analytics/events';
+import { BOOKING_STEPS, type BookingStep, type VisitorKind } from '@/lib/analytics/events';
 
 export const SESSIONS_DEFAULT_LIMIT = 25;
 export const SESSIONS_MAX_LIMIT = 100;
@@ -32,6 +33,12 @@ export interface SessionTrailStep {
 
 export interface SessionPath {
   sid: string;
+  /** Browser visitor id, or null for a session from before visitor tracking (or with storage blocked). */
+  visitorId: string | null;
+  /** 'new' = this session created the visitor id; 'returning' = the browser had visited before. Null when unknown. */
+  visitorType: VisitorKind | null;
+  /** Sessions in this range from the same visitor id (including this one). Null without a visitor id. */
+  visitorSessionsInRange: number | null;
   startedAt: string;
   endedAt: string;
   /** Seconds between first and last event in range; a floor (see report.ts sessionSpanSeconds). */
@@ -61,6 +68,8 @@ export interface SessionPathsResult {
   range: RangeWindow;
   /** Distinct sessions with any event in range. */
   totalSessions: number;
+  /** Distinct visitor ids across all sessions in range (not just the returned ones). */
+  uniqueVisitors: number;
   /** Sessions in `sessions` (newest start first, up to the limit). */
   returned: number;
   sessions: SessionPath[];
@@ -76,7 +85,8 @@ function sourceOf(first: StoredAnalyticsEvent): string | null {
   return 'direct';
 }
 
-function toPath(sid: string, list: StoredAnalyticsEvent[]): SessionPath {
+function toPath(sid: string, list: StoredAnalyticsEvent[], sessionsByVisitor: Map<string, number>): SessionPath {
+  const visitorId = list.find((e) => e.vid)?.vid ?? null;
   const views = list.filter((e) => e.event === 'page_view');
   let furthest = -2; // -2 = never touched booking, -1 = form opened only
   for (const e of list) {
@@ -93,6 +103,9 @@ function toPath(sid: string, list: StoredAnalyticsEvent[]): SessionPath {
   const source = sourceOf(list[0]);
   return {
     sid,
+    visitorId,
+    visitorType: list.find((e) => e.vr)?.vr ?? null,
+    visitorSessionsInRange: visitorId ? sessionsByVisitor.get(visitorId) ?? 1 : null,
     startedAt: list[0].receivedAt,
     endedAt: list[list.length - 1].receivedAt,
     durationSeconds: sessionSpanSeconds(list),
@@ -124,7 +137,12 @@ export async function getSessionPaths(
   // Real business traffic only; test/preview sessions never reach this API.
   const { events, truncated } = await fetchRangeEvents(window.startIso, window.endIso, eventsLimit, false);
   const bySession = groupBySession(events);
-  const paths = Array.from(bySession, ([sid, list]) => toPath(sid, list))
+  const sessionsByVisitor = new Map<string, number>();
+  for (const list of bySession.values()) {
+    const vid = list.find((e) => e.vid)?.vid;
+    if (vid) sessionsByVisitor.set(vid, (sessionsByVisitor.get(vid) ?? 0) + 1);
+  }
+  const paths = Array.from(bySession, ([sid, list]) => toPath(sid, list, sessionsByVisitor))
     .sort((a, b) => (a.startedAt < b.startedAt ? 1 : a.startedAt > b.startedAt ? -1 : 0))
     .slice(0, limit);
   return {
@@ -132,9 +150,10 @@ export async function getSessionPaths(
     generatedAt: now.toISOString(),
     range: window,
     totalSessions: bySession.size,
+    uniqueVisitors: sessionsByVisitor.size,
     returned: paths.length,
     sessions: paths,
     eventsTruncated: truncated,
-    note: 'A session is one browser tab, ending after 30 minutes idle. It is not a person: the same visitor on two tabs or two days is two sessions, and visitors cannot be told apart or linked to leads.',
+    note: 'A session is one browser tab, ending after 30 minutes idle. Sessions from the same browser share a visitorId, so repeat visits can be linked; a visitor is a browser, not a person (phone and laptop are two), and is never linked to a lead. Sessions from before visitor tracking began have visitorId null.',
   };
 }

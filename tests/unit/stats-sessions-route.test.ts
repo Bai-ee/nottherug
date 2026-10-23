@@ -32,13 +32,13 @@ const FIXTURES: RawDoc[] = [
   ev({ id: 'x0', sid: 'early', receivedAt: '2026-01-14T17:00:00.000Z', src: 'direct' }),
   ev({ id: 'x1', sid: 'early', receivedAt: '2026-01-14T18:10:00.000Z', route: '/book' }),
   // Campaign visit that books.
-  ev({ id: 'a1', sid: 'flyer', receivedAt: '2026-01-15T12:00:00.000Z', src: 'campaign', camp: 'flyer' }),
+  ev({ id: 'a1', sid: 'flyer', vid: 'v1', vr: 'new', receivedAt: '2026-01-15T12:00:00.000Z', src: 'campaign', camp: 'flyer' }),
   ev({ id: 'a2', sid: 'flyer', event: 'cta_click', cta: 'hero_book', receivedAt: '2026-01-15T12:00:20.000Z' }),
   ev({ id: 'a3', sid: 'flyer', event: 'booking_form_start', receivedAt: '2026-01-15T12:00:25.000Z' }),
   ev({ id: 'a4', sid: 'flyer', event: 'booking_step', step: 'review', receivedAt: '2026-01-15T12:01:00.000Z' }),
   ev({ id: 'a5', sid: 'flyer', event: 'lead_saved', receivedAt: '2026-01-15T12:01:10.000Z' }),
-  // Referral bounce.
-  ev({ id: 'b1', sid: 'google', receivedAt: '2026-01-15T15:00:00.000Z', src: 'referral', ref: 'google.com' }),
+  // Referral bounce: the same browser coming back later.
+  ev({ id: 'b1', sid: 'google', vid: 'v1', vr: 'returning', receivedAt: '2026-01-15T15:00:00.000Z', src: 'referral', ref: 'google.com' }),
   // Test traffic never shows.
   ev({ id: 't1', sid: 'test', receivedAt: '2026-01-15T16:00:00.000Z', src: 'direct', mode: 'test' }),
 ];
@@ -104,6 +104,10 @@ describe('GET /api/stats/sessions', () => {
     expect(flyer.trail.map((t: { event: string }) => t.event)).toEqual(['page_view', 'cta_click', 'booking_form_start', 'booking_step', 'lead_saved']);
     expect(flyer.trail[1].cta).toBe('hero_book');
     expect(early).toMatchObject({ source: null, startedBeforeWindow: true, entryRoute: '/book' });
+    expect(body.uniqueVisitors).toBe(1);
+    expect(flyer).toMatchObject({ visitorId: 'v1', visitorType: 'new', visitorSessionsInRange: 2 });
+    expect(google).toMatchObject({ visitorId: 'v1', visitorType: 'returning', visitorSessionsInRange: 2 });
+    expect(early).toMatchObject({ visitorId: null, visitorType: null, visitorSessionsInRange: null });
     expect(JSON.stringify(body)).not.toMatch(/"test"/);
   });
 
