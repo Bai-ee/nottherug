@@ -55,6 +55,15 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
     pageviews: 0,
     sessions: 0,
     engagedVisitPct: null,
+    bouncedSessions: 0,
+    bounceRatePct: null,
+    pagesPerSession: null,
+    sessionDuration: {
+      measuredSessions: 0,
+      medianSeconds: null,
+      meanSeconds: null,
+      note: 'No tracked sessions yet.',
+    },
 
     dailyTrend: [],
     sources: [],
@@ -73,6 +82,10 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
       dialogOpened: 0,
       savedSchedulerNotOpened: 0,
       calendlyScheduled: 0,
+      abandonment: [
+        { lastStep: 'started', sessions: 0 },
+        ...BOOKING_STEPS.map((lastStep) => ({ lastStep, sessions: 0 })),
+      ],
     },
 
     live: {

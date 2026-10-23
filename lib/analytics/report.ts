@@ -49,8 +49,62 @@ export function isReportRange(v: unknown): v is ReportRange {
   return typeof v === 'string' && (REPORT_RANGES as readonly string[]).includes(v);
 }
 
+/**
+ * What a caller may ask for. The admin dashboard only ever passes a
+ * ReportRange; the server-to-server stats API (app/api/stats) also accepts a
+ * rolling 24 hours ending now and a custom inclusive span of New York
+ * calendar dates. Build custom specs with parseReportSpec, never by hand.
+ */
+export type ReportSpec = ReportRange | '24h' | { from: string; to: string };
+export type ReportKey = ReportRange | '24h' | 'custom';
+
+/** Longest custom span accepted. Bounds the raw-event read (decision 5: no rollups). */
+export const MAX_CUSTOM_RANGE_DAYS = 90;
+/** Events expire 13 months after receipt (lib/analytics/retention.ts); older dates hold nothing. */
+const MAX_LOOKBACK_DAYS = 395;
+const DATE_LABEL_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+function isRealDateLabel(v: string): boolean {
+  return DATE_LABEL_RE.test(v) && new Date(`${v}T00:00:00.000Z`).toISOString().slice(0, 10) === v;
+}
+
+function daysBetweenLabels(a: string, b: string): number {
+  return Math.round((Date.parse(`${b}T00:00:00.000Z`) - Date.parse(`${a}T00:00:00.000Z`)) / 86_400_000);
+}
+
+/**
+ * Reads `range` / `from` / `to` query values into a ReportSpec. `from`+`to`
+ * (YYYY-MM-DD, New York dates, inclusive) win over `range`; an unknown
+ * `range` falls back to `fallback`. A custom span that is malformed,
+ * reversed, in the future, longer than MAX_CUSTOM_RANGE_DAYS or older than
+ * event retention is an error, never silently clamped.
+ */
+export function parseReportSpec(
+  params: { range?: string | null; from?: string | null; to?: string | null },
+  fallback: ReportRange | '24h',
+  now = new Date()
+): { ok: true; spec: ReportSpec } | { ok: false; error: string } {
+  const { from, to } = params;
+  if (from || to) {
+    if (!from || !to) return { ok: false, error: 'from and to must be given together' };
+    if (!isRealDateLabel(from) || !isRealDateLabel(to)) return { ok: false, error: 'from and to must be YYYY-MM-DD dates' };
+    const todayLabel = isoDateInTZ(now, TZ);
+    if (from > to) return { ok: false, error: 'from must be on or before to' };
+    if (to > todayLabel) return { ok: false, error: 'to cannot be in the future' };
+    if (daysBetweenLabels(from, to) + 1 > MAX_CUSTOM_RANGE_DAYS) return { ok: false, error: `custom ranges are limited to ${MAX_CUSTOM_RANGE_DAYS} days` };
+    if (daysBetweenLabels(from, todayLabel) > MAX_LOOKBACK_DAYS) return { ok: false, error: 'from is older than the 13-month event retention' };
+    return { ok: true, spec: { from, to } };
+  }
+  if (params.range === '24h') return { ok: true, spec: '24h' };
+  return { ok: true, spec: isReportRange(params.range) ? params.range : fallback };
+}
+
+export function reportKeyOf(spec: ReportSpec): ReportKey {
+  return typeof spec === 'string' ? spec : 'custom';
+}
+
 export interface RangeWindow {
-  key: ReportRange;
+  key: ReportKey;
   /** Half-open UTC instant bounds actually sent to Firestore: [startIso, endIso). */
   startIso: string;
   endIso: string;
@@ -118,6 +172,22 @@ export interface BookingFunnel {
   savedSchedulerNotOpened: number;
   /** Distinct sessions that opened the dialog AND produced a verified appointment_completed. */
   calendlyScheduled: number;
+  /**
+   * Sessions that started the booking form (booking_form_start or any
+   * booking_step) but recorded neither lead_saved nor appointment_completed,
+   * grouped by the furthest step they reached ('started' = form opened, no
+   * step yet). Always one row per stage, in funnel order.
+   */
+  abandonment: Array<{ lastStep: 'started' | BookingStep; sessions: number }>;
+}
+
+export interface SessionDurationInfo {
+  /** Sessions with at least two events in range (one event has no measurable span). */
+  measuredSessions: number;
+  /** null when no session is measurable. */
+  medianSeconds: number | null;
+  meanSeconds: number | null;
+  note: string;
 }
 
 export interface InquiryRateInfo {
@@ -241,6 +311,13 @@ export interface AnalyticsReport {
   sessions: number;
   /** Sessions with at least one 'engagement' event, over total sessions, as a 0-100 percentage. Replaces bounce rate (decision 2). Null when there are no sessions. */
   engagedVisitPct: number | null;
+  /** Sessions that viewed exactly one page and recorded no engagement, CTA click or booking event. */
+  bouncedSessions: number;
+  /** bouncedSessions over sessions, 0-100. Null when there are no sessions. */
+  bounceRatePct: number | null;
+  /** page_view events over sessions. Null when there are no sessions. */
+  pagesPerSession: number | null;
+  sessionDuration: SessionDurationInfo;
 
   dailyTrend: DailyTrendPoint[];
   sources: SourceRow[];
@@ -260,7 +337,7 @@ export interface AnalyticsReport {
 // see that route's storeOneEvent comment). Reporting has no use for either
 // timestamp, so this shape simply omits it rather than fabricating one.
 
-interface StoredAnalyticsEvent {
+export interface StoredAnalyticsEvent {
   event: EventName;
   id: string;
   sid: string;
@@ -381,17 +458,52 @@ function nyMidnightUtc(dateLabel: string): Date {
 
 const RANGE_DAYS: Record<ReportRange, number> = { today: 1, '7d': 7, '30d': 30 };
 
-function computeRangeWindow(range: ReportRange, now: Date): RangeWindow {
-  const todayLabel = isoDateInTZ(now, TZ);
-  const days = RANGE_DAYS[range];
-  const startLabel = shiftLabel(todayLabel, -(days - 1));
-  const endExclusiveLabel = shiftLabel(todayLabel, 1); // start of "tomorrow" (NY) — half-open upper bound
+export interface ResolvedWindow {
+  window: RangeWindow;
+  /** First NY calendar date the daily trend covers. */
+  startLabel: string;
+  /** Row ceiling for the bounded event read; hitting it flags eventsTruncated. */
+  eventsLimit: number;
+}
+
+/**
+ * The half-open UTC bounds for a spec. Calendar ranges (today/7d/30d and
+ * custom dates) run from NY midnight to NY midnight; '24h' is the rolling
+ * 24 hours ending at `now`, so its daily trend covers the (usually two)
+ * NY dates it touches, each holding only the in-window part of that day.
+ */
+export function resolveReportWindow(spec: ReportSpec, now: Date): ResolvedWindow {
+  if (spec === '24h') {
+    const start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const startLabel = isoDateInTZ(start, TZ);
+    const days = daysBetweenLabels(startLabel, isoDateInTZ(now, TZ)) + 1;
+    return {
+      window: { key: '24h', startIso: start.toISOString(), endIso: now.toISOString(), days, timezone: TZ },
+      startLabel,
+      eventsLimit: EVENTS_QUERY_LIMIT.today,
+    };
+  }
+  let startLabel: string;
+  let endLabel: string;
+  if (typeof spec === 'string') {
+    endLabel = isoDateInTZ(now, TZ);
+    startLabel = shiftLabel(endLabel, -(RANGE_DAYS[spec] - 1));
+  } else {
+    startLabel = spec.from;
+    endLabel = spec.to;
+  }
+  const days = daysBetweenLabels(startLabel, endLabel) + 1;
+  const eventsLimit = typeof spec === 'string' ? EVENTS_QUERY_LIMIT[spec] : days <= 1 ? EVENTS_QUERY_LIMIT.today : days <= 7 ? EVENTS_QUERY_LIMIT['7d'] : days <= 30 ? EVENTS_QUERY_LIMIT['30d'] : CUSTOM_LONG_QUERY_LIMIT;
   return {
-    key: range,
-    startIso: nyMidnightUtc(startLabel).toISOString(),
-    endIso: nyMidnightUtc(endExclusiveLabel).toISOString(),
-    days,
-    timezone: TZ,
+    window: {
+      key: reportKeyOf(spec),
+      startIso: nyMidnightUtc(startLabel).toISOString(),
+      endIso: nyMidnightUtc(shiftLabel(endLabel, 1)).toISOString(), // NY midnight after the last day — half-open upper bound
+      days,
+      timezone: TZ,
+    },
+    startLabel,
+    eventsLimit,
   };
 }
 
@@ -416,6 +528,8 @@ function buildDayWindows(startLabel: string, days: number): DayWindow[] {
 // date-bounded query — never an unbounded scan. Sized generously for "under
 // ~100 visits/day" (decision 5) plus headroom, not tuned to the exact number.
 const EVENTS_QUERY_LIMIT: Record<ReportRange, number> = { today: 3000, '7d': 10_000, '30d': 20_000 };
+/** Custom spans of 31-90 days. */
+const CUSTOM_LONG_QUERY_LIMIT = 40_000;
 const LIVE_QUERY_LIMIT = 1000;
 const EARLIEST_SAMPLE_LIMIT = 100;
 const EARLIEST_MAX_PAGES = 5;
@@ -432,7 +546,7 @@ function filterMode(events: StoredAnalyticsEvent[], includeTest: boolean): Store
  * ascending order is relied on downstream (buildSourceTable) to find each
  * session's genuinely-first event without a second sort.
  */
-async function fetchRangeEvents(
+export async function fetchRangeEvents(
   startIso: string,
   endIso: string,
   limit: number,
@@ -586,7 +700,78 @@ function buildFunnel(events: StoredAnalyticsEvent[]): BookingFunnel {
   let calendlyScheduled = 0;
   for (const sid of dialogOpenedSids) if (appointmentCompletedSids.has(sid)) calendlyScheduled++;
 
-  return { formStarts, steps, dialogOpened: dialogOpenedSids.size, savedSchedulerNotOpened, calendlyScheduled };
+  // Furthest step per session (-1 = form opened, no step yet), then keep only
+  // sessions that never saved a lead or booked.
+  const furthest = new Map<string, number>();
+  for (const e of events) {
+    if (e.event === 'booking_form_start' && !furthest.has(e.sid)) furthest.set(e.sid, -1);
+    if (e.event === 'booking_step' && e.step) {
+      furthest.set(e.sid, Math.max(furthest.get(e.sid) ?? -1, BOOKING_STEPS.indexOf(e.step)));
+    }
+  }
+  const abandonedAt = new Array<number>(BOOKING_STEPS.length + 1).fill(0);
+  for (const [sid, idx] of furthest) {
+    if (leadSavedSids.has(sid) || appointmentCompletedSids.has(sid)) continue;
+    abandonedAt[idx + 1] += 1;
+  }
+  const abandonment: BookingFunnel['abandonment'] = [
+    { lastStep: 'started', sessions: abandonedAt[0] },
+    ...BOOKING_STEPS.map((step, i) => ({ lastStep: step, sessions: abandonedAt[i + 1] })),
+  ];
+
+  return { formStarts, steps, dialogOpened: dialogOpenedSids.size, savedSchedulerNotOpened, calendlyScheduled, abandonment };
+}
+
+/** Groups events by session, keeping each session's events in receivedAt order (input is ascending). */
+export function groupBySession(events: StoredAnalyticsEvent[]): Map<string, StoredAnalyticsEvent[]> {
+  const out = new Map<string, StoredAnalyticsEvent[]>();
+  for (const e of events) {
+    const list = out.get(e.sid);
+    if (list) list.push(e);
+    else out.set(e.sid, [e]);
+  }
+  return out;
+}
+
+const INTERACTION_EVENTS: ReadonlySet<EventName> = new Set<EventName>([
+  'engagement',
+  'cta_click',
+  'booking_form_start',
+  'booking_step',
+  'lead_saved',
+  'scheduling_dialog_opened',
+  'appointment_completed',
+]);
+
+/** A bounce: exactly one page_view in range and nothing that shows interaction. */
+export function isBouncedSession(sessionEvents: StoredAnalyticsEvent[]): boolean {
+  let views = 0;
+  for (const e of sessionEvents) {
+    if (INTERACTION_EVENTS.has(e.event)) return false;
+    if (e.event === 'page_view') views += 1;
+  }
+  return views === 1;
+}
+
+/** Seconds from a session's first to last event in range. A floor: time on the last page is never seen. */
+export function sessionSpanSeconds(sessionEvents: StoredAnalyticsEvent[]): number {
+  if (sessionEvents.length < 2) return 0;
+  return Math.round((Date.parse(sessionEvents[sessionEvents.length - 1].receivedAt) - Date.parse(sessionEvents[0].receivedAt)) / 1000);
+}
+
+function buildSessionDuration(bySession: Map<string, StoredAnalyticsEvent[]>): SessionDurationInfo {
+  const spans: number[] = [];
+  for (const list of bySession.values()) if (list.length >= 2) spans.push(sessionSpanSeconds(list));
+  spans.sort((a, b) => a - b);
+  const n = spans.length;
+  const median = n === 0 ? null : n % 2 === 1 ? spans[(n - 1) / 2] : Math.round((spans[n / 2 - 1] + spans[n / 2]) / 2);
+  const mean = n === 0 ? null : Math.round(spans.reduce((s, v) => s + v, 0) / n);
+  return {
+    measuredSessions: n,
+    medianSeconds: median,
+    meanSeconds: mean,
+    note: 'Time between a session\'s first and last tracked event. A minimum: time spent on the last page is not recorded, and single-event sessions are left out.',
+  };
 }
 
 // ---- Entry point -------------------------------------------------------------
@@ -643,10 +828,10 @@ async function countLeadsInWindow(startIso: string, endIso: string): Promise<Lea
   return { inquiries, outstandingCaptures, bookedLeads, completedQuestionnaires };
 }
 
-export async function getAnalyticsReport(range: ReportRange, options: GetAnalyticsReportOptions = {}): Promise<AnalyticsReport> {
+export async function getAnalyticsReport(range: ReportSpec, options: GetAnalyticsReportOptions = {}): Promise<AnalyticsReport> {
   const includeTest = options.includeTest ?? false;
   const now = options.now ?? new Date();
-  const window = computeRangeWindow(range, now);
+  const { window, startLabel, eventsLimit } = resolveReportWindow(range, now);
 
   // Leads (authoritative inquiries) and events (everything else) are
   // independent dependencies. One failing must not blank out the other —
@@ -675,7 +860,7 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
 
   const [leadsResult, eventsResult, liveResult, earliestResult] = await Promise.allSettled([
     leadsQuery,
-    fetchRangeEvents(window.startIso, window.endIso, EVENTS_QUERY_LIMIT[range], includeTest),
+    fetchRangeEvents(window.startIso, window.endIso, eventsLimit, includeTest),
     fetchLive(now, includeTest),
     fetchTrackingStartDate(includeTest),
   ]);
@@ -711,6 +896,11 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
   const sessions = sessionIds.size;
   const engagedSids = new Set(events.filter((e) => e.event === 'engagement').map((e) => e.sid));
   const engagedVisitPct = sessions > 0 ? (engagedSids.size / sessions) * 100 : null;
+  const bySession = groupBySession(events);
+  let bouncedSessions = 0;
+  for (const list of bySession.values()) if (isBouncedSession(list)) bouncedSessions += 1;
+  const bounceRatePct = sessions > 0 ? (bouncedSessions / sessions) * 100 : null;
+  const pagesPerSession = sessions > 0 ? pageviews / sessions : null;
 
   const appointmentsScheduled = events.filter((e) => e.event === 'appointment_completed').length;
 
@@ -725,8 +915,7 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
     note: 'Tracked-session cohort only: lead_saved events divided by distinct tracked sessions in range. Not the same as inquiries/sessions, since tracking can be blocked and inquiries is the authoritative, untracked-inclusive total.',
   };
 
-  const todayLabel = isoDateInTZ(now, TZ);
-  const dayWindows = buildDayWindows(shiftLabel(todayLabel, -(window.days - 1)), window.days);
+  const dayWindows = buildDayWindows(startLabel, window.days);
   const dailyTrend = bucketDailyTrend(events, dayWindows);
 
   // Order matters. The range's own events decide 'ok' BEFORE trackingStartDate
@@ -762,6 +951,10 @@ export async function getAnalyticsReport(range: ReportRange, options: GetAnalyti
     pageviews,
     sessions,
     engagedVisitPct,
+    bouncedSessions,
+    bounceRatePct,
+    pagesPerSession,
+    sessionDuration: buildSessionDuration(bySession),
     dailyTrend,
     sources: buildSourceTable(events),
     pages: buildPageTable(events),

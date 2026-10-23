@@ -52,15 +52,23 @@ credentials as Production** (see checklist item 8).
 | `LAUNCH_MODE` | Optional | `true` redirects public pages to `/contact`. |
 | `ANTHROPIC_API_KEY`, `NWS_USER_AGENT`, `NOT_THE_RUG_BRIEF_DATA_DIR` | Optional (secret for the first) | Daily brief pipeline. Brief generation is not scheduled; see A8. |
 | `BENCH_AI_SUMMARIES_ENABLED`, `BENCH_AI_MODEL` | Optional | Applicant AI summary. Leave unset until counsel has confirmed it is acceptable (see `docs/backup-bench.md`). |
-| `STATS_API_KEY` | Optional (secret) | Bearer key for `GET /api/stats` (counts) and `GET /api/stats/people` (person-level records) for the HITLOOP client MCP. Unset = both endpoints return 401. See "Stats API" below. |
+| `STATS_API_KEY` | Optional (secret) | Bearer key for `GET /api/stats` (counts), `GET /api/stats/sessions` (per-visit paths) and `GET /api/stats/people` (person-level records) for the HITLOOP client MCP. Unset = all three endpoints return 401. See "Stats API" below. |
 | `TWILIO_*`, `QSTASH_*`, `CHECKR_*` | Not used | Reserved for later bench phases. Nothing reads them today. |
 
-### Stats API (`/api/stats`, `/api/stats/people`)
+### Stats API (`/api/stats`, `/api/stats/sessions`, `/api/stats/people`)
 
 Server-to-server reads for the HITLOOP client MCP. Auth: `Authorization: Bearer <STATS_API_KEY>`
 (constant-time check; unset key = 401), 60 requests/min per IP per endpoint, `Cache-Control: no-store`.
 
-- `GET /api/stats?range=today|7d|30d|all`: counts and trends only. No person data.
+- `GET /api/stats?range=24h|today|7d|30d` or `?from=YYYY-MM-DD&to=YYYY-MM-DD`: counts and trends only.
+  No person data. `24h` = the 24 hours ending now; `from`/`to` are inclusive America/New_York dates,
+  at most 90 days, not in the future, within event retention (else 400). An unknown `range` falls
+  back to `30d`. Includes bounce rate, pages per session, session duration (first to last event, a
+  floor) and booking abandonment by furthest step; each is explained in `definitions`.
+- `GET /api/stats/sessions?range=…|from=&to=&limit=`: per-session paths (source, entry/exit page,
+  ordered page/CTA/booking-step trail, duration, outcome), newest first. Default `24h`, `limit`
+  1-100 (default 25). Pseudonymous: only the tracker's random per-tab session id, no IP, user agent
+  or link to a lead; test-mode traffic excluded. Code: `lib/analytics/sessions.ts`.
 - `GET /api/stats/people?kind=leads|captures|applicants`: **full person-level records including
   names, emails, phones and every questionnaire/application answer.** The owner approved this
   (2026-10-21); treat the key like a customer-data credential and rotate it in Vercel if it leaks.

@@ -1,4 +1,4 @@
-import { getAnalyticsReport, type AnalyticsReport, type ReportRange } from '@/lib/analytics/report';
+import { getAnalyticsReport, reportKeyOf, type AnalyticsReport, type ReportKey, type ReportSpec } from '@/lib/analytics/report';
 import { getLeadStats } from '@/lib/leads/stats';
 import { listBenchPeople } from '@/lib/server/bench';
 import { BENCH_STAGES, type BenchStage } from '@/lib/bench/contract';
@@ -11,7 +11,8 @@ import { BENCH_STAGES, type BenchStage } from '@/lib/bench/contract';
 export interface SiteStats {
   site: 'nottherug.com';
   generatedAt: string;
-  range: ReportRange;
+  /** today | 7d | 30d | 24h (rolling, ending now) | custom (from/to dates; exact bounds in analytics.range). */
+  range: ReportKey;
   /** The admin analytics report for the range (traffic, sources, pages, CTAs, booking funnel); null when it failed. */
   analytics: AnalyticsReport | null;
   leads: {
@@ -54,6 +55,12 @@ export const STAT_DEFINITIONS = {
   outstandingCaptures: 'Email-only captures still waiting on questionnaire answers; never counted as inquiries.',
   completedQuestionnaires: 'Leads who answered every question on the questionnaire.',
   leadsToday: 'Leads submitted today in the site timezone (leads.timezone), excluding email-only captures.',
+  sessions: 'Distinct browser-tab sessions with any tracked event in range. A session ends after 30 minutes idle. Not people: there is no visitor id, so unique or returning visitors cannot be counted.',
+  bounceRate: 'Sessions that viewed exactly one page and recorded no engagement (15 seconds on page or half the page scrolled), CTA click or booking event, as a percentage of sessions.',
+  pagesPerSession: 'Page views divided by sessions in range.',
+  sessionDuration: 'Time between a session\'s first and last tracked event; a minimum, since time on the last page is not recorded. Single-event sessions are left out of the median and mean.',
+  abandonment: 'Sessions that opened the booking form but neither saved a lead nor booked, by the furthest step reached (started = form opened, no step completed).',
+  rollingRange: 'range 24h is the 24 hours ending at generatedAt; its daily trend shows only the in-window part of each date. Custom ranges are whole New York calendar dates, at most 90 days, within the 13-month event retention.',
 } as const;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -62,7 +69,7 @@ function emptyStages(): Record<BenchStage, number> {
   return Object.fromEntries(BENCH_STAGES.map((s) => [s, 0])) as Record<BenchStage, number>;
 }
 
-export async function getSiteStats(range: ReportRange, now = new Date()): Promise<SiteStats> {
+export async function getSiteStats(range: ReportSpec, now = new Date()): Promise<SiteStats> {
   const degraded: SiteStats['degraded'] = [];
   const [analyticsResult, leadsResult, peopleResult] = await Promise.allSettled([
     getAnalyticsReport(range, { now }),
@@ -123,5 +130,5 @@ export async function getSiteStats(range: ReportRange, now = new Date()): Promis
     degraded.push('applicants');
   }
 
-  return { site: 'nottherug.com', generatedAt: now.toISOString(), range, analytics, leads, applicants, definitions: STAT_DEFINITIONS, degraded };
+  return { site: 'nottherug.com', generatedAt: now.toISOString(), range: reportKeyOf(range), analytics, leads, applicants, definitions: STAT_DEFINITIONS, degraded };
 }

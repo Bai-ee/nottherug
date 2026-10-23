@@ -659,3 +659,110 @@ describe('getAnalyticsReport', () => {
     });
   });
 });
+
+describe('rolling, custom ranges and session-quality metrics', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const NOW = new Date('2026-01-15T18:00:00.000Z'); // 13:00 NY (EST)
+
+  it('computes bounce, pages per session, duration floor and abandonment by furthest step', async () => {
+    const fixtures: RawDoc[] = [
+      // s1: one page, nothing else -> bounce.
+      ev({ id: 'a1', sid: 's1', receivedAt: '2026-01-15T12:00:00.000Z', src: 'direct' }),
+      // s2: two pages a minute apart -> not a bounce, 60s.
+      ev({ id: 'b1', sid: 's2', receivedAt: '2026-01-15T12:00:00.000Z', src: 'direct' }),
+      ev({ id: 'b2', sid: 's2', receivedAt: '2026-01-15T12:01:00.000Z', route: '/book' }),
+      // s3: form opened, reached details, never saved -> abandoned at details, 30s.
+      ev({ id: 'c1', sid: 's3', receivedAt: '2026-01-15T13:00:00.000Z', src: 'direct' }),
+      ev({ id: 'c2', sid: 's3', event: 'booking_form_start', receivedAt: '2026-01-15T13:00:05.000Z' }),
+      ev({ id: 'c3', sid: 's3', event: 'booking_step', step: 'details', receivedAt: '2026-01-15T13:00:30.000Z' }),
+      // s4: form opened only -> abandoned at 'started', 10s.
+      ev({ id: 'd1', sid: 's4', receivedAt: '2026-01-15T14:00:00.000Z', src: 'direct' }),
+      ev({ id: 'd2', sid: 's4', event: 'booking_form_start', receivedAt: '2026-01-15T14:00:10.000Z' }),
+      // s5: one page but engaged -> not a bounce, 20s.
+      ev({ id: 'e1', sid: 's5', receivedAt: '2026-01-15T15:00:00.000Z', src: 'direct' }),
+      ev({ id: 'e2', sid: 's5', event: 'engagement', receivedAt: '2026-01-15T15:00:20.000Z' }),
+      // s6: completed booking -> never abandonment.
+      ev({ id: 'f1', sid: 's6', event: 'booking_form_start', receivedAt: '2026-01-15T16:00:00.000Z', src: 'direct' }),
+      ev({ id: 'f2', sid: 's6', event: 'booking_step', step: 'review', receivedAt: '2026-01-15T16:00:10.000Z' }),
+      ev({ id: 'f3', sid: 's6', event: 'lead_saved', receivedAt: '2026-01-15T16:00:20.000Z' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
+
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('today', { now: NOW });
+
+    expect(report.sessions).toBe(6);
+    expect(report.bouncedSessions).toBe(1);
+    expect(report.bounceRatePct).toBeCloseTo(100 / 6, 5);
+    expect(report.pagesPerSession).toBeCloseTo(6 / 6, 5);
+    // Spans: s2 60, s3 30, s4 10, s5 20, s6 20 (s1 has one event and is left out).
+    expect(report.sessionDuration).toMatchObject({ measuredSessions: 5, medianSeconds: 20, meanSeconds: 28 });
+    expect(report.funnel.abandonment).toEqual([
+      { lastStep: 'started', sessions: 1 },
+      { lastStep: 'details', sessions: 1 },
+      { lastStep: 'dog', sessions: 0 },
+      { lastStep: 'review', sessions: 0 },
+      { lastStep: 'schedule', sessions: 0 },
+    ]);
+  });
+
+  it('reports null rates (not zero) when there are no sessions', async () => {
+    fsQueryRange.mockImplementation(rangeQueryMock([], leadDocs(0)));
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('7d', { now: NOW });
+    expect(report.bounceRatePct).toBeNull();
+    expect(report.pagesPerSession).toBeNull();
+    expect(report.sessionDuration).toMatchObject({ measuredSessions: 0, medianSeconds: null, meanSeconds: null });
+  });
+
+  it("'24h' is the rolling 24 hours ending now, bucketed into the NY dates it touches", async () => {
+    const fixtures: RawDoc[] = [
+      ev({ id: 'out', sid: 'old', receivedAt: '2026-01-14T17:59:59.000Z' }),
+      ev({ id: 'in1', sid: 'y', receivedAt: '2026-01-14T19:00:00.000Z' }),
+      ev({ id: 'in2', sid: 't', receivedAt: '2026-01-15T17:00:00.000Z' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport('24h', { now: NOW });
+
+    expect(report.range).toMatchObject({ key: '24h', startIso: '2026-01-14T18:00:00.000Z', endIso: '2026-01-15T18:00:00.000Z', days: 2 });
+    expect(report.pageviews).toBe(2);
+    expect(report.dailyTrend.map((d) => [d.date, d.pageviews])).toEqual([['2026-01-14', 1], ['2026-01-15', 1]]);
+  });
+
+  it('a custom span covers whole NY calendar dates, inclusive', async () => {
+    const fixtures: RawDoc[] = [
+      ev({ id: 'before', sid: 'a', receivedAt: '2026-01-10T04:59:59.000Z' }), // 23:59 NY on the 9th
+      ev({ id: 'first', sid: 'b', receivedAt: '2026-01-10T05:00:00.000Z' }),
+      ev({ id: 'last', sid: 'c', receivedAt: '2026-01-13T04:59:59.000Z' }), // 23:59 NY on the 12th
+      ev({ id: 'after', sid: 'd', receivedAt: '2026-01-13T05:00:00.000Z' }),
+    ];
+    fsQueryRange.mockImplementation(rangeQueryMock(fixtures, leadDocs(0)));
+    const { getAnalyticsReport } = await import('@/lib/analytics/report');
+    const report = await getAnalyticsReport({ from: '2026-01-10', to: '2026-01-12' }, { now: NOW });
+
+    expect(report.range).toMatchObject({ key: 'custom', startIso: '2026-01-10T05:00:00.000Z', endIso: '2026-01-13T05:00:00.000Z', days: 3 });
+    expect(report.pageviews).toBe(2);
+    expect(report.dailyTrend.map((d) => d.date)).toEqual(['2026-01-10', '2026-01-11', '2026-01-12']);
+  });
+
+  it('parseReportSpec accepts presets, 24h and valid custom spans, and rejects bad custom input', async () => {
+    const { parseReportSpec } = await import('@/lib/analytics/report');
+    const p = (q: Record<string, string>) => parseReportSpec(q, '30d', NOW);
+
+    expect(p({ range: '7d' })).toEqual({ ok: true, spec: '7d' });
+    expect(p({ range: '24h' })).toEqual({ ok: true, spec: '24h' });
+    expect(p({ range: 'bogus' })).toEqual({ ok: true, spec: '30d' });
+    expect(p({ from: '2026-01-01', to: '2026-01-15', range: '7d' })).toEqual({ ok: true, spec: { from: '2026-01-01', to: '2026-01-15' } });
+
+    expect(p({ from: '2026-01-01' }).ok).toBe(false);
+    expect(p({ from: '2026-02-30', to: '2026-03-01' }).ok).toBe(false);
+    expect(p({ from: '2026-01-10', to: '2026-01-09' }).ok).toBe(false);
+    expect(p({ from: '2026-01-10', to: '2026-01-16' }).ok).toBe(false); // future
+    expect(p({ from: '2025-10-01', to: '2026-01-15' }).ok).toBe(false); // > 90 days
+    expect(p({ from: '2024-11-01', to: '2024-11-02' }).ok).toBe(false); // past retention
+  });
+});
