@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { timingSafeEquals } from '@/lib/server/errors';
 import { checkBenchRateLimit, clientIp } from '@/lib/server/benchIntake';
-import { isReportRange, type ReportRange } from '@/lib/analytics/report';
+import { parseReportSpec, type ReportRange } from '@/lib/analytics/report';
 import { getSiteStats } from '@/lib/server/siteStats';
 
 /**
@@ -33,10 +33,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ ok: false, error: 'Too many requests' }, { status: 429 });
   }
 
-  const rangeParam = req.nextUrl.searchParams.get('range');
-  const range = isReportRange(rangeParam) ? rangeParam : DEFAULT_RANGE;
+  const sp = req.nextUrl.searchParams;
+  const parsed = parseReportSpec({ range: sp.get('range'), from: sp.get('from'), to: sp.get('to') }, DEFAULT_RANGE);
+  if (!parsed.ok) {
+    return NextResponse.json({ ok: false, error: parsed.error }, { status: 400 });
+  }
   try {
-    const stats = await getSiteStats(range);
+    const stats = await getSiteStats(parsed.spec);
     return NextResponse.json(stats, { headers: { 'Cache-Control': 'no-store' } });
   } catch (err) {
     console.error('[stats] failed', err instanceof Error ? err.message : 'unknown');

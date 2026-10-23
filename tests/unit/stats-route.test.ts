@@ -20,9 +20,10 @@ vi.mock('@/lib/server/benchIntake', async () => ({
 const KEY = 'test-stats-key';
 const NOW = new Date('2026-10-20T18:00:00.000Z');
 
-function get(auth?: string, range?: string) {
+function get(auth?: string, range?: string, extra: Record<string, string> = {}) {
   const url = new URL('https://nottherug.com/api/stats');
   if (range) url.searchParams.set('range', range);
+  for (const [k, v] of Object.entries(extra)) url.searchParams.set(k, v);
   return new NextRequest(url, { headers: auth ? { authorization: auth } : {} });
 }
 
@@ -132,5 +133,27 @@ describe('GET /api/stats', () => {
     expect(body.leads.last30Days).toBe(0);
     expect(body.applicants.total).toBe(0);
     expect(body.analytics).toEqual({ meta: { status: 'ok' }, range: { key: '30d' } });
+  });
+
+  it('passes a rolling 24h and a custom span through, and 400s on a bad custom span', async () => {
+    const { GET } = await import('@/app/api/stats/route');
+    const rolling = await (await GET(get(`Bearer ${KEY}`, '24h'))).json();
+    expect(getAnalyticsReport).toHaveBeenLastCalledWith('24h', expect.anything());
+    expect(rolling.range).toBe('24h');
+
+    const custom = await (await GET(get(`Bearer ${KEY}`, undefined, { from: '2026-10-01', to: '2026-10-07' }))).json();
+    expect(getAnalyticsReport).toHaveBeenLastCalledWith({ from: '2026-10-01', to: '2026-10-07' }, expect.anything());
+    expect(custom.range).toBe('custom');
+
+    const bad = await GET(get(`Bearer ${KEY}`, undefined, { from: '2026-10-07', to: '2026-10-01' }));
+    expect(bad.status).toBe(400);
+  });
+
+  it('defines the new session-quality metrics', async () => {
+    const { GET } = await import('@/app/api/stats/route');
+    const body = await (await GET(get(`Bearer ${KEY}`))).json();
+    for (const k of ['sessions', 'bounceRate', 'pagesPerSession', 'sessionDuration', 'abandonment', 'rollingRange']) {
+      expect(typeof body.definitions[k]).toBe('string');
+    }
   });
 });
