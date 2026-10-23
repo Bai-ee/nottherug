@@ -54,6 +54,14 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
 
     pageviews: 0,
     sessions: 0,
+    visitors: null,
+    visitorBreakdown: {
+      newVisitors: null,
+      returningVisitors: null,
+      sessionsWithVisitorId: 0,
+      sessionsPerVisitor: null,
+      note: 'No visitor ids recorded yet.',
+    },
     engagedVisitPct: null,
     bouncedSessions: 0,
     bounceRatePct: null,
@@ -94,6 +102,7 @@ export function buildEmptyReport(range: ReportRange, nowIso = new Date().toISOSt
       endIso: nowIso,
       pageviews: 0,
       sessions: 0,
+      visitors: 0,
     },
   };
 }

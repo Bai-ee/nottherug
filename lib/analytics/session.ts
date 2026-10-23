@@ -1,7 +1,8 @@
 'use client';
 
 // Pseudonymous, sessionStorage-backed session handling for the browser
-// tracker (lib/analytics/track.ts). A "session" here is a rolling-expiry
+// tracker (lib/analytics/track.ts), plus one random localStorage visitor id
+// per browser for unique/returning counts. A "session" here is a rolling-expiry
 // bucket of events from one tab, not a person — see events.ts's SourceKind
 // comment and plans/003-admin-dashboard-and-tracking.md decision 8.
 //
@@ -18,9 +19,13 @@ import {
   isOpaqueId,
   type CampaignSlug,
   type SourceKind,
+  type VisitorKind,
 } from './events';
 
 const STORAGE_KEY = 'ntr_analytics_session';
+// localStorage, not a cookie: never sent to any server on its own, only read
+// here and attached to our own events. A random id, nothing about the person.
+const VISITOR_STORAGE_KEY = 'ntr_analytics_visitor';
 
 interface StoredSession {
   id: string;
@@ -29,6 +34,10 @@ interface StoredSession {
   src: SourceKind;
   ref?: string;
   camp?: CampaignSlug;
+  /** Browser visitor id, when localStorage is usable. */
+  vid?: string;
+  /** Whether vid already existed when this session first looked for it. */
+  vr?: VisitorKind;
   attributionSent: boolean;
   engaged: boolean;
   engagementSent: boolean;
@@ -38,10 +47,13 @@ export interface SessionAttribution {
   src: SourceKind;
   ref?: string;
   camp?: CampaignSlug;
+  vr?: VisitorKind;
 }
 
 export interface SessionSnapshot {
   id: string;
+  /** Browser visitor id; absent when localStorage is unusable. */
+  vid?: string;
   /** Present only on the call that first observes this session (decision 8:
    *  attribution is fixed once, at session start). Every later event in the
    *  same session omits this. */
@@ -147,6 +159,24 @@ export function newOpaqueId(): string {
   return `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
 }
 
+/**
+ * The browser's visitor id from localStorage, creating it on first use.
+ * Null when localStorage is unusable (private mode, blocked storage): the
+ * session still tracks, it just cannot be tied to a returning browser.
+ */
+function readOrCreateVisitor(): { id: string; kind: VisitorKind } | null {
+  try {
+    const storage = window.localStorage;
+    const existing = storage.getItem(VISITOR_STORAGE_KEY);
+    if (isOpaqueId(existing)) return { id: existing, kind: 'returning' };
+    const id = newOpaqueId();
+    storage.setItem(VISITOR_STORAGE_KEY, id);
+    return { id, kind: 'new' };
+  } catch {
+    return null;
+  }
+}
+
 function createSession(now: number): StoredSession {
   return {
     id: newOpaqueId(),
@@ -173,6 +203,14 @@ function getSession(): StoredSession | null {
     const existing = readStoredSession();
     const session =
       existing && now - existing.lastActivityAt <= SESSION_TIMEOUT_MS ? existing : createSession(now);
+    if (!session.vid) {
+      // Also covers a session that began before visitor ids existed.
+      const visitor = readOrCreateVisitor();
+      if (visitor) {
+        session.vid = visitor.id;
+        session.vr = visitor.kind;
+      }
+    }
     session.lastActivityAt = now;
     writeStoredSession(session);
     return session;
@@ -191,7 +229,8 @@ export function getSessionSnapshot(): SessionSnapshot | null {
   const session = getSession();
   if (!session) return null;
 
-  if (session.attributionSent) return { id: session.id };
+  const base: SessionSnapshot = session.vid ? { id: session.id, vid: session.vid } : { id: session.id };
+  if (session.attributionSent) return base;
 
   session.attributionSent = true;
   safeWriteStoredSession(session);
@@ -199,7 +238,8 @@ export function getSessionSnapshot(): SessionSnapshot | null {
   const attribution: SessionAttribution = { src: session.src };
   if (session.src === 'referral' && session.ref) attribution.ref = session.ref;
   if (session.src === 'campaign' && session.camp) attribution.camp = session.camp;
-  return { id: session.id, attribution };
+  if (session.vr) attribution.vr = session.vr;
+  return { ...base, attribution };
 }
 
 /**

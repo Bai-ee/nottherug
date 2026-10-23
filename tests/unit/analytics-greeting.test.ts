@@ -9,7 +9,7 @@ import { buildEmptyReport } from '@/components/admin/analytics/emptyReport';
 import type { AnalyticsReport, DailyTrendPoint } from '@/lib/analytics/report';
 
 function day(date: string, sessions: number): DailyTrendPoint {
-  return { date, pageviews: sessions, sessions, engagedSessions: 0, leadSaved: 0 };
+  return { date, pageviews: sessions, sessions, visitors: null, engagedSessions: 0, leadSaved: 0 };
 }
 
 function report(overrides: Partial<AnalyticsReport>): AnalyticsReport {

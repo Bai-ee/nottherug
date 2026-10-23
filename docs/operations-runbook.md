@@ -64,11 +64,16 @@ Server-to-server reads for the HITLOOP client MCP. Auth: `Authorization: Bearer 
   No person data. `24h` = the 24 hours ending now; `from`/`to` are inclusive America/New_York dates,
   at most 90 days, not in the future, within event retention (else 400). An unknown `range` falls
   back to `30d`. Includes bounce rate, pages per session, session duration (first to last event, a
-  floor) and booking abandonment by furthest step; each is explained in `definitions`.
+  floor), booking abandonment by furthest step and `analytics.visitors` (unique visitors) with
+  `analytics.visitorBreakdown` (new / returning, sessions per visitor); each is explained in `definitions`. Visitors come from a random
+  id the tracker keeps in the browser's localStorage (`ntr_analytics_visitor`, no cookie, nothing
+  personal), sent as `vid` on every event plus `vr` (`new`/`returning`) with a session's attribution.
+  They are counted only from when that shipped; earlier ranges report `null`, not zero.
 - `GET /api/stats/sessions?range=…|from=&to=&limit=`: per-session paths (source, entry/exit page,
   ordered page/CTA/booking-step trail, duration, outcome), newest first. Default `24h`, `limit`
-  1-100 (default 25). Pseudonymous: only the tracker's random per-tab session id, no IP, user agent
-  or link to a lead; test-mode traffic excluded. Code: `lib/analytics/sessions.ts`.
+  1-100 (default 25). Pseudonymous: the tracker's random per-tab session id and per-browser visitor
+  id (`visitorId`, `visitorType`, `visitorSessionsInRange`), no IP, user agent or link to a lead;
+  test-mode traffic excluded. Code: `lib/analytics/sessions.ts`.
 - `GET /api/stats/people?kind=leads|captures|applicants`: **full person-level records including
   names, emails, phones and every questionnaire/application answer.** The owner approved this
   (2026-10-21); treat the key like a customer-data credential and rotate it in Vercel if it leaks.

@@ -165,6 +165,7 @@ function sendEvent(event: EventName, fields: Partial<Pick<WireEvent, 'cta' | 'st
     event,
     id: newOpaqueId(),
     sid: snapshot.id,
+    ...(snapshot.vid ? { vid: snapshot.vid } : {}),
     ts: Date.now(),
     route: toTrackedRoute(window.location.pathname),
     ...fields,
