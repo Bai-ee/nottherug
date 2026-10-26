@@ -372,7 +372,7 @@ for (const mode of ['held', 'aborted'] as const) {
       expect(requested).toEqual([]);
       expect(finished).toEqual([]);
     }
-    await expect(page.locator(VIDEO)).toHaveAttribute('poster', /hero-mccarren-poster\.webp/);
+    await expect(page.locator(VIDEO)).toHaveAttribute('poster', /hero-mccarren-poster-logo\.webp/);
   });
 }
 

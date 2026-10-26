@@ -21,6 +21,9 @@ import TrackedCtaLink from './TrackedCtaLink';
  *    cannot compete with the headline or the booking CTA
  *  - plays only while at least partly on screen; a failed load leaves the
  *    poster in place.
+ *  - if autoplay is refused (iOS Low Power Mode, Safari "Auto-Play: Never"),
+ *    the next tap, click or key press retries it, since a play() inside a
+ *    gesture is allowed; returning to the tab retries it too.
  * Scoped to this component only — see patches/03-hero-video-markup for why
  * this can't live in the shared `useHomeHeroMotion` hook.
  */
@@ -44,6 +47,32 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
     let isIntersecting = false;
     let loaded = false;
     let cancelled = false;
+    let waitingForGesture = false;
+
+    // Events that count as user activation, so play() inside them is allowed
+    // even where muted autoplay is not. Scroll is not one of them.
+    const GESTURE_EVENTS = ['pointerup', 'touchend', 'click', 'keydown'] as const;
+
+    function stopWaitingForGesture() {
+      if (!waitingForGesture) return;
+      waitingForGesture = false;
+      for (const type of GESTURE_EVENTS) window.removeEventListener(type, onGesture);
+    }
+
+    function onGesture() {
+      stopWaitingForGesture();
+      syncPlayback();
+    }
+
+    function waitForGesture() {
+      if (cancelled || waitingForGesture) return;
+      waitingForGesture = true;
+      for (const type of GESTURE_EVENTS) window.addEventListener(type, onGesture, { passive: true });
+    }
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') syncPlayback();
+    };
 
     const syncPlayback = () => {
       if (!loaded) return;
@@ -51,9 +80,10 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
         video.pause();
         return;
       }
-      video.play().catch(() => {
-        // Autoplay can be rejected before user interaction on some
-        // browsers; the poster frame stays visible until it succeeds.
+      video.play().then(stopWaitingForGesture, () => {
+        // Autoplay was refused; the poster stays visible and the next user
+        // gesture tries again.
+        waitForGesture();
       });
     };
 
@@ -99,6 +129,7 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
     observer.observe(video);
 
     reduceMotionQuery.addEventListener('change', syncPlayback);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     return () => {
       cancelled = true;
@@ -107,11 +138,16 @@ function useHeroVideoLifecycle(videoRef: React.RefObject<HTMLVideoElement | null
       if (timeoutHandle !== undefined) window.clearTimeout(timeoutHandle);
       observer.disconnect();
       reduceMotionQuery.removeEventListener('change', syncPlayback);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      stopWaitingForGesture();
     };
   }, [videoRef]);
 }
 
-const HERO_POSTER = '/video/hero-mccarren-poster.webp';
+// The clip's closing logo card (39.3s of hero-mccarren-1080.mp4), so a visitor
+// whose browser never plays the clip still sees the brand, not a still that
+// reads as a stuck video.
+const HERO_POSTER = '/video/hero-mccarren-poster-logo.webp';
 // The polaroid's paper background (globals.css .polaroid, also the loading
 // screen's sheet). Otherwise both files are only found once the stylesheet
 // lands and the elements are styled, queued behind the fonts, and they are
