@@ -433,6 +433,22 @@
   padding: 12px 4px 16px;
   border-bottom: 1px solid var(--light-gray);
 }
+/* The numbered 1-12 questionnaire inside an opened line item. */
+.admin-lead-questionnaire {
+  display: grid;
+  gap: 0;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--light-gray);
+}
+.admin-lead-questionnaire-header {
+  color: var(--mid-gray);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.admin-lead-unanswered { color: var(--mid-gray); font-style: italic; font-weight: 400; }
 
 /* Two rows the leads page used to lay out with inline styles; they live here
    so the phone breakpoint below can restack and centre them. */

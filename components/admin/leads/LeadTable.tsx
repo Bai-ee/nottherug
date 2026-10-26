@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadDisplayField } from '@/lib/leads/contract';
 import { telHref, mailtoHref, googleCalendarHref } from '@/lib/leads/contactLinks';
+import { COUNTED_LEAD_FIELDS, measureLeadCompleteness } from '@/lib/leads/completeness';
 import { isOutstandingCapture, isLeadComplete, leadQualityLabel, type AdminLeadRecord } from './adminLeadRecord';
 
 const TZ = 'America/New_York';
@@ -85,11 +86,24 @@ function LeadActions({ lead }: { lead: AdminLeadRecord }) {
   );
 }
 
-function FieldRow({ lead, field }: { lead: AdminLeadRecord; field: LeadDisplayField }) {
+function FieldRow({
+  lead,
+  field,
+  number,
+  answered = true,
+}: {
+  lead: AdminLeadRecord;
+  field: LeadDisplayField;
+  /** The question's place in the questionnaire, printed before its label. */
+  number?: number;
+  answered?: boolean;
+}) {
   const isNotes = field.key === 'notes';
 
   let valueNode: ReactNode;
-  if (field.key === 'email' && lead.email) {
+  if (!answered) {
+    valueNode = <span className="rc-value admin-lead-unanswered">Not answered</span>;
+  } else if (field.key === 'email' && lead.email) {
     valueNode = (
       <a href={`mailto:${lead.email}`} className="rc-value" onClick={(e) => e.stopPropagation()}>
         {lead.email}
@@ -113,7 +127,10 @@ function FieldRow({ lead, field }: { lead: AdminLeadRecord; field: LeadDisplayFi
 
   return (
     <div className="rc-row" id={`admin-lead-field-${field.key}`} style={isNotes ? { alignItems: 'flex-start', flexDirection: 'column', gap: 8 } : { gap: 16 }}>
-      <span className="rc-label" style={{ minWidth: isNotes ? undefined : 150 }}>{field.label}</span>
+      <span className="rc-label" style={{ minWidth: isNotes ? undefined : 150 }}>
+        {number ? `${number}. ` : null}
+        {field.label}
+      </span>
       {valueNode}
     </div>
   );
@@ -165,6 +182,45 @@ const ROW_COLUMNS: LeadDisplayField[] = ROW_COLUMN_KEYS.map(
   (key) => LEAD_DISPLAY_FIELDS.find((f) => f.key === key)!,
 );
 
+/** The order the visitor meets each question in the booking form
+ *  (components/booking/BookingSteps.tsx), so an opened line item reads top to
+ *  bottom like the form did. COUNTED_LEAD_FIELDS still decides WHICH questions
+ *  count toward "N of 12 answered"; this only decides their order. */
+const QUESTION_ORDER: LeadDisplayField['key'][] = [
+  'ownerName', 'phone', 'neighborhood', 'dogName', 'breedAge', 'vaccinations',
+  'serviceInterest', 'walkFrequency', 'reactivity', 'allergies', 'notes', 'phoneConsult',
+];
+
+const QUESTION_FIELDS = [...COUNTED_LEAD_FIELDS].sort(
+  (a, b) => QUESTION_ORDER.indexOf(a.key) - QUESTION_ORDER.indexOf(b.key),
+);
+
+const QUESTION_KEYS = new Set(QUESTION_FIELDS.map((f) => f.key));
+
+/** What an opened line item shows below the questionnaire: anything that is
+ *  neither a question nor already a column (the lead id, and old fields only
+ *  when this lead has them). */
+const ROW_EXTRA_FIELDS = LEAD_DISPLAY_FIELDS.filter(
+  (f) => !QUESTION_KEYS.has(f.key) && !(ROW_COLUMN_KEYS as readonly string[]).includes(f.key),
+);
+
+/** Every question, numbered in form order, answered or not — so the owner can
+ *  see exactly which one is missing behind "11 of 12 answered". */
+function QuestionList({ lead, rowKey }: { lead: AdminLeadRecord; rowKey: string }) {
+  const { answered, total, answeredKeys } = measureLeadCompleteness(lead);
+  const answeredSet = new Set(answeredKeys);
+  return (
+    <div id={`admin-lead-questionnaire-${rowKey}`} className="admin-lead-questionnaire">
+      <div className="admin-lead-questionnaire-header">
+        Questionnaire · {answered} of {total} answered
+      </div>
+      {QUESTION_FIELDS.map((f, i) => (
+        <FieldRow key={f.key} lead={lead} field={f} number={i + 1} answered={answeredSet.has(f.key as string)} />
+      ))}
+    </div>
+  );
+}
+
 function LeadRows({
   leads,
   expandedId,
@@ -191,7 +247,7 @@ function LeadRows({
         {leads.map((lead) => {
           const rowKey = lead.id ?? `${lead.email}-${lead.submittedAt}`;
           const isOpen = expandedId === rowKey;
-          const visibleDetailFields = DETAIL_FIELDS.filter((f) => !f.legacy || lead[f.key] !== undefined);
+          const visibleExtraFields = ROW_EXTRA_FIELDS.filter((f) => !f.legacy || lead[f.key] !== undefined);
 
           return (
             <div key={rowKey} id={`admin-lead-row-${rowKey}`}>
@@ -238,7 +294,10 @@ function LeadRows({
                       No questionnaire answers yet — this row is only the email capture from Calendly checkout.
                     </p>
                   ) : (
-                    visibleDetailFields.map((f) => <FieldRow key={f.key} lead={lead} field={f} />)
+                    <>
+                      <QuestionList lead={lead} rowKey={rowKey} />
+                      {visibleExtraFields.map((f) => <FieldRow key={f.key} lead={lead} field={f} />)}
+                    </>
                   )}
                 </div>
               ) : null}
