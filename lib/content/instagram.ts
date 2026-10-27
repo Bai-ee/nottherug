@@ -17,8 +17,10 @@
  *      field off rather than guess: the overlay drops any count it is not
  *      given, and a tile with no counts at all simply shows the link cue.
  *
- * Images here are PLACEHOLDERS from public/dogs — replace all five before
- * this section ships.
+ * Current set: the account's five most-liked posts of all time, counts copied
+ * off each post on 2026-10-23. #4 swapped on 2026-10-26 for a recent walker
+ * post (the PSA screenshot it replaced was off-brand for the homepage). The reel (#5) carries likes and comments only —
+ * Instagram does not show its view count to visitors.
  */
 
 export interface InstagramPost {
@@ -40,38 +42,43 @@ export interface InstagramPost {
 
 export const INSTAGRAM_POSTS: readonly InstagramPost[] = [
   {
-    src: '/img/instagram/placeholder-01.jpg',
-    alt: 'Placeholder — a dog on a Williamsburg sidewalk mid-walk',
-    caption: 'Morning group walk',
-    likes: 214,
-    comments: 11,
-  },
-  {
-    src: '/img/instagram/placeholder-02.jpg',
-    alt: 'Placeholder — a dog waiting at a Brooklyn stoop',
-    caption: 'Pickup, 9:40am',
-    likes: 168,
+    src: '/img/instagram/post-01.jpg',
+    permalink: 'https://www.instagram.com/p/BjiWqr0HwUf/',
+    alt: 'A curly apricot doodle lying on a leash in a Williamsburg park',
+    caption: 'Mr. Peychaud, park boss',
+    likes: 169,
     comments: 7,
   },
   {
-    src: '/img/instagram/placeholder-03.jpg',
-    alt: 'Placeholder — two dogs greeting each other on leash',
-    caption: 'New friend on N 7th',
-    views: 4820,
-    likes: 309,
+    src: '/img/instagram/post-02.jpg',
+    permalink: 'https://www.instagram.com/p/BuKMHMDngJL/',
+    alt: 'Two curly red doodles side by side on a sunny sidewalk, one in a red coat',
+    caption: 'Cuteness overload',
+    likes: 153,
+    comments: 5,
   },
   {
-    src: '/img/instagram/placeholder-04.jpg',
-    alt: 'Placeholder — a dog resting in the grass after a walk',
-    caption: 'Post-walk nap earned',
-    likes: 252,
-    comments: 19,
+    src: '/img/instagram/post-03.jpg',
+    permalink: 'https://www.instagram.com/p/B2hA0ZzAFDZ/',
+    alt: 'A walker holding a puppy on a Brooklyn sidewalk with two doodles on leash at his feet',
+    caption: 'One in each color',
+    likes: 129,
+    comments: 11,
   },
   {
-    src: '/img/instagram/placeholder-05.jpg',
-    alt: 'Placeholder — a dog looking up at its walker',
-    caption: 'Same crew, every day',
-    likes: 187,
-    comments: 9,
+    src: '/img/instagram/post-06.jpg',
+    permalink: 'https://www.instagram.com/p/DezE8plGz_2/',
+    alt: 'A walker and a fluffy cream doodle looking down into the camera against a blue sky',
+    caption: 'Thank you, Nuria',
+    likes: 57,
+    comments: 4,
+  },
+  {
+    src: '/img/instagram/post-05.jpg',
+    permalink: 'https://www.instagram.com/reel/C_f304jO8sD/',
+    alt: 'The Not The Rug walkers and their dogs gathered in a Williamsburg park',
+    caption: '12 years in Williamsburg',
+    likes: 103,
+    comments: 8,
   },
 ];
