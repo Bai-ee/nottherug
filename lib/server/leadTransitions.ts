@@ -66,7 +66,15 @@ export interface CaptureInput {
   /** The visitor's own "Calendly reported a completion" hint. */
   booked: boolean;
   nowIso: string;
+  /** Hashed Calendly invitee id from the verified completion (lib/booking/bookingRef.ts). */
+  bookingRef?: string | null;
+  /** Opaque session/browser/test-device ids (lib/leads/linkage.ts). Latest wins. */
+  linkage?: Record<string, string>;
 }
+
+/** A capture keeps at most this many distinct booking refs. Real people book a
+ *  handful of times; the cap only bounds a hostile caller. */
+const MAX_BOOKING_REFS = 20;
 
 export interface CaptureOutcome {
   id: string;
@@ -97,6 +105,9 @@ export async function recordCapture(input: CaptureInput, budget: TransitionBudge
           submittedAt: input.nowIso,
           lastSeenAt: input.nowIso,
           bookedSelfReported: input.booked,
+          ...(input.booked ? { firstBookedAt: input.nowIso } : {}),
+          ...(input.bookingRef ? { bookingRefs: [input.bookingRef] } : {}),
+          ...(input.linkage ?? {}),
         },
         { ...opts(budget), precondition: { exists: false } },
       );
@@ -115,7 +126,18 @@ export async function recordCapture(input: CaptureInput, budget: TransitionBudge
     }
     if (typeof data.submittedAt !== 'string') patch.submittedAt = input.nowIso;
     if (typeof data.status !== 'string') patch.status = 'partial';
-    if (input.booked && data.bookedSelfReported !== true) patch.bookedSelfReported = true;
+    if (input.booked && data.bookedSelfReported !== true) {
+      patch.bookedSelfReported = true;
+      patch.firstBookedAt = input.nowIso;
+    }
+    // Distinct bookings stay distinct; a replayed booking adds nothing.
+    const priorRefs = Array.isArray(data.bookingRefs)
+      ? (data.bookingRefs as unknown[]).filter((r): r is string => typeof r === 'string')
+      : [];
+    if (input.bookingRef && !priorRefs.includes(input.bookingRef)) {
+      patch.bookingRefs = [...priorRefs, input.bookingRef].slice(-MAX_BOOKING_REFS);
+    }
+    Object.assign(patch, input.linkage ?? {});
 
     ensureWithinBudget(budget);
     await fsMergeDoc(path, patch, { ...opts(budget), ...matchesUpdateTime(existing.updateTime) });

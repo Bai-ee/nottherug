@@ -125,3 +125,53 @@ export function customerMeetGreetEmail(lead: LeadRecord): { subject: string; htm
 
   return { subject, html, text };
 }
+
+/** Internal notice for a "Request another time" submission. Founder only — the
+ *  requester gets no automated email, because nothing has been arranged yet. */
+export function founderAlternateTimeEmail(req: {
+  id: string;
+  createdAt: string;
+  name: string;
+  email: string;
+  phone: string;
+  contactPreference: string;
+  availability: string;
+  timeZone: string;
+  nyPreview: string[];
+  note: string;
+  source: string;
+}): { subject: string; html: string; text: string } {
+  const subject = `Time request — ${req.name} (no booking yet)`;
+  const nyRows = req.nyPreview.length ? req.nyPreview.map((l) => escape(l)).join('<br/>') : 'Same as New York time';
+  const html = `
+<!doctype html>
+<html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#fff;color:#1c1c1a;margin:0;padding:24px;">
+  <div style="max-width:640px;margin:0 auto;">
+    <h2 style="margin:0 0 4px 0;">Someone couldn't find a suitable time</h2>
+    <p style="color:#666;margin:0 0 20px 0;font-size:13px;">Received ${escape(req.createdAt)} · source: ${escape(req.source)} · id: ${escape(req.id)}</p>
+    <p style="margin:0 0 16px 0;">This is a request, not a booking. Reply to arrange a time, then update its status in admin.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      ${row('Name', req.name)}
+      ${row('Reach them by', req.contactPreference)}
+      ${row('Phone', req.phone)}
+      ${row('Email', req.email)}
+      ${row('Preferred', req.availability)}
+      ${row('Their time zone', req.timeZone)}
+      <tr><td style="padding:8px 12px;background:#f7f5f1;border-bottom:1px solid #ece8df;font-weight:600;width:200px;">Next occurrence, New York time</td><td style="padding:8px 12px;border-bottom:1px solid #ece8df;">${nyRows}</td></tr>
+      ${row('Note', req.note)}
+    </table>
+  </div>
+</body></html>`;
+  const text = [
+    `Time request (not a booking) — ${req.name}`,
+    `Reach them by: ${req.contactPreference}`,
+    `Phone: ${req.phone}`,
+    `Email: ${req.email}`,
+    `Preferred: ${req.availability}`,
+    `Their time zone: ${req.timeZone}`,
+    `New York time: ${req.nyPreview.join('; ') || 'same'}`,
+    `Note: ${req.note || '—'}`,
+    `Id: ${req.id}`,
+  ].join('\n');
+  return { subject, html, text };
+}

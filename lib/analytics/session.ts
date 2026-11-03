@@ -243,6 +243,21 @@ export function getSessionSnapshot(): SessionSnapshot | null {
 }
 
 /**
+ * The current session's id and stored attribution WITHOUT consuming the
+ * once-per-session attribution flag getSessionSnapshot owns. For form
+ * submissions that link a record to its session (lib/analytics/identity.ts);
+ * the next tracked event still carries attribution as usual.
+ */
+export function peekSession(): { id: string; vid?: string; attribution: SessionAttribution } | null {
+  const session = getSession();
+  if (!session) return null;
+  const attribution: SessionAttribution = { src: session.src };
+  if (session.src === 'referral' && session.ref) attribution.ref = session.ref;
+  if (session.src === 'campaign' && session.camp) attribution.camp = session.camp;
+  return session.vid ? { id: session.id, vid: session.vid, attribution } : { id: session.id, attribution };
+}
+
+/**
  * Marks the session engaged (decision 2) and returns true exactly once per
  * session — the first call that qualifies. Every later call, and every call
  * once sessionStorage is unusable, returns false. Both the scroll/dwell

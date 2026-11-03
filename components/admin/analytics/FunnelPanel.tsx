@@ -45,16 +45,23 @@ export function FunnelPanel({ funnel }: { funnel: BookingFunnel }) {
             <span className="rc-value">{funnel.dialogOpened.toLocaleString('en-US')}</span>
           </div>
           <div className="rc-row">
-            <span>Scheduled via Calendly</span>
+            <span>Booking reported in same session</span>
             <span className="rc-value">{funnel.calendlyScheduled.toLocaleString('en-US')}</span>
           </div>
           <div className="rc-row">
-            <span>Saved, scheduler not opened</span>
+            <span>Saved, scheduler not opened in that session</span>
             <span className="rc-value">{funnel.savedSchedulerNotOpened.toLocaleString('en-US')}</span>
           </div>
-          <p className="form-note">
-            (saved a lead without opening the scheduling dialog — a completed inquiry, not a drop-off)
-          </p>
+          {funnel.savedLinkage ? (
+            <p className="form-note" id="admin-analytics-funnel-saved-breakdown">
+              Of all saved sessions: {funnel.savedLinkage.afterEarlierBooking.toLocaleString('en-US')} followed an earlier linked
+              booking; {funnel.savedLinkage.unknown.toLocaleString('en-US')} have no linked booking (unknown, not abandonment).
+            </p>
+          ) : (
+            <p className="form-note">
+              (saved a lead without opening the scheduling dialog in that session — a completed inquiry, not a drop-off)
+            </p>
+          )}
         </div>
       </div>
     </section>

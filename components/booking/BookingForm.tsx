@@ -4,11 +4,13 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { HONEYPOT_FIELD_NAME, LEAD_FIELD_LIMITS } from '@/lib/leads/contract';
 import { isValidEmail } from '@/lib/leads/validation';
 import { track } from '@/lib/analytics/track';
+import { getSubmissionLinkage } from '@/lib/analytics/identity';
+import { captureLeadEmail } from '@/lib/leads/captureClient';
 import type { BookingStep } from '@/lib/analytics/events';
 import { clearOnboardingHandoff, getOnboardingHandoffStorage } from '@/lib/booking/onboarding-handoff';
 import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import { BOOKING_STEPS, StepAboutYou, StepCare, StepQuirks, StepWrapUp, StepYourDog } from './BookingSteps';
-import SchedulingDialog from './SchedulingDialog';
+import SchedulingDialog, { type CalendlyBooking } from './SchedulingDialog';
 import ContactUsTrigger from '@/components/marketing/ContactUsTrigger';
 import { PHONE_DISPLAY, PHONE_HREF } from '@/lib/content/contact';
 
@@ -270,6 +272,12 @@ export default function BookingForm({
   // the dialog's own completion dedupe) still belong to the attempt that
   // just submitted.
   const startsNewAttemptRef = useRef(false);
+  /** The address the last successful submission used — the form resets after
+   *  saving, but a booking made right after still belongs to that address. */
+  const submittedEmailRef = useRef('');
+  /** Name/email of the last saved submission, to prefill the scheduler's
+   *  "Request another time" form after the questionnaire resets. */
+  const [lastContact, setLastContact] = useState<{ name?: string; email?: string; phone?: string }>({});
 
   const alertId = `${paneId}-step-alert`;
   const stepAlertMessage = Object.values(fieldErrors).find((m): m is string => Boolean(m)) ?? '';
@@ -452,10 +460,16 @@ export default function BookingForm({
    * thanks line. Stable identity: it sits in SchedulingDialog's message
    * listener effect dependencies.
    */
-  const handleBooked = useCallback(() => {
+  const handleBooked = useCallback((booking: CalendlyBooking) => {
     setShowCalendly(false);
+    // The questionnaire was saved before the scheduler opened (which already
+    // marked this address converted), so the booking lands on that lead —
+    // with Calendly's opaque booking id when it sent one, so reporting can
+    // count distinct bookings. Fire-and-forget.
+    const bookedEmail = submittedEmailRef.current;
+    if (bookedEmail) captureLeadEmail(bookedEmail, source, true, booking.bookingId);
     openWelcomeWalkModal({ thankYou: true });
-  }, []);
+  }, [source]);
 
   // The one way the scheduler opens, used by both the auto-open after a save
   // and the manual reopen button, so the two can never disagree about the
@@ -485,6 +499,7 @@ export default function BookingForm({
         allergies: allergyList.join(', ') || 'None',
         phoneConsult: wantsPhoneConsult,
         [HONEYPOT_FIELD_NAME]: honeypot,
+        linkage: getSubmissionLinkage(),
       },
       source,
     );
@@ -499,6 +514,12 @@ export default function BookingForm({
     // Snapshot what was actually sent before the draft resets (R15): the
     // success UI and the scheduling branch below read this, never `form`/`phoneConsult`.
     setSubmittedSummary({ dogName: submittedDogName, phoneConsult: wantsPhoneConsult });
+    submittedEmailRef.current = form.email.trim();
+    setLastContact({
+      name: form.ownerName.trim() || undefined,
+      email: form.email.trim() || undefined,
+      phone: form.phone.trim() || undefined,
+    });
     setStatus('success');
     onSubmitted?.();
     setForm({ ...initial, ...initialValues });
@@ -878,6 +899,11 @@ export default function BookingForm({
         source={source}
         onBooked={handleBooked}
         attemptId={`${paneId}-attempt-${attempt}`}
+        altTimePrefill={{
+          name: form.ownerName.trim() || lastContact.name,
+          email: form.email.trim() || lastContact.email,
+          phone: form.phone.trim() || lastContact.phone,
+        }}
       />
     </div>
   );

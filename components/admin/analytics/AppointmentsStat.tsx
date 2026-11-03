@@ -52,9 +52,9 @@ export function AppointmentsStat({
     <section id="admin-analytics-booking-panel" className="card card-pad">
       <div className="admin-stat-pair">
         <div className="admin-stat-col" id="admin-analytics-appointments-stat">
-          <div className="stamp-label">Appointments Scheduled</div>
+          <div className="stamp-label">Bookings Reported</div>
           <div className={numClass}>{figure(bookedLeads)}</div>
-          <div className="hero-stat-label">Meetings booked</div>
+          <div className="hero-stat-label">Leads with a booking reported</div>
         </div>
 
         <div className="admin-stat-col" id="admin-analytics-outstanding-captures-stat">
@@ -66,8 +66,7 @@ export function AppointmentsStat({
 
       {testMode ? (
         <p className="form-note admin-card-note">
-          Your leads list does not separate test from real, so neither figure is shown on this view.
-          Switch to Real Data to see them.
+          Lead figures are not shown on the test-only view. Remove ?testMode=1 to see them.
         </p>
       ) : degraded ? (
         <p className="form-note admin-card-note text-terra">
@@ -76,12 +75,13 @@ export function AppointmentsStat({
       ) : (
         <>
           <p className="form-note admin-card-note">
-            A booking counts here whether or not the questions get answered. Neither figure is ever
-            added to inquiries.
+            Reported by the visitor&apos;s browser or by the visitor themselves — not confirmed appointments,
+            which would need Calendly&apos;s own records. Counts whether or not the questions get answered.
+            Neither figure is ever added to inquiries.
           </p>
           <p id="admin-analytics-appointments-verified-note" className="form-note admin-card-note">
-            Calendly confirmed {verifiedCompletions.toLocaleString('en-US')} of them in the visitor&apos;s
-            browser. That message often goes missing, so it runs low.
+            Calendly&apos;s in-browser completion message arrived {verifiedCompletions.toLocaleString('en-US')} time(s)
+            (booking events). That message often goes missing, so it runs low.
           </p>
         </>
       )}

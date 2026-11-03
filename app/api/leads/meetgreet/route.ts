@@ -11,6 +11,7 @@ import {
   recordConversion,
 } from '@/lib/server/leadTransitions';
 import { parseLeadSubmission } from '@/lib/leads/validation';
+import { readLinkage } from '@/lib/leads/linkage';
 import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput, type NotificationOutcome } from '@/lib/leads/contract';
 
 export const runtime = 'nodejs';
@@ -332,6 +333,10 @@ export async function POST(req: Request) {
   const id = computeSubmissionKey(validation.data, dedupeWindowStart);
   const submittedAt = new Date().toISOString();
   const lead = buildLeadRecord(id, submittedAt, validation.data);
+  // Opaque session/browser/test-device ids, outside the content hash so a
+  // retry from the same form still dedupes. They let reporting see that this
+  // questionnaire followed a booking made in an earlier session.
+  Object.assign(lead, readLinkage((parsed as Record<string, unknown> | undefined)?.linkage));
   // Carry the capture's self-reported booking hint onto the lead itself, since
   // the admin table hides the converted capture row.
   const leadCarriesBookedHint = await readCaptureBookedHint(validation.data.email, preEmailDeadline);

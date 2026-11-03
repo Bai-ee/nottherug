@@ -14,6 +14,32 @@
 // what a field means.
 
 import { fsQueryRange } from '@/lib/server/firestoreRest';
+import {
+  emptyTestContext,
+  isTestEvent,
+  isTestRecord,
+  keepForView,
+  loadTestContext,
+  type TestContext,
+  type TestView,
+} from '@/lib/testing/classification';
+import { ALT_TIME_COLLECTION } from '@/lib/booking/alternateTime';
+import { normalizeEmail } from '@/lib/leads/linkage';
+import {
+  buildBookingSection,
+  buildPeriodCounts,
+  buildReviewFlags,
+  buildSavedLinkage,
+  readAvailabilityChange,
+  unresolvedSavedBrowserIds,
+  AVAILABILITY_CHANGE_ENV,
+  type AvailabilityComparison,
+  type BookingAvailabilitySection,
+  type ReportEvent,
+  type RequestRow,
+  type ReviewFlag,
+  type SavedLinkage,
+} from '@/lib/analytics/bookingReport';
 import { measureLeadCompleteness } from '@/lib/leads/completeness';
 import type { LeadRecord } from '@/lib/leads/contract';
 import { ServiceError } from '@/lib/server/errors';
@@ -21,12 +47,14 @@ import {
   BOOKING_STEPS,
   CTA_IDS,
   EVENTS_COLLECTION,
+  isAltRequestFailureReason,
   isBookingStep,
   isCampaignSlug,
   isCtaId,
   isEventName,
   isOpaqueId,
   isTrackedRoute,
+  type AltRequestFailureReason,
   type BookingStep,
   type CampaignSlug,
   type CtaId,
@@ -176,6 +204,12 @@ export interface BookingFunnel {
    * scheduling_dialog_opened in the same session) is unchanged and still true.
    */
   savedSchedulerNotOpened: number;
+  /**
+   * Every lead_saved session split by what can be linked: scheduler in the
+   * same session, an EARLIER booking from the same browser (or recorded on the
+   * lead), or unknown. Unknown is not abandonment.
+   */
+  savedLinkage?: SavedLinkage;
   /** Distinct sessions that opened the dialog AND produced a verified appointment_completed. */
   calendlyScheduled: number;
   /**
@@ -255,6 +289,11 @@ export interface AnalyticsReportMeta {
    * entry also makes status 'partial_failure'. Empty on a healthy report.
    */
   unavailable: Array<'live' | 'trackingStart'>;
+  /** Which records this report includes: real only (default), real + test, or test only. */
+  testView?: TestView;
+  /** 'unavailable' when the test-marker collections could not be read: only
+   *  build-time mode:'test' is excluded then, and the UI says so. */
+  testClassification?: 'ok' | 'unavailable';
   /**
    * True if the bounded event query for this range hit its row ceiling, meaning
    * more matching events exist than were read. Every events-derived number in
@@ -357,6 +396,17 @@ export interface AnalyticsReport {
 
   /** Rolling 60 minutes ending now, independent of `range` (decision 3: "alongside", not a day bucket). */
   live: LiveTile;
+
+  /** Distinct email addresses across leads, captures and time requests in range. Null when leads were not read. */
+  distinctContacts?: number | null;
+  /** Emails with more than one questionnaire submission in range — for review, never auto-classified. */
+  repeatContactEmails?: number | null;
+  /** Booking availability, alternate-time requests and email contact (plan 017). */
+  bookingAvailability?: BookingAvailabilitySection;
+  /** Sessions worth a human look (several bookings, bursts of email taps). Never auto-classified. */
+  reviewFlags?: ReviewFlag[];
+  /** Before/after counts around BOOKING_AVAILABILITY_CHANGED_AT, when it is configured. */
+  availabilityChange?: AvailabilityComparison;
 }
 
 // ---- Internal stored-event shape ------------------------------------------
@@ -379,6 +429,9 @@ export interface StoredAnalyticsEvent {
   vid?: string;
   vr?: VisitorKind;
   mode?: 'test';
+  td?: string;
+  bookingRef?: string;
+  reason?: AltRequestFailureReason;
   /** Server receipt time, ISO-8601 UTC — the reporting authority per the plan. */
   receivedAt: string;
 }
@@ -420,6 +473,11 @@ function toStoredEvent(raw: Record<string, unknown>): StoredAnalyticsEvent | nul
   }
 
   if (raw.mode === 'test') out.mode = 'test';
+  if (isOpaqueId(raw.td)) out.td = raw.td;
+  if (raw.event === 'appointment_completed' && typeof raw.bookingRef === 'string' && /^[a-f0-9]{32}$/.test(raw.bookingRef)) {
+    out.bookingRef = raw.bookingRef;
+  }
+  if (raw.event === 'alt_time_request_failed' && isAltRequestFailureReason(raw.reason)) out.reason = raw.reason;
 
   return out;
 }
@@ -585,18 +643,40 @@ export async function fetchRangeEvents(
   limit: number,
   includeTest: boolean
 ): Promise<{ events: StoredAnalyticsEvent[]; truncated: boolean }> {
+  const { events, truncated } = await fetchRangeEventsRaw(startIso, endIso, limit);
+  return { events: filterMode(events, includeTest), truncated };
+}
+
+/** Same read, unclassified: the main report classifies test activity itself
+ *  (lib/testing/classification.ts), which needs the leads/requests read first. */
+async function fetchRangeEventsRaw(
+  startIso: string,
+  endIso: string,
+  limit: number,
+): Promise<{ events: StoredAnalyticsEvent[]; truncated: boolean }> {
   const raw = await fsQueryRange(EVENTS_COLLECTION, 'receivedAt', startIso, endIso, limit, 'ASCENDING');
   const truncated = raw.length >= limit;
   const stored = dedupeById(raw.map(toStoredEvent).filter((e): e is StoredAnalyticsEvent => e !== null));
-  return { events: filterMode(stored, includeTest), truncated };
+  return { events: stored, truncated };
 }
 
-async function fetchLive(now: Date, includeTest: boolean): Promise<LiveTile> {
+/** Confirmed-test classification (lib/testing/classification.ts) for one view. */
+function classifyView(events: StoredAnalyticsEvent[], ctx: TestContext, view: TestView): StoredAnalyticsEvent[] {
+  return events.filter((e) => keepForView(isTestEvent(e, ctx), view));
+}
+
+async function fetchLiveRaw(now: Date): Promise<StoredAnalyticsEvent[]> {
   const windowMs = 60 * 60 * 1000;
   const startIso = new Date(now.getTime() - windowMs).toISOString();
   const endIso = now.toISOString();
   const raw = await fsQueryRange(EVENTS_COLLECTION, 'receivedAt', startIso, endIso, LIVE_QUERY_LIMIT, 'ASCENDING');
-  const stored = filterMode(dedupeById(raw.map(toStoredEvent).filter((e): e is StoredAnalyticsEvent => e !== null)), includeTest);
+  return dedupeById(raw.map(toStoredEvent).filter((e): e is StoredAnalyticsEvent => e !== null));
+}
+
+function buildLive(stored: StoredAnalyticsEvent[], now: Date): LiveTile {
+  const windowMs = 60 * 60 * 1000;
+  const startIso = new Date(now.getTime() - windowMs).toISOString();
+  const endIso = now.toISOString();
   return {
     windowMinutes: 60,
     startIso,
@@ -841,8 +921,12 @@ function buildSessionDuration(bySession: Map<string, StoredAnalyticsEvent[]>): S
 export interface GetAnalyticsReportOptions {
   /** View test/preview traffic (mode:'test') in isolation instead of real business data. Defaults to false. */
   includeTest?: boolean;
+  /** The dashboard's "Include test activity" toggle: real AND confirmed-test records together. Ignored when includeTest is set. */
+  includeTestActivity?: boolean;
   /** Injectable clock for tests; defaults to `new Date()`. */
   now?: Date;
+  /** Injectable env for the availability-change setting; defaults to process.env. */
+  env?: Record<string, string | undefined>;
 }
 
 interface LeadsCount {
@@ -857,24 +941,46 @@ interface LeadsCount {
   bookedLeads: number;
   /** Leads who answered every question on the questionnaire. */
   completedQuestionnaires: number;
+  distinctContacts: number;
+  repeatContactEmails: number;
+  excludedTestLeads: number;
 }
 
 /** How many lead documents one window may hold before the count is no longer
  *  trustworthy. Orders of magnitude above this business's real volume. */
 const LEADS_QUERY_LIMIT = 5000;
 
-async function countLeadsInWindow(startIso: string, endIso: string): Promise<LeadsCount> {
+const REQUESTS_QUERY_LIMIT = 2000;
+/** How far before the range a "saved without scheduler" session's browser is
+ *  searched for an earlier booking. */
+const SAVED_LINKAGE_LOOKBACK_DAYS = 30;
+const COMPARISON_QUERY_LIMIT = 20_000;
+
+async function readLeadsInWindow(startIso: string, endIso: string): Promise<Record<string, unknown>[]> {
   const rows = await fsQueryRange('leads', 'submittedAt', startIso, endIso, LEADS_QUERY_LIMIT);
   if (rows.length >= LEADS_QUERY_LIMIT) {
     // Refuse to report a number that is quietly capped.
     throw new Error('leads window exceeded the read cap');
   }
+  return rows;
+}
 
+async function readRequestsInWindow(startIso: string, endIso: string): Promise<Record<string, unknown>[]> {
+  const rows = await fsQueryRange(ALT_TIME_COLLECTION, 'createdAt', startIso, endIso, REQUESTS_QUERY_LIMIT);
+  if (rows.length >= REQUESTS_QUERY_LIMIT) throw new Error('requests window exceeded the read cap');
+  return rows;
+}
+
+function countLeads(rows: Record<string, unknown>[], excludedTestLeads: number, requestEmails: string[]): LeadsCount {
+  const contacts = new Set<string>(requestEmails);
+  const submissionsByEmail = new Map<string, number>();
   let inquiries = 0;
   let outstandingCaptures = 0;
   let bookedLeads = 0;
   let completedQuestionnaires = 0;
   for (const row of rows) {
+    const email = typeof row.email === 'string' && row.email ? normalizeEmail(row.email) : '';
+    if (email) contacts.add(email);
     if (row.bookedSelfReported === true) bookedLeads += 1;
     if (measureLeadCompleteness(row as Partial<LeadRecord>).complete) completedQuestionnaires += 1;
     if (row.type === 'capture') {
@@ -886,12 +992,28 @@ async function countLeadsInWindow(startIso: string, endIso: string): Promise<Lea
     // Everything else in this collection is a real submitted lead, including
     // historical documents written before `type` existed.
     inquiries += 1;
+    if (email) submissionsByEmail.set(email, (submissionsByEmail.get(email) ?? 0) + 1);
   }
-  return { inquiries, outstandingCaptures, bookedLeads, completedQuestionnaires };
+  const repeatContactEmails = [...submissionsByEmail.values()].filter((n) => n > 1).length;
+  return { inquiries, outstandingCaptures, bookedLeads, completedQuestionnaires, distinctContacts: contacts.size, repeatContactEmails, excludedTestLeads };
+}
+
+function toReportEvents(events: StoredAnalyticsEvent[]): ReportEvent[] {
+  return events.map((e) => ({
+    event: e.event,
+    id: e.id,
+    sid: e.sid,
+    receivedAt: e.receivedAt,
+    cta: e.cta,
+    vid: e.vid,
+    bookingRef: e.bookingRef,
+    reason: e.reason,
+  }));
 }
 
 export async function getAnalyticsReport(range: ReportSpec, options: GetAnalyticsReportOptions = {}): Promise<AnalyticsReport> {
   const includeTest = options.includeTest ?? false;
+  const view: TestView = includeTest ? 'test_only' : options.includeTestActivity ? 'with_test' : 'real';
   const now = options.now ?? new Date();
   const { window, startLabel, eventsLimit } = resolveReportWindow(range, now);
 
@@ -916,27 +1038,56 @@ export async function getAnalyticsReport(range: ReportSpec, options: GetAnalytic
   // and the cap below is far above any 30-day window this business produces.
   // If a window ever did exceed it the count would silently be low, so
   // hitting the cap is reported as a degraded leads dependency instead.
-  const leadsQuery: Promise<LeadsCount | null> = includeTest
-    ? Promise.resolve(null)
-    : countLeadsInWindow(window.startIso, window.endIso);
-
-  const [leadsResult, eventsResult, liveResult, earliestResult] = await Promise.allSettled([
-    leadsQuery,
-    fetchRangeEvents(window.startIso, window.endIso, eventsLimit, includeTest),
-    fetchLive(now, includeTest),
+  //
+  // Test activity: leads, requests and events confirmed as test (a marked test
+  // device or session, or a record marked by an admin) are excluded from the
+  // default view, included in the with-test view. Raw records are untouched.
+  const [contextResult, leadsResult, requestsResult, eventsResult, liveResult, earliestResult] = await Promise.allSettled([
+    loadTestContext(),
+    includeTest ? Promise.resolve(null) : readLeadsInWindow(window.startIso, window.endIso),
+    readRequestsInWindow(window.startIso, window.endIso),
+    fetchRangeEventsRaw(window.startIso, window.endIso, eventsLimit),
+    fetchLiveRaw(now),
     fetchTrackingStartDate(includeTest),
   ]);
 
   const degraded: Array<'leads' | 'events'> = [];
 
-  const leadsValue = leadsResult.status === 'fulfilled' ? leadsResult.value : null;
+  // Test markers unavailable → fall back to build-time mode only, and say so.
+  const ctx: TestContext = contextResult.status === 'fulfilled' ? contextResult.value : emptyTestContext();
+  const testClassification: 'ok' | 'unavailable' = contextResult.status === 'fulfilled' ? 'ok' : 'unavailable';
+
+  const leadRows = leadsResult.status === 'fulfilled' ? leadsResult.value : null;
   if (leadsResult.status === 'rejected') degraded.push('leads');
+  const requestRows = requestsResult.status === 'fulfilled' ? requestsResult.value : null;
+
+  // A lead or request confirmed as test makes its own analytics session a
+  // test session, so the visit that produced it drops out with it.
+  for (const row of [...(leadRows ?? []), ...(requestRows ?? [])]) {
+    if (typeof row.sid === 'string' && isTestRecord(row, ctx)) ctx.sessionIds.add(row.sid);
+  }
+
+  let visibleRequests: RequestRow[] | null = null;
+  let excludedTestRequests: number | null = null;
+  if (requestRows) {
+    visibleRequests = requestRows.filter((r) => keepForView(isTestRecord(r, ctx), view));
+    excludedTestRequests = view === 'real' ? requestRows.length - visibleRequests.length : 0;
+  }
+  let leadsValue: LeadsCount | null = null;
+  if (leadRows) {
+    const visibleLeads = leadRows.filter((r) => keepForView(isTestRecord(r, ctx), view));
+    const requestEmails = (visibleRequests ?? [])
+      .map((r) => (typeof r.email === 'string' ? normalizeEmail(r.email) : ''))
+      .filter(Boolean);
+    leadsValue = countLeads(visibleLeads, view === 'real' ? leadRows.length - visibleLeads.length : 0, requestEmails);
+  }
   const inquiries = leadsValue?.inquiries ?? null;
   const bookedLeads = leadsValue?.bookedLeads ?? null;
   const completedQuestionnaires = leadsValue?.completedQuestionnaires ?? null;
   const outstandingCaptures = leadsValue?.outstandingCaptures ?? null;
 
-  const events = eventsResult.status === 'fulfilled' ? eventsResult.value.events : [];
+  const rawEvents = eventsResult.status === 'fulfilled' ? eventsResult.value.events : [];
+  const events = classifyView(rawEvents, ctx, view);
   const eventsTruncated = eventsResult.status === 'fulfilled' ? eventsResult.value.truncated : false;
   if (eventsResult.status === 'rejected') degraded.push('events');
 
@@ -950,7 +1101,7 @@ export async function getAnalyticsReport(range: ReportSpec, options: GetAnalytic
   if (liveResult.status === 'rejected') unavailable.push('live');
   if (earliestResult.status === 'rejected') unavailable.push('trackingStart');
 
-  const live = liveResult.status === 'fulfilled' ? liveResult.value : { windowMinutes: 60 as const, startIso: '', endIso: '', pageviews: 0, sessions: 0, visitors: 0 };
+  const live = liveResult.status === 'fulfilled' ? buildLive(classifyView(liveResult.value, ctx, view), now) : { windowMinutes: 60 as const, startIso: '', endIso: '', pageviews: 0, sessions: 0, visitors: 0 };
   const trackingStartDate = earliestResult.status === 'fulfilled' ? earliestResult.value : null;
 
   const pageviews = events.filter((e) => e.event === 'page_view').length;
@@ -994,12 +1145,51 @@ export async function getAnalyticsReport(range: ReportSpec, options: GetAnalytic
   else if (trackingStartDate === null) status = 'no_data_yet';
   else status = 'zero_activity';
 
+  // ---- Booking availability (plan 017) ----
+  const reportEvents = toReportEvents(events);
+  const excludedEvents = view === 'real' ? rawEvents.filter((e) => isTestEvent(e, ctx)) : [];
+  const bookingAvailability = buildBookingSection(reportEvents, visibleRequests, {
+    events: excludedEvents.length,
+    sessions: new Set(excludedEvents.map((e) => e.sid)).size,
+    leads: leadsValue ? leadsValue.excludedTestLeads : null,
+    requests: excludedTestRequests,
+  });
+
+  // "Saved without scheduler": was there an earlier booking we can link?
+  const leadSidsBookedFirst = new Set(
+    (leadRows ?? [])
+      .filter((r) => r.type !== 'capture' && r.bookedSelfReported === true && typeof r.sid === 'string')
+      .map((r) => r.sid as string),
+  );
+  let earlierBookings: ReportEvent[] = [];
+  const unresolvedVids = unresolvedSavedBrowserIds(reportEvents, leadSidsBookedFirst);
+  if (unresolvedVids.size > 0) {
+    try {
+      const lookbackStart = new Date(Date.parse(window.startIso) - SAVED_LINKAGE_LOOKBACK_DAYS * 86_400_000).toISOString();
+      const { events: before } = await fetchRangeEventsRaw(lookbackStart, window.startIso, COMPARISON_QUERY_LIMIT);
+      earlierBookings = toReportEvents(
+        classifyView(before, ctx, view).filter((e) => e.event === 'appointment_completed' && e.vid && unresolvedVids.has(e.vid)),
+      );
+    } catch {
+      earlierBookings = []; // unresolved sessions simply stay "unknown"
+    }
+  }
+  const funnel = buildFunnel(events);
+  funnel.savedLinkage = buildSavedLinkage(reportEvents, earlierBookings, leadSidsBookedFirst);
+
+  const testEventIds = new Set(rawEvents.filter((e) => isTestEvent(e, ctx)).map((e) => e.id));
+  const reviewFlags = buildReviewFlags(toReportEvents(rawEvents), (e) => testEventIds.has(e.id));
+
+  const availabilityChange = await buildAvailabilityChange(options.env ?? process.env, now, window.days, ctx, view, trackingStartDate);
+
   return {
     meta: {
       status,
       generatedAt: now.toISOString(),
       trackingStartDate,
       testMode: includeTest,
+      testView: view,
+      testClassification,
       degraded,
       unavailable,
       eventsTruncated,
@@ -1024,7 +1214,57 @@ export async function getAnalyticsReport(range: ReportSpec, options: GetAnalytic
     sources: buildSourceTable(events),
     pages: buildPageTable(events),
     ctaClicks: buildCtaTable(events),
-    funnel: buildFunnel(events),
+    funnel,
     live,
+    distinctContacts: leadsValue?.distinctContacts ?? null,
+    repeatContactEmails: leadsValue?.repeatContactEmails ?? null,
+    bookingAvailability,
+    reviewFlags,
+    availabilityChange,
   };
+}
+
+/**
+ * Equal-length windows either side of the explicitly configured change
+ * instant (BOOKING_AVAILABILITY_CHANGED_AT), each as long as the selected
+ * range. Counts only — no conversion rate, because requests and bookings in a
+ * window are not the same people and can fall on different dates.
+ */
+async function buildAvailabilityChange(
+  env: Record<string, string | undefined>,
+  now: Date,
+  days: number,
+  ctx: TestContext,
+  view: TestView,
+  trackingStartDate: string | null,
+): Promise<AvailabilityComparison> {
+  const setting = readAvailabilityChange(env);
+  if (!setting.ok) return { configured: false, envVar: AVAILABILITY_CHANGE_ENV, reason: setting.reason };
+  const changedAt = setting.changedAt;
+  const changedIso = changedAt.toISOString();
+  if (changedAt.getTime() > now.getTime()) {
+    return { configured: true, changedAt: changedIso, pending: true, before: null, after: null, trackingStartDate, truncated: false };
+  }
+  const span = days * 86_400_000;
+  const beforeStart = new Date(changedAt.getTime() - span).toISOString();
+  const afterEnd = new Date(Math.min(changedAt.getTime() + span, now.getTime())).toISOString();
+  try {
+    const [{ events, truncated }, requests] = await Promise.all([
+      fetchRangeEventsRaw(beforeStart, afterEnd, COMPARISON_QUERY_LIMIT),
+      readRequestsInWindow(beforeStart, afterEnd).catch(() => null),
+    ]);
+    const kept = toReportEvents(classifyView(events, ctx, view));
+    const keptRequests = requests ? requests.filter((r) => keepForView(isTestRecord(r, ctx), view)) : null;
+    return {
+      configured: true,
+      changedAt: changedIso,
+      pending: false,
+      before: buildPeriodCounts(kept, keptRequests, beforeStart, changedIso),
+      after: buildPeriodCounts(kept, keptRequests, changedIso, afterEnd),
+      trackingStartDate,
+      truncated,
+    };
+  } catch {
+    return { configured: true, changedAt: changedIso, pending: false, before: null, after: null, trackingStartDate, truncated: false };
+  }
 }

@@ -5,6 +5,15 @@ import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadDisplayField } from
 import { telHref, mailtoHref, googleCalendarHref } from '@/lib/leads/contactLinks';
 import { COUNTED_LEAD_FIELDS, measureLeadCompleteness } from '@/lib/leads/completeness';
 import { isOutstandingCapture, isLeadComplete, leadQualityLabel, type AdminLeadRecord } from './adminLeadRecord';
+import type { RecordReview } from '@/lib/testing/leadReview';
+import { RecordFlags, TestMarkControls } from '@/components/admin/RecordReviewControls';
+
+/** Test/duplicate review, optional so every existing caller renders as before. */
+type ReviewProps = {
+  review?: Record<string, RecordReview>;
+  onMarkTest?: (leadId: string, test: boolean | null) => void;
+  markingId?: string | null;
+};
 
 const TZ = 'America/New_York';
 
@@ -225,11 +234,14 @@ function LeadRows({
   leads,
   expandedId,
   onToggleExpand,
+  review,
+  onMarkTest,
+  markingId,
 }: {
   leads: AdminLeadRecord[];
   expandedId: string | null;
   onToggleExpand: (rowKey: string) => void;
-}) {
+} & ReviewProps) {
   return (
     <div id="admin-leads-row-scroll">
       <div id="admin-leads-row-list" role="table" aria-label="Leads">
@@ -279,6 +291,7 @@ function LeadRows({
                 ))}
                 <span className="admin-lead-cell" role="cell">
                   <LeadQualityBadge lead={lead} />
+                  <RecordFlags review={lead.id ? review?.[lead.id] : undefined} />
                 </span>
               </div>
 
@@ -289,6 +302,14 @@ function LeadRows({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <LeadActions lead={lead} />
+                  {onMarkTest && lead.id ? (
+                    <TestMarkControls
+                      id={`lead-row-${rowKey}`}
+                      review={review?.[lead.id]}
+                      busy={markingId === lead.id}
+                      onMark={(test) => onMarkTest(lead.id, test)}
+                    />
+                  ) : null}
                   {isOutstandingCapture(lead) ? (
                     <p className="form-note" style={{ margin: 0 }}>
                       No questionnaire answers yet — this row is only the email capture from Calendly checkout.
@@ -314,13 +335,16 @@ export function LeadTable({
   expandedId,
   onToggleExpand,
   view = 'cards',
+  review,
+  onMarkTest,
+  markingId,
 }: {
   leads: AdminLeadRecord[];
   expandedId: string | null;
   onToggleExpand: (rowKey: string) => void;
   /** 'rows' is the compact line-item view; 'cards' is one paper card each. */
   view?: 'cards' | 'rows';
-}) {
+} & ReviewProps) {
   if (leads.length === 0) {
     return (
       <div id="admin-leads-empty-state" className="card card-pad" style={{ textAlign: 'center' }}>
@@ -330,7 +354,16 @@ export function LeadTable({
   }
 
   if (view === 'rows') {
-    return <LeadRows leads={leads} expandedId={expandedId} onToggleExpand={onToggleExpand} />;
+    return (
+      <LeadRows
+        leads={leads}
+        expandedId={expandedId}
+        onToggleExpand={onToggleExpand}
+        review={review}
+        onMarkTest={onMarkTest}
+        markingId={markingId}
+      />
+    );
   }
 
   return (
@@ -360,7 +393,10 @@ export function LeadTable({
                   {isOutstandingCapture(lead) ? `${lead.email} · ${fmtDate(lead.submittedAt)}` : fmtDate(lead.submittedAt)}
                 </div>
               </div>
-              <span className="badge badge-sage">{lead.source || '—'}</span>
+              <span className="admin-record-flags">
+                <RecordFlags review={lead.id ? review?.[lead.id] : undefined} />
+                <span className="badge badge-sage">{lead.source || '—'}</span>
+              </span>
             </div>
 
             <div className="divider" style={{ margin: '0 0 12px' }} />
@@ -401,6 +437,14 @@ export function LeadTable({
                 onClick={(e) => e.stopPropagation()}
               >
                 <LeadActions lead={lead} />
+                {onMarkTest && lead.id ? (
+                  <TestMarkControls
+                    id={`lead-card-${rowKey}`}
+                    review={review?.[lead.id]}
+                    busy={markingId === lead.id}
+                    onMark={(test) => onMarkTest(lead.id, test)}
+                  />
+                ) : null}
                 {isOutstandingCapture(lead) ? (
                   <p className="form-note" style={{ margin: 0 }}>
                     No questionnaire answers yet — this card is only the email capture from Calendly checkout.

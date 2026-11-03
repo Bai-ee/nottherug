@@ -5,6 +5,8 @@ export type DashboardRequestKeyParts = {
   range: ReportRange;
   testMode: boolean;
   retryKey: number;
+  /** The "Include test activity" toggle. Optional so existing callers keep their keys. */
+  includeTestActivity?: boolean;
 };
 
 /** An error captured for a specific request attempt, so a stale error never outlives its request. */
@@ -15,8 +17,8 @@ export type DashboardErrorState = { key: string; message: string } | null;
  * retry attempt, as a single comparable string. Exported for
  * tests/unit/admin-dashboard-request-lifecycle.test.ts.
  */
-export function buildDashboardRequestKey({ range, testMode, retryKey }: DashboardRequestKeyParts): string {
-  return `${range}|${testMode ? 'test' : 'real'}|${retryKey}`;
+export function buildDashboardRequestKey({ range, testMode, retryKey, includeTestActivity }: DashboardRequestKeyParts): string {
+  return `${range}|${testMode ? 'test' : includeTestActivity ? 'real+test' : 'real'}|${retryKey}`;
 }
 
 /**

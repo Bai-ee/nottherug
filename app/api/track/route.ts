@@ -5,6 +5,7 @@ import { fsCreateDoc, fsIncrementField } from '@/lib/server/firestoreRest';
 import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { eventExpiryAt, rateLimitExpiryAt } from '@/lib/analytics/retention';
 import { errorResponse } from '@/lib/server/errors';
+import { hashBookingRef } from '@/lib/booking/bookingRef';
 
 // Public, unauthenticated collection endpoint (plans/003-admin-dashboard-and-tracking.md
 // A2 / "Tracking and storage design constraints"): browsers POST here,
@@ -161,9 +162,25 @@ async function storeOneEvent(raw: unknown, receivedAt: string): Promise<StoreOut
   if (event.ref) doc.ref = event.ref;
   if (event.camp) doc.camp = event.camp;
   if (event.mode) doc.mode = event.mode;
+  if (event.td) doc.td = event.td;
+  if (event.reason) doc.reason = event.reason;
+
+  // A booking completion that carries Calendly's invitee id is stored under a
+  // document id derived from that booking, not from the client event id. A
+  // replayed callback — the same booking reported again after a reload, from
+  // a second tab, or by Calendly posting event_scheduled twice — then hits
+  // fsCreateDoc's 409 and counts once. A genuinely new booking has a new
+  // invitee id and is stored as its own row. Hashed so the stored value can
+  // be matched but not used to look the booking up.
+  let docId = event.id;
+  if (event.event === 'appointment_completed' && event.bk) {
+    const bookingRef = hashBookingRef(event.bk);
+    doc.bookingRef = bookingRef;
+    docId = `appt_${bookingRef}`;
+  }
 
   try {
-    const result = await fsCreateDoc(`${EVENTS_COLLECTION}/${event.id}`, doc);
+    const result = await fsCreateDoc(`${EVENTS_COLLECTION}/${docId}`, doc);
     return result.created ? 'stored' : 'duplicate';
   } catch (err) {
     console.error('[track] firestore create failed', err instanceof Error ? err.message : 'unknown');

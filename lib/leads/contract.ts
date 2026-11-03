@@ -131,6 +131,16 @@ export type LeadRecord = {
   notifications?: LeadNotifications;
   /** The visitor said they booked in the welcome modal. Self-reported, unverified. */
   bookedSelfReported?: boolean;
+  /** Opaque analytics session / browser / test-device ids from the submitting
+   *  browser (lib/leads/linkage.ts). Linkage only; never shown as contact data. */
+  sid?: string;
+  vid?: string;
+  testDeviceId?: string;
+  /** Admin's explicit test classification (lib/testing/classification.ts).
+   *  true = confirmed test, false = confirmed real; absent = not reviewed. */
+  testOverride?: boolean;
+  testMarkedBy?: string;
+  testMarkedAt?: string;
   /** Legacy survey fields. Never required, never defaulted on write — only rendered when present. */
   spayNeuter?: string;
   dogSocial?: string;

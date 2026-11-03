@@ -17,6 +17,17 @@ export const EVENT_NAMES = [
   'lead_saved',
   'scheduling_dialog_opened',
   'appointment_completed',
+  // Plan 017 (booking availability): the "No suitable time? Request another
+  // time" form. Opened = the form was shown; submitted = the server confirmed
+  // the request was SAVED; failed = a save attempt did not succeed (carries
+  // a coarse `reason`, never the message or any typed value).
+  'alt_time_request_opened',
+  'alt_time_request_submitted',
+  'alt_time_request_failed',
+  // The "Copy email address" fallback beside every mailto link. Recorded only
+  // when the clipboard write actually resolved. A mailto click stays
+  // cta_click/contact_email: neither event can say an email was sent.
+  'email_copied',
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];
@@ -136,6 +147,16 @@ export const BOOKING_STEPS = ['details', 'dog', 'review', 'schedule'] as const;
 
 export type BookingStep = (typeof BOOKING_STEPS)[number];
 
+/** Coarse failure categories for alt_time_request_failed. Bounded on purpose:
+ *  a raw error message could echo what the visitor typed. */
+export const ALT_REQUEST_FAILURE_REASONS = ['validation', 'rate_limited', 'server', 'network'] as const;
+
+export type AltRequestFailureReason = (typeof ALT_REQUEST_FAILURE_REASONS)[number];
+
+export function isAltRequestFailureReason(v: unknown): v is AltRequestFailureReason {
+  return typeof v === 'string' && (ALT_REQUEST_FAILURE_REASONS as readonly string[]).includes(v);
+}
+
 /**
  * Campaign slugs for links handed out physically or in a bio (decision 8).
  * Bounded on purpose: arbitrary UTM text is never ingested, because free text
@@ -202,6 +223,16 @@ export interface AnalyticsEvent {
   vr?: VisitorKind;
   /** 'test' keeps preview/acceptance traffic out of real business numbers (decision 10). */
   mode?: 'test';
+  /** Test-device id, present only on a browser an admin explicitly marked as
+   *  a test device. Resolved against the `testDevices` collection at report
+   *  time, so a forged value classifies nothing. */
+  td?: string;
+  /** Present on appointment_completed only: the opaque Calendly invitee id
+   *  from the verified event_scheduled message (lib/analytics/verifiedOrigin.ts).
+   *  Hashed by the server before storage; never a name or email. */
+  bk?: string;
+  /** Present on alt_time_request_failed only. */
+  reason?: AltRequestFailureReason;
 }
 
 /** Firestore collection holding raw events. No rollup collection exists by
@@ -310,6 +341,9 @@ export function validateEvent(input: unknown): AnalyticsEvent | null {
   }
 
   if (e.mode === 'test') out.mode = 'test';
+  if (isOpaqueId(e.td)) out.td = e.td;
+  if (e.event === 'appointment_completed' && isOpaqueId(e.bk)) out.bk = e.bk;
+  if (e.event === 'alt_time_request_failed' && isAltRequestFailureReason(e.reason)) out.reason = e.reason;
 
   return out;
 }

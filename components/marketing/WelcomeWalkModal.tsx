@@ -14,12 +14,14 @@ import {
   writeOnboardingHandoff,
 } from '@/lib/booking/onboarding-handoff';
 import SchedulingDialog, { type CalendlyBooking } from '@/components/booking/SchedulingDialog';
+import { AlternateTimeForm, AlternateTimeTrigger, useAltTimeDraft } from '@/components/booking/AlternateTimeRequest';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
 import { captureLeadEmail } from '@/lib/leads/captureClient';
 import MeetGreetForm from '@/components/MeetGreetForm';
 import { GROUP_WALK_PREVIEW, GROUP_WALK_SHORT_LABEL } from '@/lib/content/services';
-import { PHONE_DISPLAY, PHONE_HREF, EMAIL_DISPLAY, EMAIL_HREF } from '@/lib/content/contact';
+import { PHONE_DISPLAY, PHONE_HREF } from '@/lib/content/contact';
+import EmailContactActions from '@/components/marketing/EmailContactActions';
 import {
   WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
@@ -139,7 +141,9 @@ type View =
   /** Thank you, then the questionnaire as a carousel, in this same modal. */
   | 'questions'
   /** Answered: thank you again, and how to reach Luis directly. */
-  | 'done';
+  | 'done'
+  /** "No suitable time? Request another time" — no booking, no questionnaire. */
+  | 'request';
 
 /**
  * Booking-first entry point: email-only gate → Calendly (free Meet & Greet)
@@ -180,6 +184,14 @@ export default function WelcomeWalkModal({
   const [inviteeName, setInviteeName] = useState('');
   const [fieldError, setFieldError] = useState('');
   const [attemptId, setAttemptId] = useState<string | null>(null);
+  // One request draft for both places the form appears (this modal's own
+  // view and the scheduler dialog's pane), so values survive switching.
+  const altTimeDraft = useAltTimeDraft();
+  /** Where "Back" from the request view returns to. */
+  const [requestReturnView, setRequestReturnView] = useState<View>('gate');
+  /** Set once a request is saved from the scheduler, so dismissing it does
+   *  not ask "Did you book a time?" of someone who just said no time worked. */
+  const alternateRequestedRef = useRef(false);
 
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -506,8 +518,25 @@ export default function WelcomeWalkModal({
   const handleSchedulerDismiss = useCallback(() => {
     // Calendly's completion message may never arrive, so when it has not we
     // ask rather than guess — and rather than thank someone who did not book.
+    if (!bookedRef.current && alternateRequestedRef.current) {
+      alternateRequestedRef.current = false;
+      interactedRef.current = true;
+      setOpen(false);
+      setView('gate');
+      return;
+    }
     setView(bookedRef.current ? 'questions' : 'confirm-booking');
   }, []);
+
+  const handleAlternateRequested = useCallback(() => {
+    alternateRequestedRef.current = true;
+  }, []);
+
+  function openRequestView(returnTo: View) {
+    setFieldError('');
+    setRequestReturnView(returnTo);
+    setView('request');
+  }
 
   /** "Yes, it's booked" on the confirm step: the visitor is the signal. */
   const confirmBookedByHand = useCallback(() => {
@@ -548,9 +577,9 @@ export default function WelcomeWalkModal({
       });
       if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
     }
-    // Same email, `booked: true` this time — never blocks showing the
-    // confirmation view.
-    captureLeadEmail(email.trim(), MODAL_SOURCE, true);
+    // Same email, `booked: true` this time, plus Calendly's opaque booking id
+    // when it sent one — never blocks showing the confirmation view.
+    captureLeadEmail(email.trim(), MODAL_SOURCE, true, booking?.bookingId ?? null);
     bookedRef.current = true;
     // Verified: thank them and ask the questions here, without sending them
     // anywhere. Splitting this across a scroll made the journey feel broken.
@@ -743,7 +772,9 @@ export default function WelcomeWalkModal({
                   ? 'welcome-walk-modal-questions-title'
                   : view === 'done'
                     ? 'welcome-walk-modal-done-title'
-                    : 'welcome-walk-modal-confirmation-title'
+                    : view === 'request'
+                      ? 'welcome-alt-time-title'
+                      : 'welcome-walk-modal-confirmation-title'
             }
             onClick={(e) => {
               if (e.target === e.currentTarget) handleDismiss();
@@ -1245,7 +1276,26 @@ export default function WelcomeWalkModal({
                               Not yet — pick a time
                             </button>
                           </div>
+                          <div id="welcome-walk-modal-confirm-alt-time-row" className="welcome-walk-modal-alt-time-row">
+                            <AlternateTimeTrigger
+                              id="welcome-walk-modal-confirm-alt-time-trigger"
+                              onClick={() => openRequestView('confirm-booking')}
+                            />
+                          </div>
                         </>
+                      ) : null}
+
+                      {view === 'request' ? (
+                        <AlternateTimeForm
+                          idPrefix="welcome-alt-time"
+                          source={MODAL_SOURCE}
+                          draft={altTimeDraft[0]}
+                          setDraft={altTimeDraft[1]}
+                          prefill={{ email: email.trim() || undefined, name: inviteeName || undefined }}
+                          onBack={() => setView(requestReturnView)}
+                          backLabel="← Back"
+                          onClose={finishForNow}
+                        />
                       ) : null}
 
                       {view === 'questions' ? (
@@ -1297,9 +1347,10 @@ export default function WelcomeWalkModal({
                             <a className="btn btn-outline booking-forward-btn btn-sm" href={PHONE_HREF}>
                               {PHONE_DISPLAY}
                             </a>
-                            <a className="btn btn-outline booking-forward-btn btn-sm" href={EMAIL_HREF}>
-                              {EMAIL_DISPLAY}
-                            </a>
+                            <EmailContactActions
+                              id="welcome-walk-modal-done-email-link"
+                              linkClassName="btn btn-outline booking-forward-btn btn-sm"
+                            />
                           </div>
                           <button
                             type="button"
@@ -1477,6 +1528,9 @@ export default function WelcomeWalkModal({
           // confirmation, and the questionnaire after it is optional.
           onBooked={handleBooked}
           attemptId={attemptId ?? undefined}
+          altTimePrefill={{ email: email.trim() || undefined, name: inviteeName || undefined }}
+          altTimeDraft={altTimeDraft}
+          onAlternateTimeRequested={handleAlternateRequested}
         />
       )}
     </>

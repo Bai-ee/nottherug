@@ -75,9 +75,15 @@ describe('SiteFooter CTA wiring', () => {
     const phone = anchors.filter((el) => el.props.cta === 'contact_phone');
     const email = anchors.filter((el) => el.props.cta === 'contact_email');
     expect(phone).toHaveLength(1);
-    expect(email).toHaveLength(1);
     expect(phone[0].props.href).toBe(PHONE_HREF);
-    expect(email[0].props.href).toBe(EMAIL_HREF);
+    // Email goes through EmailContactActions (mailto + copy fallback); its
+    // anchor wiring is proven in tests/unit/email-contact-actions.test.ts.
+    expect(email).toHaveLength(0);
+    const { default: EmailContactActions } = await import('@/components/marketing/EmailContactActions');
+    const emailBlocks = findByType(tree, EmailContactActions);
+    expect(emailBlocks).toHaveLength(1);
+    expect(emailBlocks[0].props.id).toBe('footer-contact-email-link');
+    expect(EMAIL_HREF.startsWith('mailto:')).toBe(true);
   });
 
   // All six rate links share footer_services on purpose: the id measures

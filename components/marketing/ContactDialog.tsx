@@ -7,8 +7,6 @@ import { openWelcomeWalkModal } from '@/lib/marketing/welcome-modal';
 import {
   PHONE_DISPLAY,
   PHONE_HREF,
-  EMAIL_DISPLAY,
-  EMAIL_HREF,
   ADDRESS_LINE_1,
   ADDRESS_LINE_2,
   RESPONSE_HOURS,
@@ -16,6 +14,7 @@ import {
   SERVICE_AREA_SHORT,
 } from '@/lib/content/contact';
 import TrackedCtaAnchor from './TrackedCtaAnchor';
+import EmailContactActions from './EmailContactActions';
 import { useScrollLock } from './hooks/useScrollLock';
 import TrackedCtaLink from './TrackedCtaLink';
 
@@ -149,14 +148,10 @@ export default function ContactDialog({ open, onClose }: Props) {
                     Email
                   </dt>
                   <dd>
-                    <TrackedCtaAnchor
-                      href={EMAIL_HREF}
+                    <EmailContactActions
                       id="contact-modal-email-link"
-                      cta="contact_email"
-                      className="contact-modal-detail-value contact-modal-detail-value-lead"
-                    >
-                      {EMAIL_DISPLAY}
-                    </TrackedCtaAnchor>
+                      linkClassName="contact-modal-detail-value contact-modal-detail-value-lead"
+                    />
                     <p className="contact-modal-detail-note">New client intake and detailed questions.</p>
                   </dd>
                 </div>

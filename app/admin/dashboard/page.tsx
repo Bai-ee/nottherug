@@ -22,6 +22,10 @@ import { SourceTable } from '@/components/admin/analytics/SourceTable';
 import { PageTable } from '@/components/admin/analytics/PageTable';
 import { CtaTable } from '@/components/admin/analytics/CtaTable';
 import { FunnelPanel } from '@/components/admin/analytics/FunnelPanel';
+import { BookingAvailabilityPanel } from '@/components/admin/analytics/BookingAvailabilityPanel';
+import { ReviewFlagsPanel } from '@/components/admin/analytics/ReviewFlagsPanel';
+import { TestActivityToggle } from '@/components/admin/analytics/TestActivityToggle';
+import { TestDevicePanel } from '@/components/admin/TestDevicePanel';
 import { TrackingDisabledBanner, LoadingBanner, ErrorBanner, ReportMetaBanner } from '@/components/admin/analytics/StatusBanner';
 import { buildEmptyReport } from '@/components/admin/analytics/emptyReport';
 import { buildDashboardGreeting } from '@/lib/analytics/greeting';
@@ -59,10 +63,12 @@ function AdminAnalyticsDashboardContent({
   // same pattern and why: an effect calling a named function that sets state
   // trips React's set-state-in-effect check).
   const [retryKey, setRetryKey] = useState(0);
+  // Off by default: business numbers exclude confirmed test activity.
+  const [includeTestActivity, setIncludeTestActivity] = useState(false);
 
   const abortSignal = useAbortSignal();
 
-  const requestKey = buildDashboardRequestKey({ range, testMode, retryKey });
+  const requestKey = buildDashboardRequestKey({ range, testMode, retryKey, includeTestActivity });
   const [settledKey, setSettledKey] = useState<string | null>(null);
   const { loading, error } = deriveDashboardRequestState(requestKey, settledKey, errorState);
 
@@ -80,7 +86,7 @@ function AdminAnalyticsDashboardContent({
         // testMode=1 makes the API ask the report for mode:'test' events
         // instead of real ones — the server never returns both at once.
         const data = await adminFetch<AnalyticsReport>(
-          `/api/admin/analytics?range=${range}${testMode ? '&testMode=1' : ''}`,
+          `/api/admin/analytics?range=${range}${testMode ? '&testMode=1' : includeTestActivity ? '&includeTest=1' : ''}`,
           getToken,
           { cache: 'no-store', signal: abortSignal },
         );
@@ -98,7 +104,7 @@ function AdminAnalyticsDashboardContent({
     return () => {
       cancelled = true;
     };
-  }, [range, testMode, getToken, abortSignal, requestKey]);
+  }, [range, testMode, includeTestActivity, getToken, abortSignal, requestKey]);
 
   const retry = useCallback(() => setRetryKey((k) => k + 1), []);
 
@@ -116,7 +122,9 @@ function AdminAnalyticsDashboardContent({
   // requested data mode: while a real→test switch is in flight the previous
   // mode's numbers must not sit under test-mode chrome (or vice versa). Real
   // and test data never appear together, not even for one render.
-  const syncedReport = report !== null && report.meta.testMode === testMode ? report : null;
+  const wantedView = testMode ? 'test_only' : includeTestActivity ? 'with_test' : 'real';
+  const syncedReport =
+    report !== null && report.meta.testMode === testMode && (report.meta.testView ?? 'real') === wantedView ? report : null;
   const view = syncedReport ?? buildEmptyReport(range);
   const synced = syncedReport !== null;
   const liveUnavailable = !!syncedReport?.meta.unavailable?.includes('live');
@@ -171,6 +179,13 @@ function AdminAnalyticsDashboardContent({
             just the range. */}
         <div id="admin-analytics-controls-row">
           <RangeSelector value={range} onChange={setRange} loading={loading} />
+          {!testMode ? (
+            <TestActivityToggle
+              id="admin-analytics-include-test-toggle"
+              checked={includeTestActivity}
+              onChange={setIncludeTestActivity}
+            />
+          ) : null}
         </div>
 
         <LiveTile live={view.live} dailyTrend={view.dailyTrend} unavailable={liveUnavailable} />
@@ -196,6 +211,14 @@ function AdminAnalyticsDashboardContent({
         <CtaTable ctaClicks={view.ctaClicks} />
 
         <FunnelPanel funnel={view.funnel} />
+
+        {synced ? <BookingAvailabilityPanel report={view} /> : null}
+
+        {synced && view.reviewFlags ? (
+          <ReviewFlagsPanel flags={view.reviewFlags} getToken={getToken} onChanged={retry} />
+        ) : null}
+
+        <TestDevicePanel getToken={getToken} />
 
       </div>
     </AdminShell>

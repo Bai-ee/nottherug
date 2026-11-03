@@ -3,6 +3,8 @@ import { verifyAdmin } from '@/lib/server/verifyAdmin';
 import { errorResponse, ServiceError } from '@/lib/server/errors';
 import { fsQueryCollection } from '@/lib/server/firestoreRest';
 import { isConvertedCapture, type AdminLeadRecord } from '@/components/admin/leads/adminLeadRecord';
+import { buildLeadReview } from '@/lib/testing/leadReview';
+import { loadTestContext, emptyTestContext } from '@/lib/testing/classification';
 
 export const runtime = 'nodejs';
 
@@ -39,7 +41,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // once, rather than in every consumer of this route.
     const visible = leads.filter((lead) => !isConvertedCapture(lead)).slice(0, LEADS_LIST_CAP);
 
-    return NextResponse.json({ leads: visible, cap: LEADS_LIST_CAP });
+    // Test classification and duplicate flags ride alongside, keyed by id, so
+    // the lead records themselves go out exactly as stored. A failed marker
+    // read means "unclassified", reported as such — never "all real".
+    let testClassification: 'ok' | 'unavailable' = 'ok';
+    let ctx = emptyTestContext();
+    try {
+      ctx = await loadTestContext();
+    } catch {
+      testClassification = 'unavailable';
+    }
+    const review = buildLeadReview(visible as unknown as Array<Record<string, unknown>>, ctx);
+
+    return NextResponse.json({ leads: visible, cap: LEADS_LIST_CAP, review, testClassification });
   } catch (err) {
     return errorResponse(new ServiceError(err instanceof Error ? err.message : 'Lead load failed'));
   }

@@ -8,6 +8,8 @@ import { AdminShell } from '@/components/admin/AdminShell';
 import { adminFetch, useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
 import { LeadFilterBar, type LeadSortOrder } from '@/components/admin/leads/LeadFilterBar';
 import { LeadTable } from '@/components/admin/leads/LeadTable';
+import { TestActivityToggle } from '@/components/admin/analytics/TestActivityToggle';
+import type { RecordReview } from '@/lib/testing/leadReview';
 
 /** Which layout the owner last chose. Per-viewer convenience only, so every
  *  access is guarded: a private window or blocked storage must not break the
@@ -86,6 +88,12 @@ function LeadsPageContent({
   const [error, setError] = useState('');
   const [leads, setLeads] = useState<AdminLeadRecord[]>([]);
   const [cap, setCap] = useState<number | null>(null);
+  const [review, setReview] = useState<Record<string, RecordReview>>({});
+  const [testClassification, setTestClassification] = useState<'ok' | 'unavailable'>('ok');
+  // Off by default: confirmed test leads are hidden from the list (never deleted).
+  const [includeTest, setIncludeTest] = useState(false);
+  const [markingId, setMarkingId] = useState<string | null>(null);
+  const [markError, setMarkError] = useState('');
   const [query, setQuery] = useState('');
   const [sortBy, setSortBy] = useState<LeadSortOrder>('newest');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -101,12 +109,19 @@ function LeadsPageContent({
   useEffect(() => {
     (async () => {
       try {
-        const data = await adminFetch<{ leads: AdminLeadRecord[]; cap: number }>('/admin/leads', getToken, {
+        const data = await adminFetch<{
+          leads: AdminLeadRecord[];
+          cap: number;
+          review?: Record<string, RecordReview>;
+          testClassification?: 'ok' | 'unavailable';
+        }>('/admin/leads', getToken, {
           cache: 'no-store',
           signal: abortSignal,
         });
         setLeads(data.leads ?? []);
         setCap(data.cap ?? null);
+        setReview(data.review ?? {});
+        setTestClassification(data.testClassification ?? 'ok');
       } catch (e) {
         if (isAbortError(e)) return;
         setError(e instanceof Error ? e.message : 'Lead load failed');
@@ -122,9 +137,32 @@ function LeadsPageContent({
     setRefreshKey((k) => k + 1);
   }
 
+  async function markTest(leadId: string, test: boolean | null) {
+    setMarkingId(leadId);
+    setMarkError('');
+    try {
+      await adminFetch('/api/admin/test-marks', getToken, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'lead', id: leadId, test }),
+      });
+      refresh();
+    } catch (e) {
+      setMarkError(e instanceof Error ? e.message : 'Could not update this lead.');
+    } finally {
+      setMarkingId(null);
+    }
+  }
+
+  const testHiddenCount = useMemo(
+    () => leads.filter((l) => l.id && review[l.id]?.testReason).length,
+    [leads, review],
+  );
+
   const searched = useMemo(() => {
     const q = query.trim().toLowerCase();
     return leads.filter((l) => {
+      if (!includeTest && l.id && review[l.id]?.testReason) return false;
       if (!q) return true;
       const hay = [l.ownerName, l.email, l.phone, l.dogName, l.neighborhood, l.breedAge, l.notes, l.serviceInterest, l.reactivity, l.allergies]
         .filter(Boolean)
@@ -132,7 +170,7 @@ function LeadsPageContent({
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [leads, query]);
+  }, [leads, query, includeTest, review]);
 
   // "Most answered first" surfaces the serious leads without disturbing the
   // search above; "Newest first" keeps the server's own submittedAt order.
@@ -167,6 +205,21 @@ function LeadsPageContent({
           cap={cap}
         />
 
+        <div id="admin-leads-test-row">
+          <TestActivityToggle id="admin-leads-include-test-toggle" checked={includeTest} onChange={setIncludeTest} />
+          <span className="form-note" style={{ margin: 0 }}>
+            {includeTest
+              ? 'Showing test leads too (marked “Test”).'
+              : testHiddenCount > 0
+                ? `${testHiddenCount} confirmed test lead${testHiddenCount === 1 ? '' : 's'} hidden. Records are kept.`
+                : 'No confirmed test leads.'}
+          </span>
+          {testClassification === 'unavailable' ? (
+            <span className="form-note text-terra" style={{ margin: 0 }}>Test markers could not be read; nothing is hidden.</span>
+          ) : null}
+          {markError ? <span className="form-note text-terra" role="alert" style={{ margin: 0 }}>{markError}</span> : null}
+        </div>
+
         <div id="leads-table-shell">
           {/* One icon, on the list it acts on, showing the layout it switches
               to rather than the one already on screen. */}
@@ -189,6 +242,9 @@ function LeadsPageContent({
             leads={filtered}
             expandedId={expandedId}
             onToggleExpand={(rowKey) => setExpandedId((current) => (current === rowKey ? null : rowKey))}
+            review={review}
+            onMarkTest={markTest}
+            markingId={markingId}
           />
         </div>
 

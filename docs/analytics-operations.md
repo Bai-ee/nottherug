@@ -379,3 +379,70 @@ or re-verify against a live server; whether saved inquiries remain correct
 specifically *while* analytics is failing/unavailable (as opposed to
 disabled) was not directly exercised; and no manual UI/visual check of the
 dashboard itself was performed.
+
+## Booking availability, test activity and contact (plan 017)
+
+### New and reused events
+
+Existing snake_case naming. No event carries a name, email, phone or typed text.
+
+| Measure | Event | Extra field | Fires when |
+|---|---|---|---|
+| Scheduler opened | `scheduling_dialog_opened` (existing) | — | The Calendly dialog is shown |
+| Booking completed | `appointment_completed` (existing) | `bk` → stored as `bookingRef` (sha-256, 32 hex) | Calendly's verified `calendly.event_scheduled` postMessage arrives |
+| Alternate-time request opened | `alt_time_request_opened` | — | The "Request another time" form is shown |
+| Alternate-time request submitted | `alt_time_request_submitted` | — | The server confirmed the request is **saved** |
+| Alternate-time request failed | `alt_time_request_failed` | `reason`: validation / rate_limited / server / network | A save attempt did not succeed |
+| Email link clicked | `cta_click` with `cta: contact_email` (existing) | — | One per native click (duplicate handlers cannot double-count) |
+| Email address copied | `email_copied` | — | The clipboard copy actually succeeded |
+
+Every event may also carry `bid` (random first-party browser id in
+localStorage, minted only while tracking is on — never derived from the
+device) and `td` (test-device id, only on browsers an admin marked).
+
+### What the Calendly integration can observe
+
+The scheduler is a cross-origin iframe. The page sees only Calendly's
+postMessage events; the one used is `calendly.event_scheduled`, whose payload
+holds two api.calendly.com URIs (scheduled event, invitee). The invitee id is
+the booking identifier: a replayed message has the same id (counted once, in
+the browser and again server-side via the `appt_<hash>` document id), a
+genuinely new booking has a new id (counted separately).
+
+Not observable, so never reported: which slot was picked, which slots
+existed, "no slots available", cancellations, reschedules, no-shows, or
+whether a booking is a confirmed appointment. Confirmed appointments would
+need Calendly's API/webhooks (a `CALENDLY_API_TOKEN` exists in the local env
+but no code uses it). The "Request another time" link is always visible for
+this reason — it cannot depend on detecting empty slots.
+
+### Counting vocabulary (dashboard → Booking & Availability)
+
+- **Questionnaire submissions** — `leads` documents (not captures).
+- **Distinct contacts** — distinct emails across leads, captures and time requests.
+- **Booking events** — `appointment_completed` rows.
+- **Distinct bookings** — distinct `bookingRef` values; events without one are listed separately.
+- **Confirmed appointments** — always "Not connected".
+- **Time requests saved** — from `alternateTimeRequests`; status New / Contacted / Scheduled / Closed. "Scheduled" (set by hand) is the only request→booking link. No conversion rates are shown.
+- **Saved without scheduler** — split into "after an earlier linked booking" (same browser id within the range or a 30-day lookback, or the lead records a booking made first) and "booking unknown". Unknown is not abandonment. Sessions recorded before browser ids existed cannot be linked, so historical rows stay unknown.
+
+### Test activity
+
+Nothing is classified as test from what someone typed, their email, dog name
+or repeat visits. Test means one of: build-time `NEXT_PUBLIC_ANALYTICS_TEST_MODE`,
+a browser marked from **Site Performance → This Browser** (`testDevices`; its
+earlier activity under the same browser id is included), a session marked from
+**For Review** (`analyticsTestSessions`), or a lead/request marked in admin
+(`testOverride`; a test-marked record's session drops out too). Dashboards
+exclude these by default; **Include test activity** shows everything. Raw
+records are never deleted or edited beyond the mark fields.
+
+"For Review" lists sessions with 2+ booking completions within 10 minutes or
+5+ email taps within 2 minutes. These are prompts only. Leads show
+"Same email ×N" for review; it never hides a lead.
+
+### Availability-change comparison
+
+Set `BOOKING_AVAILABILITY_CHANGED_AT` (server env, ISO with offset). The
+dashboard then compares equal windows (length = selected range) before and
+after that instant, as counts. If unset or unparseable it shows "Not configured".

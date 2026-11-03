@@ -5,6 +5,9 @@ import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { carryBookedHintToLead, deadlineIn, recordCapture } from '@/lib/server/leadTransitions';
 import { isValidEmail } from '@/lib/leads/validation';
 import { HONEYPOT_FIELD_NAME } from '@/lib/leads/contract';
+import { isOpaqueId } from '@/lib/analytics/events';
+import { hashBookingRef } from '@/lib/booking/bookingRef';
+import { readLinkage } from '@/lib/leads/linkage';
 
 /**
  * The first half of the booking-first journey: someone gives an email and
@@ -48,7 +51,7 @@ const WRITE_BUDGET_MS = 7_000;
 const WRITE_CALL_MS = 2_500;
 
 /** Only the entry points that actually capture an email may write one. */
-const ALLOWED_SOURCES = new Set(['welcome-modal', 'services-preview', 'home', 'home-rates', 'contact', 'book']);
+const ALLOWED_SOURCES = new Set(['welcome-modal', 'services-preview', 'home', 'home-rates', 'contact', 'book', 'signup']);
 
 function errorResponse(status: number, error: string) {
   return NextResponse.json({ ok: false, error }, { status });
@@ -122,6 +125,10 @@ export async function POST(req: Request) {
   // never proof (see lib/booking/onboarding-handoff.ts), so it is stored
   // under a name that says so and the table words it that way too.
   const booked = input.booked === true;
+  // Calendly's opaque invitee id from the same verified callback, when sent.
+  // Hashed before storage; repeat bookings by one person stay distinct refs.
+  const bookingRef = booked && isOpaqueId(input.bookingId) ? hashBookingRef(input.bookingId) : null;
+  const linkage = readLinkage(input.linkage);
 
   if (!isValidEmail(email)) return errorResponse(400, 'A valid email is required.');
   if (!ALLOWED_SOURCES.has(source)) return errorResponse(400, 'Unrecognized source.');
@@ -130,7 +137,7 @@ export async function POST(req: Request) {
   let id: string;
   try {
     // First-seen time, conversion and a true booking hint are never undone; see leadTransitions.
-    const outcome = await recordCapture({ email, source, booked, nowIso: new Date().toISOString() }, budget);
+    const outcome = await recordCapture({ email, source, booked, nowIso: new Date().toISOString(), bookingRef, linkage: { ...linkage } }, budget);
     id = outcome.id;
 
     // Already converted: the admin table shows the full lead, not this row,

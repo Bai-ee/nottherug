@@ -1,8 +1,6 @@
 import {
   PHONE_DISPLAY,
   PHONE_HREF,
-  EMAIL_DISPLAY,
-  EMAIL_HREF,
   ADDRESS_LINE_1,
   ADDRESS_LINE_2,
   RESPONSE_HOURS,
@@ -11,6 +9,7 @@ import {
 } from '@/lib/content/contact';
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '@/lib/content/site';
 import TrackedCtaAnchor from './TrackedCtaAnchor';
+import EmailContactActions from './EmailContactActions';
 
 // Verified contact details — moved here from the SPA's `?page=contact`
 // content (the retired single-page app/page.tsx), which was reachable only inside the toggling
@@ -33,7 +32,7 @@ export default function ContactInfoCard() {
           <div>
             <h4 aria-level={2}>Email</h4>
             <p>For new client intake, less urgent inquiries, or detailed questions.</p>
-            <TrackedCtaAnchor href={EMAIL_HREF} id="contact-email-link" cta="contact_email" style={{ display: 'block', marginTop: '10px' }}>{EMAIL_DISPLAY}</TrackedCtaAnchor>
+            <EmailContactActions id="contact-email-link" className="contact-info-email-actions" linkStyle={{ marginTop: '10px' }} />
           </div>
         </div>
         <div className="contact-method">

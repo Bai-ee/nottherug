@@ -647,3 +647,33 @@
   font-size: 17px;
   line-height: 1.6;
 }
+
+/* ---- Plan 017: test activity, booking availability, time requests ---- */
+.admin-test-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.admin-test-toggle input { width: 16px; height: 16px; accent-color: var(--olive); }
+.admin-test-toggle:focus-within { outline: 2px solid var(--olive); outline-offset: 2px; border-radius: 4px; }
+.admin-compare-row { display: grid !important; grid-template-columns: 1.6fr 1fr 1fr; gap: 12px; }
+.admin-review-flag-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--light-gray);
+}
+.admin-record-flags { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.admin-test-mark-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#admin-requests-filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+#admin-requests-status-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.admin-request-card { display: flex; flex-direction: column; gap: 8px; }
+.admin-request-card-header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.admin-request-status-select { max-width: 200px; }
+#admin-leads-test-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }

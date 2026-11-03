@@ -1,0 +1,222 @@
+/* "No suitable time? Request another time" (components/booking/AlternateTimeRequest.tsx)
+   and the email copy fallback (components/marketing/EmailContactActions.tsx).
+   Built from the existing form tokens: .form-group/.form-control/.form-alert
+   carry the inputs; only the chips, the trigger and the panel layout are new. */
+
+.alt-time-trigger {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 10px 4px;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+}
+.alt-time-trigger:hover { color: var(--olive); }
+.alt-time-trigger:focus-visible,
+.alt-time-link-btn:focus-visible,
+.alt-time-chip:focus-within {
+  outline: 2px solid var(--olive);
+  outline-offset: 2px;
+}
+
+/* The strip under the scheduler's olive band: always visible, never inside
+   Calendly's cross-origin iframe. */
+#calendly-modal-alt-time-row {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 2px 16px;
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+#calendly-modal-alt-time-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: clamp(16px, 4vw, 40px) clamp(16px, 4vw, 32px);
+  background: var(--paper);
+}
+
+.alt-time-panel {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+.alt-time-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.alt-time-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.15;
+  margin: 0;
+  color: var(--ink);
+}
+.alt-time-link-btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 8px 0;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--olive);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.alt-time-explainer {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--muted-ink);
+}
+.alt-time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 560px) {
+  .alt-time-row { grid-template-columns: 1fr; }
+}
+.alt-time-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.alt-time-fieldset legend {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--charcoal);
+  padding: 0;
+  margin-bottom: 8px;
+}
+.alt-time-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.alt-time-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--light-gray);
+  border-radius: var(--radius);
+  background: white;
+  font-size: 14px;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.alt-time-chip[data-checked='true'] {
+  border-color: var(--sage-dark);
+  background: var(--sage-light);
+}
+.alt-time-chip input {
+  accent-color: var(--sage-dark);
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin: 0;
+}
+.alt-time-chip-range { color: var(--muted-ink); font-size: 13px; }
+.alt-time-hint { margin: 0; font-size: 13px; color: var(--muted-ink); }
+.alt-time-optional { font-weight: 400; color: var(--muted-ink); }
+.alt-time-field-error { margin: 0; min-height: 0; }
+.alt-time-field-error:empty { display: none; }
+.alt-time-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.alt-time-success {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.6vw, 24px);
+  line-height: 1.3;
+  color: var(--ink);
+}
+.alt-time-success:focus { outline: none; }
+.alt-time-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .alt-time-chip { transition: none; }
+}
+
+/* ---- Email address + copy fallback --------------------------------------- */
+.email-contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+.email-contact-copy-btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 6px 0;
+  min-height: 32px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: inherit;
+  opacity: 0.85;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.email-contact-copy-btn:hover { opacity: 1; }
+.email-contact-copy-btn:focus-visible,
+.email-contact-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.email-contact-status {
+  font-size: 13px;
+  color: inherit;
+  opacity: 0.85;
+}
+.email-contact-manual {
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  width: 22ch;
+}
+
+/* Welcome modal: the request trigger under the "Did you book a time?"
+   actions (shown after the Calendly dialog closes without a booking). */
+.welcome-walk-modal-alt-time-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}

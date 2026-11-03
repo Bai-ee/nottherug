@@ -56,9 +56,14 @@ describe('ContactInfoCard CTA wiring', () => {
     expect(phoneHref).toBe(PHONE_HREF);
     expect(phoneHref?.startsWith('tel:')).toBe(true);
 
-    expect(email).toHaveLength(1);
-    const emailHref = email[0]?.props.href;
-    expect(emailHref).toBe(EMAIL_HREF);
-    expect(emailHref?.startsWith('mailto:')).toBe(true);
+    // The email renders through EmailContactActions (mailto link + copy
+    // fallback), whose own TrackedCtaAnchor wiring is proven in
+    // tests/unit/email-contact-actions.test.ts. Exactly one per surface.
+    expect(email).toHaveLength(0);
+    const { default: EmailContactActions } = await import('@/components/marketing/EmailContactActions');
+    const emailBlocks = findByType(tree, EmailContactActions);
+    expect(emailBlocks).toHaveLength(1);
+    expect(emailBlocks[0].props.id).toBe('contact-email-link');
+    expect(EMAIL_HREF.startsWith('mailto:')).toBe(true);
   });
 });

@@ -20,9 +20,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const rangeParam = req.nextUrl.searchParams.get('range');
   const range = isReportRange(rangeParam) ? rangeParam : DEFAULT_RANGE;
   const includeTest = req.nextUrl.searchParams.get('testMode') === '1';
+  // The dashboard's "Include test activity" toggle: real + confirmed test together.
+  const includeTestActivity = !includeTest && req.nextUrl.searchParams.get('includeTest') === '1';
 
   try {
-    const report = await getAnalyticsReport(range, { includeTest });
+    const report = await getAnalyticsReport(range, includeTestActivity ? { includeTest, includeTestActivity } : { includeTest });
     return NextResponse.json(report);
   } catch (err) {
     // errorResponse never echoes the raw error to the client; a Firestore

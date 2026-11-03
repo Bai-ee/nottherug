@@ -14,13 +14,16 @@
 // real business numbers.
 
 import {
+  isAltRequestFailureReason,
   isBookingStep,
   isCtaId,
+  isOpaqueId,
   toTrackedRoute,
   type AnalyticsEvent as WireEvent,
   type EventName,
 } from './events';
 import { getSessionSnapshot, newOpaqueId, noteEngagementSignal } from './session';
+import { getTestDeviceId } from './identity';
 
 export type AnalyticsEventName = EventName;
 
@@ -38,6 +41,14 @@ export interface AnalyticsPayload {
   source?: string;
   cta?: string;
   step?: string;
+  /** alt_time_request_failed only: one of ALT_REQUEST_FAILURE_REASONS. */
+  reason?: string;
+  /**
+   * appointment_completed only: the opaque Calendly invitee id. Taken out
+   * before sanitize() (a UUID can look like a digit run) and checked against
+   * isOpaqueId instead; the server hashes it before storing.
+   */
+  bk?: string;
 }
 
 // First line of defense: drop a field outright if its key name even suggests
@@ -151,7 +162,7 @@ function deliver(body: string) {
   }
 }
 
-function sendEvent(event: EventName, fields: Partial<Pick<WireEvent, 'cta' | 'step'>>) {
+function sendEvent(event: EventName, fields: Partial<Pick<WireEvent, 'cta' | 'step' | 'bk' | 'reason'>>) {
   if (!isAnalyticsEnabled() || typeof window === 'undefined') return;
   // Admin is never tracked. Structurally true today (PageViewTracker and
   // TrackedCtaLink only render on public marketing routes), and enforced
@@ -172,6 +183,8 @@ function sendEvent(event: EventName, fields: Partial<Pick<WireEvent, 'cta' | 'st
     ...(snapshot.attribution ?? {}),
   };
   if (isTestMode()) wireEvent.mode = 'test';
+  const td = getTestDeviceId();
+  if (td) wireEvent.td = td;
 
   try {
     // Sent as a one-element batch: app/api/track/route.ts accepts an array
@@ -194,7 +207,8 @@ function sendEvent(event: EventName, fields: Partial<Pick<WireEvent, 'cta' | 'st
 export function track(name: AnalyticsEventName, payload: AnalyticsPayload = {}) {
   if (!isAnalyticsEnabled()) return;
 
-  const clean = sanitize(payload as Record<string, unknown>);
+  const { bk, ...rest } = payload;
+  const clean = sanitize(rest as Record<string, unknown>);
 
   if (name === 'cta_click') {
     if (!isCtaId(clean.cta)) return; // not a stable, allowlisted CTA id — nothing valid to record
@@ -208,6 +222,16 @@ export function track(name: AnalyticsEventName, payload: AnalyticsPayload = {}) 
   if (name === 'booking_step') {
     if (!isBookingStep(clean.step)) return;
     sendEvent(name, { step: clean.step });
+    return;
+  }
+
+  if (name === 'appointment_completed') {
+    sendEvent(name, isOpaqueId(bk) ? { bk } : {});
+    return;
+  }
+
+  if (name === 'alt_time_request_failed') {
+    sendEvent(name, isAltRequestFailureReason(clean.reason) ? { reason: clean.reason } : {});
     return;
   }
 

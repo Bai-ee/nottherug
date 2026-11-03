@@ -4,6 +4,7 @@ import SectionJump from '@/components/marketing/SectionJump';
 import WelcomeModalHost from '@/components/marketing/WelcomeModalHost';
 import '../section-rail.css';
 import '../section-jump.css';
+import '../alternate-time.css';
 
 // Route-group layout for the public marketing site. Purely organizational —
 // see plans/002-production-readiness.md target structure. No shared chrome

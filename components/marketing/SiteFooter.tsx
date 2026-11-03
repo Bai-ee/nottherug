@@ -3,12 +3,11 @@ import Link from 'next/link';
 import { INSTAGRAM_URL, YELP_URL, GOOGLE_REVIEW_URL } from '@/lib/content/site';
 import TrackedCtaLink from './TrackedCtaLink';
 import TrackedCtaAnchor from './TrackedCtaAnchor';
+import EmailContactActions from './EmailContactActions';
 import ContactUsTrigger from './ContactUsTrigger';
 import {
   PHONE_DISPLAY,
   PHONE_HREF,
-  EMAIL_DISPLAY,
-  EMAIL_HREF,
   RESPONSE_HOURS,
 } from '@/lib/content/contact';
 import type { CtaId } from '@/lib/analytics/events';
@@ -175,14 +174,7 @@ export default function SiteFooter() {
                 </li>
                 <li className="footer-contact-item">
                   <span className="footer-contact-label">Email</span>
-                  <TrackedCtaAnchor
-                    href={EMAIL_HREF}
-                    id="footer-contact-email-link"
-                    cta="contact_email"
-                    className="footer-contact-value"
-                  >
-                    {EMAIL_DISPLAY}
-                  </TrackedCtaAnchor>
+                  <EmailContactActions id="footer-contact-email-link" linkClassName="footer-contact-value" />
                 </li>
                 <li className="footer-contact-item">
                   <span className="footer-contact-label">Service Area</span>

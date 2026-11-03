@@ -27,3 +27,43 @@ export function isVerifiedCalendlyBookingEvent(event: MessageEvent, expectedSour
   const eventName = (data as { event?: unknown }).event;
   return eventName === 'calendly.event_scheduled';
 }
+
+const CALENDLY_URI_SEGMENT = /^[A-Za-z0-9-]{1,64}$/;
+
+function lastUriSegment(uri: unknown, expectedParent: string): string | null {
+  if (typeof uri !== 'string') return null;
+  try {
+    const url = new URL(uri);
+    if (url.hostname !== 'api.calendly.com') return null;
+    const parts = url.pathname.split('/').filter(Boolean);
+    if (parts.length < 2 || parts[parts.length - 2] !== expectedParent) return null;
+    const id = parts[parts.length - 1];
+    return CALENDLY_URI_SEGMENT.test(id) ? id : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The stable booking identifier Calendly's embed actually exposes. Its
+ * `calendly.event_scheduled` postMessage carries exactly two values in
+ * `payload`: `event.uri` (the scheduled event) and `invitee.uri` (this
+ * person's booking of it), both api.calendly.com resource URIs. Nothing else
+ * — no time, no slot, no name — is in the message, which is why reporting can
+ * never say which slot was picked or whether slots were missing.
+ *
+ * Returns the invitee id (unique per booking, so a genuine second booking is a
+ * new value while a replayed message is the same value), falling back to the
+ * scheduled-event id. Only the opaque trailing id is returned; the caller
+ * never reads anything else from the payload. Call ONLY after
+ * isVerifiedCalendlyBookingEvent has passed.
+ */
+export function extractCalendlyBookingId(event: MessageEvent): string | null {
+  const data = event.data as { payload?: { invitee?: { uri?: unknown }; event?: { uri?: unknown } } } | null;
+  const payload = data && typeof data === 'object' ? data.payload : undefined;
+  if (!payload || typeof payload !== 'object') return null;
+  const invitee = lastUriSegment(payload.invitee?.uri, 'invitees');
+  if (invitee) return invitee;
+  const scheduled = lastUriSegment(payload.event?.uri, 'scheduled_events');
+  return scheduled ? `evt-${scheduled}` : null;
+}

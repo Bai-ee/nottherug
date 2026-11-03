@@ -4,7 +4,14 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { track } from '@/lib/analytics/track';
 import { buildCalendlyEmbedUrl } from '@/lib/booking/calendlyEmbedUrl';
-import { isVerifiedCalendlyBookingEvent } from '@/lib/analytics/verifiedOrigin';
+import { extractCalendlyBookingId, isVerifiedCalendlyBookingEvent } from '@/lib/analytics/verifiedOrigin';
+import { ALT_TIME_SOURCES, type AltTimeSource } from '@/lib/booking/alternateTime';
+import {
+  AlternateTimeForm,
+  AlternateTimeTrigger,
+  useAltTimeDraft,
+  type AltTimeDraft,
+} from './AlternateTimeRequest';
 
 type Props = {
   open: boolean;
@@ -29,7 +36,21 @@ type Props = {
    * scheduler). The welcome modal opens it as its own second step with a
    * confirmation still to come, so it passes its own label instead.
    */
+  /** Values the visitor already gave, so the request form never asks twice. */
+  altTimePrefill?: { name?: string; email?: string; phone?: string };
+  /**
+   * A host that also renders the request form elsewhere (the welcome modal's
+   * gate) passes its own draft, so both places share one set of values.
+   * Otherwise this dialog keeps its own, which survives close/reopen.
+   */
+  altTimeDraft?: [AltTimeDraft, (next: AltTimeDraft | ((d: AltTimeDraft) => AltTimeDraft)) => void];
+  /** Told once a request is saved, so the host does not ask "did you book?". */
+  onAlternateTimeRequested?: () => void;
 };
+
+function toAltTimeSource(source: string): AltTimeSource {
+  return (ALT_TIME_SOURCES as readonly string[]).includes(source) ? (source as AltTimeSource) : 'book';
+}
 
 /**
  * track() is documented as best-effort/never-throwing, but this dialog runs
@@ -47,16 +68,26 @@ function safeTrack(name: Parameters<typeof track>[0], payload?: Parameters<typeo
 
 /**
  * Turns one verified Calendly message into exactly one appointment_completed
- * event (and one onBooked call). `hasFired` is owned by the caller (a ref) so
- * dedupe survives the dialog being closed and reopened inside the same
- * attempt — Calendly can post the same event_scheduled message more than once
- * for a single real booking. Reads nothing from event.data beyond what the
- * verifier inspects: that payload carries the visitor's name and email, and
- * none of it is forwarded anywhere — the event carries only `source`.
+ * event (and one onBooked call) per booking. Calendly can post the same
+ * event_scheduled message more than once for a single real booking, so:
+ *  - when the message carries Calendly's invitee id, dedupe is by that id
+ *    (`seenBookingIds`): a replay is ignored, while a genuinely second booking
+ *    (new id) in the same attempt still counts;
+ *  - when it does not, the old once-per-attempt rule (`hasFired`) applies.
+ * Both are owned by the caller (refs), so dedupe survives the dialog being
+ * closed and reopened inside the same attempt. The server dedupes the same id
+ * again (app/api/track), which covers a reload or a second tab.
+ *
+ * Only the opaque invitee id is read from the payload — never the name/email
+ * Calendly may include — and the event carries nothing else.
  * Exported, free of component state, so it can be unit-tested.
  */
 /** What the welcome modal may learn from a verified booking: only the invitee's API reference. */
-export type CalendlyBooking = { inviteeUri: string | null };
+export type CalendlyBooking = {
+  inviteeUri: string | null;
+  /** Opaque invitee id (extractCalendlyBookingId) — the dedupe key, hashed server-side wherever stored. */
+  bookingId: string | null;
+};
 
 /** Calendly's event_scheduled payload carries `invitee.uri` (an API URL, no personal data). */
 function readInviteeUri(data: unknown): string | null {
@@ -69,15 +100,22 @@ export function createAppointmentCompletionHandler(
   getIframeWindow: () => Window | null,
   hasFired: { current: boolean },
   onBooked?: (booking: CalendlyBooking) => void,
+  seenBookingIds: Set<string> = new Set(),
 ) {
   return function handleCalendlyMessage(event: MessageEvent) {
-    if (hasFired.current) return;
     if (!isVerifiedCalendlyBookingEvent(event, getIframeWindow())) return;
+    const bookingId = extractCalendlyBookingId(event);
+    if (bookingId) {
+      if (seenBookingIds.has(bookingId)) return;
+      seenBookingIds.add(bookingId);
+    } else if (hasFired.current) {
+      return;
+    }
     hasFired.current = true;
-    safeTrack('appointment_completed', { source });
+    safeTrack('appointment_completed', bookingId ? { source, bk: bookingId } : { source });
     if (!onBooked) return;
     try {
-      onBooked({ inviteeUri: readInviteeUri(event.data) });
+      onBooked({ inviteeUri: readInviteeUri(event.data), bookingId });
     } catch (err) {
       // A caller's callback must never take this listener down with it.
       console.warn('[booking] onBooked callback failed', err);
@@ -88,7 +126,24 @@ export function createAppointmentCompletionHandler(
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
 
-export default function SchedulingDialog({ open, onClose, calendlyUrl, source, onBooked, attemptId }: Props) {
+export default function SchedulingDialog({
+  open,
+  onClose,
+  calendlyUrl,
+  source,
+  onBooked,
+  attemptId,
+  altTimePrefill,
+  altTimeDraft,
+  onAlternateTimeRequested,
+}: Props) {
+  // Which pane is showing. The Calendly iframe stays mounted (only hidden)
+  // while the request form is up, so switching back keeps whatever the
+  // visitor had picked inside Calendly.
+  const [pane, setPane] = useState<'calendar' | 'request'>('calendar');
+  const ownDraft = useAltTimeDraft();
+  const [draft, setDraft] = altTimeDraft ?? ownDraft;
+  const requestTriggerRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -104,6 +159,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
   // Persists for the dialog's whole mount lifetime by default; the effect
   // below is the one exception, for a genuinely new attempt.
   const bookingObservedRef = useRef(false);
+  const seenBookingIdsRef = useRef<Set<string>>(new Set());
   const attemptIdRef = useRef(attemptId);
 
   useEffect(() => {
@@ -129,6 +185,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
       () => iframeRef.current?.contentWindow ?? null,
       bookingObservedRef,
       onBooked,
+      seenBookingIdsRef.current,
     );
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
@@ -171,6 +228,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         e.preventDefault();
+        setPane('calendar');
         onClose();
         return;
       }
@@ -201,6 +259,13 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
 
   if (!open || typeof document === 'undefined') return null;
 
+  const showRequest = pane === 'request';
+
+  function closeDialog() {
+    setPane('calendar');
+    onClose();
+  }
+
   return createPortal(
     <div
       id="calendly-modal"
@@ -219,7 +284,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
       }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => { if (e.target === e.currentTarget) closeDialog(); }}
     >
       <style>{`
         #calendly-modal-shell { max-height: 95vh; }
@@ -337,7 +402,7 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
             ref={closeButtonRef}
             type="button"
             aria-label="Close"
-            onClick={onClose}
+            onClick={closeDialog}
             className="btn btn-primary booking-forward-btn btn-sm btn-accent"
             style={{
               // The only thing the shared button styling does not cover: a
@@ -350,7 +415,49 @@ export default function SchedulingDialog({ open, onClose, calendlyUrl, source, o
             Close ×
           </button>
         </div>
-        <div id="calendly-modal-frame-shell">
+        {/* Always visible, beside the calendar rather than inside it: the
+            iframe is cross-origin, so nothing here can know whether a slot
+            exists, and this option must not depend on it. */}
+        <div id="calendly-modal-alt-time-row">
+          {showRequest ? (
+            <button
+              type="button"
+              id="calendly-modal-back-to-calendar-btn"
+              className="alt-time-trigger"
+              onClick={() => {
+                setPane('calendar');
+                requestAnimationFrame(() => requestTriggerRef.current?.focus());
+              }}
+            >
+              ← Back to calendar
+            </button>
+          ) : (
+            <AlternateTimeTrigger
+              id="calendly-modal-alt-time-trigger"
+              buttonRef={requestTriggerRef}
+              onClick={() => setPane('request')}
+            />
+          )}
+        </div>
+        {showRequest ? (
+          <div id="calendly-modal-alt-time-scroll">
+            <AlternateTimeForm
+              idPrefix="calendly-alt-time"
+              source={toAltTimeSource(source)}
+              draft={draft}
+              setDraft={setDraft}
+              prefill={altTimePrefill}
+              onSubmitted={onAlternateTimeRequested}
+              onBack={() => {
+                setPane('calendar');
+                requestAnimationFrame(() => requestTriggerRef.current?.focus());
+              }}
+              backLabel="Back to calendar"
+              onClose={closeDialog}
+            />
+          </div>
+        ) : null}
+        <div id="calendly-modal-frame-shell" hidden={showRequest} style={showRequest ? { display: 'none' } : undefined}>
           <iframe
             ref={iframeRef}
             id="calendly-modal-iframe"

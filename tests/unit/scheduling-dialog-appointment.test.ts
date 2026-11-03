@@ -171,7 +171,7 @@ describe('createAppointmentCompletionHandler', () => {
     expect(JSON.stringify(payload)).not.toContain('Jane');
     expect(JSON.stringify(payload)).not.toContain('example.test');
   });
-  it('hands onBooked the invitee API reference, and nothing else', async () => {
+  it('hands onBooked the invitee API reference and the opaque booking id, and nothing else', async () => {
     const { createAppointmentCompletionHandler } = await import('@/components/booking/SchedulingDialog');
     const iframeWindow = calendlyWindow();
     const onBooked = vi.fn();
@@ -185,6 +185,6 @@ describe('createAppointmentCompletionHandler', () => {
       }),
     );
 
-    expect(onBooked).toHaveBeenCalledWith({ inviteeUri: uri });
+    expect(onBooked).toHaveBeenCalledWith({ inviteeUri: uri, bookingId: 'def' });
   });
 });
