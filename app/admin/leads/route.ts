@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/server/verifyAdmin';
 import { errorResponse, ServiceError } from '@/lib/server/errors';
 import { fsQueryCollection } from '@/lib/server/firestoreRest';
-import { isConvertedCapture, type AdminLeadRecord } from '@/components/admin/leads/adminLeadRecord';
+import { isConvertedCapture, timeRequestToLead, type AdminLeadRecord } from '@/components/admin/leads/adminLeadRecord';
+import { ALT_TIME_COLLECTION } from '@/lib/booking/alternateTime';
 import { buildLeadReview } from '@/lib/testing/leadReview';
 import { loadTestContext, emptyTestContext } from '@/lib/testing/classification';
 
@@ -39,7 +40,22 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // full lead already in this same read, under its own id — showing the
     // capture row too would double-count that person, so it is dropped here,
     // once, rather than in every consumer of this route.
-    const visible = leads.filter((lead) => !isConvertedCapture(lead)).slice(0, LEADS_LIST_CAP);
+    const leadRows = leads.filter((lead) => !isConvertedCapture(lead));
+
+    // Time requests ("No suitable time?") join the same list, newest first,
+    // so one person's questionnaire, booking capture and request sit together.
+    // A failed requests read must not blank the leads: reported, not thrown.
+    let requestsUnavailable = false;
+    let requestRows: AdminLeadRecord[] = [];
+    try {
+      const raw = await fsQueryCollection(ALT_TIME_COLLECTION, 'createdAt', 'DESCENDING', LEADS_LIST_CAP);
+      requestRows = (Array.isArray(raw) ? raw : []).map(timeRequestToLead).filter((r) => r.id);
+    } catch {
+      requestsUnavailable = true;
+    }
+    const visible = [...leadRows, ...requestRows]
+      .sort((a, b) => (b.submittedAt || '').localeCompare(a.submittedAt || ''))
+      .slice(0, LEADS_LIST_CAP);
 
     // Test classification and duplicate flags ride alongside, keyed by id, so
     // the lead records themselves go out exactly as stored. A failed marker
@@ -53,7 +69,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     }
     const review = buildLeadReview(visible as unknown as Array<Record<string, unknown>>, ctx);
 
-    return NextResponse.json({ leads: visible, cap: LEADS_LIST_CAP, review, testClassification });
+    return NextResponse.json({ leads: visible, cap: LEADS_LIST_CAP, review, testClassification, requestsUnavailable });
   } catch (err) {
     return errorResponse(new ServiceError(err instanceof Error ? err.message : 'Lead load failed'));
   }

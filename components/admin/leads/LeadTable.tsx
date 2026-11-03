@@ -4,7 +4,9 @@ import type { ReactNode } from 'react';
 import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadDisplayField } from '@/lib/leads/contract';
 import { telHref, mailtoHref, googleCalendarHref } from '@/lib/leads/contactLinks';
 import { COUNTED_LEAD_FIELDS, measureLeadCompleteness } from '@/lib/leads/completeness';
-import { isOutstandingCapture, isLeadComplete, leadQualityLabel, type AdminLeadRecord } from './adminLeadRecord';
+import { isOutstandingCapture, isLeadComplete, isTimeRequest, leadQualityLabel, type AdminLeadRecord } from './adminLeadRecord';
+import { RelatedRecords, TimeRequestBadge, TimeRequestDetail, TimeRequestFace } from './TimeRequestDetail';
+import type { AltTimeStatus } from '@/lib/booking/alternateTime';
 import type { RecordReview } from '@/lib/testing/leadReview';
 import { RecordFlags, TestMarkControls } from '@/components/admin/RecordReviewControls';
 
@@ -13,6 +15,10 @@ type ReviewProps = {
   review?: Record<string, RecordReview>;
   onMarkTest?: (leadId: string, test: boolean | null) => void;
   markingId?: string | null;
+  /** Time requests only: New / Contacted / Scheduled / Closed. */
+  onRequestStatus?: (requestId: string, status: AltTimeStatus) => void;
+  /** Jump to one of the same person's other records. */
+  onOpenRecord?: (id: string) => void;
 };
 
 const TZ = 'America/New_York';
@@ -237,6 +243,8 @@ function LeadRows({
   review,
   onMarkTest,
   markingId,
+  onRequestStatus,
+  onOpenRecord,
 }: {
   leads: AdminLeadRecord[];
   expandedId: string | null;
@@ -290,7 +298,7 @@ function LeadRows({
                   </span>
                 ))}
                 <span className="admin-lead-cell" role="cell">
-                  <LeadQualityBadge lead={lead} />
+                  {isTimeRequest(lead) ? <TimeRequestBadge lead={lead} /> : <LeadQualityBadge lead={lead} />}
                   <RecordFlags review={lead.id ? review?.[lead.id] : undefined} />
                 </span>
               </div>
@@ -310,7 +318,14 @@ function LeadRows({
                       onMark={(test) => onMarkTest(lead.id, test)}
                     />
                   ) : null}
-                  {isOutstandingCapture(lead) ? (
+                  <RelatedRecords review={lead.id ? review?.[lead.id] : undefined} onOpen={onOpenRecord} />
+                  {isTimeRequest(lead) ? (
+                    <TimeRequestDetail
+                      lead={lead}
+                      busy={markingId === lead.id}
+                      onStatusChange={onRequestStatus ? (st) => onRequestStatus(lead.id, st) : undefined}
+                    />
+                  ) : isOutstandingCapture(lead) ? (
                     <p className="form-note" style={{ margin: 0 }}>
                       No questionnaire answers yet — this row is only the email capture from Calendly checkout.
                     </p>
@@ -338,6 +353,8 @@ export function LeadTable({
   review,
   onMarkTest,
   markingId,
+  onRequestStatus,
+  onOpenRecord,
 }: {
   leads: AdminLeadRecord[];
   expandedId: string | null;
@@ -362,6 +379,8 @@ export function LeadTable({
         review={review}
         onMarkTest={onMarkTest}
         markingId={markingId}
+        onRequestStatus={onRequestStatus}
+        onOpenRecord={onOpenRecord}
       />
     );
   }
@@ -407,10 +426,12 @@ export function LeadTable({
                   Completeness
                 </span>
                 <span className="rc-value">
-                  <LeadQualityBadge lead={lead} />
+                  {isTimeRequest(lead) ? <TimeRequestBadge lead={lead} /> : <LeadQualityBadge lead={lead} />}
                 </span>
               </div>
-              {isOutstandingCapture(lead) ? (
+              {isTimeRequest(lead) ? (
+                <TimeRequestFace lead={lead} />
+              ) : isOutstandingCapture(lead) ? (
                 <CaptureFaceNote lead={lead} />
               ) : (
                 FACE_FIELDS.map((f) => <FieldRow key={f.key} lead={lead} field={f} />)
@@ -445,7 +466,14 @@ export function LeadTable({
                     onMark={(test) => onMarkTest(lead.id, test)}
                   />
                 ) : null}
-                {isOutstandingCapture(lead) ? (
+                <RelatedRecords review={lead.id ? review?.[lead.id] : undefined} onOpen={onOpenRecord} />
+                {isTimeRequest(lead) ? (
+                  <TimeRequestDetail
+                    lead={lead}
+                    busy={markingId === lead.id}
+                    onStatusChange={onRequestStatus ? (st) => onRequestStatus(lead.id, st) : undefined}
+                  />
+                ) : isOutstandingCapture(lead) ? (
                   <p className="form-note" style={{ margin: 0 }}>
                     No questionnaire answers yet — this card is only the email capture from Calendly checkout.
                   </p>

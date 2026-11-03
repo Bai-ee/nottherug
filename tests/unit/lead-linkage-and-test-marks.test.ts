@@ -110,7 +110,8 @@ describe('buildLeadReview', () => {
       ],
       emptyTestContext(),
     );
-    expect(review.l1).toEqual({ testReason: null, confirmedReal: false, sameEmailCount: 1 });
+    expect(review.l1).toMatchObject({ testReason: null, confirmedReal: false, sameEmailCount: 1 });
+    expect(review.l1.related.map((r) => r.id).sort()).toEqual(['c1', 'l2']);
     expect(review.c1.sameEmailCount).toBe(0);
   });
 });

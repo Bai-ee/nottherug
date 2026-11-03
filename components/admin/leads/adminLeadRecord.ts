@@ -20,7 +20,58 @@ export type AdminLeadRecord = LeadRecord & {
    *  never proof. Anywhere this is shown it must read that way. */
   bookedSelfReported?: boolean;
   convertedLeadId?: string;
+  /** Time-request rows only (type 'time-request', see timeRequestToLead). */
+  requestStatus?: string;
+  days?: string[];
+  windows?: string[];
+  timeZone?: string;
+  contactPreference?: string;
+  sourcePage?: string | null;
+  attribution?: { src?: string; ref?: string; camp?: string };
+  notification?: string;
+  statusUpdatedAt?: string;
 };
+
+export const TIME_REQUEST_TYPE = 'time-request';
+
+/** A "No suitable time? Request another time" submission shown in the leads list. */
+export function isTimeRequest(lead: Pick<AdminLeadRecord, 'type'>): boolean {
+  return lead.type === TIME_REQUEST_TYPE;
+}
+
+/**
+ * Maps an alternateTimeRequests document onto the list's shape so both kinds
+ * share one list, search, sort and export. Only shared meanings are mapped
+ * (name → ownerName, note → notes, createdAt → submittedAt); everything
+ * request-specific keeps its own field. The stored document is unchanged.
+ */
+export function timeRequestToLead(r: Record<string, unknown>): AdminLeadRecord {
+  const str = (v: unknown) => (typeof v === 'string' ? v : undefined);
+  const list = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
+  return {
+    id: str(r.id) ?? '',
+    type: TIME_REQUEST_TYPE,
+    submittedAt: str(r.createdAt) ?? '',
+    email: str(r.email) ?? '',
+    ownerName: str(r.name),
+    phone: str(r.phone),
+    notes: str(r.note),
+    source: str(r.source),
+    requestStatus: str(r.status) ?? 'new',
+    statusUpdatedAt: str(r.statusUpdatedAt),
+    days: list(r.days),
+    windows: list(r.windows),
+    timeZone: str(r.timeZone),
+    contactPreference: str(r.contactPreference),
+    sourcePage: str(r.sourcePage) ?? null,
+    attribution: r.attribution && typeof r.attribution === 'object' ? (r.attribution as AdminLeadRecord['attribution']) : undefined,
+    notification: str(r.notification),
+    testOverride: typeof r.testOverride === 'boolean' ? r.testOverride : undefined,
+    testDeviceId: str(r.testDeviceId),
+    sid: str(r.sid),
+    vid: str(r.vid),
+  } as AdminLeadRecord;
+}
 
 /** A capture whose person has since completed the questionnaire — their full
  *  lead is already in the list under its own id, so showing this row too

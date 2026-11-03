@@ -109,7 +109,7 @@ export function BookingAvailabilityPanel({ report }: { report: AnalyticsReport }
               id="admin-booking-availability-outcomes-row"
               label="Requests by status"
               value={`New ${b.altRequestOutcomes.new} · Contacted ${b.altRequestOutcomes.contacted} · Scheduled ${b.altRequestOutcomes.scheduled} · Closed ${b.altRequestOutcomes.closed}`}
-              note="“Scheduled” is set by hand in Time Requests — the only link from a request to a booking. Other requests' outcomes are unknown."
+              note="“Scheduled” is set by hand on the request in Leads — the only link from a request to a booking. Other requests' outcomes are unknown."
             />
           ) : null}
         </div>

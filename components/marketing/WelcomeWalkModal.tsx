@@ -534,6 +534,7 @@ export default function WelcomeWalkModal({
 
   function openRequestView(returnTo: View) {
     setFieldError('');
+    altTimeDraft[1]((d) => (d.submitted ? { ...d, submitted: false } : d));
     setRequestReturnView(returnTo);
     setView('request');
   }

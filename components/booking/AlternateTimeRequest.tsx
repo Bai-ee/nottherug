@@ -342,7 +342,8 @@ export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, 
 
   if (draft.submitted) {
     return (
-      <div id={`${idPrefix}-success-panel`} className="alt-time-panel">
+      // Centered on its own: nothing is left to do but close.
+      <div id={`${idPrefix}-success-panel`} className="alt-time-panel alt-time-success-panel">
         <p
           id={`${idPrefix}-success-message`}
           ref={successRef}
@@ -352,15 +353,7 @@ export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, 
         >
           {ALT_TIME_SUCCESS}
         </p>
-        <div id={`${idPrefix}-success-actions`} className="alt-time-actions">
-          {onBack ? (
-            <button type="button" className="btn btn-outline booking-forward-btn btn-sm" onClick={() => {
-              setDraft((d) => ({ ...d, submitted: false }));
-              onBack();
-            }}>
-              {backLabel ?? 'Back to calendar'}
-            </button>
-          ) : null}
+        <div id={`${idPrefix}-success-actions`} className="alt-time-actions alt-time-success-actions">
           {onClose ? (
             <button type="button" className="btn btn-primary booking-forward-btn btn-accent btn-sm" onClick={onClose}>
               Close

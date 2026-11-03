@@ -220,3 +220,17 @@
   justify-content: center;
   margin-top: 8px;
 }
+
+/* Sent: the confirmation and Close sit centered in the space, every width.
+   #calendly-modal-alt-time-scroll fills the dialog below the header. */
+#calendly-modal-alt-time-scroll[data-submitted='true'] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.alt-time-success-panel {
+  align-items: center;
+  text-align: center;
+  margin: auto;
+}
+.alt-time-success-actions { justify-content: center; }

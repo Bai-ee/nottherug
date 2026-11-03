@@ -6,10 +6,12 @@ import { AdminSessionProvider } from '@/components/admin/AdminSession';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminShell } from '@/components/admin/AdminShell';
 import { adminFetch, useAbortSignal, isAbortError, type GetIdToken } from '@/components/admin/adminFetch';
-import { LeadFilterBar, type LeadSortOrder } from '@/components/admin/leads/LeadFilterBar';
+import { LeadFilterBar, type LeadShowFilter, type LeadSortOrder } from '@/components/admin/leads/LeadFilterBar';
 import { LeadTable } from '@/components/admin/leads/LeadTable';
 import { TestActivityToggle } from '@/components/admin/analytics/TestActivityToggle';
 import type { RecordReview } from '@/lib/testing/leadReview';
+import { isTimeRequest } from '@/components/admin/leads/adminLeadRecord';
+import type { AltTimeStatus } from '@/lib/booking/alternateTime';
 
 /** Which layout the owner last chose. Per-viewer convenience only, so every
  *  access is guarded: a private window or blocked storage must not break the
@@ -94,6 +96,9 @@ function LeadsPageContent({
   const [includeTest, setIncludeTest] = useState(false);
   const [markingId, setMarkingId] = useState<string | null>(null);
   const [markError, setMarkError] = useState('');
+  const [requestsUnavailable, setRequestsUnavailable] = useState(false);
+  /** Which kinds of record to list: everything, or only one kind. */
+  const [show, setShow] = useState<LeadShowFilter>('all');
   const [query, setQuery] = useState('');
   const [sortBy, setSortBy] = useState<LeadSortOrder>('newest');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -114,6 +119,7 @@ function LeadsPageContent({
           cap: number;
           review?: Record<string, RecordReview>;
           testClassification?: 'ok' | 'unavailable';
+          requestsUnavailable?: boolean;
         }>('/admin/leads', getToken, {
           cache: 'no-store',
           signal: abortSignal,
@@ -122,6 +128,7 @@ function LeadsPageContent({
         setCap(data.cap ?? null);
         setReview(data.review ?? {});
         setTestClassification(data.testClassification ?? 'ok');
+        setRequestsUnavailable(data.requestsUnavailable === true);
       } catch (e) {
         if (isAbortError(e)) return;
         setError(e instanceof Error ? e.message : 'Lead load failed');
@@ -144,7 +151,7 @@ function LeadsPageContent({
       await adminFetch('/api/admin/test-marks', getToken, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'lead', id: leadId, test }),
+        body: JSON.stringify({ kind: leads.find((l) => l.id === leadId && isTimeRequest(l)) ? 'request' : 'lead', id: leadId, test }),
       });
       refresh();
     } catch (e) {
@@ -152,6 +159,34 @@ function LeadsPageContent({
     } finally {
       setMarkingId(null);
     }
+  }
+
+  async function setRequestStatus(requestId: string, status: AltTimeStatus) {
+    setMarkingId(requestId);
+    setMarkError('');
+    try {
+      const res = await adminFetch<{ status: AltTimeStatus; statusUpdatedAt: string }>('/api/admin/requests', getToken, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: requestId, status }),
+      });
+      setLeads((list) => list.map((l) => (l.id === requestId ? { ...l, requestStatus: res.status, statusUpdatedAt: res.statusUpdatedAt } : l)));
+    } catch (e) {
+      setMarkError(e instanceof Error ? e.message : 'Could not update the request status.');
+    } finally {
+      setMarkingId(null);
+    }
+  }
+
+  /** "Same person" links: show everything, open that record, bring it into view. */
+  function openRecord(id: string) {
+    setShow('all');
+    setQuery('');
+    setExpandedId(id);
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`admin-lead-row-${id}`) ?? document.getElementById(`admin-lead-card-${id}`);
+      el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
   }
 
   const testHiddenCount = useMemo(
@@ -163,6 +198,8 @@ function LeadsPageContent({
     const q = query.trim().toLowerCase();
     return leads.filter((l) => {
       if (!includeTest && l.id && review[l.id]?.testReason) return false;
+      if (show === 'requests' && !isTimeRequest(l)) return false;
+      if (show === 'leads' && isTimeRequest(l)) return false;
       if (!q) return true;
       const hay = [l.ownerName, l.email, l.phone, l.dogName, l.neighborhood, l.breedAge, l.notes, l.serviceInterest, l.reactivity, l.allergies]
         .filter(Boolean)
@@ -170,7 +207,7 @@ function LeadsPageContent({
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [leads, query, includeTest, review]);
+  }, [leads, query, includeTest, review, show]);
 
   // "Most answered first" surfaces the serious leads without disturbing the
   // search above; "Newest first" keeps the server's own submittedAt order.
@@ -199,6 +236,8 @@ function LeadsPageContent({
           onQueryChange={setQuery}
           sortBy={sortBy}
           onSortChange={setSortBy}
+          show={show}
+          onShowChange={setShow}
           loading={loading}
           filteredCount={filtered.length}
           totalCount={leads.length}
@@ -216,6 +255,9 @@ function LeadsPageContent({
           </span>
           {testClassification === 'unavailable' ? (
             <span className="form-note text-terra" style={{ margin: 0 }}>Test markers could not be read; nothing is hidden.</span>
+          ) : null}
+          {requestsUnavailable ? (
+            <span className="form-note text-terra" style={{ margin: 0 }}>Time requests could not be loaded this time.</span>
           ) : null}
           {markError ? <span className="form-note text-terra" role="alert" style={{ margin: 0 }}>{markError}</span> : null}
         </div>
@@ -245,6 +287,8 @@ function LeadsPageContent({
             review={review}
             onMarkTest={markTest}
             markingId={markingId}
+            onRequestStatus={setRequestStatus}
+            onOpenRecord={openRecord}
           />
         </div>
 

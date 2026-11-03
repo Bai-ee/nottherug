@@ -418,6 +418,8 @@ export default function SchedulingDialog({
         {/* Always visible, beside the calendar rather than inside it: the
             iframe is cross-origin, so nothing here can know whether a slot
             exists, and this option must not depend on it. */}
+        {/* Hidden once a request is sent: the only thing left is Close. */}
+        {showRequest && draft.submitted ? null : (
         <div id="calendly-modal-alt-time-row">
           {showRequest ? (
             <button
@@ -435,12 +437,17 @@ export default function SchedulingDialog({
             <AlternateTimeTrigger
               id="calendly-modal-alt-time-trigger"
               buttonRef={requestTriggerRef}
-              onClick={() => setPane('request')}
+              onClick={() => {
+                // A request sent earlier in this visit: start a fresh one.
+                setDraft((d) => (d.submitted ? { ...d, submitted: false } : d));
+                setPane('request');
+              }}
             />
           )}
         </div>
+        )}
         {showRequest ? (
-          <div id="calendly-modal-alt-time-scroll">
+          <div id="calendly-modal-alt-time-scroll" data-submitted={draft.submitted ? 'true' : 'false'}>
             <AlternateTimeForm
               idPrefix="calendly-alt-time"
               source={toAltTimeSource(source)}
