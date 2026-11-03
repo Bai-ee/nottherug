@@ -175,3 +175,102 @@ export function founderAlternateTimeEmail(req: {
   ].join('\n');
   return { subject, html, text };
 }
+
+/** Shared footer line for customer emails. */
+const CUSTOMER_FOOTER_HTML = `<p style="margin-top:32px;color:#888;font-size:12px;">Not The Rug · Brooklyn dog walking &amp; care</p>`;
+
+function customerShell(inner: string): string {
+  return `
+<!doctype html>
+<html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#fff;color:#1c1c1a;margin:0;padding:24px;">
+  <div style="max-width:560px;margin:0 auto;">
+    ${inner}
+    ${CUSTOMER_FOOTER_HTML}
+  </div>
+</body></html>`;
+}
+
+/** Confirmation to the person who sent "Request another time". Says plainly that nothing is booked yet. */
+export function customerAlternateTimeEmail(req: {
+  name: string;
+  availability: string;
+  timeZone: string;
+  contactPreference: string;
+  phone: string;
+  newsletterOptIn: boolean;
+}): { subject: string; html: string; text: string } {
+  const firstName = req.name.split(' ')[0] || 'there';
+  const subject = 'We got your request for another time — Not The Rug';
+  const html = customerShell(`
+    <h2 style="margin:0 0 16px 0;">Thanks, ${escape(firstName)}!</h2>
+    <p>We got your request. Luis will be in touch to arrange a time for your free Meet &amp; Greet.</p>
+    <p><strong>This doesn't book an appointment yet.</strong></p>
+    <p style="margin-top:20px;">Here's what you sent us:</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;">
+      ${row('Preferred times', req.availability)}
+      ${row('Your time zone', req.timeZone.replace(/_/g, ' '))}
+      ${row('Reach you by', req.contactPreference)}
+      ${row('Phone', req.phone)}
+    </table>
+    ${req.newsletterOptIn ? '<p style="margin-top:20px;">You also asked for occasional Not The Rug news. Every one has an unsubscribe link.</p>' : ''}
+    <p style="margin-top:24px;">If anything's off, just reply to this email.</p>`);
+  const text = [
+    `Thanks, ${firstName}!`,
+    ``,
+    `We got your request. Luis will be in touch to arrange a time for your free Meet & Greet.`,
+    `This doesn't book an appointment yet.`,
+    ``,
+    `Preferred times: ${req.availability}`,
+    `Your time zone: ${req.timeZone.replace(/_/g, ' ')}`,
+    `Reach you by: ${req.contactPreference}`,
+    `Phone: ${req.phone}`,
+    ...(req.newsletterOptIn ? [``, `You also asked for occasional Not The Rug news. Every one has an unsubscribe link.`] : []),
+    ``,
+    `If anything's off, just reply to this email.`,
+    ``,
+    `— Not The Rug`,
+  ].join('\n');
+  return { subject, html, text };
+}
+
+/**
+ * "We have your email" — sent once, the first time an address is given to
+ * start booking. Asks before adding anyone to anything: each button opens a
+ * page with its own Confirm button (a plain link would be "clicked" by email
+ * security scanners). Without signed links, it asks them to reply instead.
+ */
+export function captureAcknowledgementEmail(req: {
+  newsletterUrl: string | null;
+  contactUrl: string | null;
+  alreadyNewsletter: boolean;
+}): { subject: string; html: string; text: string } {
+  const subject = 'We have your email — Not The Rug';
+  const button = (href: string, label: string) =>
+    `<a href="${escape(href)}" style="display:inline-block;margin:6px 8px 6px 0;padding:12px 18px;background:#4f5a3d;color:#f7f1e3;text-decoration:none;border-radius:4px;font-weight:600;">${escape(label)}</a>`;
+  const showNewsletter = !req.alreadyNewsletter && req.newsletterUrl;
+  const buttons = [
+    req.contactUrl ? button(req.contactUrl, 'Yes, Luis can contact me') : '',
+    showNewsletter ? button(req.newsletterUrl!, 'Add me to the newsletter') : '',
+  ].join('');
+  const html = customerShell(`
+    <h2 style="margin:0 0 16px 0;">Thanks for starting your Meet &amp; Greet</h2>
+    <p>You gave us this email address while booking a free Meet &amp; Greet with Not The Rug, so we wanted to let you know we have it.</p>
+    <p>Would you like us to use it?</p>
+    ${buttons ? `<p style="margin-top:12px;">${buttons}</p>` : '<p>Just reply to this email to let us know.</p>'}
+    <p style="margin-top:20px;font-size:13px;color:#666;">If you didn't do this, you can ignore this email — we won't add you to anything.</p>`);
+  const text = [
+    `Thanks for starting your Meet & Greet`,
+    ``,
+    `You gave us this email address while booking a free Meet & Greet with Not The Rug, so we wanted to let you know we have it.`,
+    `Would you like us to use it?`,
+    ``,
+    ...(req.contactUrl ? [`Yes, Luis can contact me: ${req.contactUrl}`] : []),
+    ...(showNewsletter ? [`Add me to the newsletter: ${req.newsletterUrl}`] : []),
+    ...(!req.contactUrl && !showNewsletter ? [`Just reply to this email to let us know.`] : []),
+    ``,
+    `If you didn't do this, you can ignore this email — we won't add you to anything.`,
+    ``,
+    `— Not The Rug`,
+  ].join('\n');
+  return { subject, html, text };
+}

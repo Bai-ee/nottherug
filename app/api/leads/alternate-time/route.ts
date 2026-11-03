@@ -14,7 +14,9 @@ import { isCampaignSlug } from '@/lib/analytics/events';
 import { readLinkage } from '@/lib/leads/linkage';
 import { TEST_DEVICES_COLLECTION } from '@/lib/testing/classification';
 import { getFounderEmail, getFromAddress, getResend } from '@/lib/email/resend';
-import { founderAlternateTimeEmail } from '@/lib/email/templates';
+import { isSandboxSender } from '@/lib/email/sandbox';
+import { customerAlternateTimeEmail, founderAlternateTimeEmail } from '@/lib/email/templates';
+import { consentFields, readOptIn } from '@/lib/leads/consent';
 
 /**
  * "No suitable time? Request another time." Saves a request for the founder
@@ -145,6 +147,42 @@ async function notifyFounder(doc: Record<string, unknown>, data: AltTimeRequestI
   }
 }
 
+/** The requester's confirmation. Skipped (not failed) when the sender is the
+ *  @resend.dev sandbox, which can only deliver to the Resend account itself. */
+async function confirmToCustomer(data: AltTimeRequestInput, newsletterOptIn: boolean): Promise<'sent' | 'failed' | 'skipped'> {
+  let from: string;
+  let resend: ReturnType<typeof getResend>;
+  try {
+    resend = getResend();
+    from = getFromAddress();
+  } catch {
+    return 'skipped';
+  }
+  if (isSandboxSender(from)) return 'skipped';
+  try {
+    const mail = customerAlternateTimeEmail({
+      name: data.name,
+      availability: summarizeAvailability(data.days, data.windows),
+      timeZone: data.timeZone,
+      contactPreference: contactPreferenceLabel(data.contactPreference),
+      phone: data.phone,
+      newsletterOptIn,
+    });
+    const result = await withTimeout(
+      resend.emails.send({ from, to: data.email, subject: mail.subject, html: mail.html, text: mail.text }),
+      EMAIL_TIMEOUT_MS,
+    );
+    if (result.error) {
+      console.error('[lead:alt-time] customer email failed');
+      return 'failed';
+    }
+    return 'sent';
+  } catch {
+    console.error('[lead:alt-time] customer email error');
+    return 'failed';
+  }
+}
+
 async function runAfterResponse(task: () => Promise<void>): Promise<void> {
   try {
     after(task);
@@ -180,6 +218,7 @@ export async function POST(req: Request) {
 
   const body = parsed as Record<string, unknown>;
   const linkage = readLinkage(body.linkage);
+  const newsletterOptIn = readOptIn(body.newsletterOptIn);
   const attribution = readAttribution(body.attribution);
   const id = requestIdForKey(data.idempotencyKey);
   const now = new Date();
@@ -221,6 +260,7 @@ export async function POST(req: Request) {
     testFlag,
     ...(attribution ? { attribution } : {}),
     ...linkage,
+    ...(newsletterOptIn ? consentFields('newsletter', data.source, createdAt) : {}),
     ...(linkedCaptureId ? { linkedCaptureId, linkedConvertedLeadId: null } : {}),
   };
 
@@ -239,9 +279,12 @@ export async function POST(req: Request) {
   }
 
   await runAfterResponse(async () => {
-    const notification = testFlag ? 'skipped' : await notifyFounder(doc, data, now);
+    // Only the first save of an attempt gets here, so each email goes once.
+    const [notification, customerNotification] = testFlag
+      ? (['skipped', 'skipped'] as const)
+      : await Promise.all([notifyFounder(doc, data, now), confirmToCustomer(data, newsletterOptIn)]);
     try {
-      await fsMergeDoc(`${ALT_TIME_COLLECTION}/${id}`, { notification });
+      await fsMergeDoc(`${ALT_TIME_COLLECTION}/${id}`, { notification, customerNotification });
     } catch {
       console.error('[lead:alt-time] notification status persist failed');
     }

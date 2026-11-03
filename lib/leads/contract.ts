@@ -139,6 +139,11 @@ export type LeadRecord = {
   /** Admin's explicit test classification (lib/testing/classification.ts).
    *  true = confirmed test, false = confirmed real; absent = not reviewed. */
   testOverride?: boolean;
+  /** Marketing consent (lib/leads/consent.ts). Present only when given. */
+  newsletterOptIn?: boolean;
+  newsletterOptInAt?: string;
+  contactOptIn?: boolean;
+  contactOptInAt?: string;
   testMarkedBy?: string;
   testMarkedAt?: string;
   /** Legacy survey fields. Never required, never defaulted on write — only rendered when present. */
@@ -184,6 +189,8 @@ export const LEAD_DISPLAY_FIELDS: LeadDisplayField[] = [
   { key: 'allergies', label: 'Allergies', legacy: false },
   { key: 'phoneConsult', label: 'Phone consult requested', legacy: false },
   { key: 'notes', label: 'Notes', legacy: false },
+  { key: 'newsletterOptIn', label: 'Newsletter opt-in', legacy: false },
+  { key: 'contactOptIn', label: 'OK to contact (from email)', legacy: false },
   { key: 'spayNeuter', label: 'Spayed / neutered (legacy)', legacy: true },
   { key: 'dogSocial', label: 'Around other dogs (legacy)', legacy: true },
   { key: 'strangerSocial', label: 'Around strangers (legacy)', legacy: true },
@@ -193,6 +200,7 @@ export const LEAD_DISPLAY_FIELDS: LeadDisplayField[] = [
 export function formatLeadFieldValue(lead: LeadRecord, field: LeadDisplayField): string {
   const raw = lead[field.key];
   if (field.key === 'phoneConsult') return raw ? 'Yes' : 'No';
+  if (field.key === 'newsletterOptIn' || field.key === 'contactOptIn') return raw === true ? 'Yes' : '—';
   if (raw === undefined || raw === null || raw === '') return '—';
   return String(raw);
 }

@@ -19,7 +19,9 @@ import { LEAD_DISPLAY_FIELDS, type LeadRecord } from './contract';
  *  is the document key, present on every record including an email-only
  *  capture, so counting it reported one answered question for someone who had
  *  answered none. */
-const SYSTEM_FIELDS = new Set(['submittedAt', 'source', 'email', 'id']);
+// Consent flags are shown and exported with the lead, but they are not
+// questionnaire answers and never count toward "N of 12 answered".
+const SYSTEM_FIELDS = new Set(['submittedAt', 'source', 'email', 'id', 'newsletterOptIn', 'contactOptIn']);
 
 export const COUNTED_LEAD_FIELDS = LEAD_DISPLAY_FIELDS.filter(
   (f) => !f.legacy && !SYSTEM_FIELDS.has(f.key as string),

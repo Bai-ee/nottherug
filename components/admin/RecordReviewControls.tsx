@@ -17,6 +17,8 @@ export function RecordFlags({ review }: { review?: RecordReview }) {
       {review.testReason ? (
         <span className="badge badge-gold" title={`Test — ${REASON_TEXT[review.testReason] ?? review.testReason}`}>Test</span>
       ) : null}
+      {review.newsletter ? <span className="badge badge-sage" title="Agreed to the newsletter.">Newsletter ✓</span> : null}
+      {review.contactOk ? <span className="badge badge-sage" title="Confirmed from our email that Luis can contact them.">OK to contact</span> : null}
       {review.sameEmailCount > 0 ? (
         <span className="badge badge-terra" title="Another submission in this list uses the same email. Review before treating as test or duplicate.">
           Same email ×{review.sameEmailCount + 1}

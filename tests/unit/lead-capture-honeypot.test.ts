@@ -37,7 +37,10 @@ describe('POST /api/leads/capture honeypot', () => {
   it('stores a normal capture via merge, not replace', async () => {
     const res = await post({ email: 'real@example.test', source: 'home' });
     expect(res.status).toBe(200);
-    expect(fsFake.callsTo('fsMergeDoc')).toHaveLength(1);
+    // The capture itself, then the "we have your email" outcome on the same row.
+    const merges = fsFake.callsTo('fsMergeDoc');
+    expect(merges).toHaveLength(2);
+    expect(fsFake.callsTo('fsSetDoc')).toHaveLength(0);
   });
 
   it('writes expiresAt on the rate-limit row', async () => {

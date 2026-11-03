@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { createHash } from 'node:crypto';
 import { fsIncrementField } from '@/lib/server/firestoreRest';
 import { readBoundedBody } from '@/lib/server/readBoundedBody';
@@ -8,6 +8,8 @@ import { HONEYPOT_FIELD_NAME } from '@/lib/leads/contract';
 import { isOpaqueId } from '@/lib/analytics/events';
 import { hashBookingRef } from '@/lib/booking/bookingRef';
 import { readLinkage } from '@/lib/leads/linkage';
+import { consentFields, readOptIn } from '@/lib/leads/consent';
+import { sendCaptureAcknowledgement } from '@/lib/server/captureAcknowledgement';
 
 /**
  * The first half of the booking-first journey: someone gives an email and
@@ -129,6 +131,7 @@ export async function POST(req: Request) {
   // Hashed before storage; repeat bookings by one person stay distinct refs.
   const bookingRef = booked && isOpaqueId(input.bookingId) ? hashBookingRef(input.bookingId) : null;
   const linkage = readLinkage(input.linkage);
+  const newsletterOptIn = readOptIn(input.newsletterOptIn);
 
   if (!isValidEmail(email)) return errorResponse(400, 'A valid email is required.');
   if (!ALLOWED_SOURCES.has(source)) return errorResponse(400, 'Unrecognized source.');
@@ -137,8 +140,33 @@ export async function POST(req: Request) {
   let id: string;
   try {
     // First-seen time, conversion and a true booking hint are never undone; see leadTransitions.
-    const outcome = await recordCapture({ email, source, booked, nowIso: new Date().toISOString(), bookingRef, linkage: { ...linkage } }, budget);
+    const outcome = await recordCapture({
+      email,
+      source,
+      booked,
+      nowIso: new Date().toISOString(),
+      bookingRef,
+      linkage: { ...linkage },
+      ...(newsletterOptIn ? { consent: consentFields('newsletter', source, new Date().toISOString()) } : {}),
+    }, budget);
     id = outcome.id;
+
+    // First sighting of this address: tell them we have it and ask before
+    // using it. After the response, so booking never waits on email.
+    if (outcome.created) {
+      const task = () =>
+        sendCaptureAcknowledgement({
+          captureId: outcome.id,
+          email,
+          alreadyNewsletter: newsletterOptIn,
+          testDeviceId: linkage.testDeviceId,
+        }).then(() => undefined);
+      try {
+        after(task);
+      } catch {
+        await task();
+      }
+    }
 
     // Already converted: the admin table shows the full lead, not this row,
     // so a booked signal arriving now must land on that lead. Best effort.

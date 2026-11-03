@@ -21,6 +21,8 @@ export function captureLeadEmail(
   source: string,
   booked = false,
   bookingId: string | null = null,
+  /** Only ever sent as true: an unticked box never withdraws an earlier yes. */
+  extra: { newsletterOptIn?: boolean } = {},
 ): void {
   try {
     void fetch('/api/leads/capture', {
@@ -31,6 +33,7 @@ export function captureLeadEmail(
         source,
         ...(booked ? { booked: true } : {}),
         ...(bookingId ? { bookingId } : {}),
+        ...(extra.newsletterOptIn ? { newsletterOptIn: true } : {}),
         linkage: getSubmissionLinkage(),
       }),
     }).catch((err) => {

@@ -22,6 +22,7 @@ import MeetGreetForm from '@/components/MeetGreetForm';
 import { GROUP_WALK_PREVIEW, GROUP_WALK_SHORT_LABEL } from '@/lib/content/services';
 import { PHONE_DISPLAY, PHONE_HREF } from '@/lib/content/contact';
 import EmailContactActions from '@/components/marketing/EmailContactActions';
+import NewsletterOptIn from '@/components/marketing/NewsletterOptIn';
 import {
   WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
@@ -180,6 +181,8 @@ export default function WelcomeWalkModal({
     openOnMount?.straightToScheduler && calendlyUrl ? 'scheduler' : 'gate'
   );
   const [email, setEmail] = useState(openOnMount?.email ?? '');
+  /** The gate's newsletter box. Unticked by default; sent only as a yes. */
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   /** Name the visitor gave Calendly, once looked up; seeds the questionnaire. */
   const [inviteeName, setInviteeName] = useState('');
   const [fieldError, setFieldError] = useState('');
@@ -483,7 +486,7 @@ export default function WelcomeWalkModal({
     if (handoff) writeOnboardingHandoff(getOnboardingHandoffStorage(), handoff);
     // Same best-effort rule as the handoff write above: never blocks opening
     // the scheduler.
-    captureLeadEmail(trimmed, MODAL_SOURCE);
+    captureLeadEmail(trimmed, MODAL_SOURCE, false, null, { newsletterOptIn });
     trackCta('welcome_modal_schedule');
     setView('scheduler');
   }
@@ -1412,6 +1415,11 @@ export default function WelcomeWalkModal({
                               {SERVICE_AREA_LABEL}
                             </div>
                           </div>
+                          <NewsletterOptIn
+                            id="welcome-walk-modal-newsletter"
+                            checked={newsletterOptIn}
+                            onChange={setNewsletterOptIn}
+                          />
                         </div>
 
                         {!calendlyUrl && (

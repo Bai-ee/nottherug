@@ -277,6 +277,9 @@ export default function BookingForm({
   const submittedEmailRef = useRef('');
   /** Name/email of the last saved submission, to prefill the scheduler's
    *  "Request another time" form after the questionnaire resets. */
+  // Newsletter box on the first step. Unticked by default; sent only as a yes,
+  // and cleared after a save like every other answer.
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const [lastContact, setLastContact] = useState<{ name?: string; email?: string; phone?: string }>({});
 
   const alertId = `${paneId}-step-alert`;
@@ -500,6 +503,7 @@ export default function BookingForm({
         phoneConsult: wantsPhoneConsult,
         [HONEYPOT_FIELD_NAME]: honeypot,
         linkage: getSubmissionLinkage(),
+        ...(newsletterOptIn ? { newsletterOptIn: true } : {}),
       },
       source,
     );
@@ -528,6 +532,7 @@ export default function BookingForm({
     setAllergyOther('');
     setPhoneConsult(initialPhoneConsult);
     setHoneypot('');
+    setNewsletterOptIn(false);
     setStep(0);
     setFieldErrors({});
     // The form is blank again, so anything typed into it from here is a new
@@ -729,7 +734,7 @@ export default function BookingForm({
           >
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[0] = el; }} {...groupProps(0)}>
               <GroupHeader index={0} paneId={paneId} fullLayout={fullLayout} headingLevel={headingLevel} />
-              <StepAboutYou {...stepProps} />
+              <StepAboutYou {...stepProps} newsletterOptIn={newsletterOptIn} onNewsletterChange={setNewsletterOptIn} />
             </div>
 
             <div ref={(el: HTMLDivElement | null) => { panelRefs.current[1] = el; }} {...groupProps(1)}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import NewsletterOptIn from './NewsletterOptIn';
 import {
   GROUP_WALK_PREVIEW,
   GROUP_WALK_PRICE_NOTE,
@@ -57,6 +58,7 @@ export default function GroupWalkFeatureCard({
   const { cardRef, backdropRef, walkerRef, priceRef, ctaRef, setPawRef, onEnter, onLeave } = useGroupWalkCardHover();
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const [error, setError] = useState('');
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -81,7 +83,7 @@ export default function GroupWalkFeatureCard({
     // never enter the event payload.
     trackCta('group_walk_card_submit');
     // Fire-and-forget, same rule as above: never blocks the scheduler.
-    captureLeadEmail(mail, FEATURE_SOURCE);
+    captureLeadEmail(mail, FEATURE_SOURCE, false, null, { newsletterOptIn });
     // Booking comes first here too: the address is already in hand, so the
     // scheduler opens straight away and the questionnaire waits until after.
     // Nothing navigates — the whole journey is on this page.
@@ -528,6 +530,11 @@ export default function GroupWalkFeatureCard({
                 }}
               />
             </div>
+            <NewsletterOptIn
+              id="home-group-walk-feature-newsletter"
+              checked={newsletterOptIn}
+              onChange={setNewsletterOptIn}
+            />
           </div>
 
           {/* Always rendered, empty until there is an error, so the message

@@ -30,6 +30,10 @@ export type AdminLeadRecord = LeadRecord & {
   attribution?: { src?: string; ref?: string; camp?: string };
   notification?: string;
   statusUpdatedAt?: string;
+  /** Requester's confirmation email (time requests). */
+  customerNotification?: string;
+  /** "We have your email" message (captures). */
+  acknowledgement?: string;
 };
 
 export const TIME_REQUEST_TYPE = 'time-request';
@@ -66,6 +70,9 @@ export function timeRequestToLead(r: Record<string, unknown>): AdminLeadRecord {
     sourcePage: str(r.sourcePage) ?? null,
     attribution: r.attribution && typeof r.attribution === 'object' ? (r.attribution as AdminLeadRecord['attribution']) : undefined,
     notification: str(r.notification),
+    customerNotification: str(r.customerNotification),
+    newsletterOptIn: r.newsletterOptIn === true ? true : undefined,
+    newsletterOptInAt: str(r.newsletterOptInAt),
     testOverride: typeof r.testOverride === 'boolean' ? r.testOverride : undefined,
     testDeviceId: str(r.testDeviceId),
     sid: str(r.sid),

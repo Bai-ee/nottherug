@@ -75,6 +75,11 @@ export function TimeRequestFace({ lead }: { lead: AdminLeadRecord }) {
   );
 }
 
+/** 'skipped' covers a test device, the @resend.dev sandbox sender, or email not configured. */
+export function emailState(v?: string) {
+  return v === 'sent' ? 'emailed' : v === 'failed' ? 'failed' : v === 'skipped' ? 'not sent' : 'pending';
+}
+
 function attributionText(a?: AdminLeadRecord['attribution']) {
   if (!a?.src) return 'not recorded';
   if (a.src === 'campaign') return `campaign ${a.camp ?? '—'}`;
@@ -114,7 +119,7 @@ export function TimeRequestDetail({
       {lead.notes ? <Row label="Note"><span style={{ whiteSpace: 'pre-wrap' }}>{lead.notes}</span></Row> : null}
       <p className="form-note" style={{ margin: 0, textAlign: 'left' }}>
         Requested {fmt(lead.submittedAt)} from {lead.source || '—'}{lead.sourcePage ? ` on ${lead.sourcePage}` : ''} · source {attributionText(lead.attribution)} ·
-        notification {lead.notification === 'sent' ? 'emailed' : lead.notification === 'failed' ? 'failed' : lead.notification === 'skipped' ? 'not sent' : 'pending'}
+        founder notice {emailState(lead.notification)} · their confirmation {emailState(lead.customerNotification)}
         {lead.statusUpdatedAt && status !== 'new' ? ` · status updated ${fmt(lead.statusUpdatedAt)}` : ''}
         . A request, not a booking: “Scheduled” is the only link to an appointment.
       </p>

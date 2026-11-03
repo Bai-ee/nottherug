@@ -5,7 +5,7 @@ import { LEAD_DISPLAY_FIELDS, formatLeadFieldValue, type LeadDisplayField } from
 import { telHref, mailtoHref, googleCalendarHref } from '@/lib/leads/contactLinks';
 import { COUNTED_LEAD_FIELDS, measureLeadCompleteness } from '@/lib/leads/completeness';
 import { isOutstandingCapture, isLeadComplete, isTimeRequest, leadQualityLabel, type AdminLeadRecord } from './adminLeadRecord';
-import { RelatedRecords, TimeRequestBadge, TimeRequestDetail, TimeRequestFace } from './TimeRequestDetail';
+import { RelatedRecords, TimeRequestBadge, TimeRequestDetail, TimeRequestFace, emailState } from './TimeRequestDetail';
 import type { AltTimeStatus } from '@/lib/booking/alternateTime';
 import type { RecordReview } from '@/lib/testing/leadReview';
 import { RecordFlags, TestMarkControls } from '@/components/admin/RecordReviewControls';
@@ -328,6 +328,7 @@ function LeadRows({
                   ) : isOutstandingCapture(lead) ? (
                     <p className="form-note" style={{ margin: 0 }}>
                       No questionnaire answers yet — this row is only the email capture from Calendly checkout.
+                      {lead.acknowledgement ? ` “We have your email” message: ${emailState(lead.acknowledgement)}.` : ''}
                     </p>
                   ) : (
                     <>
@@ -476,6 +477,7 @@ export function LeadTable({
                 ) : isOutstandingCapture(lead) ? (
                   <p className="form-note" style={{ margin: 0 }}>
                     No questionnaire answers yet — this card is only the email capture from Calendly checkout.
+                    {lead.acknowledgement ? ` “We have your email” message: ${emailState(lead.acknowledgement)}.` : ''}
                   </p>
                 ) : (
                   visibleDetailFields.map((f) => <FieldRow key={f.key} lead={lead} field={f} />)

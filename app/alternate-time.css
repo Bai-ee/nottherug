@@ -234,3 +234,30 @@
   margin: auto;
 }
 .alt-time-success-actions { justify-content: center; }
+
+/* Newsletter opt-in (components/marketing/NewsletterOptIn.tsx), on every email form. */
+.newsletter-opt-in {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 32px;
+  font-family: var(--font-body);
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.4;
+  color: var(--muted-ink) !important;
+  text-align: left;
+  cursor: pointer;
+}
+.newsletter-opt-in input {
+  margin: 2px 0 0;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--sage-dark);
+}
+.newsletter-opt-in:focus-within { outline: 2px solid var(--olive); outline-offset: 2px; border-radius: 4px; }
+/* Group Walk card: its fields are a two-column grid; the box spans both. */
+#home-group-walk-feature-newsletter-row { grid-column: 1 / -1; }
+/* Questionnaire: sits under the email row, before the step's own spacing. */
+.booking-newsletter-opt-in { margin: -6px 0 18px; }

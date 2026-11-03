@@ -6,6 +6,7 @@ import { isValidEmail } from '@/lib/leads/validation';
 import { track } from '@/lib/analytics/track';
 import { toTrackedRoute, type AltRequestFailureReason } from '@/lib/analytics/events';
 import { getSubmissionLinkage } from '@/lib/analytics/identity';
+import NewsletterOptIn from '@/components/marketing/NewsletterOptIn';
 import { peekSession, newOpaqueId } from '@/lib/analytics/session';
 import {
   ALT_CONTACT_PREFERENCES,
@@ -38,6 +39,7 @@ export type AltTimeDraft = {
   email?: string;
   phone?: string;
   contactPreference?: AltContactPreference;
+  newsletterOptIn?: boolean;
   days: AltTimeDayId[];
   windows: AltTimeWindowId[];
   timeZone?: string;
@@ -303,6 +305,7 @@ export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, 
       email: email.trim(),
       phone: phone.trim(),
       contactPreference: draft.contactPreference,
+      ...(draft.newsletterOptIn ? { newsletterOptIn: true } : {}),
       days: draft.days,
       windows: draft.windows,
       timeZone,
@@ -549,6 +552,12 @@ export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, 
         />
         <p id={errId('note')} className="form-alert alt-time-field-error">{fieldErrors.note ?? ''}</p>
       </div>
+
+      <NewsletterOptIn
+        id={`${idPrefix}-newsletter`}
+        checked={draft.newsletterOptIn === true}
+        onChange={(next) => setDraft((d) => ({ ...d, newsletterOptIn: next }))}
+      />
 
       <p id={`${idPrefix}-form-error`} className="form-alert form-alert-slot" role="alert">
         {status === 'error' ? errorMsg : ''}

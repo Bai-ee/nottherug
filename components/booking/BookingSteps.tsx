@@ -8,6 +8,7 @@ import {
   VACCINATION_OPTIONS,
   WALK_FREQUENCY_OPTIONS,
 } from '@/lib/leads/contract';
+import NewsletterOptIn from '@/components/marketing/NewsletterOptIn';
 import type { BookingFieldErrors, BookingFormValues, BookingStepDef, RegisterField } from './types';
 
 export const BOOKING_STEPS: BookingStepDef[] = [
@@ -45,7 +46,9 @@ export function StepAboutYou({
   errors,
   alertId,
   registerField,
-}: StepProps) {
+  newsletterOptIn,
+  onNewsletterChange,
+}: StepProps & { newsletterOptIn?: boolean; onNewsletterChange?: (next: boolean) => void }) {
   return (
     <>
       <div className="form-row">
@@ -126,6 +129,14 @@ export function StepAboutYou({
           </div>
         </div>
       </div>
+      {onNewsletterChange ? (
+        <NewsletterOptIn
+          id={`${paneId}-newsletter`}
+          className="booking-newsletter-opt-in"
+          checked={newsletterOptIn === true}
+          onChange={onNewsletterChange}
+        />
+      ) : null}
     </>
   );
 }

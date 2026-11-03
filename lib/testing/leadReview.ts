@@ -12,6 +12,9 @@ export interface RecordReview {
   /** The same person's other records (by email), any kind — e.g. a time
    *  request and a questionnaire. Context, not a duplicate. */
   related: Array<{ id: string; type: string; submittedAt: string }>;
+  /** Consent given on this record (lib/leads/consent.ts). */
+  newsletter: boolean;
+  contactOk: boolean;
 }
 
 /** Questionnaires (and legacy rows with no type) count together; every other kind on its own. */
@@ -48,6 +51,8 @@ export function buildLeadReview(rows: Array<Record<string, unknown>>, ctx: TestC
       confirmedReal: r.testOverride === false,
       sameEmailCount: email ? sameEmail : 0,
       related: email ? (byEmail.get(email) ?? []).filter((x) => x.id !== r.id) : [],
+      newsletter: r.newsletterOptIn === true,
+      contactOk: r.contactOptIn === true,
     };
   }
   return out;

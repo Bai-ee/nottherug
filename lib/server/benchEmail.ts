@@ -1,4 +1,5 @@
 import { getFromAddress, getResend } from '@/lib/email/resend';
+import { isSandboxSender } from '@/lib/email/sandbox';
 import type { NotificationOutcome } from '@/lib/bench/contract';
 
 const EMAIL_TIMEOUT_MS = 8_000;
@@ -29,7 +30,7 @@ export async function sendApplicantEmail(
     console.error(`[bench:${label}] email config missing`, err instanceof Error ? err.message : 'unknown');
     return 'skipped';
   }
-  if (from.endsWith('@resend.dev')) return 'skipped';
+  if (isSandboxSender(from)) return 'skipped';
 
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {

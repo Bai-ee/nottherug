@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { fsCreateDoc, fsGetDoc, fsIncrementField, fsMergeDoc } from '@/lib/server/firestoreRest';
 import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
+import { isSandboxSender } from '@/lib/email/sandbox';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
 import {
   callTimeout,
@@ -12,6 +13,7 @@ import {
 } from '@/lib/server/leadTransitions';
 import { parseLeadSubmission } from '@/lib/leads/validation';
 import { readLinkage } from '@/lib/leads/linkage';
+import { consentFields, readOptIn } from '@/lib/leads/consent';
 import { buildLeadRecord, type LeadNotifications, type LeadRecord, type LeadSubmissionInput, type NotificationOutcome } from '@/lib/leads/contract';
 
 export const runtime = 'nodejs';
@@ -190,7 +192,7 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
     return notifications;
   }
 
-  const sandbox = from.endsWith('@resend.dev');
+  const sandbox = isSandboxSender(from);
 
   const sendFounder = async (): Promise<NotificationOutcome> => {
     try {
@@ -337,6 +339,11 @@ export async function POST(req: Request) {
   // retry from the same form still dedupes. They let reporting see that this
   // questionnaire followed a booking made in an earlier session.
   Object.assign(lead, readLinkage((parsed as Record<string, unknown> | undefined)?.linkage));
+  // Newsletter consent rides outside the content hash too: ticking the box on
+  // a retry must not turn one submission into two.
+  if (readOptIn((parsed as Record<string, unknown> | undefined)?.newsletterOptIn)) {
+    Object.assign(lead, consentFields('newsletter', validation.data.source, submittedAt));
+  }
   // Carry the capture's self-reported booking hint onto the lead itself, since
   // the admin table hides the converted capture row.
   const leadCarriesBookedHint = await readCaptureBookedHint(validation.data.email, preEmailDeadline);

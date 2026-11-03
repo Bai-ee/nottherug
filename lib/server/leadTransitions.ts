@@ -70,6 +70,8 @@ export interface CaptureInput {
   bookingRef?: string | null;
   /** Opaque session/browser/test-device ids (lib/leads/linkage.ts). Latest wins. */
   linkage?: Record<string, string>;
+  /** Consent fields to add (lib/leads/consent.ts); never used to clear one. */
+  consent?: Record<string, unknown>;
 }
 
 /** A capture keeps at most this many distinct booking refs. Real people book a
@@ -80,6 +82,8 @@ export interface CaptureOutcome {
   id: string;
   /** Set when this address already completed the questionnaire. */
   convertedLeadId?: string;
+  /** True only for the call that created the row: the address's first sighting. */
+  created?: boolean;
 }
 
 /** Record or refresh a partial capture without undoing anything another writer set. */
@@ -108,10 +112,11 @@ export async function recordCapture(input: CaptureInput, budget: TransitionBudge
           ...(input.booked ? { firstBookedAt: input.nowIso } : {}),
           ...(input.bookingRef ? { bookingRefs: [input.bookingRef] } : {}),
           ...(input.linkage ?? {}),
+          ...(input.consent ?? {}),
         },
         { ...opts(budget), precondition: { exists: false } },
       );
-      return { id };
+      return { id, created: true };
     }
 
     const data = existing.data;
@@ -138,6 +143,8 @@ export async function recordCapture(input: CaptureInput, budget: TransitionBudge
       patch.bookingRefs = [...priorRefs, input.bookingRef].slice(-MAX_BOOKING_REFS);
     }
     Object.assign(patch, input.linkage ?? {});
+    // First yes wins its timestamp; a repeat yes changes nothing.
+    if (input.consent && data.newsletterOptIn !== true) Object.assign(patch, input.consent);
 
     ensureWithinBudget(budget);
     await fsMergeDoc(path, patch, { ...opts(budget), ...matchesUpdateTime(existing.updateTime) });

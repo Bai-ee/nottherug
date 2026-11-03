@@ -21,3 +21,4 @@ export function getFounderEmail(): string {
   if (!to) throw new Error('FOUNDER_EMAIL is not set');
   return to;
 }
+
