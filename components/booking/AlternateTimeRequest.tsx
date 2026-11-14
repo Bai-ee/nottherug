@@ -29,6 +29,16 @@ const ALT_TIME_EXPLAINER =
 const ALT_TIME_SUCCESS = "Request received. We’ll contact you to arrange a time.";
 
 /**
+ * Copy for when the request form IS the booking path (no calendar beside it).
+ * Draft wording for owner review.
+ */
+const PRIMARY_COPY = {
+  title: 'Request a meet & greet',
+  explainer: 'Pick the days and times that work for you.',
+  success: 'Request received. We’ll be in touch shortly to confirm your time.',
+};
+
+/**
  * The form's values. `undefined` for name/email means "not typed yet", so the
  * host's prefill (an email entered before the scheduler opened, a name from
  * the questionnaire) shows through until the visitor edits the field — and a
@@ -215,6 +225,8 @@ type FormProps = {
   /** Called once the request is SAVED. */
   onSubmitted?: () => void;
   onClose?: () => void;
+  /** 'primary' = the request form is the only booking path (no calendar). */
+  variant?: 'alternate' | 'primary';
 };
 
 /**
@@ -222,7 +234,8 @@ type FormProps = {
  * questionnaire. Validates locally for fast feedback, but the server is the
  * authority: its field errors are shown inline next to the same fields.
  */
-export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, onBack, backLabel, onSubmitted, onClose }: FormProps) {
+export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, onBack, backLabel, onSubmitted, onClose, variant = 'alternate' }: FormProps) {
+  const isPrimary = variant === 'primary';
   const [status, setStatus] = useState<'idle' | 'submitting' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -354,7 +367,7 @@ export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, 
           className="alt-time-success"
           role="status"
         >
-          {ALT_TIME_SUCCESS}
+          {isPrimary ? PRIMARY_COPY.success : ALT_TIME_SUCCESS}
         </p>
         <div id={`${idPrefix}-success-actions`} className="alt-time-actions alt-time-success-actions">
           {onClose ? (
@@ -370,14 +383,14 @@ export function AlternateTimeForm({ idPrefix, source, draft, setDraft, prefill, 
   return (
     <form id={`${idPrefix}-form`} className="alt-time-panel" onSubmit={handleSubmit} noValidate aria-labelledby={headingId}>
       <div id={`${idPrefix}-header-row`} className="alt-time-header-row">
-        <h2 id={headingId} className="alt-time-title">Request another time</h2>
+        <h2 id={headingId} className="alt-time-title">{isPrimary ? PRIMARY_COPY.title : 'Request another time'}</h2>
         {onBack ? (
           <button type="button" id={`${idPrefix}-back-btn`} className="alt-time-link-btn" onClick={onBack}>
             {backLabel ?? '← Back to calendar'}
           </button>
         ) : null}
       </div>
-      <p id={`${idPrefix}-explainer`} className="alt-time-explainer">{ALT_TIME_EXPLAINER}</p>
+      <p id={`${idPrefix}-explainer`} className="alt-time-explainer">{isPrimary ? PRIMARY_COPY.explainer : ALT_TIME_EXPLAINER}</p>
 
       {/* Honeypot: hidden from people and assistive tech, filled only by bots. */}
       <div aria-hidden="true" className="alt-time-honeypot">

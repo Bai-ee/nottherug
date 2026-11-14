@@ -256,7 +256,7 @@
   flex-shrink: 0;
   accent-color: var(--sage-dark);
 }
-.newsletter-opt-in:focus-within { outline: 2px solid var(--olive); outline-offset: 2px; border-radius: 4px; }
+.newsletter-opt-in:has(input:focus-visible) { outline: 2px solid var(--olive); outline-offset: 2px; border-radius: 4px; }
 /* Group Walk card: its fields are a two-column grid; the box spans both. */
 #home-group-walk-feature-newsletter-row { grid-column: 1 / -1; }
 /* Questionnaire: sits under the email row, before the step's own spacing. */

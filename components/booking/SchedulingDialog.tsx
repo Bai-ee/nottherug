@@ -46,6 +46,11 @@ type Props = {
   altTimeDraft?: [AltTimeDraft, (next: AltTimeDraft | ((d: AltTimeDraft) => AltTimeDraft)) => void];
   /** Told once a request is saved, so the host does not ask "did you book?". */
   onAlternateTimeRequested?: () => void;
+  /**
+   * Request-a-time is the only path: no Calendly calendar, no back-to-calendar.
+   * Defaults to NEXT_PUBLIC_BOOKING_REQUEST_ONLY=true so every booking surface switches at once.
+   */
+  requestOnly?: boolean;
 };
 
 function toAltTimeSource(source: string): AltTimeSource {
@@ -123,6 +128,9 @@ export function createAppointmentCompletionHandler(
   };
 }
 
+/** Booking runs on time requests only (no Calendly) when NEXT_PUBLIC_BOOKING_REQUEST_ONLY=true. */
+export const BOOKING_REQUEST_ONLY = process.env.NEXT_PUBLIC_BOOKING_REQUEST_ONLY === 'true';
+
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
 
@@ -136,6 +144,7 @@ export default function SchedulingDialog({
   altTimePrefill,
   altTimeDraft,
   onAlternateTimeRequested,
+  requestOnly = BOOKING_REQUEST_ONLY,
 }: Props) {
   // Which pane is showing. The Calendly iframe stays mounted (only hidden)
   // while the request form is up, so switching back keeps whatever the
@@ -259,7 +268,7 @@ export default function SchedulingDialog({
 
   if (!open || typeof document === 'undefined') return null;
 
-  const showRequest = pane === 'request';
+  const showRequest = requestOnly || pane === 'request';
 
   function closeDialog() {
     setPane('calendar');
@@ -419,7 +428,7 @@ export default function SchedulingDialog({
             iframe is cross-origin, so nothing here can know whether a slot
             exists, and this option must not depend on it. */}
         {/* Hidden once a request is sent: the only thing left is Close. */}
-        {showRequest && draft.submitted ? null : (
+        {requestOnly || (showRequest && draft.submitted) ? null : (
         <div id="calendly-modal-alt-time-row">
           {showRequest ? (
             <button
@@ -455,15 +464,17 @@ export default function SchedulingDialog({
               setDraft={setDraft}
               prefill={altTimePrefill}
               onSubmitted={onAlternateTimeRequested}
-              onBack={() => {
+              onBack={requestOnly ? undefined : () => {
                 setPane('calendar');
                 requestAnimationFrame(() => requestTriggerRef.current?.focus());
               }}
               backLabel="Back to calendar"
+              variant={requestOnly ? 'primary' : 'alternate'}
               onClose={closeDialog}
             />
           </div>
         ) : null}
+        {requestOnly ? null : (
         <div id="calendly-modal-frame-shell" hidden={showRequest} style={showRequest ? { display: 'none' } : undefined}>
           <iframe
             ref={iframeRef}
@@ -490,6 +501,7 @@ export default function SchedulingDialog({
             <p id="calendly-modal-loader-text">Loading calendar…</p>
           </div>
         </div>
+        )}
       </div>
     </div>,
     document.body

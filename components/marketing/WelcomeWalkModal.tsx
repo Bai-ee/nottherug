@@ -13,7 +13,7 @@ import {
   newOnboardingAttemptId,
   writeOnboardingHandoff,
 } from '@/lib/booking/onboarding-handoff';
-import SchedulingDialog, { type CalendlyBooking } from '@/components/booking/SchedulingDialog';
+import SchedulingDialog, { BOOKING_REQUEST_ONLY, type CalendlyBooking } from '@/components/booking/SchedulingDialog';
 import { AlternateTimeForm, AlternateTimeTrigger, useAltTimeDraft } from '@/components/booking/AlternateTimeRequest';
 import { track } from '@/lib/analytics/track';
 import type { CtaId } from '@/lib/analytics/events';
@@ -23,6 +23,7 @@ import { GROUP_WALK_PREVIEW, GROUP_WALK_SHORT_LABEL } from '@/lib/content/servic
 import { PHONE_DISPLAY, PHONE_HREF } from '@/lib/content/contact';
 import EmailContactActions from '@/components/marketing/EmailContactActions';
 import NewsletterOptIn from '@/components/marketing/NewsletterOptIn';
+import ContactUsTrigger from '@/components/marketing/ContactUsTrigger';
 import {
   WELCOME_MODAL_DELAY_MS,
   hasSeenWelcomeModal,
@@ -144,7 +145,9 @@ type View =
   /** Answered: thank you again, and how to reach Luis directly. */
   | 'done'
   /** "No suitable time? Request another time" — no booking, no questionnaire. */
-  | 'request';
+  | 'request'
+  /** Request-only booking: the time request was sent from the scheduler dialog. */
+  | 'request-received';
 
 /**
  * Booking-first entry point: email-only gate → Calendly (free Meet & Greet)
@@ -528,10 +531,22 @@ export default function WelcomeWalkModal({
       setView('gate');
       return;
     }
+    // Request-only booking has no calendar, so there is nothing to confirm:
+    // closing without sending just returns to where they started.
+    if (BOOKING_REQUEST_ONLY && !bookedRef.current) {
+      setView('gate');
+      return;
+    }
     setView(bookedRef.current ? 'questions' : 'confirm-booking');
   }, []);
 
   const handleAlternateRequested = useCallback(() => {
+    // Request-only booking: close the scheduler and confirm here instead of
+    // leaving the visitor on the dialog's bare success panel.
+    if (BOOKING_REQUEST_ONLY) {
+      setView('request-received');
+      return;
+    }
     alternateRequestedRef.current = true;
   }, []);
 
@@ -778,7 +793,9 @@ export default function WelcomeWalkModal({
                     ? 'welcome-walk-modal-done-title'
                     : view === 'request'
                       ? 'welcome-alt-time-title'
-                      : 'welcome-walk-modal-confirmation-title'
+                      : view === 'request-received'
+                        ? 'welcome-walk-modal-request-received-title'
+                        : 'welcome-walk-modal-confirmation-title'
             }
             onClick={(e) => {
               if (e.target === e.currentTarget) handleDismiss();
@@ -1251,6 +1268,28 @@ export default function WelcomeWalkModal({
                 {view !== 'gate' ? (
                   <div id="welcome-walk-modal-confirmation-panel" className="booking-form">
                     <div className="booking-form-body">
+                      {view === 'request-received' ? (
+                        <div id="welcome-walk-modal-request-received-panel" style={{ textAlign: 'center' }}>
+                          <h3
+                            id="welcome-walk-modal-request-received-title"
+                            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(19px, 2.4vw, 23px)', margin: '0 0 8px' }}
+                          >
+                            Request received
+                          </h3>
+                          <p className="form-note" style={{ margin: '0 0 16px' }}>
+                            We&rsquo;ll be in touch at your preferred times.
+                          </p>
+                          <div id="welcome-walk-modal-request-received-actions" style={{ display: 'flex', justifyContent: 'center' }}>
+                            <ContactUsTrigger
+                              id="welcome-walk-modal-request-received-contact-btn"
+                              className="btn btn-primary booking-forward-btn btn-accent"
+                            >
+                              Contact us directly
+                            </ContactUsTrigger>
+                          </div>
+                        </div>
+                      ) : null}
+
                       {view === 'confirm-booking' ? (
                         <>
                           <h3
