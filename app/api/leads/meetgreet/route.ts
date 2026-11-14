@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { fsCreateDoc, fsGetDoc, fsIncrementField, fsMergeDoc } from '@/lib/server/firestoreRest';
 import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
+import { withBookingNotifyCopy } from '@/lib/email/bookingRecipients';
 import { isSandboxSender } from '@/lib/email/sandbox';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
 import {
@@ -200,7 +201,7 @@ async function sendLeadNotifications(lead: LeadRecord): Promise<LeadNotification
       const result = await withTimeout(
         resend.emails.send({
           from,
-          to: founderEmail,
+          to: withBookingNotifyCopy(founderEmail),
           replyTo: lead.email,
           subject: founderMail.subject,
           html: founderMail.html,

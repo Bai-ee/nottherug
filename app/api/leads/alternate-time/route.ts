@@ -14,6 +14,7 @@ import { isCampaignSlug } from '@/lib/analytics/events';
 import { readLinkage } from '@/lib/leads/linkage';
 import { TEST_DEVICES_COLLECTION } from '@/lib/testing/classification';
 import { getFounderEmail, getFromAddress, getResend } from '@/lib/email/resend';
+import { withBookingNotifyCopy } from '@/lib/email/bookingRecipients';
 import { isSandboxSender } from '@/lib/email/sandbox';
 import { customerAlternateTimeEmail, founderAlternateTimeEmail } from '@/lib/email/templates';
 import { consentFields, readOptIn } from '@/lib/leads/consent';
@@ -109,12 +110,12 @@ async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
  *  failed, when it is not configured — the request is in admin either way. */
 async function notifyFounder(doc: Record<string, unknown>, data: AltTimeRequestInput, now: Date): Promise<'sent' | 'failed' | 'skipped'> {
   let from: string;
-  let to: string;
+  let to: string | string[];
   let resend: ReturnType<typeof getResend>;
   try {
     resend = getResend();
     from = getFromAddress();
-    to = getFounderEmail();
+    to = withBookingNotifyCopy(getFounderEmail());
   } catch {
     return 'skipped';
   }
