@@ -31,8 +31,9 @@ import { sendCaptureAcknowledgement } from '@/lib/server/captureAcknowledgement'
  * the self-reported booking hint monotonic when this races the final
  * submission (app/api/leads/meetgreet).
  *
- * Sends no email. A partial capture is not a conversation the founder asked
- * to start, and the customer has not finished asking for anything yet.
+ * On an address's first sighting it emails the person ("we have your email")
+ * and sends the founder and admin inbox a real-time "email only" lead alert,
+ * so these leads reach Luis like any other (lib/server/captureAcknowledgement).
  */
 export const runtime = 'nodejs';
 export const maxDuration = 10;
@@ -151,13 +152,15 @@ export async function POST(req: Request) {
     }, budget);
     id = outcome.id;
 
-    // First sighting of this address: tell them we have it and ask before
-    // using it. After the response, so booking never waits on email.
+    // First sighting of this address: tell them we have it, and alert the
+    // founder/admin inbox. After the response, so booking never waits on email.
     if (outcome.created) {
       const task = () =>
         sendCaptureAcknowledgement({
           captureId: outcome.id,
           email,
+          source,
+          booked,
           alreadyNewsletter: newsletterOptIn,
           testDeviceId: linkage.testDeviceId,
         }).then(() => undefined);

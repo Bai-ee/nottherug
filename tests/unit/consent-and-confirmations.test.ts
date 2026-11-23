@@ -22,7 +22,7 @@ vi.mock('@/lib/server/firestoreRest', () => ({
 }));
 
 let from = 'Not The Rug <luis@nottherug.com>';
-type Mail = { to: string; subject: string; text: string; html: string };
+type Mail = { to: string | string[]; replyTo?: string; subject: string; text: string; html: string };
 const send = vi.fn<(m: Mail) => Promise<{ data: { id: string }; error: null }>>(async () => ({ data: { id: 'm' }, error: null }));
 vi.mock('@/lib/email/resend', () => ({
   getResend: () => ({ emails: { send } }),
@@ -67,13 +67,16 @@ describe('newsletter consent on capture', () => {
   });
 });
 
+const toPerson = (addr: string) => send.mock.calls.map((c) => c[0]).filter((m) => m.to === addr);
+const toFounder = () => send.mock.calls.map((c) => c[0]).filter((m) => m.to === 'founder@example.test' || (Array.isArray(m.to) && m.to.includes('founder@example.test')));
+
 describe('"we have your email" acknowledgement', () => {
   it('goes once, on the first sighting only, with two signed confirm links', async () => {
     await capture({ email: 'sam@example.test', source: 'welcome-modal' });
     await capture({ email: 'sam@example.test', source: 'welcome-modal', booked: true });
-    expect(send).toHaveBeenCalledTimes(1);
-    const mail = send.mock.calls[0][0];
-    expect(mail.to).toBe('sam@example.test');
+    const mails = toPerson('sam@example.test');
+    expect(mails).toHaveLength(1);
+    const mail = mails[0];
     expect(mail.text).toMatch(/email-preferences\?id=capture_[a-f0-9]{32}&a=contact&t=/);
     expect(mail.text).toMatch(/a=newsletter/);
     expect(captureDoc()[1].acknowledgement).toBe('sent');
@@ -81,20 +84,22 @@ describe('"we have your email" acknowledgement', () => {
 
   it('leaves out the newsletter button for someone who already ticked the box', async () => {
     await capture({ email: 'sam@example.test', source: 'welcome-modal', newsletterOptIn: true });
-    expect(send.mock.calls[0][0].text).not.toMatch(/a=newsletter/);
+    expect(toPerson('sam@example.test')[0].text).not.toMatch(/a=newsletter/);
   });
 
   it('asks for a reply instead of buttons when no link secret is configured', async () => {
     vi.stubEnv('EMAIL_LINK_SECRET', '');
     await capture({ email: 'sam@example.test', source: 'welcome-modal' });
-    expect(send.mock.calls[0][0].text).toContain('Just reply to this email');
+    expect(toPerson('sam@example.test')[0].text).toContain('Just reply to this email');
   });
 
   it('is skipped for the sandbox sender and for a marked test device', async () => {
     from = 'Not The Rug <onboarding@resend.dev>';
     await capture({ email: 'a@example.test', source: 'welcome-modal' });
+    expect(toPerson('a@example.test')).toHaveLength(0);
     docs.set('testDevices/dev-1', { id: 'dev-1' });
     from = 'Not The Rug <luis@nottherug.com>';
+    send.mockClear();
     await capture({ email: 'b@example.test', source: 'welcome-modal', linkage: { td: 'dev-1' } });
     expect(send).not.toHaveBeenCalled();
   });
@@ -104,6 +109,39 @@ describe('"we have your email" acknowledgement', () => {
     docs.set(`leads/${captureIdForEmail('sam@example.test')}`, { status: 'converted', convertedLeadId: 'a'.repeat(64), submittedAt: 'x' });
     await capture({ email: 'sam@example.test', source: 'book', booked: true });
     expect(send).not.toHaveBeenCalled();
+  });
+});
+
+describe('email-only lead alert to founder and admin inbox', () => {
+  it('goes once in real time on the first sighting, with reply-to the person', async () => {
+    vi.stubEnv('BOOKING_NOTIFY_EMAIL', 'admin@example.test');
+    await capture({ email: 'sam@example.test', source: 'welcome-modal', newsletterOptIn: true });
+    await capture({ email: 'sam@example.test', source: 'welcome-modal' });
+    const alerts = toFounder();
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].to).toEqual(['founder@example.test', 'admin@example.test']);
+    expect(alerts[0].replyTo).toBe('sam@example.test');
+    expect(alerts[0].subject).toBe('New lead — sam@example.test (email only)');
+    expect(alerts[0].text).toContain('Where they signed up: welcome-modal');
+    expect(alerts[0].text).toContain('Newsletter opt-in: Yes');
+    expect(captureDoc()[1].founderNotification).toBe('sent');
+  });
+
+  it('still alerts the founder with the sandbox sender, but not for a marked test device', async () => {
+    from = 'Not The Rug <onboarding@resend.dev>';
+    await capture({ email: 'a@example.test', source: 'home' });
+    expect(toFounder()).toHaveLength(1);
+    send.mockClear();
+    docs.set('testDevices/dev-1', { id: 'dev-1' });
+    await capture({ email: 'b@example.test', source: 'home', linkage: { td: 'dev-1' } });
+    expect(toFounder()).toHaveLength(0);
+  });
+
+  it('escapes what the person typed in the alert html', async () => {
+    const { founderCaptureEmail } = await import('@/lib/email/templates');
+    const mail = founderCaptureEmail({ id: 'capture_1', email: 'x<b>@example.test', source: 'home', submittedAt: 't', booked: false, newsletterOptIn: false });
+    expect(mail.html).not.toContain('<b>@');
+    expect(mail.html).toContain('x&lt;b&gt;@example.test');
   });
 });
 

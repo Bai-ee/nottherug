@@ -176,6 +176,47 @@ export function founderAlternateTimeEmail(req: {
   return { subject, html, text };
 }
 
+/** Real-time alert for someone who left only an email. Same inboxes as a
+ *  meet & greet, so it can be labeled and followed up like any other lead. */
+export function founderCaptureEmail(req: {
+  id: string;
+  email: string;
+  source: string;
+  submittedAt: string;
+  booked: boolean;
+  newsletterOptIn: boolean;
+}): { subject: string; html: string; text: string } {
+  const subject = `New lead — ${req.email} (email only)`;
+  const bookedLabel = req.booked ? 'Yes (their browser said so, not confirmed)' : 'No';
+  const newsletterLabel = req.newsletterOptIn ? 'Yes' : 'No';
+  const html = `
+<!doctype html>
+<html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#fff;color:#1c1c1a;margin:0;padding:24px;">
+  <div style="max-width:640px;margin:0 auto;">
+    <h2 style="margin:0 0 4px 0;">New lead — email only</h2>
+    <p style="color:#666;margin:0 0 20px 0;font-size:13px;">Received ${escape(req.submittedAt)} · source: ${escape(req.source)} · id: ${escape(req.id)}</p>
+    <p style="margin:0 0 16px 0;">They left their email but no name, phone or time. Reply to this email to reach them.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      ${row('Email', req.email)}
+      ${row('Where they signed up', req.source)}
+      ${row('Said they booked on Calendly', bookedLabel)}
+      ${row('Newsletter opt-in', newsletterLabel)}
+    </table>
+  </div>
+</body></html>`;
+  const text = [
+    `New lead — email only`,
+    `They left their email but no name, phone or time. Reply to this email to reach them.`,
+    `Email: ${req.email}`,
+    `Where they signed up: ${req.source}`,
+    `Said they booked on Calendly: ${bookedLabel}`,
+    `Newsletter opt-in: ${newsletterLabel}`,
+    `Received: ${req.submittedAt}`,
+    `Id: ${req.id}`,
+  ].join('\n');
+  return { subject, html, text };
+}
+
 /** Shared footer line for customer emails. */
 const CUSTOMER_FOOTER_HTML = `<p style="margin-top:32px;color:#888;font-size:12px;">Not The Rug · Brooklyn dog walking &amp; care</p>`;
 
