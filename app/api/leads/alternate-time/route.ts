@@ -14,6 +14,7 @@ import { isCampaignSlug } from '@/lib/analytics/events';
 import { readLinkage } from '@/lib/leads/linkage';
 import { TEST_DEVICES_COLLECTION } from '@/lib/testing/classification';
 import { getFounderEmail, getFromAddress, getResend } from '@/lib/email/resend';
+import { notifyHitloopLead } from '@/lib/server/hitloopNotify';
 import { withBookingNotifyCopy } from '@/lib/email/bookingRecipients';
 import { isSandboxSender } from '@/lib/email/sandbox';
 import { customerAlternateTimeEmail, founderAlternateTimeEmail } from '@/lib/email/templates';
@@ -283,7 +284,11 @@ export async function POST(req: Request) {
     // Only the first save of an attempt gets here, so each email goes once.
     const [notification, customerNotification] = testFlag
       ? (['skipped', 'skipped'] as const)
-      : await Promise.all([notifyFounder(doc, data, now), confirmToCustomer(data, newsletterOptIn)]);
+      : await Promise.all([
+          notifyFounder(doc, data, now),
+          confirmToCustomer(data, newsletterOptIn),
+          notifyHitloopLead('time-request'),
+        ]);
     try {
       await fsMergeDoc(`${ALT_TIME_COLLECTION}/${id}`, { notification, customerNotification });
     } catch {

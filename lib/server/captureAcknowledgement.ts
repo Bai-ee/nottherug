@@ -5,6 +5,7 @@ import { isSandboxSender } from '@/lib/email/sandbox';
 import { captureAcknowledgementEmail, founderCaptureEmail } from '@/lib/email/templates';
 import { consentLink } from '@/lib/leads/consentLinks';
 import { TEST_DEVICES_COLLECTION } from '@/lib/testing/classification';
+import { notifyHitloopLead } from '@/lib/server/hitloopNotify';
 
 const EMAIL_TIMEOUT_MS = 8_000;
 /** Same per-call ceiling the capture route gives every Firestore call. */
@@ -22,7 +23,8 @@ type Mail = { subject: string; html: string; text: string };
  * - A real-time "new lead, email only" alert to the founder and the admin
  *   inbox, the same recipients as a meet & greet, so email-only leads reach
  *   Luis like any other lead.
- * Both are skipped for a marked test device. Outcomes are written on the row.
+ * - A "NTR - New Lead" Telegram ping via HITLOOP (lib/server/hitloopNotify).
+ * All are skipped for a marked test device. Outcomes are written on the row.
  */
 export async function sendCaptureAcknowledgement(input: {
   captureId: string;
@@ -43,7 +45,9 @@ export async function sendCaptureAcknowledgement(input: {
         isTest = false;
       }
     }
-    if (!isTest) [outcome, founderOutcome] = await Promise.all([sendToPerson(input), sendToFounder(input)]);
+    if (!isTest) {
+      [outcome, founderOutcome] = await Promise.all([sendToPerson(input), sendToFounder(input), notifyHitloopLead('email-only')]);
+    }
   } finally {
     try {
       const now = new Date().toISOString();

@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { fsCreateDoc, fsGetDoc, fsIncrementField, fsMergeDoc } from '@/lib/server/firestoreRest';
 import { readBoundedBody } from '@/lib/server/readBoundedBody';
 import { getResend, getFromAddress, getFounderEmail } from '@/lib/email/resend';
+import { notifyHitloopLead } from '@/lib/server/hitloopNotify';
 import { withBookingNotifyCopy } from '@/lib/email/bookingRecipients';
 import { isSandboxSender } from '@/lib/email/sandbox';
 import { founderMeetGreetEmail, customerMeetGreetEmail } from '@/lib/email/templates';
@@ -421,6 +422,11 @@ export async function POST(req: Request) {
     }
     return NextResponse.json({ ok: true, id, duplicate: true, notifications: existingNotifications });
   }
+
+  // Telegram ping via HITLOOP, after the response so it never delays the customer.
+  await runAfterResponse(async () => {
+    await notifyHitloopLead('meet-greet');
+  });
 
   const notifications = await sendLeadNotifications(lead);
   lead.notifications = notifications;
