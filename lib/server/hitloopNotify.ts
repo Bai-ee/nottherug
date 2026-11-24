@@ -9,7 +9,16 @@ export type HitloopLeadType = 'meet-greet' | 'time-request' | 'email-only';
 const DEFAULT_URL = 'https://hitloop.agency/api/client-events/lead';
 const TIMEOUT_MS = 4_000;
 
-export async function notifyHitloopLead(leadType: HitloopLeadType): Promise<'sent' | 'skipped' | 'failed'> {
+export function notifyHitloopLead(leadType: HitloopLeadType): Promise<'sent' | 'skipped' | 'failed'> {
+  return post({ leadType });
+}
+
+/** "NTR - Lead report emailed · N today · M email-only on file". Counts only. */
+export function notifyHitloopReport(report: { todayCount: number; emailOnlyCount: number; test: boolean }): Promise<'sent' | 'skipped' | 'failed'> {
+  return post({ report });
+}
+
+async function post(body: unknown): Promise<'sent' | 'skipped' | 'failed'> {
   const secret = process.env.HITLOOP_LEAD_ALERT_SECRET?.trim();
   if (!secret) return 'skipped';
   const url = process.env.HITLOOP_LEAD_ALERT_URL?.trim() || DEFAULT_URL;
@@ -17,7 +26,7 @@ export async function notifyHitloopLead(leadType: HitloopLeadType): Promise<'sen
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${secret}` },
-      body: JSON.stringify({ leadType }),
+      body: JSON.stringify(body),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     if (!res.ok) {
