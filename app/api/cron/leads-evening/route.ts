@@ -14,7 +14,7 @@ import { claimDailySend, recordSendOutcome, todayKeyET } from '@/app/api/cron/_l
  * Telegram.
  *
  * - GET (Vercel cron, Bearer CRON_SECRET): the daily send to the founder and
- *   admin inbox. Off until LEADS_EVENING_ENABLED=1. Scheduled at both 22:58 and
+ *   admin inbox. LEADS_EVENING_DISABLED=1 turns it off. Scheduled at both 22:58 and
  *   23:58 UTC so one of them is 6:58 PM whatever the daylight-saving offset;
  *   only the one that lands in the 6 PM hour sends, once per day.
  * - POST ?test=1 (Bearer CRON_SECRET or HITLOOP_LEAD_ALERT_SECRET, the secret
@@ -50,7 +50,7 @@ async function send(to: string | string[], test: boolean) {
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (!bearerMatches(req, 'CRON_SECRET')) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (process.env.LEADS_EVENING_ENABLED !== '1') return NextResponse.json({ ok: true, skipped: true, reason: 'Not enabled' });
+  if (process.env.LEADS_EVENING_DISABLED === '1') return NextResponse.json({ ok: true, skipped: true, reason: 'Disabled' });
   if (hourInNewYork(new Date()) !== 18) return NextResponse.json({ ok: true, skipped: true, reason: 'Outside the 6 PM hour' });
 
   const to = withBookingNotifyCopy(getFounderEmail());

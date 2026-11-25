@@ -1,12 +1,13 @@
 # Scheduled jobs: what runs, what does not, and why
 
-Three cron-style handlers exist. **Only `leads-digest` is scheduled** (plan 012, P4a).
+Four cron-style handlers exist. **`leads-digest` and `leads-evening` are scheduled.**
 
 ## Scheduled
 
 | Path | Schedule (UTC) | Meaning |
 | --- | --- | --- |
 | `/api/cron/leads-digest` | `0 12 * * *` | Daily lead summary to the founder. 08:00 America/New_York during daylight time, 07:00 in winter — Vercel cron is UTC-only and does not follow DST. |
+| `/api/cron/leads-evening` | `58 22 * * *` and `58 23 * * *` | Evening lead report to the founder + admin inbox: last 24 hours of leads plus every open email-only signup. Two UTC entries so one is 6:58 PM New York in either DST offset; the route sends only in the 6 PM hour, once a day. Off with `LEADS_EVENING_DISABLED=1`. `POST ?test=1` sends a [TEST] copy to the founder. |
 
 This is the only job that reports new leads and modal bookings to the founder, so it is
 the one that closes the "nobody is notified" gap. It claims a per-day, per-recipient slot
