@@ -14,9 +14,10 @@ import { claimDailySend, recordSendOutcome, todayKeyET } from '@/app/api/cron/_l
  * Telegram.
  *
  * - GET (Vercel cron, Bearer CRON_SECRET): the daily send to the founder and
- *   admin inbox. LEADS_EVENING_DISABLED=1 turns it off. Scheduled at both 22:58 and
- *   23:58 UTC so one of them is 6:58 PM whatever the daylight-saving offset;
- *   only the one that lands in the 6 PM hour sends, once per day.
+ *   admin inbox. LEADS_EVENING_DISABLED=1 turns it off. One cron entry runs at
+ *   both 22:58 and 23:58 UTC ("58 22,23"), so one run is 6:58 PM whatever the
+ *   daylight-saving offset; only the run in the 6 PM hour sends, once per day.
+ *   (Two separate entries for the same path sent nothing on 2026-11-24.)
  * - POST ?test=1 (Bearer CRON_SECRET or HITLOOP_LEAD_ALERT_SECRET, the secret
  *   already shared with HITLOOP): a test send to the founder only, any time,
  *   marked [TEST]. It can never reach the admin inbox or anyone else.
@@ -48,17 +49,23 @@ async function send(to: string | string[], test: boolean) {
   return { ok: true as const, emailId: result.data?.id, recent: report.recent.length, emailOnly: report.emailOnly.length, telegram };
 }
 
+function skip(reason: string): NextResponse {
+  console.log('[cron:leads-evening] skipped:', reason);
+  return NextResponse.json({ ok: true, skipped: true, reason });
+}
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
   if (!bearerMatches(req, 'CRON_SECRET')) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (process.env.LEADS_EVENING_DISABLED === '1') return NextResponse.json({ ok: true, skipped: true, reason: 'Disabled' });
-  if (hourInNewYork(new Date()) !== 18) return NextResponse.json({ ok: true, skipped: true, reason: 'Outside the 6 PM hour' });
+  if (process.env.LEADS_EVENING_DISABLED === '1') return skip('Disabled');
+  const hour = hourInNewYork(new Date());
+  if (hour !== 18) return skip(`Outside the 6 PM hour (New York hour ${hour})`);
 
   const to = withBookingNotifyCopy(getFounderEmail());
   const key = Array.isArray(to) ? to.join(',') : to;
   const day = todayKeyET();
   try {
     if (!(await claimDailySend(SEND_KIND, key, day))) {
-      return NextResponse.json({ ok: true, skipped: true, reason: 'Already sent today', day });
+      return skip(`Already sent today (${day})`);
     }
   } catch (err) {
     console.error('[cron:leads-evening] idempotency check failed', err);
@@ -68,7 +75,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const r = await send(to, false);
     await recordSendOutcome(SEND_KIND, key, day, r.ok ? { status: 'sent', emailId: r.emailId } : { status: 'failed', error: r.error });
-    if (!r.ok) console.error('[cron:leads-evening] send failed', r.error);
+    if (r.ok) console.log('[cron:leads-evening] sent', r.emailId, 'recent=', r.recent, 'emailOnly=', r.emailOnly, 'telegram=', r.telegram);
+    else console.error('[cron:leads-evening] send failed', r.error);
     return NextResponse.json(r, { status: r.ok ? 200 : 500 });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Report failed';
